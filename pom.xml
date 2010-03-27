@@ -584,6 +584,7 @@ pTSqrOnmqmUUnopqmvummmmmmUUnopqmvummmmmmUUA1jJ
         <module>cas-server-sessionstorage-inmemory</module>
         <module>cas-server-sessionstorage-memcached</module>
         <module>cas-server-sessionstorage-jpa</module>
+        <module>cas-server-test-support</module>
     </modules>
 
 	<reporting>

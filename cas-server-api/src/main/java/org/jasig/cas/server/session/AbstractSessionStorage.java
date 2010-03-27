@@ -18,9 +18,8 @@ public abstract class AbstractSessionStorage implements SessionStorage {
     @Size(min=1)
     private final List<AccessFactory> accessFactories;
 
-    // TODO set default expiration policy
     @NotNull
-    private ExpirationPolicy expirationPolicy;
+    private ExpirationPolicy expirationPolicy = new MultiUseOrTimeToLiveExpirationPolicy(21600);
 
     protected AbstractSessionStorage(final List<AccessFactory> accessFactories) {
         this.accessFactories = accessFactories;

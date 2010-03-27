@@ -31,7 +31,7 @@ public class InMemorySessionStorageImpl extends AbstractSessionStorage implement
 
     public Session destroySession(final String sessionId) {
         Assert.notNull(sessionId);
-        final Session session = this.sessions.get(sessionId);
+        final Session session = this.sessions.remove(sessionId);
 
         if (session == null) {
             return null;
