@@ -18,6 +18,7 @@ public abstract class AbstractSessionStorage implements SessionStorage {
     @Size(min=1)
     private final List<AccessFactory> accessFactories;
 
+    // TODO set default expiration policy
     @NotNull
     private ExpirationPolicy expirationPolicy;
 

@@ -1,5 +1,6 @@
 package org.jasig.cas.server.authentication;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
-public interface AttributePrincipal extends Principal {
+public interface AttributePrincipal extends Principal, Serializable {
 
 
     /**

@@ -163,4 +163,8 @@ public abstract class AbstractSession implements Session {
     }
 
     protected abstract Session createDelegatedSessionInternal(Authentication authentication);
+
+    public boolean hasNotBeenUsed() {
+        return getAccesses().isEmpty();
+    }
 }
