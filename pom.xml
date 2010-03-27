@@ -2,7 +2,7 @@
 	<parent>
 		<groupId>org.jasig</groupId>
 		<artifactId>jasig-parent</artifactId>
-		<version>7</version>
+		<version>14</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jasig.cas</groupId>
@@ -569,7 +569,9 @@ pTSqrOnmqmUUnopqmvummmmmmUUnopqmvummmmmmUUA1jJ
 		<module>cas-server-integration-memcached</module>
 		<module>cas-server-integration-restlet</module>
 		<module>cas-server-webapp</module>
-	</modules>
+        <module>cas-server-api</module>
+        <module>cas-server-sessionstorage-inmemory</module>
+    </modules>
 
 	<reporting>
 		<plugins>

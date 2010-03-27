@@ -11,6 +11,19 @@
     <name>JA-SIG CAS Web Application</name>
     <dependencies>
         <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.2.2</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>3.5.0-CR-2</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.inspektr</groupId>
             <artifactId>inspektr-support-spring</artifactId>
             <scope>runtime</scope>
