@@ -23,7 +23,7 @@ public class InMemorySessionStorageImpl extends AbstractSessionStorage implement
         super(accessFactories);
     }
 
-    public Session createSession(final LoginRequest loginRequest, final Authentication authentication) throws InvalidatedSessionException {
+    public Session createSession(final Authentication authentication) {
         final Session session = new InMemorySessionImpl(getExpirationPolicy(), getAccessFactories(), authentication);
         this.sessions.put(session.getId(), session);
         return session;

@@ -8,8 +8,9 @@
         <version>3.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>cas-server-sessionstorage-inmemory</artifactId>
-    <name>Jasig CAS - In Memory Session Storage Support</name>
+
+    <artifactId>cas-server-sessionstorage-memcached</artifactId>
+    <name>Jasig CAS - Memcached Session Storage Support</name>
     <description>Supports storing objects in memory.</description>
 
     <dependencies>
@@ -36,5 +37,27 @@
             <artifactId>person-directory-impl</artifactId>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>spy</groupId>
+            <artifactId>memcached</artifactId>
+            <version>2.4rc1</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+        
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>spy</id>
+            <name>Spy Repository</name>
+            <layout>default</layout>
+            <url>http://bleu.west.spy.net/~dustin/m2repo/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
 </project>

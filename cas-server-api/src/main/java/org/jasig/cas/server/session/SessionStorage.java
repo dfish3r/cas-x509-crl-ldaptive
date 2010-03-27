@@ -28,12 +28,10 @@ public interface SessionStorage {
      * Note: In CAS3, these were called TicketGrantingTickets. We have disambiguated from that term because we are
      * supporting more than one protocol going forward.
      *
-     * @param loginRequest the initial login request
      * @param authentication the successful authentication that will be used to populate this session.
      * @return the fully constructed session.  This should never return null.
-     * @throws InvalidatedSessionException if we try to create a session from an expired session.
      */
-    Session createSession(LoginRequest loginRequest, Authentication authentication) throws InvalidatedSessionException;
+    Session createSession(Authentication authentication);
 
     /**
      * Destroys an existing session, which means that it erases it from whatever backing storage
@@ -49,7 +47,8 @@ public interface SessionStorage {
     Session destroySession(String sessionId);
 
     /**
-     * Locates an existing session based on its existing session identifier.
+     * Locates an existing session based on its existing session identifier.  This will never return a non-valid
+     * session.
      *
      * @param sessionId the id of the session to look for.
      * @return the Session, if found.  Null, otherwise.

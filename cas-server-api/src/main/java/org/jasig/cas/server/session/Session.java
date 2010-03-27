@@ -135,4 +135,12 @@ public interface Session extends Serializable {
      * @return the session if its found, null otherwise.
      */
     Session findChildSessionById(final String identifier);
+
+    /**
+     * Determines whether the session has been used to grant an access already.  The equivalent of saying getAccesses().
+     * isEmpty().
+     *
+     * @return true if it has not been used.  False otherwise.
+     */
+    boolean hasNotBeenUsed();
 }

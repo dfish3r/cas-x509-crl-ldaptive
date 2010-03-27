@@ -8,9 +8,11 @@
         <version>3.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>cas-server-sessionstorage-inmemory</artifactId>
-    <name>Jasig CAS - In Memory Session Storage Support</name>
-    <description>Supports storing objects in memory.</description>
+    <name>Jasig CAS - JPA Session Storage Support</name>
+    <description>Supports storing objects in a database.</description>
+
+
+    <artifactId>cas-server-sessionstorage-jpa</artifactId>
 
     <dependencies>
         <dependency>
@@ -36,5 +38,23 @@
             <artifactId>person-directory-impl</artifactId>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>jboss</id>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>http://repository.jboss.org/maven2/</url>
+        </repository>
+    </repositories>
+
+
 </project>

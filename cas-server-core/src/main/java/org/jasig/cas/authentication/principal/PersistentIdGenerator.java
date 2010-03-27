@@ -5,6 +5,8 @@
  */
 package org.jasig.cas.authentication.principal;
 
+import org.jasig.cas.server.authentication.AttributePrincipal;
+
 /**
  * Generates a unique consistant Id based on the principal, a service, and some
  * algorithm.
@@ -23,5 +25,5 @@ public interface PersistentIdGenerator {
      * @param service the service to generate the id for.
      * @return the generated persistent id.
      */
-    String generate(Principal principal, Service service);
+    String generate(AttributePrincipal principal, String service);
 }
