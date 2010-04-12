@@ -3,6 +3,7 @@ package org.jasig.cas.server.authentication;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents a response to an authentication request.
@@ -28,7 +29,7 @@ public interface AuthenticationResponse {
      *
      * @return the authentication, or null if authentication failed.
      */
-    Authentication getAuthentication();
+    Set<Authentication> getAuthentications();
 
     /**
      * Contains the list of GeneralSecurityExceptions that may have occurred during the course of the Authentication.

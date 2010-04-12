@@ -5,7 +5,7 @@
  */
 package org.jasig.cas.ticket.proxy;
 
-import org.jasig.cas.authentication.principal.Credentials;
+import org.jasig.cas.server.authentication.Credential;
 
 /**
  * Abstraction for what needs to be done to handle proxies. Useful because the
@@ -30,5 +30,5 @@ public interface ProxyHandler {
      * CAS 3 this is a TicketGrantingTicket)
      * @return the String value that needs to be passed to the CAS client.
      */
-    String handle(Credentials credentials, String proxyGrantingTicketId);
+    String handle(Credential credentials, String proxyGrantingTicketId);
 }

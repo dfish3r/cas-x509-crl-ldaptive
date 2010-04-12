@@ -8,8 +8,8 @@ package org.jasig.cas.validation;
 import java.io.Serializable;
 import java.util.List;
 
-import org.jasig.cas.authentication.Authentication;
 import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Authentication;
 
 /**
  * Return from CentralAuthenticationService.validateServiceTicket(String,

@@ -46,7 +46,7 @@
 	
 	<bean
 		id="authenticationManager"
-		class="org.jasig.cas.authentication.AuthenticationManagerImpl">
+		class="org.jasig.cas.authentication.DefaultAuthenticationManagerImpl">
 		<property
 			name="credentialsToPrincipalResolvers">
 			<list>
@@ -99,7 +99,7 @@
 		
 	<bean
 		id="httpBasedServiceCredentialsToPrincipalResolver"
-		class="org.jasig.cas.authentication.principal.HttpBasedServiceCredentialsToPrincipalResolver" />
+		class="org.jasig.cas.authentication.principal.UrlCredentialToPrincipalResolver" />
 		
 	<bean
 		id="httpBasedServiceCredentialsAuthenticationHandler"

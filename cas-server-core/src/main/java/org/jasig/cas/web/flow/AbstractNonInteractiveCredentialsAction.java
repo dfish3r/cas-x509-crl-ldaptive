@@ -7,8 +7,8 @@ package org.jasig.cas.web.flow;
 
 import org.jasig.cas.CentralAuthenticationService;
 import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.principal.Credentials;
 import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.ticket.TicketException;
 import org.jasig.cas.web.support.WebUtils;
 import org.springframework.util.StringUtils;
@@ -38,7 +38,7 @@ public abstract class AbstractNonInteractiveCredentialsAction extends
     }
 
     protected final Event doExecute(final RequestContext context) {
-        final Credentials credentials = constructCredentialsFromRequest(context);
+        final Credential credentials = constructCredentialsFromRequest(context);
 
         if (credentials == null) {
             return error();
@@ -102,8 +102,7 @@ public abstract class AbstractNonInteractiveCredentialsAction extends
      * @param context the context for this specific request.
      * @param credentials the credentials for this request.
      */
-    protected void onError(final RequestContext context,
-        final Credentials credentials) {
+    protected void onError(final RequestContext context, final Credential credentials) {
         // default implementation does nothing
     }
 
@@ -114,8 +113,7 @@ public abstract class AbstractNonInteractiveCredentialsAction extends
      * @param context the context for this specific request.
      * @param credentials the credentials for this request.
      */
-    protected void onSuccess(final RequestContext context,
-        final Credentials credentials) {
+    protected void onSuccess(final RequestContext context, final Credential credentials) {
         // default implementation does nothing
     }
 
@@ -127,6 +125,5 @@ public abstract class AbstractNonInteractiveCredentialsAction extends
      * @return the constructed credentials or null if none could be constructed
      * from the request.
      */
-    protected abstract Credentials constructCredentialsFromRequest(
-        final RequestContext context);
+    protected abstract Credential constructCredentialsFromRequest(final RequestContext context);
 }

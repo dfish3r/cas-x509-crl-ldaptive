@@ -8,7 +8,7 @@ package org.jasig.cas.adaptors.generic;
 import java.util.Collections;
 import java.util.Map;
 
-import org.jasig.cas.authentication.handler.support.AbstractUsernamePasswordAuthenticationHandler;
+import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 
 import javax.validation.constraints.NotNull;

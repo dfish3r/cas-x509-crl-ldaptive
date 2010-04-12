@@ -20,7 +20,13 @@
             <type>jar</type>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <scope>compile</scope>
+            <type>jar</type>
+            <version>${hibernate.core.version}</version>
+        </dependency>
 
 
 

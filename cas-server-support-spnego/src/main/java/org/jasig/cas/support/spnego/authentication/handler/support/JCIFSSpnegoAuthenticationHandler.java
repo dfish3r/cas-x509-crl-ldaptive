@@ -8,7 +8,7 @@ package org.jasig.cas.support.spnego.authentication.handler.support;
 import jcifs.spnego.Authentication;
 import org.jasig.cas.authentication.handler.AuthenticationException;
 import org.jasig.cas.authentication.handler.BadCredentialsAuthenticationException;
-import org.jasig.cas.authentication.handler.support.AbstractPreAndPostProcessingAuthenticationHandler;
+import org.jasig.cas.server.authentication.AbstractPreAndPostProcessingAuthenticationHandler;
 import org.jasig.cas.authentication.principal.Credentials;
 import org.jasig.cas.authentication.principal.SimplePrincipal;
 import org.jasig.cas.support.spnego.authentication.principal.SpnegoCredentials;
@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * @since 3.1
  */
 public final class JCIFSSpnegoAuthenticationHandler extends
-    AbstractPreAndPostProcessingAuthenticationHandler {
+        AbstractPreAndPostProcessingAuthenticationHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

@@ -9,15 +9,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.jasig.cas.TestUtils;
-import org.jasig.cas.authentication.Authentication;
-import org.jasig.cas.authentication.ImmutableAuthentication;
-import org.jasig.cas.authentication.principal.SimplePrincipal;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.validation.ImmutableAssertionImpl;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -37,7 +33,43 @@ public class Cas10ResponseViewTests extends TestCase {
     protected void setUp() throws Exception {
         this.model = new HashMap<String,Object>();
         List<Authentication> list = new ArrayList<Authentication>();
-        list.add(new ImmutableAuthentication(new SimplePrincipal("test")));
+        list.add(new Authentication() {
+            public Date getAuthenticationDate() {
+                return new Date();
+            }
+
+            public Map<String, List<Object>> getAuthenticationMetaData() {
+                return Collections.emptyMap();
+            }
+
+            public AttributePrincipal getPrincipal() {
+                return new AttributePrincipal() {
+                    public List<Object> getAttributeValues(String attribute) {
+                        return null;
+                    }
+
+                    public Object getAttributeValue(String attribute) {
+                        return null;
+                    }
+
+                    public Map<String, List<Object>> getAttributes() {
+                        return Collections.emptyMap();
+                    }
+
+                    public String getName() {
+                        return "test";
+                    }
+                };
+            }
+
+            public boolean isLongTermAuthentication() {
+                return false;
+            }
+
+            public String getAuthenticationMethod() {
+                return "foo";
+            }
+        });
         this.model.put("assertion", new ImmutableAssertionImpl(list,
             TestUtils.getService("TestService"), true));
     }

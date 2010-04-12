@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.CredentialToPrincipalResolver;
 import org.jasig.services.persondir.IPersonAttributeDao;
 import org.jasig.services.persondir.support.StubPersonAttributeDao;
 import org.slf4j.Logger;
@@ -23,19 +27,25 @@ import javax.validation.constraints.NotNull;
  * @since 3.1
  *
  */
-public abstract class AbstractPersonDirectoryCredentialsToPrincipalResolver
-    implements CredentialsToPrincipalResolver {
+public abstract class AbstractPersonDirectoryCredentialsToPrincipalResolver implements CredentialToPrincipalResolver {
 
     /** Log instance. */
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private boolean returnNullIfNoAttributes = false;
+
+    @NotNull
+    private final AttributePrincipalFactory attributePrincipalFactory;
     
     /** Repository of principal attributes to be retrieved */
     @NotNull
     private IPersonAttributeDao attributeRepository = new StubPersonAttributeDao(new HashMap<String, List<Object>>());
 
-    public final Principal resolvePrincipal(final Credentials credentials) {
+    protected AbstractPersonDirectoryCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
+        this.attributePrincipalFactory = attributePrincipalFactory;
+    }
+
+    public final AttributePrincipal resolve(final Credential credentials) {
         if (log.isDebugEnabled()) {
             log.debug("Attempting to resolve a principal...");
         }
@@ -53,8 +63,9 @@ public abstract class AbstractPersonDirectoryCredentialsToPrincipalResolver
 
         final Map<String, List<Object>> attributes = this.attributeRepository.getPerson(principalId).getAttributes();
 
+        // TODO this may be able to be simplified or removed because of the way the new principal stuff works
         if (attributes == null & !this.returnNullIfNoAttributes) {
-            return new SimplePrincipal(principalId);
+            return this.attributePrincipalFactory.getAttributePrincipal(principalId);
         }
 
         if (attributes == null && this.returnNullIfNoAttributes) {
@@ -68,7 +79,7 @@ public abstract class AbstractPersonDirectoryCredentialsToPrincipalResolver
             final Object value = entry.getValue().size() == 1 ? entry.getValue().get(0) : entry.getValue();
             convertedAttributes.put(key, value);
         }
-        return new SimplePrincipal(principalId, convertedAttributes);
+        return this.attributePrincipalFactory.getAttributePrincipal(principalId);
     }
     
     /**
@@ -77,13 +88,13 @@ public abstract class AbstractPersonDirectoryCredentialsToPrincipalResolver
      * @param credentials the credentials provided by the user.
      * @return the username, or null if it could not be resolved.
      */
-    protected abstract String extractPrincipalId(Credentials credentials);
+    protected abstract String extractPrincipalId(Credential credentials);
     
     public final void setAttributeRepository(final IPersonAttributeDao attributeRepository) {
         this.attributeRepository = attributeRepository;
     }
 
-    public void setReturnNullIfNoAttributes(final boolean returnNullIfNoAttributes) {
+    public final void setReturnNullIfNoAttributes(final boolean returnNullIfNoAttributes) {
         this.returnNullIfNoAttributes = returnNullIfNoAttributes;
     }
 }

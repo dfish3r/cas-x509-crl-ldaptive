@@ -9,6 +9,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.jasig.cas.server.authentication.AttributePrincipal;
 
 import javax.validation.constraints.NotNull;
 
@@ -19,20 +20,19 @@ import javax.validation.constraints.NotNull;
  * @version $Revision: 1.1 $ $Date: 2007/04/20 19:39:31 $
  * @since 3.1
  */
-public final class ShibbolethCompatiblePersistentIdGenerator implements
-    PersistentIdGenerator {
+public final class ShibbolethCompatiblePersistentIdGenerator implements PersistentIdGenerator {
 
     private static final byte CONST_SEPARATOR = (byte) '!';
     
     @NotNull
     private byte[] salt;
 
-    public String generate(final Principal principal, final Service service) {
+    public String generate(final AttributePrincipal principal, final String service) {
         try {
             final MessageDigest md = MessageDigest.getInstance("SHA");
-            md.update(service.getId().getBytes());
+            md.update(service.getBytes());
             md.update(CONST_SEPARATOR);
-            md.update(principal.getId().getBytes());
+            md.update(principal.getName().getBytes());
             md.update(CONST_SEPARATOR);
 
             return Base64.encodeBase64String(md.digest(this.salt)).replaceAll(

@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.jasig.cas.adaptors.radius.RadiusServer;
 import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.support.AbstractUsernamePasswordAuthenticationHandler;
+import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 
 import javax.validation.constraints.NotNull;

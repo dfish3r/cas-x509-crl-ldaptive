@@ -14,8 +14,7 @@ import org.jasig.cas.CentralAuthenticationServiceImpl;
 import org.jasig.cas.adaptors.x509.authentication.handler.support.X509CredentialsAuthenticationHandler;
 import org.jasig.cas.adaptors.x509.authentication.principal.AbstractX509CertificateTests;
 import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentialsToSerialNumberPrincipalResolver;
-import org.jasig.cas.adaptors.x509.web.flow.X509CertificateCredentialsNonInteractiveAction;
-import org.jasig.cas.authentication.AuthenticationManagerImpl;
+import org.jasig.cas.authentication.DefaultAuthenticationManagerImpl;
 import org.jasig.cas.authentication.handler.AuthenticationHandler;
 import org.jasig.cas.authentication.principal.CredentialsToPrincipalResolver;
 import org.jasig.cas.authentication.principal.SimpleWebApplicationServiceImpl;
@@ -43,7 +42,7 @@ public class X509CertificateCredentialsNonInteractiveActionTests extends
         idGenerators.put(SimpleWebApplicationServiceImpl.class.getName(), new DefaultUniqueTicketIdGenerator());
 
 
-        final AuthenticationManagerImpl authenticationManager = new AuthenticationManagerImpl();
+        final DefaultAuthenticationManagerImpl authenticationManager = new DefaultAuthenticationManagerImpl();
 
         final X509CredentialsAuthenticationHandler a = new X509CredentialsAuthenticationHandler();
         a.setTrustedIssuerDnPattern("JA-SIG");

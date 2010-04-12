@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.util.DefaultUniqueTicketIdGenerator;
 import org.jasig.cas.util.HttpClient;
 import org.jasig.cas.util.SamlUtils;
@@ -40,7 +41,7 @@ public abstract class AbstractWebApplicationService implements WebApplicationSer
 
     private final String artifactId;
     
-    private Principal principal;
+    private AttributePrincipal principal;
     
     private boolean loggedOutAlready = false;
     
@@ -116,11 +117,11 @@ public abstract class AbstractWebApplicationService implements WebApplicationSer
         return result;
     }
     
-    protected Principal getPrincipal() {
+    protected AttributePrincipal getPrincipal() {
         return this.principal;
     }
 
-    public void setPrincipal(final Principal principal) {
+    public void setPrincipal(final AttributePrincipal principal) {
         this.principal = principal;
     }
     

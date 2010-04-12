@@ -15,10 +15,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.jasig.cas.TestUtils;
-import org.jasig.cas.authentication.Authentication;
-import org.jasig.cas.authentication.MutableAuthentication;
-import org.jasig.cas.authentication.SamlAuthenticationMetaDataPopulator;
-import org.jasig.cas.authentication.principal.SimplePrincipal;
+import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.validation.Assertion;
 import org.jasig.cas.validation.ImmutableAssertionImpl;
 import org.jasig.cas.web.view.Cas10ResponseViewTests.MockWriterHttpMockHttpServletResponse;
@@ -50,12 +47,10 @@ public class Saml10SuccessResponseViewTests extends TestCase {
         final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("testAttribute", "testValue");
         attributes.put("testEmptyCollection", Collections.emptyList());
-        attributes.put("testAttributeCollection", Arrays.asList(new String[] {"tac1", "tac2"}));
+        attributes.put("testAttributeCollection", Arrays.asList("tac1", "tac2"));
         final SimplePrincipal principal = new SimplePrincipal("testPrincipal", attributes);
         
         final MutableAuthentication authentication = new MutableAuthentication(principal);
-        authentication.getAttributes().put(SamlAuthenticationMetaDataPopulator.ATTRIBUTE_AUTHENTICATION_METHOD, SAMLAuthenticationStatement.AuthenticationMethod_SSL_TLS_Client);
-        authentication.getAttributes().put("testSamlAttribute", "value");
         
         final List<Authentication> authentications = new ArrayList<Authentication>();
         authentications.add(authentication);

@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.jasig.cas.authentication.principal.Principal;
 import org.jasig.cas.authentication.principal.Service;
 
 import junit.framework.TestCase;
+import org.jasig.cas.server.authentication.AttributePrincipal;
 
 /**
  * 
@@ -117,7 +117,7 @@ public class DefaultServicesManagerImplTests extends TestCase {
             return this.id;
         }
 
-        public void setPrincipal(Principal principal) {
+        public void setPrincipal(AttributePrincipal principal) {
             // nothing to do
         }
 

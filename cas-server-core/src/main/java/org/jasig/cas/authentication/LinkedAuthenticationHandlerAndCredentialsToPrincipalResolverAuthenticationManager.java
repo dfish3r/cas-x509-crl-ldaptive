@@ -5,16 +5,16 @@
  */
 package org.jasig.cas.authentication;
 
+import com.github.inspektr.audit.annotation.Audit;
 import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.AuthenticationHandler;
 import org.jasig.cas.authentication.handler.BadCredentialsAuthenticationException;
 import org.jasig.cas.authentication.handler.UnsupportedCredentialsException;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.CredentialsToPrincipalResolver;
-import org.jasig.cas.authentication.principal.Principal;
+import org.jasig.cas.server.authentication.*;
+import org.perf4j.aop.Profiled;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 
 /**
@@ -24,35 +24,39 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.3.5
  */
-public class LinkedAuthenticationHandlerAndCredentialsToPrincipalResolverAuthenticationManager extends AbstractAuthenticationManager {
+public final class LinkedAuthenticationHandlerAndCredentialsToPrincipalResolverAuthenticationManager implements AuthenticationManager {
 
     @NotNull
     @Size(min = 1)
-    private final Map<AuthenticationHandler, CredentialsToPrincipalResolver> linkedHandlers;
+    private final Map<AuthenticationHandler, CredentialToPrincipalResolver> linkedHandlers;
 
-    public LinkedAuthenticationHandlerAndCredentialsToPrincipalResolverAuthenticationManager(final Map<AuthenticationHandler,CredentialsToPrincipalResolver> linkedHandlers) {
+    public LinkedAuthenticationHandlerAndCredentialsToPrincipalResolverAuthenticationManager(final Map<AuthenticationHandler,CredentialToPrincipalResolver> linkedHandlers) {
         this.linkedHandlers = linkedHandlers; 
     }
 
-    @Override
-    protected Pair<AuthenticationHandler, Principal> authenticateAndObtainPrincipal(final Credentials credentials) throws AuthenticationException {
-        boolean foundOneThatWorks = false;
-        for (final AuthenticationHandler authenticationHandler : this.linkedHandlers.keySet()) {
-            if (!authenticationHandler.supports(credentials)) {
-                continue;
-            }
+    // TODO implement
 
-            foundOneThatWorks = true;
-            if (authenticationHandler.authenticate(credentials)) {
-                final Principal p = this.linkedHandlers.get(authenticationHandler).resolvePrincipal(credentials);
-                return new Pair<AuthenticationHandler,Principal>(authenticationHandler, p);
+    @Profiled(tag="defaultAuthenticationManager_authenticate")
+    @Audit(action="AUTHENTICATION", actionResolverName="AUTHENTICATION_RESOLVER", resourceResolverName="AUTHENTICATION_RESOURCE_RESOLVER")
+    public AuthenticationResponse authenticate(final AuthenticationRequest authenticationRequest) {
+        for (final Credential credential : authenticationRequest.getCredentials()) {
+            for (final Map.Entry<AuthenticationHandler, CredentialToPrincipalResolver> entry : this.linkedHandlers.entrySet()) {
+                final AuthenticationHandler authenticationHandler = entry.getKey();
+                final CredentialToPrincipalResolver credentialToPrincipalResolver = entry.getValue();
+
+                if (!authenticationHandler.supports(credential)) {
+                    continue;
+                }
+                try {
+                    authenticationHandler.authenticate(credential);
+                } catch (final GeneralSecurityException e) {
+
+                }
             }
         }
 
-        if (foundOneThatWorks) {
-            throw BadCredentialsAuthenticationException.ERROR;
-        }
 
-        throw UnsupportedCredentialsException.ERROR;
+
+        return null;
     }
 }

@@ -44,4 +44,11 @@ public interface Authentication {
      * @return true if it is, false otherwise.
      */
     boolean isLongTermAuthentication();
+
+    /**
+     * Returns the way this thing was authenticated (i.e. Safeword, LDAP, etc.).  CANNOT be NULL.
+     *
+     * @return 
+     */
+    String getAuthenticationMethod();
 }

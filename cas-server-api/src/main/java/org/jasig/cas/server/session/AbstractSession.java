@@ -97,12 +97,12 @@ public abstract class AbstractSession implements Session {
         return !isInvalid() && !executeExpirationPolicy() && (getParentSession() == null || getParentSession().isValid());
     }
 
-    public final Authentication getRootAuthentication() {
+    public final Set<Authentication> getRootAuthentications() {
         if (getParentSession() != null) {
-            return getParentSession().getRootAuthentication();
+            return getParentSession().getRootAuthentications();
         }
 
-        return getAuthentication();
+        return getAuthentications();
     }
 
     public final Session getRootSession() {
@@ -134,13 +134,13 @@ public abstract class AbstractSession implements Session {
         throw new IllegalStateException("No AccessFactories configured that can execute Access request.");
     }
 
-    public final List<Authentication> getProxiedAuthentications() {
+    public final List<Set<Authentication>> getProxiedAuthentications() {
         if (getParentSession() == null) {
-            return new ArrayList<Authentication>();
+            return new ArrayList<Set<Authentication>>();
         }
 
-        final List<Authentication> authentications = getParentSession().getProxiedAuthentications();
-        authentications.add(getAuthentication());
+        final List<Set<Authentication>> authentications = getParentSession().getProxiedAuthentications();
+        authentications.add(getAuthentications());
         return authentications;
     }
 

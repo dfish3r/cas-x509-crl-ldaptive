@@ -6,9 +6,15 @@
 package org.jasig.cas.authentication.principal;
 
 import org.jasig.cas.TestUtils;
-import org.jasig.cas.authentication.principal.CredentialsToPrincipalResolver;
 
 import junit.framework.TestCase;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.CredentialToPrincipalResolver;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Scott Battaglia
@@ -18,7 +24,27 @@ import junit.framework.TestCase;
 public final class HttpBasedServiceCredentialsToPrincipalResolverTests extends
     TestCase {
 
-    private CredentialsToPrincipalResolver resolver = new HttpBasedServiceCredentialsToPrincipalResolver();
+    private CredentialToPrincipalResolver resolver = new UrlCredentialToPrincipalResolver(new AttributePrincipalFactory() {
+        public AttributePrincipal getAttributePrincipal(final String name) {
+            return new AttributePrincipal() {
+                public List<Object> getAttributeValues(String attribute) {
+                    return null;
+                }
+
+                public Object getAttributeValue(String attribute) {
+                    return null;
+                }
+
+                public Map<String, List<Object>> getAttributes() {
+                    return Collections.emptyMap();
+                }
+
+                public String getName() {
+                    return name;
+                }
+            };
+        }
+    });
 
     public void testInValidSupportsCredentials() {
         assertFalse(this.resolver.supports(TestUtils
@@ -35,8 +61,8 @@ public final class HttpBasedServiceCredentialsToPrincipalResolverTests extends
     }
 
     public void testValidCredentials() {
-        assertEquals(this.resolver.resolvePrincipal(
-            TestUtils.getHttpBasedServiceCredentials()).getId(), TestUtils
-            .getHttpBasedServiceCredentials().getCallbackUrl().toExternalForm());
+        assertEquals(this.resolver.resolve(
+            TestUtils.getHttpBasedServiceCredentials()).getName(), TestUtils
+            .getHttpBasedServiceCredentials().getUrl().toExternalForm());
     }
 }

@@ -5,7 +5,7 @@
  */
 package org.jasig.cas.adaptors.ldap;
 
-import org.jasig.cas.authentication.handler.support.AbstractUsernamePasswordAuthenticationHandler;
+import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.ContextSource;
@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
  * @since 3.0.3
  */
 public abstract class AbstractLdapUsernamePasswordAuthenticationHandler extends
-    AbstractUsernamePasswordAuthenticationHandler implements InitializingBean {
+        AbstractUsernamePasswordAuthenticationHandler implements InitializingBean {
 
     /** LdapTemplate to execute ldap queries. */
     @NotNull

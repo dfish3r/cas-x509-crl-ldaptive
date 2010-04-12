@@ -5,11 +5,11 @@
  */
 package org.jasig.cas;
 
-import org.jasig.cas.ticket.ExpirationPolicy;
+import org.jasig.cas.server.session.ExpirationPolicy;
+import org.jasig.cas.server.session.MultiTimeUseOrTimeoutExpirationPolicy;
+import org.jasig.cas.server.session.NeverExpiresExpirationPolicy;
+import org.jasig.cas.server.session.State;
 import org.jasig.cas.ticket.TicketException;
-import org.jasig.cas.ticket.TicketState;
-import org.jasig.cas.ticket.support.MultiTimeUseOrTimeoutExpirationPolicy;
-import org.jasig.cas.ticket.support.NeverExpiresExpirationPolicy;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -105,7 +105,7 @@ public class CentralAuthenticationServiceImplTests extends AbstractCentralAuthen
         ((CentralAuthenticationServiceImpl) getCentralAuthenticationService()).setTicketGrantingTicketExpirationPolicy(new ExpirationPolicy() {
             private static final long serialVersionUID = 1L;
 
-            public boolean isExpired(final TicketState ticket) {
+            public boolean isExpired(final State ticket) {
                 return true;
             }});
     final String ticketId = getCentralAuthenticationService()
@@ -213,9 +213,6 @@ public class CentralAuthenticationServiceImplTests extends AbstractCentralAuthen
 
     @Test
     public void testValidateServiceTicketWithExpires() throws TicketException {
-        ((CentralAuthenticationServiceImpl) getCentralAuthenticationService())
-            .setServiceTicketExpirationPolicy(new MultiTimeUseOrTimeoutExpirationPolicy(
-                1, 1100));
         final String ticketGrantingTicket = getCentralAuthenticationService()
             .createTicketGrantingTicket(
                 TestUtils.getCredentialsWithSameUsernameAndPassword());
@@ -226,8 +223,6 @@ public class CentralAuthenticationServiceImplTests extends AbstractCentralAuthen
             TestUtils.getService());
 
         assertFalse(getTicketRegistry().deleteTicket(serviceTicket));
-        ((CentralAuthenticationServiceImpl) getCentralAuthenticationService())
-            .setServiceTicketExpirationPolicy(new NeverExpiresExpirationPolicy());
     }
 
     @Test

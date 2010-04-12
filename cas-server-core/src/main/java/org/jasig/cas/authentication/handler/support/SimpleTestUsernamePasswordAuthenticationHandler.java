@@ -5,7 +5,8 @@
  */
 package org.jasig.cas.authentication.handler.support;
 
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.util.StringUtils;
 
 /**
@@ -18,28 +19,22 @@ import org.springframework.util.StringUtils;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class SimpleTestUsernamePasswordAuthenticationHandler extends
-    AbstractUsernamePasswordAuthenticationHandler {
+public final class SimpleTestUsernamePasswordAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
 
     public SimpleTestUsernamePasswordAuthenticationHandler() {
-        log
-            .warn(this.getClass().getName()
-                + " is only to be used in a testing environment.  NEVER enable this in a production environment.");
+        log.warn(this.getClass().getName() + " is only to be used in a testing environment.  NEVER enable this in a production environment.");
     }
 
-    public boolean authenticateUsernamePasswordInternal(final UsernamePasswordCredentials credentials) {
-        final String username = credentials.getUsername();
+    public boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) {
+        final String username = credentials.getUserName();
         final String password = credentials.getPassword();
 
-        if (StringUtils.hasText(username) && StringUtils.hasText(password)
-            && username.equals(getPasswordEncoder().encode(password))) {
-            log
-                .debug("User [" + username
-                    + "] was successfully authenticated.");
+        if (StringUtils.hasText(username) && StringUtils.hasText(password) && username.equals(password)) {
+            log.debug(String.format("User [%s] was successfully authenticated", username));
             return true;
         }
 
-        log.debug("User [" + username + "] failed authentication");
+        log.debug(String.format("User [%s] failed authentication", username));
 
         return false;
     }

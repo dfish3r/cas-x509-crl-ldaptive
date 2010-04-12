@@ -5,14 +5,15 @@
  */
 package org.jasig.cas.authentication.handler.support;
 
-import org.jasig.cas.authentication.handler.AuthenticationHandler;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.HttpBasedServiceCredentials;
+import org.jasig.cas.server.authentication.AbstractPreAndPostProcessingAuthenticationHandler;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.UrlCredential;
 import org.jasig.cas.util.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
+import java.security.GeneralSecurityException;
 
 /**
  * Class to validate the credentials presented by communicating with the web
@@ -27,7 +28,7 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class HttpBasedServiceCredentialsAuthenticationHandler implements AuthenticationHandler {
+public class HttpBasedServiceCredentialsAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
 
     /** The string representing the HTTPS protocol. */
     private static final String PROTOCOL_HTTPS = "https";
@@ -42,11 +43,11 @@ public final class HttpBasedServiceCredentialsAuthenticationHandler implements A
     @NotNull
     private HttpClient httpClient;
 
-    public boolean authenticate(final Credentials credentials) {
-        final HttpBasedServiceCredentials serviceCredentials = (HttpBasedServiceCredentials) credentials;
+    @Override
+    protected final boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
+        final UrlCredential serviceCredentials = (UrlCredential) credentials;
         if (this.requireSecure
-            && !serviceCredentials.getCallbackUrl().getProtocol().equals(
-                PROTOCOL_HTTPS)) {
+            && !serviceCredentials.getUrl().getProtocol().equals(PROTOCOL_HTTPS)) {
             if (log.isDebugEnabled()) {
                 log.debug("Authentication failed because url was not secure.");
             }
@@ -56,22 +57,19 @@ public final class HttpBasedServiceCredentialsAuthenticationHandler implements A
             .debug("Attempting to resolve credentials for "
                 + serviceCredentials);
 
-        return this.httpClient.isValidEndPoint(serviceCredentials
-            .getCallbackUrl());
+        return this.httpClient.isValidEndPoint(serviceCredentials.getUrl());
     }
 
     /**
      * @return true if the credentials provided are not null and the credentials
      * are a subclass of (or equal to) HttpBasedServiceCredentials.
      */
-    public boolean supports(final Credentials credentials) {
-        return credentials != null
-            && HttpBasedServiceCredentials.class.isAssignableFrom(credentials
-                .getClass());
+    public final boolean supports(final Credential credentials) {
+        return credentials != null && UrlCredential.class.isAssignableFrom(credentials.getClass());
     }
 
     /** Sets the HttpClient which will do all of the connection stuff. */
-    public void setHttpClient(final HttpClient httpClient) {
+    public final void setHttpClient(final HttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
@@ -80,7 +78,7 @@ public final class HttpBasedServiceCredentialsAuthenticationHandler implements A
      * 
      * @param requireSecure true if its required, false if not. Default is true.
      */
-    public void setRequireSecure(final boolean requireSecure) {
+    public final void setRequireSecure(final boolean requireSecure) {
         this.requireSecure = requireSecure;
     }
 }

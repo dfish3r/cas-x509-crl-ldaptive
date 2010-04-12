@@ -5,8 +5,8 @@
  */
 package org.jasig.cas.ticket.proxy.support;
 
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.HttpBasedServiceCredentials;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.UrlCredential;
 import org.jasig.cas.ticket.proxy.ProxyHandler;
 import org.jasig.cas.util.DefaultUniqueTicketIdGenerator;
 import org.jasig.cas.util.HttpClient;
@@ -43,19 +43,18 @@ public final class Cas20ProxyHandler implements ProxyHandler {
     @NotNull
     private HttpClient httpClient;
 
-    public String handle(final Credentials credentials,
-        final String proxyGrantingTicketId) {
-        final HttpBasedServiceCredentials serviceCredentials = (HttpBasedServiceCredentials) credentials;
+    public String handle(final Credential credentials, final String proxyGrantingTicketId) {
+        final UrlCredential serviceCredentials = (UrlCredential) credentials;
         final String proxyIou = this.uniqueTicketIdGenerator
             .getNewTicketId(PGTIOU_PREFIX);
-        final String serviceCredentialsAsString = serviceCredentials.getCallbackUrl().toExternalForm();
+        final String serviceCredentialsAsString = serviceCredentials.getUrl().toExternalForm();
         final StringBuilder stringBuffer = new StringBuilder(
             serviceCredentialsAsString.length() + proxyIou.length()
                 + proxyGrantingTicketId.length() + 15);
 
         stringBuffer.append(serviceCredentialsAsString);
 
-        if (serviceCredentials.getCallbackUrl().getQuery() != null) {
+        if (serviceCredentials.getUrl().getQuery() != null) {
             stringBuffer.append("&");
         } else {
             stringBuffer.append("?");

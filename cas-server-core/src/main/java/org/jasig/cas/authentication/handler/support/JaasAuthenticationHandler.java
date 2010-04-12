@@ -15,9 +15,11 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.validation.constraints.NotNull;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.util.Assert;
+
+import java.security.GeneralSecurityException;
 
 /**
  * JAAS Authentication Handler for CAAS. This is a simple bridge from CAS'
@@ -44,7 +46,7 @@ import org.springframework.util.Assert;
  * @see javax.security.auth.callback.NameCallback
  */
 public class JaasAuthenticationHandler extends
-    AbstractUsernamePasswordAuthenticationHandler {
+        AbstractUsernamePasswordAuthenticationHandler {
 
     /** If no realm is specified, we default to CAS. */
     private static final String DEFAULT_REALM = "CAS";
@@ -57,34 +59,27 @@ public class JaasAuthenticationHandler extends
         Assert.notNull(Configuration.getConfiguration(), "Static Configuration cannot be null. Did you remember to specify \"java.security.auth.login.config\"?");
     }
 
-    protected final boolean authenticateUsernamePasswordInternal(
-        final UsernamePasswordCredentials credentials)
-        throws AuthenticationException {
+    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
 
-        final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUsername());
+        final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
 
         try {
             if (log.isDebugEnabled()) {
-                log.debug("Attempting authentication for: "
-                    + transformedUsername);
+                log.debug("Attempting authentication for: " + transformedUsername);
             }
-            final LoginContext lc = new LoginContext(this.realm,
-                new UsernamePasswordCallbackHandler(transformedUsername,
-                    credentials.getPassword()));
+            final LoginContext lc = new LoginContext(this.realm, new UsernamePasswordCallbackHandler(transformedUsername, credentials.getPassword()));
 
             lc.login();
             lc.logout();
         } catch (final LoginException fle) {
             if (log.isDebugEnabled()) {
-                log.debug("Authentication failed for: "
-                    + transformedUsername);
+                log.debug("Authentication failed for: " + transformedUsername);
             }
             return false;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Authentication succeeded for: "
-                + transformedUsername);
+            log.debug("Authentication succeeded for: " + transformedUsername);
         }
         return true;
     }

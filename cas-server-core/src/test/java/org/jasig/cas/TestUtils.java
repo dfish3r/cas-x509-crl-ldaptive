@@ -7,17 +7,13 @@ package org.jasig.cas;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import org.jasig.cas.authentication.Authentication;
-import org.jasig.cas.authentication.ImmutableAuthentication;
-import org.jasig.cas.authentication.principal.HttpBasedServiceCredentials;
-import org.jasig.cas.authentication.principal.Principal;
-import org.jasig.cas.authentication.principal.Service;
-import org.jasig.cas.authentication.principal.SimplePrincipal;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
-import org.jasig.cas.authentication.principal.SimpleWebApplicationServiceImpl;
+import org.jasig.cas.authentication.principal.*;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.Authentication;
+import org.jasig.cas.server.authentication.UrlCredential;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.jasig.cas.validation.Assertion;
 import org.jasig.cas.validation.ImmutableAssertionImpl;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -56,54 +52,78 @@ public final class TestUtils {
         // do not instanciate
     }
 
-    public static UsernamePasswordCredentials getCredentialsWithSameUsernameAndPassword() {
+    public static UserNamePasswordCredential getCredentialsWithSameUsernameAndPassword() {
         return getCredentialsWithSameUsernameAndPassword(CONST_USERNAME);
     }
 
-    public static UsernamePasswordCredentials getCredentialsWithSameUsernameAndPassword(
+    public static UserNamePasswordCredential getCredentialsWithSameUsernameAndPassword(
         final String username) {
         return getCredentialsWithDifferentUsernameAndPassword(username,
             username);
     }
 
-    public static UsernamePasswordCredentials getCredentialsWithDifferentUsernameAndPassword() {
+    public static UserNamePasswordCredential getCredentialsWithDifferentUsernameAndPassword() {
         return getCredentialsWithDifferentUsernameAndPassword(CONST_USERNAME,
             CONST_PASSWORD);
     }
 
-    public static UsernamePasswordCredentials getCredentialsWithDifferentUsernameAndPassword(
+    public static UserNamePasswordCredential getCredentialsWithDifferentUsernameAndPassword(
         final String username, final String password) {
-        // noinspection LocalVariableOfConcreteClass
-        final UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials();
-        usernamePasswordCredentials.setUsername(username);
-        usernamePasswordCredentials.setPassword(password);
+        return new UserNamePasswordCredential() {
+            public String getUserName() {
+                return username;
+            }
 
-        return usernamePasswordCredentials;
+            public String getPassword() {
+                return password;
+            }
+        };
     }
 
-    public static HttpBasedServiceCredentials getHttpBasedServiceCredentials() {
+    public static UrlCredential getHttpBasedServiceCredentials() {
         return getHttpBasedServiceCredentials(CONST_GOOD_URL);
     }
 
-    public static HttpBasedServiceCredentials getBadHttpBasedServiceCredentials() {
+    public static UrlCredential getBadHttpBasedServiceCredentials() {
         return getHttpBasedServiceCredentials(CONST_BAD_URL);
     }
 
-    public static HttpBasedServiceCredentials getHttpBasedServiceCredentials(
-        final String url) {
+    public static UrlCredential getHttpBasedServiceCredentials(final String url) {
         try {
-            return new HttpBasedServiceCredentials(new URL(url));
+            final URL actualUrl = new URL(url);
+            return new UrlCredential() {
+                public URL getUrl() {
+                    return actualUrl;
+                }
+            };
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException();
         }
     }
 
-    public static Principal getPrincipal() {
+    public static AttributePrincipal getPrincipal() {
         return getPrincipal(CONST_USERNAME);
     }
 
-    public static Principal getPrincipal(final String name) {
-        return new SimplePrincipal(name);
+    public static AttributePrincipal getPrincipal(final String name) {
+        return new AttributePrincipal() {
+
+            public List<Object> getAttributeValues(final String attribute) {
+                return null;
+            }
+
+            public Object getAttributeValue(final String attribute) {
+                return null;
+            }
+
+            public Map<String, List<Object>> getAttributes() {
+                return Collections.emptyMap();
+            }
+
+            public String getName() {
+                return name;
+            }
+        };
     }
 
     public static Service getService() {
@@ -117,15 +137,67 @@ public final class TestUtils {
     }
 
     public static Authentication getAuthentication() {
-        return new ImmutableAuthentication(getPrincipal());
+        final AttributePrincipal attributePrincipal = getPrincipal();
+
+        return new Authentication() {
+
+            private final Date date = new Date();
+
+
+            public Date getAuthenticationDate() {
+                return date;
+            }
+
+            public Map<String, List<Object>> getAuthenticationMetaData() {
+                return Collections.emptyMap();
+            }
+
+            public AttributePrincipal getPrincipal() {
+                return attributePrincipal;
+            }
+
+            public boolean isLongTermAuthentication() {
+                return false;
+            }
+
+            public String getAuthenticationMethod() {
+                return "foo";
+            }
+        };
     }
 
     public static Authentication getAuthenticationWithService() {
-        return new ImmutableAuthentication(getService());
+        return getAuthentication();
     }
 
     public static Authentication getAuthentication(final String name) {
-        return new ImmutableAuthentication(getPrincipal(name));
+        final AttributePrincipal attributePrincipal = getPrincipal(name);
+
+        return new Authentication() {
+
+            private final Date date = new Date();
+
+
+            public Date getAuthenticationDate() {
+                return date;
+            }
+
+            public Map<String, List<Object>> getAuthenticationMetaData() {
+                return Collections.emptyMap();
+            }
+
+            public AttributePrincipal getPrincipal() {
+                return attributePrincipal;
+            }
+
+            public boolean isLongTermAuthentication() {
+                return false;
+            }
+
+            public String getAuthenticationMethod() {
+                return "foo";
+            }
+        };
     }
 
     public static Assertion getAssertion(final boolean fromNewLogin) {

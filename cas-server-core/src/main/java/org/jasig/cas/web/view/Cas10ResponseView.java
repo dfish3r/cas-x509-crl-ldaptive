@@ -38,7 +38,7 @@ public final class Cas10ResponseView extends AbstractCasView {
             response.getWriter().print(
                 "yes\n"
                     + assertion.getChainedAuthentications().get(0).getPrincipal()
-                        .getId() + "\n");
+                        .getName() + "\n");
         } else {
             response.getWriter().print("no\n\n");
         }

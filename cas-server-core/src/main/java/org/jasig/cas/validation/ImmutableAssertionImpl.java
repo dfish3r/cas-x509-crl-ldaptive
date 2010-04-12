@@ -8,8 +8,8 @@ package org.jasig.cas.validation;
 import java.util.Collections;
 import java.util.List;
 
-import org.jasig.cas.authentication.Authentication;
 import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Authentication;
 import org.springframework.util.Assert;
 
 /**

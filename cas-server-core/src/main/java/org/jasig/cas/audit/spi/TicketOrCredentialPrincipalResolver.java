@@ -7,11 +7,9 @@ package org.jasig.cas.audit.spi;
 
 import org.aspectj.lang.JoinPoint;
 import com.github.inspektr.common.spi.PrincipalResolver;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.ticket.ServiceTicket;
-import org.jasig.cas.ticket.Ticket;
-import org.jasig.cas.ticket.TicketGrantingTicket;
-import org.jasig.cas.ticket.registry.TicketRegistry;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.session.Session;
+import org.jasig.cas.server.session.SessionStorage;
 import org.jasig.cas.util.AopUtils;
 
 import javax.validation.constraints.NotNull;
@@ -27,10 +25,10 @@ import javax.validation.constraints.NotNull;
 public final class TicketOrCredentialPrincipalResolver implements PrincipalResolver {
     
     @NotNull
-    private final TicketRegistry ticketRegistry;
+    private final SessionStorage sessionStorage;
 
-    public TicketOrCredentialPrincipalResolver(final TicketRegistry ticketRegistry) {
-        this.ticketRegistry = ticketRegistry;
+    public TicketOrCredentialPrincipalResolver(final SessionStorage sessionStorage) {
+        this.sessionStorage = sessionStorage;
     }
 
     public String resolveFrom(final JoinPoint joinPoint, final Object retVal) {
@@ -47,17 +45,23 @@ public final class TicketOrCredentialPrincipalResolver implements PrincipalResol
     
     protected String resolveFromInternal(final JoinPoint joinPoint) {
         final Object arg1 = joinPoint.getArgs()[0];
-        if (arg1 instanceof Credentials) {
+        if (arg1 instanceof Credential) {
            return arg1.toString();
         } else if (arg1 instanceof String) {
-            final Ticket ticket = this.ticketRegistry.getTicket((String) arg1);
-            if (ticket instanceof ServiceTicket) {
-                final ServiceTicket serviceTicket = (ServiceTicket) ticket;
-                return serviceTicket.getGrantingTicket().getAuthentication().getPrincipal().getId();
-            } else if (ticket instanceof TicketGrantingTicket) {
-                final TicketGrantingTicket tgt = (TicketGrantingTicket) ticket;
-                return tgt.getAuthentication().getPrincipal().getId();
+            final String id = (String) arg1;
+            final Session session = this.sessionStorage.findSessionBySessionId(id);
+            final Session foundSession;
+
+            if (session != null) {
+                foundSession = session;
+            } else {
+                foundSession = this.sessionStorage.findSessionByAccessId(id);
             }
+
+            if (foundSession != null) {
+                return foundSession.getRootAuthentications().iterator().next().getPrincipal().getName();
+            }
+
         }
         return UNKNOWN_USER;
     }

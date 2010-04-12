@@ -14,12 +14,12 @@ import java.util.Map;
 import org.jasig.cas.authentication.DirectMappingAuthenticationManagerImpl.DirectAuthenticationHandlerMappingHolder;
 import org.jasig.cas.authentication.handler.BadCredentialsAuthenticationException;
 import org.jasig.cas.authentication.handler.support.SimpleTestUsernamePasswordAuthenticationHandler;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.HttpBasedServiceCredentials;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver;
 
 import junit.framework.TestCase;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.UrlCredential;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 
 
 public class DirectMappingAuthenticationManagerImplTests extends TestCase {
@@ -29,7 +29,7 @@ public class DirectMappingAuthenticationManagerImplTests extends TestCase {
     protected void setUp() throws Exception {
         this.manager = new DirectMappingAuthenticationManagerImpl();
         
-        final Map<Class<? extends Credentials>, DirectAuthenticationHandlerMappingHolder> mappings = new HashMap<Class<? extends Credentials>, DirectAuthenticationHandlerMappingHolder>();
+        final Map<Class<? extends Credential>, DirectAuthenticationHandlerMappingHolder> mappings = new HashMap<Class<? extends Credential>, DirectAuthenticationHandlerMappingHolder>();
         final List<AuthenticationMetaDataPopulator> populators = new ArrayList<AuthenticationMetaDataPopulator>();
         populators.add(new SamlAuthenticationMetaDataPopulator());
         
@@ -37,27 +37,40 @@ public class DirectMappingAuthenticationManagerImplTests extends TestCase {
         
         final DirectAuthenticationHandlerMappingHolder d = new DirectAuthenticationHandlerMappingHolder();
         d.setAuthenticationHandler(new SimpleTestUsernamePasswordAuthenticationHandler());
-        d.setCredentialsToPrincipalResolver(new UsernamePasswordCredentialsToPrincipalResolver());
+        d.setCredentialToPrincipalResolver(new UsernamePasswordCredentialsToPrincipalResolver());
         
-        mappings.put(UsernamePasswordCredentials.class, d);
+        mappings.put(UserNamePasswordCredential.class, d);
         
         this.manager.setCredentialsMapping(mappings);
         super.setUp();
     }
     
     public void testAuthenticateUsernamePassword() throws Exception {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-        c.setUsername("Test");
-        c.setPassword("Test");
+        final UserNamePasswordCredential c = new UserNamePasswordCredential() {
+            public String getUserName() {
+                return "Test";
+            }
+
+            public String getPassword() {
+                return "Test";
+            }
+        };
         final Authentication authentication = this.manager.authenticate(c);
         
-        assertEquals(c.getUsername(), authentication.getPrincipal().getId());
+        assertEquals(c.getUserName(), authentication.getPrincipal().getId());
     }
     
     public void testAuthenticateBadUsernamePassword() throws Exception {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-        c.setUsername("Test");
-        c.setPassword("Test2");
+        final UserNamePasswordCredential c = new UserNamePasswordCredential() {
+            public String getUserName() {
+                return "Test";
+            }
+
+            public String getPassword() {
+                return "Test2";
+            }
+        };
+        
         try {
             this.manager.authenticate(c);
             fail();
@@ -69,7 +82,16 @@ public class DirectMappingAuthenticationManagerImplTests extends TestCase {
     public void testAuthenticateHttp() throws Exception {
         
         try {
-            final HttpBasedServiceCredentials c = new HttpBasedServiceCredentials(new URL("http://www.cnn.com"));
+            final UrlCredential c = new UrlCredential() {
+                public URL getUrl() {
+                    try {
+                        return new URL("http://www.cnn.com");
+                    } catch (final Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            };
+            
             this.manager.authenticate(c);
             fail("Exception expected.");
         } catch (final IllegalArgumentException e) {

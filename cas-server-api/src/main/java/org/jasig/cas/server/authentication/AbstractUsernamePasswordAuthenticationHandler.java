@@ -3,13 +3,10 @@
  * distributed with this file and available online at
  * http://www.ja-sig.org/products/cas/overview/license/
  */
-package org.jasig.cas.authentication.handler.support;
-
-import org.jasig.cas.authentication.handler.*;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+package org.jasig.cas.server.authentication;
 
 import javax.validation.constraints.NotNull;
+import java.security.GeneralSecurityException;
 
 /**
  * Abstract class to override supports so that we don't need to duplicate the
@@ -22,11 +19,10 @@ import javax.validation.constraints.NotNull;
  * This is a published and supported CAS Server 3 API.
  * </p>
  */
-public abstract class AbstractUsernamePasswordAuthenticationHandler extends
-    AbstractPreAndPostProcessingAuthenticationHandler {
+public abstract class AbstractUsernamePasswordAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
 
     /** Default class to support if one is not supplied. */
-    private static final Class<UsernamePasswordCredentials> DEFAULT_CLASS = UsernamePasswordCredentials.class;
+    private static final Class<UserNamePasswordCredential> DEFAULT_CLASS = UserNamePasswordCredential.class;
 
     /** Class that this instance will support. */
     @NotNull
@@ -53,9 +49,8 @@ public abstract class AbstractUsernamePasswordAuthenticationHandler extends
      * and delegates to abstract authenticateUsernamePasswordInternal so
      * subclasses do not need to cast.
      */
-    protected final boolean doAuthentication(final Credentials credentials)
-        throws AuthenticationException {
-        return authenticateUsernamePasswordInternal((UsernamePasswordCredentials) credentials);
+    protected final boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
+        return authenticateUsernamePasswordInternal((UserNamePasswordCredential) credentials);
     }
 
     /**
@@ -65,11 +60,9 @@ public abstract class AbstractUsernamePasswordAuthenticationHandler extends
      * @param credentials the credentials representing the Username and Password
      * presented to CAS
      * @return true if the credentials are authentic, false otherwise.
-     * @throws AuthenticationException if authenticity cannot be determined.
+     * @throws java.security.GeneralSecurityException if authenticity cannot be determined.
      */
-    protected abstract boolean authenticateUsernamePasswordInternal(
-        final UsernamePasswordCredentials credentials)
-        throws AuthenticationException;
+    protected abstract boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException;
 
     /**
      * Method to return the PasswordEncoder to be used to encode passwords.
@@ -122,7 +115,7 @@ public abstract class AbstractUsernamePasswordAuthenticationHandler extends
      * @return true if the credentials are not null and the credentials class is
      * equal to the class defined in classToSupport.
      */
-    public final boolean supports(final Credentials credentials) {
+    public final boolean supports(final Credential credentials) {
         return credentials != null
             && (this.classToSupport.equals(credentials.getClass()) || (this.classToSupport
                 .isAssignableFrom(credentials.getClass()))

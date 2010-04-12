@@ -5,23 +5,16 @@
  */
 package org.jasig.cas.web.flow;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.jasig.cas.AbstractCentralAuthenticationServiceTest;
 import org.jasig.cas.TestUtils;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
-import org.jasig.cas.web.bind.CredentialsBinder;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.validation.BindException;
 import org.springframework.web.util.CookieGenerator;
 import org.springframework.webflow.context.servlet.ServletExternalContext;
-import org.springframework.webflow.execution.Event;
 import org.springframework.webflow.test.MockRequestContext;
 
 /**
@@ -214,56 +207,5 @@ public class AuthenticationViaFormActionTests extends
    //     this.action.bind(context);
    //     assertEquals("success", this.action.bindAndValidate(context).getId());
 
-    }
-
-    @Test
-    public void testTestBindingWithCredentialsBinder() throws Exception {
-        final MockRequestContext context = new MockRequestContext();
-        context.setExternalContext(new ServletExternalContext(
-            new MockServletContext(), new MockHttpServletRequest(),
-            new MockHttpServletResponse()));
-  //      context.setLastEvent(new Event(this, "test"));
-
-        final CredentialsBinder cb = new CredentialsBinder(){
-
-            public void bind(HttpServletRequest request, Credentials credentials) {
-                ((UsernamePasswordCredentials) credentials)
-                    .setUsername("test2");
-                ((UsernamePasswordCredentials) credentials)
-                    .setPassword("test2");
-            }
-
-            public boolean supports(Class<?> clazz) {
-                return true;
-            }
-
-        };
-        this.action.setCredentialsBinder(cb);
-   //     this.action.bindAndValidate(context);
-
- //       assertEquals(
- //           "test2",
- //           ((UsernamePasswordCredentials) context
- //               .getFlowScope().get(
- //                   "credentials")).getUsername());
-
-    }
-
-    @Test
-    public void testSetCredentialsBinderNoFailure() throws Exception {
-        final CredentialsBinder c = new CredentialsBinder(){
-
-            public void bind(final HttpServletRequest request,
-                final Credentials credentials) {
-                // nothing to do here
-            }
-
-            public boolean supports(final Class<?> clazz) {
-                return true;
-            }
-        };
-
-        this.action.setCredentialsBinder(c);
-  //      this.action.afterPropertiesSet();
     }
 }

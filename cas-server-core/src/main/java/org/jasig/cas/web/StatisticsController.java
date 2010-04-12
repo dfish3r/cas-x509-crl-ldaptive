@@ -5,9 +5,7 @@
  */
 package org.jasig.cas.web;
 
-import org.jasig.cas.ticket.ServiceTicket;
-import org.jasig.cas.ticket.Ticket;
-import org.jasig.cas.ticket.registry.TicketRegistry;
+import org.jasig.cas.server.session.SessionStorage;
 import org.perf4j.log4j.GraphingStatisticsAppender;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -31,14 +29,14 @@ public final class StatisticsController extends AbstractController {
 
     private static final int NUMBER_OF_MILLISECONDS_IN_A_SECOND = 1000;
 
-    private final TicketRegistry ticketRegistry;
+    private final SessionStorage sessionStorage;
 
     private final Date upTimeStartDate = new Date();
 
     private String casTicketSuffix;
 
-    public StatisticsController(final TicketRegistry ticketRegistry) {
-        this.ticketRegistry = ticketRegistry;
+    public StatisticsController(final SessionStorage sessionStorage) {
+        this.sessionStorage = sessionStorage;
     }
 
     public void setCasTicketSuffix(final String casTicketSuffix) {
@@ -60,39 +58,12 @@ public final class StatisticsController extends AbstractController {
         modelAndView.addObject("serverIpAddress", httpServletRequest.getLocalAddr());
         modelAndView.addObject("casTicketSuffix", this.casTicketSuffix);
 
-        int unexpiredTgts = 0;
-        int unexpiredSts = 0;
-        int expiredTgts = 0;
-        int expiredSts = 0;
-
-        try {
-            final Collection<Ticket> tickets = this.ticketRegistry.getTickets();
-
-            for (final Ticket ticket : tickets) {
-                if (ticket instanceof ServiceTicket) {
-                    if (ticket.isExpired()) {
-                        expiredSts++;
-                    } else {
-                        unexpiredSts++;
-                    }
-                } else {
-                    if (ticket.isExpired()) {
-                        expiredTgts++;
-                    } else {
-                        unexpiredTgts++;
-                    }
-                }
-            }
-        } catch (final UnsupportedOperationException e) {
-            // this means the ticket registry doesn't support this information.
-        }
-
         final Collection<GraphingStatisticsAppender> appenders = GraphingStatisticsAppender.getAllGraphingStatisticsAppenders();
 
-        modelAndView.addObject("unexpiredTgts", unexpiredTgts);
-        modelAndView.addObject("unexpiredSts", unexpiredSts);
-        modelAndView.addObject("expiredTgts", expiredTgts);
-        modelAndView.addObject("expiredSts", expiredSts);
+        modelAndView.addObject("unexpiredTgts", this.sessionStorage.getCountOfActiveSessions());
+        modelAndView.addObject("unexpiredSts", this.sessionStorage.getCountOfUnusedAccesses());
+        modelAndView.addObject("expiredTgts", this.sessionStorage.getCountOfInactiveSessions());
+        modelAndView.addObject("expiredSts", this.sessionStorage.getCountOfUsedAccesses());
         modelAndView.addObject("pageTitle", modelAndView.getViewName());
         modelAndView.addObject("graphingStatisticAppenders", appenders);
 

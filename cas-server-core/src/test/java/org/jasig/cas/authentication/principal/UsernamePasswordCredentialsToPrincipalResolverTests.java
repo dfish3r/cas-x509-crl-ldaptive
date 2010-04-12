@@ -8,6 +8,13 @@ package org.jasig.cas.authentication.principal;
 import org.jasig.cas.TestUtils;
 
 import junit.framework.TestCase;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.CredentialToPrincipalResolver;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Scott Battaglia
@@ -17,7 +24,27 @@ import junit.framework.TestCase;
 public final class UsernamePasswordCredentialsToPrincipalResolverTests extends
     TestCase {
 
-    private CredentialsToPrincipalResolver resolver = new UsernamePasswordCredentialsToPrincipalResolver();
+    private CredentialToPrincipalResolver resolver = new UsernamePasswordCredentialsToPrincipalResolver(new AttributePrincipalFactory() {
+        public AttributePrincipal getAttributePrincipal(final String name) {
+            return new AttributePrincipal() {
+                public List<Object> getAttributeValues(String attribute) {
+                    return null;
+                }
+
+                public Object getAttributeValue(String attribute) {
+                    return null;
+                }
+
+                public Map<String, List<Object>> getAttributes() {
+                    return Collections.emptyMap();
+                }
+
+                public String getName() {
+                    return name;
+                }
+            };
+        }
+    });
 
     public void testValidSupportsCredentials() {
         assertTrue(this.resolver.supports(TestUtils
@@ -34,10 +61,10 @@ public final class UsernamePasswordCredentialsToPrincipalResolverTests extends
     }
 
     public void testValidCredentials() {
-        Principal p = this.resolver.resolvePrincipal(TestUtils
+        AttributePrincipal p = this.resolver.resolve(TestUtils
             .getCredentialsWithSameUsernameAndPassword());
 
-        assertEquals(p.getId(), TestUtils
-            .getCredentialsWithSameUsernameAndPassword().getUsername());
+        assertEquals(p.getName(), TestUtils
+            .getCredentialsWithSameUsernameAndPassword().getUserName());
     }
 }

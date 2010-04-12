@@ -31,7 +31,7 @@ public interface Session extends Serializable {
      *
      * @return the authentication associated with this session explicitly.
      */
-    Authentication getAuthentication();
+    Set<Authentication> getAuthentications();
 
     /**
      * The ROOT authentication, at the top of the tree.  If this is the top session, then calling getAuthentication
@@ -41,7 +41,7 @@ public interface Session extends Serializable {
      *
      * @return the ROOT authentication at the top of the tree.
      */
-    Authentication getRootAuthentication();
+    Set<Authentication> getRootAuthentications();
 
     /**
      * Returns the ROOT session, the one at the top of the list.  If this is the top session, then calling getRootSession()
@@ -56,7 +56,7 @@ public interface Session extends Serializable {
      *
      * @param authentication the authentication to update with.  CANNOT be NULL.
      */
-    void updateAuthentication(final Authentication authentication);
+    void addAuthentication(Authentication authentication);
 
     /**
      * Enumerates the list of authentications beyond the original, in reverse order.  So the newest one is that the top.
@@ -64,7 +64,7 @@ public interface Session extends Serializable {
      *
      * @return the list of authentications beyond the original / ROOT.
      */
-    List<Authentication> getProxiedAuthentications();
+    List<Set<Authentication>> getProxiedAuthentications();
 
     /**
      * Invalidates the current session if its not invalid yet.  This fails silently (as in calling invalidate on an

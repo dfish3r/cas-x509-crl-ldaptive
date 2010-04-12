@@ -35,7 +35,7 @@ public final class MultiUseOrTimeToLiveExpirationPolicy implements ExpirationPol
 
     }
 
-    public boolean isExpired(final State state, Authentication authentication) {
+    public boolean isExpired(final State state) {
         if (state.getUsageCount() >= this.maxNumberOfUses) {
             return true;
         }

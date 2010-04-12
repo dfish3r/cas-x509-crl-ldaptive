@@ -8,11 +8,8 @@ package org.jasig.cas.authentication;
 import java.util.Map;
 
 import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.AuthenticationHandler;
 import org.jasig.cas.authentication.handler.BadCredentialsAuthenticationException;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.CredentialsToPrincipalResolver;
-import org.jasig.cas.authentication.principal.Principal;
+import org.jasig.cas.server.authentication.*;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
@@ -26,19 +23,21 @@ import javax.validation.constraints.Size;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public final class DirectMappingAuthenticationManagerImpl extends AbstractAuthenticationManager {
+public final class DirectMappingAuthenticationManagerImpl implements AuthenticationManager {
 
     @NotNull
     @Size(min=1)
-    private Map<Class< ? extends Credentials>, DirectAuthenticationHandlerMappingHolder> credentialsMapping;
+    private Map<Class< ? extends Credential>, DirectAuthenticationHandlerMappingHolder> credentialsMapping;
 
-    /**
-     * @throws IllegalArgumentException if a mapping cannot be found.
-     * @see org.jasig.cas.authentication.AuthenticationManager#authenticate(org.jasig.cas.authentication.principal.Credentials)
-     */
+    // TODO implement
+    public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+/*
     @Override
-    protected Pair<AuthenticationHandler, Principal> authenticateAndObtainPrincipal(final Credentials credentials) throws AuthenticationException {
-        final Class< ? extends Credentials> credentialsClass = credentials.getClass();
+    protected Pair<AuthenticationHandler, AttributePrincipal> authenticateAndObtainPrincipal(final Credential credentials) throws AuthenticationException {
+        final Class< ? extends Credential> credentialsClass = credentials.getClass();
         final DirectAuthenticationHandlerMappingHolder d = this.credentialsMapping
             .get(credentialsClass);
 
@@ -48,14 +47,14 @@ public final class DirectMappingAuthenticationManagerImpl extends AbstractAuthen
             throw new BadCredentialsAuthenticationException();
         }
 
-        final Principal p = d.getCredentialsToPrincipalResolver()
-            .resolvePrincipal(credentials);
+        final AttributePrincipal p = d.getCredentialsToPrincipalResolver().resolve(credentials);
 
-        return new Pair<AuthenticationHandler,Principal>(d.getAuthenticationHandler(), p);
+        return new Pair<AuthenticationHandler, AttributePrincipal>(d.getAuthenticationHandler(), p);
     }
+    */
 
     public final void setCredentialsMapping(
-        final Map<Class< ? extends Credentials>, DirectAuthenticationHandlerMappingHolder> credentialsMapping) {
+        final Map<Class< ? extends Credential>, DirectAuthenticationHandlerMappingHolder> credentialsMapping) {
         this.credentialsMapping = credentialsMapping;
     }
 
@@ -63,7 +62,7 @@ public final class DirectMappingAuthenticationManagerImpl extends AbstractAuthen
 
         private AuthenticationHandler authenticationHandler;
 
-        private CredentialsToPrincipalResolver credentialsToPrincipalResolver;
+        private CredentialToPrincipalResolver credentialsToPrincipalResolver;
 
         public DirectAuthenticationHandlerMappingHolder() {
             // nothing to do
@@ -78,12 +77,11 @@ public final class DirectMappingAuthenticationManagerImpl extends AbstractAuthen
             this.authenticationHandler = authenticationHandler;
         }
 
-        public CredentialsToPrincipalResolver getCredentialsToPrincipalResolver() {
+        public CredentialToPrincipalResolver getCredentialsToPrincipalResolver() {
             return this.credentialsToPrincipalResolver;
         }
 
-        public void setCredentialsToPrincipalResolver(
-            final CredentialsToPrincipalResolver credentialsToPrincipalResolver) {
+        public void setCredentialToPrincipalResolver(final CredentialToPrincipalResolver credentialsToPrincipalResolver) {
             this.credentialsToPrincipalResolver = credentialsToPrincipalResolver;
         }
     }

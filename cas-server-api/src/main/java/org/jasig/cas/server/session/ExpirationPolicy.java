@@ -21,5 +21,5 @@ public interface ExpirationPolicy {
      * if they plan on using it.
      * @return true if its expired, false otherwise.
      */
-    boolean isExpired(State state, Authentication authentication);
+    boolean isExpired(State state);
 }

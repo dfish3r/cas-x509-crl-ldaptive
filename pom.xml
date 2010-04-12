@@ -262,6 +262,12 @@ pTSqrOnmqmUUnopqmvummmmmmUUnopqmvummmmmmUUA1jJ
 			<name>JA-SIG Maven2 Repository</name>
 			<url>http://developer.ja-sig.org/maven2</url>
 		</repository>
+
+        <repository>
+            <id>jboss</id>
+            <name>JBoss Repository</name>
+            <url>http://repository.jboss.org/maven2</url>
+        </repository>
     </repositories>
     
 	<dependencyManagement>
@@ -627,7 +633,7 @@ pTSqrOnmqmUUnopqmvummmmmmUUnopqmvummmmmmUUA1jJ
         <perf4j.version>0.9.12</perf4j.version>
         <commons.jexl.version>1.1</commons.jexl.version>
         <hibernate.validator.version>4.0.2.GA</hibernate.validator.version>
-        <hibernate.core.version>3.5.0-CR-2</hibernate.core.version>
+        <hibernate.core.version>3.5.0-Final</hibernate.core.version>
         <slf4j.version>1.5.8</slf4j.version>
         <person.directory.version>1.5.0-RC6</person.directory.version>
         <servlet.api.version>2.5</servlet.api.version>

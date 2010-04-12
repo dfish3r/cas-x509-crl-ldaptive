@@ -3,15 +3,13 @@
  * distributed with this file and available online at
  * http://www.uportal.org/license.html
  */
-package org.jasig.cas.authentication.handler.support;
+package org.jasig.cas.server.authentication;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.NamedAuthenticationHandler;
-import org.jasig.cas.authentication.principal.Credentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
+import java.security.GeneralSecurityException;
 
 /**
  * Abstract authentication handler that allows deployers to utilize the bundled
@@ -22,8 +20,7 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public abstract class AbstractPreAndPostProcessingAuthenticationHandler
-    implements NamedAuthenticationHandler {
+public abstract class AbstractPreAndPostProcessingAuthenticationHandler implements AuthenticationHandler {
     
     /** Instance of logging for subclasses. */
     protected Logger log = LoggerFactory.getLogger(this.getClass());
@@ -38,7 +35,7 @@ public abstract class AbstractPreAndPostProcessingAuthenticationHandler
      * @param credentials the Credentials supplied
      * @return true if authentication should continue, false otherwise.
      */
-    protected boolean preAuthenticate(final Credentials credentials) {
+    protected boolean preAuthenticate(final Credential credentials) {
         return true;
     }
 
@@ -49,7 +46,7 @@ public abstract class AbstractPreAndPostProcessingAuthenticationHandler
      * @param authenticated the result of the authentication attempt.
      * @return true if the handler should return true, false otherwise.
      */
-    protected boolean postAuthenticate(final Credentials credentials,
+    protected boolean postAuthenticate(final Credential credentials,
         final boolean authenticated) {
         return authenticated;
     }
@@ -62,8 +59,7 @@ public abstract class AbstractPreAndPostProcessingAuthenticationHandler
         return this.name;
     }
 
-    public final boolean authenticate(final Credentials credentials)
-        throws AuthenticationException {
+    public final boolean authenticate(final Credential credentials) throws GeneralSecurityException {
 
         if (!preAuthenticate(credentials)) {
             return false;
@@ -74,6 +70,5 @@ public abstract class AbstractPreAndPostProcessingAuthenticationHandler
         return postAuthenticate(credentials, authenticated);
     }
 
-    protected abstract boolean doAuthentication(final Credentials credentials)
-        throws AuthenticationException;
+    protected abstract boolean doAuthentication(final Credential credentials) throws GeneralSecurityException;
 }

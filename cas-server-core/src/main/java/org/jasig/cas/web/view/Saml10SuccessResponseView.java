@@ -15,9 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
-import org.jasig.cas.authentication.Authentication;
-import org.jasig.cas.authentication.SamlAuthenticationMetaDataPopulator;
 import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.validation.Assertion;
 import org.opensaml.SAMLAssertion;
 import org.opensaml.SAMLAttribute;
@@ -91,8 +90,7 @@ public class Saml10SuccessResponseView extends AbstractCasView {
             samlAudienceRestrictionCondition.addAudience(service.getId());
 
             final SAMLAuthenticationStatement samlAuthenticationStatement = new SAMLAuthenticationStatement();
-            samlAuthenticationStatement.setAuthInstant(authentication
-                .getAuthenticatedDate());
+            samlAuthenticationStatement.setAuthInstant(authentication.getAuthenticationDate());
             samlAuthenticationStatement
                 .setAuthMethod(authenticationMethod != null
                     ? authenticationMethod

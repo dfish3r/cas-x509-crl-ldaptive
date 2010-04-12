@@ -23,20 +23,20 @@
 		| need to change in context.
 		+-->
 	<bean id="authenticationManager"
-		class="org.jasig.cas.authentication.AuthenticationManagerImpl">
+		class="org.jasig.cas.authentication.DefaultAuthenticationManagerImpl">
 		<!--
 			| This is the List of CredentialToPrincipalResolvers that identify what Principal is trying to authenticate.
-			| The AuthenticationManagerImpl considers them in order, finding a CredentialToPrincipalResolver which 
+			| The DefaultAuthenticationManagerImpl considers them in order, finding a CredentialToPrincipalResolver which
 			| supports the presented credentials.
 			|
-			| AuthenticationManagerImpl uses these resolvers for two purposes.  First, it uses them to identify the Principal
+			| DefaultAuthenticationManagerImpl uses these resolvers for two purposes.  First, it uses them to identify the Principal
 			| attempting to authenticate to CAS /login .  In the default configuration, it is the DefaultCredentialsToPrincipalResolver
 			| that fills this role.  If you are using some other kind of credentials than UsernamePasswordCredentials, you will need to replace
 			| DefaultCredentialsToPrincipalResolver with a CredentialsToPrincipalResolver that supports the credentials you are
 			| using.
 			|
-			| Second, AuthenticationManagerImpl uses these resolvers to identify a service requesting a proxy granting ticket. 
-			| In the default configuration, it is the HttpBasedServiceCredentialsToPrincipalResolver that serves this purpose. 
+			| Second, DefaultAuthenticationManagerImpl uses these resolvers to identify a service requesting a proxy granting ticket.
+			| In the default configuration, it is the UrlCredentialToPrincipalResolver that serves this purpose.
 			| You will need to change this list if you are identifying services by something more or other than their callback URL.
 			+-->
 		<property name="credentialsToPrincipalResolvers">
@@ -52,7 +52,7 @@
 				<bean
 					class="org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver" />
 				<!--
-					| HttpBasedServiceCredentialsToPrincipalResolver supports HttpBasedCredentials.  It supports the CAS 2.0 approach of
+					| UrlCredentialToPrincipalResolver supports HttpBasedCredentials.  It supports the CAS 2.0 approach of
 					| authenticating services by SSL callback, extracting the callback URL from the Credentials and representing it as a
 					| SimpleService identified by that callback URL.
 					|
@@ -60,7 +60,7 @@
 					| receive a proxy callback, you will need to change this bean declaration (or add additional declarations).
 					+-->
 				<bean
-					class="org.jasig.cas.authentication.principal.HttpBasedServiceCredentialsToPrincipalResolver" />
+					class="org.jasig.cas.authentication.principal.UrlCredentialToPrincipalResolver" />
 			</list>
 		</property>
 

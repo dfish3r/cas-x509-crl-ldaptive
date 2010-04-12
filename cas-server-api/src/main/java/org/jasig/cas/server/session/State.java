@@ -35,4 +35,11 @@ public interface State {
      * @return the time last used.  Cannot be less than the creation time.
      */
     long getLastUsedTime();
+
+    /**
+     * Its true, if one of the authentication's is a long term authentication request.
+     *
+     * @return true, if a long term authentication exists, false otherwise.
+     */
+    boolean longTermAuthenticationExists();
 }

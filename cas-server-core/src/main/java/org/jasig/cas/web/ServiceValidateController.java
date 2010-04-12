@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
 import org.jasig.cas.CentralAuthenticationService;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.HttpBasedServiceCredentials;
 import org.jasig.cas.authentication.principal.WebApplicationService;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.DefaultUrlCredentialImpl;
 import org.jasig.cas.services.UnauthorizedServiceException;
 import org.jasig.cas.ticket.TicketException;
 import org.jasig.cas.ticket.TicketValidationException;
@@ -86,12 +86,12 @@ public class ServiceValidateController extends AbstractController {
      * @return the credentials or null if there was an error or no credentials
      * provided.
      */
-    protected Credentials getServiceCredentialsFromRequest(
+    protected Credential getServiceCredentialsFromRequest(
         final HttpServletRequest request) {
         final String pgtUrl = request.getParameter("pgtUrl");
         if (StringUtils.hasText(pgtUrl)) {
             try {
-                return new HttpBasedServiceCredentials(new URL(pgtUrl));
+                return new DefaultUrlCredentialImpl(pgtUrl);
             } catch (final Exception e) {
                 logger.error("Error constructing pgtUrl", e);
             }
@@ -102,7 +102,7 @@ public class ServiceValidateController extends AbstractController {
 
     protected void initBinder(final HttpServletRequest request,
         final ServletRequestDataBinder binder) {
-        binder.setRequiredFields(new String[] {"renew"});
+        binder.setRequiredFields("renew");
     }
 
     protected final ModelAndView handleRequestInternal(
@@ -117,7 +117,7 @@ public class ServiceValidateController extends AbstractController {
         }
 
         try {
-            final Credentials serviceCredentials = getServiceCredentialsFromRequest(request);
+            final Credential serviceCredentials = getServiceCredentialsFromRequest(request);
             String proxyGrantingTicketId = null;
 
             // XXX should be able to validate AND THEN use

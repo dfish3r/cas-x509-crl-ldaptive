@@ -5,6 +5,8 @@
  */
 package org.jasig.cas.authentication.principal;
 
+import org.jasig.cas.server.authentication.AttributePrincipal;
+
 /**
  * Marker interface for Services. Services are generally either remote
  * applications utilizing CAS or applications that principals wish to gain
@@ -18,9 +20,11 @@ package org.jasig.cas.authentication.principal;
  * This is a published and supported CAS Server 3 API.
  * </p>
  */
-public interface Service extends Principal {
+public interface Service {
+
+    String getId();
     
-    void setPrincipal(Principal principal);
+    void setPrincipal(AttributePrincipal principal);
     
     boolean logOutOfService(String sessionIdentifier);
     

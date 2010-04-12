@@ -6,6 +6,8 @@
 
 package org.jasig.cas.authentication.handler;
 
+import org.jasig.cas.server.authentication.PrincipalNameTransformer;
+
 /**
  * Transform the user id by adding a prefix or suffix.
  *
