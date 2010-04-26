@@ -1,20 +1,30 @@
-/*
- * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
- * distributed with this file and available online at
- * http://www.uportal.org/license.html
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 package org.jasig.cas.web.view;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import junit.framework.TestCase;
 
 import org.jasig.cas.TestUtils;
+import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.validation.Assertion;
 import org.jasig.cas.validation.ImmutableAssertionImpl;
@@ -33,6 +43,60 @@ import org.springframework.mock.web.MockHttpServletResponse;
 public class Saml10SuccessResponseViewTests extends TestCase {
 
     private Saml10SuccessResponseView response;
+
+    private final Map<String, List<Object>> attributes = new HashMap<String, List<Object>>();
+
+    private final AttributePrincipal principal = new AttributePrincipal() {
+        public List<Object> getAttributeValues(final String attribute) {
+            return attributes.get(attribute);
+        }
+
+        public Object getAttributeValue(final String attribute) {
+            final List<Object> attributes = getAttributeValues(attribute);
+            if (attributes != null && !attributes.isEmpty()) {
+                return attributes.get(0);
+            }
+
+            return null;
+        }
+
+        public Map<String, List<Object>> getAttributes() {
+            return attributes;
+        }
+
+        public String getName() {
+            return "testPrincipal";
+        }
+    };
+
+    private Authentication authentication = new Authentication() {
+
+        private final Date date = new Date();
+
+        private final Map<String, List<Object>> maps = new HashMap<String, List<Object>>();
+
+        public Date getAuthenticationDate() {
+            return date;
+        }
+
+        public Map<String, List<Object>> getAuthenticationMetaData() {
+            return maps;
+        }
+
+        public boolean isLongTermAuthentication() {
+            return false;
+        }
+
+        public String getAuthenticationMethod() {
+            return "urn:ietf:rfc:2246";
+        }
+    };
+
+    public Saml10SuccessResponseViewTests() {
+        attributes.put("testAttribute", Arrays.asList((Object) "testValue"));
+        attributes.put("testEmptyCollection", Collections.emptyList());
+        attributes.put("testAttributeCollection", Arrays.asList((Object) "tac1", "tac2"));
+    }
     
     protected void setUp() throws Exception {
         this.response = new Saml10SuccessResponseView();
@@ -43,15 +107,6 @@ public class Saml10SuccessResponseViewTests extends TestCase {
 
     public void testResponse() throws Exception {
         final Map<String, Object> model = new HashMap<String, Object>();
-        
-        final Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("testAttribute", "testValue");
-        attributes.put("testEmptyCollection", Collections.emptyList());
-        attributes.put("testAttributeCollection", Arrays.asList("tac1", "tac2"));
-        final SimplePrincipal principal = new SimplePrincipal("testPrincipal", attributes);
-        
-        final MutableAuthentication authentication = new MutableAuthentication(principal);
-        
         final List<Authentication> authentications = new ArrayList<Authentication>();
         authentications.add(authentication);
         
@@ -77,12 +132,8 @@ public class Saml10SuccessResponseViewTests extends TestCase {
     
     public void testResponseWithNoAttributes() throws Exception {
         final Map<String, Object> model = new HashMap<String, Object>();
-        
-        final SimplePrincipal principal = new SimplePrincipal("testPrincipal");
-        
-        final MutableAuthentication authentication = new MutableAuthentication(principal);
-        authentication.getAttributes().put(SamlAuthenticationMetaDataPopulator.ATTRIBUTE_AUTHENTICATION_METHOD, SAMLAuthenticationStatement.AuthenticationMethod_SSL_TLS_Client);
-        authentication.getAttributes().put("testSamlAttribute", "value");
+
+        authentication.getAuthenticationMetaData().put("testSamlAttribute", Arrays.asList((Object) "value"));
         
         final List<Authentication> authentications = new ArrayList<Authentication>();
         authentications.add(authentication);
@@ -103,12 +154,7 @@ public class Saml10SuccessResponseViewTests extends TestCase {
     
     public void testResponseWithoutAuthMethod() throws Exception {
         final Map<String, Object> model = new HashMap<String, Object>();
-        
-        final Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("testAttribute", "testValue");
-        final SimplePrincipal principal = new SimplePrincipal("testPrincipal", attributes);
-        
-        final MutableAuthentication authentication = new MutableAuthentication(principal);
+                
         final List<Authentication> authentications = new ArrayList<Authentication>();
         authentications.add(authentication);
         
@@ -131,11 +177,7 @@ public class Saml10SuccessResponseViewTests extends TestCase {
         this.response.setIssuer(null);
         
         final Map<String, Object> model = new HashMap<String, Object>();
-        
-        final Map<String, Object> attributes = new HashMap<String, Object>();
-        final SimplePrincipal principal = new SimplePrincipal("testPrincipal", attributes);
-        
-        final MutableAuthentication authentication = new MutableAuthentication(principal);
+
         final List<Authentication> authentications = new ArrayList<Authentication>();
         authentications.add(authentication);
         

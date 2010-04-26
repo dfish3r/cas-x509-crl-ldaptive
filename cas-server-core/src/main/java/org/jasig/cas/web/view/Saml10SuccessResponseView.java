@@ -1,14 +1,25 @@
-/*
- * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
- * distributed with this file and available online at
- * http://www.ja-sig.org/products/cas/overview/license/
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 package org.jasig.cas.web.view;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,8 +82,7 @@ public class Saml10SuccessResponseView extends AbstractCasView {
             final Authentication authentication = assertion
                 .getChainedAuthentications().get(0);
             final Date currentDate = new Date();
-            final String authenticationMethod = (String) authentication
-                .getAttributes().get(SamlAuthenticationMetaDataPopulator.ATTRIBUTE_AUTHENTICATION_METHOD);
+            final String authenticationMethod = authentication.getAuthenticationMethod();
             final Service service = assertion.getService();
             final SAMLResponse samlResponse = new SAMLResponse(null, service
                 .getId(), new ArrayList<Object>(), null);
@@ -97,15 +107,15 @@ public class Saml10SuccessResponseView extends AbstractCasView {
                     : SAMLAuthenticationStatement.AuthenticationMethod_Unspecified);
 
             samlAuthenticationStatement
-                .setSubject(getSamlSubject(authentication));
+                .setSubject(getSamlSubject(assertion));
 
-            if (!authentication.getPrincipal().getAttributes().isEmpty()) {
+            if (!assertion.getPrincipal().getAttributes().isEmpty()) {
                 final SAMLAttributeStatement attributeStatement = new SAMLAttributeStatement();
     
-                attributeStatement.setSubject(getSamlSubject(authentication));
+                attributeStatement.setSubject(getSamlSubject(assertion));
                 samlAssertion.addStatement(attributeStatement);
 
-                for (final Entry<String, Object> e : authentication.getPrincipal().getAttributes().entrySet()) {
+                for (final Entry<String, List<Object>> e : assertion.getPrincipal().getAttributes().entrySet()) {
                     final SAMLAttribute attribute = new SAMLAttribute();
                     attribute.setName(e.getKey());
                     attribute.setNamespace(NAMESPACE);
@@ -143,12 +153,12 @@ public class Saml10SuccessResponseView extends AbstractCasView {
         }
     }
 
-    protected SAMLSubject getSamlSubject(final Authentication authentication)
+    protected SAMLSubject getSamlSubject(final Assertion assertion)
         throws SAMLException {
         final SAMLSubject samlSubject = new SAMLSubject();
         samlSubject.addConfirmationMethod(SAMLSubject.CONF_ARTIFACT);
         final SAMLNameIdentifier samlNameIdentifier = new SAMLNameIdentifier();
-        samlNameIdentifier.setName(authentication.getPrincipal().getId());
+        samlNameIdentifier.setName(assertion.getPrincipal().getName());
 
         samlSubject.setNameIdentifier(samlNameIdentifier);
 

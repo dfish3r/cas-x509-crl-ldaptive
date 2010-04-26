@@ -1,11 +1,23 @@
-/*
- * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
- * distributed with this file and available online at
- * http://www.ja-sig.org/products/cas/overview/license/
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-package org.jasig.cas.authentication;
 
-import java.util.Arrays;
+package org.jasig.cas.authentication;
 
 import org.jasig.cas.AbstractCentralAuthenticationServiceTest;
 import org.jasig.cas.TestUtils;
@@ -13,13 +25,13 @@ import org.jasig.cas.authentication.handler.AuthenticationException;
 import org.jasig.cas.authentication.handler.BadCredentialsAuthenticationException;
 import org.jasig.cas.authentication.handler.UnsupportedCredentialsException;
 import org.jasig.cas.authentication.handler.support.HttpBasedServiceCredentialsAuthenticationHandler;
+import org.jasig.cas.authentication.handler.support.SimpleTestUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver;
-import org.jasig.cas.server.authentication.AttributePrincipal;
-import org.jasig.cas.server.authentication.AuthenticationHandler;
-import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.server.authentication.CredentialToPrincipalResolver;
+import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.util.HttpClient;
 import org.junit.Test;
+
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -32,56 +44,130 @@ public class AuthenticationManagerImplTests extends AbstractCentralAuthenticatio
 
     @Test
     public void testSuccessfulAuthentication() throws Exception {
-        assertEquals(TestUtils.getPrincipal(),
-            getAuthenticationManager().authenticate(
-                TestUtils.getCredentialsWithSameUsernameAndPassword())
-                .getPrincipal());
+        assertEquals(TestUtils.getPrincipal(), getAuthenticationManager().authenticate(TestUtils.getAuthenticationRequest(TestUtils.getCredentialsWithSameUsernameAndPassword())).getPrincipal());
     }
 
     @Test
     public void testFailedAuthentication() throws Exception {
-        try {
-            getAuthenticationManager().authenticate(
-                TestUtils.getCredentialsWithDifferentUsernameAndPassword());
-            fail("Authentication should have failed.");
-        } catch (AuthenticationException e) {
-            // nothing to do
-        }
+        getAuthenticationManager().authenticate(TestUtils.getAuthenticationRequest(TestUtils.getCredentialsWithDifferentUsernameAndPassword()));
+        fail("Authentication should have failed.");
     }
 
     @Test
     public void testNoHandlerFound() throws AuthenticationException {
-        try {
-            getAuthenticationManager().authenticate(new Credential() {
+        getAuthenticationManager().authenticate(TestUtils.getAuthenticationRequest(new Credential() {
 
-                private static final long serialVersionUID = -4897240037527663222L;
-                // there is nothing to do here
-            });
-            fail("Authentication should have failed.");
-        } catch (UnsupportedCredentialsException e) {
-            return;
-        }
+            private static final long serialVersionUID = -4897240037527663222L;
+            // there is nothing to do here
+        }));
+        fail("Authentication should have failed.");
     }
 
     @Test(expected=UnsupportedCredentialsException.class)
     public void testNoResolverFound() throws Exception {
-        DefaultAuthenticationManagerImpl manager = new DefaultAuthenticationManagerImpl();
+
+
+        DefaultAuthenticationManagerImpl manager = new DefaultAuthenticationManagerImpl(Arrays.asList((AuthenticationHandler) new SimpleTestUsernamePasswordAuthenticationHandler()), Arrays.asList((CredentialToPrincipalResolver) new UsernamePasswordCredentialsToPrincipalResolver(new AttributePrincipalFactory() {
+            public AttributePrincipal getAttributePrincipal(final String name) {
+                return new AttributePrincipal() {
+
+                    public String getName() {
+                        return name;
+                    }
+
+                    public List<Object> getAttributeValues(String attribute) {
+                        return Collections.emptyList();
+                    }
+
+                    public Object getAttributeValue(final String attribute) {
+                        return null;
+                    }
+
+                    public Map<String, List<Object>> getAttributes() {
+                        return Collections.emptyMap();
+                    }
+                };
+            }
+        })), new AuthenticationFactory() {
+            public Authentication getAuthentication(final Map<String, List<Object>> authenticationMetaData, final AuthenticationRequest authenticationRequest, final String authenticationType) {
+                return new Authentication() {
+
+                    private Date date = new Date();
+
+                    public Date getAuthenticationDate() {
+                        return date;
+                    }
+
+                    public Map<String, List<Object>> getAuthenticationMetaData() {
+                        return authenticationMetaData;
+                    }
+
+                    public boolean isLongTermAuthentication() {
+                        return false;
+                    }
+
+                    public String getAuthenticationMethod() {
+                        return authenticationType;
+                    }
+                };
+            }
+        });
         HttpBasedServiceCredentialsAuthenticationHandler authenticationHandler = new HttpBasedServiceCredentialsAuthenticationHandler();
         authenticationHandler.setHttpClient(new HttpClient());
-        manager.setAuthenticationHandlers(Arrays.asList((AuthenticationHandler) authenticationHandler));
-        manager.setCredentialsToPrincipalResolvers(Arrays.asList((CredentialsToPrincipalResolver) new UsernamePasswordCredentialsToPrincipalResolver()));
-            manager.authenticate(TestUtils.getHttpBasedServiceCredentials());
+        manager.authenticate(TestUtils.getAuthenticationRequest(TestUtils.getHttpBasedServiceCredentials()));
     }
 
     @Test(expected = BadCredentialsAuthenticationException.class)
     public void testResolverReturnsNull() throws Exception {
-        DefaultAuthenticationManagerImpl manager = new DefaultAuthenticationManagerImpl();
+        DefaultAuthenticationManagerImpl manager = new DefaultAuthenticationManagerImpl(Arrays.asList((AuthenticationHandler) new SimpleTestUsernamePasswordAuthenticationHandler()), Arrays.asList((CredentialToPrincipalResolver) new UsernamePasswordCredentialsToPrincipalResolver(new AttributePrincipalFactory() {
+            public AttributePrincipal getAttributePrincipal(final String name) {
+                return new AttributePrincipal() {
+
+                    public String getName() {
+                        return name;
+                    }
+
+                    public List<Object> getAttributeValues(String attribute) {
+                        return Collections.emptyList();
+                    }
+
+                    public Object getAttributeValue(final String attribute) {
+                        return null;
+                    }
+
+                    public Map<String, List<Object>> getAttributes() {
+                        return Collections.emptyMap();
+                    }
+                };
+            }
+        })), new AuthenticationFactory() {
+            public Authentication getAuthentication(final Map<String, List<Object>> authenticationMetaData, final AuthenticationRequest authenticationRequest, final String authenticationType) {
+                return new Authentication() {
+
+                    private Date date = new Date();
+
+                    public Date getAuthenticationDate() {
+                        return date;
+                    }
+
+                    public Map<String, List<Object>> getAuthenticationMetaData() {
+                        return authenticationMetaData;
+                    }
+
+                    public boolean isLongTermAuthentication() {
+                        return false;
+                    }
+
+                    public String getAuthenticationMethod() {
+                        return authenticationType;
+                    }
+                };
+            }
+        });
+
         HttpBasedServiceCredentialsAuthenticationHandler authenticationHandler = new HttpBasedServiceCredentialsAuthenticationHandler();
         authenticationHandler.setHttpClient(new HttpClient());
-        manager.setAuthenticationHandlers(Arrays.asList((AuthenticationHandler) authenticationHandler));
-        manager
-            .setCredentialsToPrincipalResolvers(Arrays.asList((CredentialsToPrincipalResolver) new TestCredentialsToPrincipalResolver()));
-            manager.authenticate(TestUtils.getHttpBasedServiceCredentials());
+        manager.authenticate(TestUtils.getAuthenticationRequest(TestUtils.getHttpBasedServiceCredentials()));
     }
     
     protected class TestCredentialsToPrincipalResolver implements CredentialToPrincipalResolver {

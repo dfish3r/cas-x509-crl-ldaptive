@@ -1,6 +1,26 @@
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.authentication.Authentication;
+import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.login.LoginRequest;
 import org.jasig.cas.server.util.Cleanable;
 import org.springframework.util.Assert;
@@ -23,8 +43,8 @@ public class InMemorySessionStorageImpl extends AbstractSessionStorage implement
         super(accessFactories);
     }
 
-    public Session createSession(final Authentication authentication) {
-        final Session session = new InMemorySessionImpl(getExpirationPolicy(), getAccessFactories(), authentication);
+    public Session createSession(final AuthenticationResponse authenticationResponse) {
+        final Session session = new InMemorySessionImpl(getExpirationPolicy(), getAccessFactories(), authenticationResponse.getAuthentications(), authenticationResponse.getPrincipal());
         this.sessions.put(session.getId(), session);
         return session;
     }
@@ -79,7 +99,7 @@ public class InMemorySessionStorageImpl extends AbstractSessionStorage implement
         final Set<Session> userSessions = new HashSet<Session>();
 
         for (final Session session : this.sessions.values()) {
-            if (session.getAuthentication().getPrincipal().getName().equals(principalName) && session.isValid()) {
+            if (session.getPrincipal().getName().equals(principalName) && session.isValid()) {
                 userSessions.add(session);
             }
         }
@@ -90,6 +110,22 @@ public class InMemorySessionStorageImpl extends AbstractSessionStorage implement
     public void purge() {
         this.sessions.clear();
         this.accessIdToSessionIdMapping.clear();
+    }
+
+    public int getCountOfActiveSessions() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int getCountOfInactiveSessions() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int getCountOfUnusedAccesses() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int getCountOfUsedAccesses() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void prune() {

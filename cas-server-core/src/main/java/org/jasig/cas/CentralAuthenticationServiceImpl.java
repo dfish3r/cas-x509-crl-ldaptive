@@ -1,8 +1,22 @@
-/*
- * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
- * distributed with this file and available online at
- * http://www.ja-sig.org/products/cas/overview/license/
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 package org.jasig.cas;
 
 import com.github.inspektr.audit.annotation.Audit;
@@ -147,9 +161,8 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
                     throw new TicketCreationException(); // TODO we'll want to actually grab the right exceptions
                 }
 
-                final Authentication originalAuthentication = session.getAuthentication();
-
-                if (!(authenticationResponse.getAuthentication().getPrincipal().equals(originalAuthentication.getPrincipal()) && authenticationResponse.getAuthentication().getAuthenticationMetaData().equals(originalAuthentication.getAuthenticationMetaData()))) {
+            // TODO is this correct?
+                if (!(authenticationResponse.getPrincipal().equals(session.getPrincipal()))) {
                     throw new TicketCreationException();
                 }
         }
@@ -246,7 +259,7 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
         }
 
         final RegisteredService registeredService = this.servicesManager.findServiceBy(new Service() {
-            public void setPrincipal(Principal principal) {
+            public void setPrincipal(AttributePrincipal principal) {
             }
 
             public boolean logOutOfService(String sessionIdentifier) {
@@ -273,7 +286,7 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
         }
 
         try {
-            final Session delegatedSession = session.createDelegatedSession(authenticationResponse.getAuthentication());
+            final Session delegatedSession = session.createDelegatedSession(authenticationResponse);
             // TODO not sure if this will work
             this.sessionStorage.updateSession(session);
             return this.sessionStorage.updateSession(delegatedSession).getId();
@@ -469,7 +482,7 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
         }
 
         try {
-            return this.sessionStorage.createSession(authenticationResponse.getAuthentication()).getId();
+            return this.sessionStorage.createSession(authenticationResponse).getId();
         } catch (final Exception e) {
             throw new TicketCreationException();
         }

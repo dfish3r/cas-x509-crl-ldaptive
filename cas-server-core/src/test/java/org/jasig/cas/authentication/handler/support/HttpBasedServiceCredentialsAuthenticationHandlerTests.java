@@ -1,8 +1,22 @@
-/*
- * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
- * distributed with this file and available online at
- * http://www.ja-sig.org/products/cas/overview/license/
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 package org.jasig.cas.authentication.handler.support;
 
 import org.jasig.cas.TestUtils;
@@ -10,13 +24,14 @@ import org.jasig.cas.util.HttpClient;
 
 import junit.framework.TestCase;
 
+import java.security.GeneralSecurityException;
+
 /**
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class HttpBasedServiceCredentialsAuthenticationHandlerTests extends
-    TestCase {
+public final class HttpBasedServiceCredentialsAuthenticationHandlerTests extends TestCase {
 
     private HttpBasedServiceCredentialsAuthenticationHandler authenticationHandler;
 
@@ -35,22 +50,22 @@ public final class HttpBasedServiceCredentialsAuthenticationHandlerTests extends
             .getCredentialsWithSameUsernameAndPassword()));
     }
 
-    public void testAcceptsProperCertificateCredentials() {
+    public void testAcceptsProperCertificateCredentials() throws GeneralSecurityException {
         assertTrue(this.authenticationHandler.authenticate(TestUtils
             .getHttpBasedServiceCredentials()));
     }
 
-    public void testRejectsInProperCertificateCredentials() {
+    public void testRejectsInProperCertificateCredentials() throws GeneralSecurityException {
         assertFalse(this.authenticationHandler.authenticate(TestUtils
             .getHttpBasedServiceCredentials("https://clearinghouse.ja-sig.org")));
     }
 
-    public void testRejectsNonHttpsCredentials() {
+    public void testRejectsNonHttpsCredentials() throws GeneralSecurityException {
         assertFalse(this.authenticationHandler.authenticate(TestUtils
             .getHttpBasedServiceCredentials("http://www.jasig.org")));
     }
     
-    public void testAcceptsNonHttpsCredentials() {
+    public void testAcceptsNonHttpsCredentials() throws GeneralSecurityException {
         this.authenticationHandler.setHttpClient(new HttpClient());
         this.authenticationHandler.setRequireSecure(false);
         assertTrue(this.authenticationHandler.authenticate(TestUtils

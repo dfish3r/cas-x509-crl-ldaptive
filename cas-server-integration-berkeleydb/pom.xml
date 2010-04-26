@@ -17,10 +17,24 @@
 			<version>${project.version}</version>
 		</dependency>
 
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-sessionstorage-inmemory</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-test-support</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 		<dependency>
-			<groupId>com.oracle.berkeleydb</groupId>
+			<groupId>berkeleydb</groupId>
 			<artifactId>je</artifactId>
-			<version>3.2.21</version>
+			<version>3.2.76</version>
 		</dependency> 
 		
 		<dependency>

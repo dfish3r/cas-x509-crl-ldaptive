@@ -1,6 +1,27 @@
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.jasig.cas.server.session;
 
+import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Authentication;
+import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.login.ServiceAccessRequest;
 
 import java.io.Serializable;
@@ -34,6 +55,22 @@ public interface Session extends Serializable {
     Set<Authentication> getAuthentications();
 
     /**
+     * Returns the principal associated with this session.  The Authentications for this session are all for this particular
+     * principal.  CANNOT be NULL.
+     *
+     * @return the principal.
+     */
+    AttributePrincipal getPrincipal();
+
+    /**
+     * Returns the ROOT principal, at the top of the tree.  If this is the top session, then calling getPrincipal and this method
+     * have the same effect.
+     * <p>
+     *
+     * @return the root principal at the top of the tree.
+     */
+    AttributePrincipal getRootPrincipal();
+    /**
      * The ROOT authentication, at the top of the tree.  If this is the top session, then calling getAuthentication
      * and this method have the same effect.
      * <p>
@@ -59,12 +96,20 @@ public interface Session extends Serializable {
     void addAuthentication(Authentication authentication);
 
     /**
-     * Enumerates the list of authentications beyond the original, in reverse order.  So the newest one is that the top.
+     * Enumerates the list of authentications beyond the original, in reverse order.  So the newest one is at the top.
      * This list can be empty but CANNOT be null.
      *
      * @return the list of authentications beyond the original / ROOT.
      */
     List<Set<Authentication>> getProxiedAuthentications();
+
+    /**
+     * Enumerates the list of principals beyond the original, in reverse order.  So the newest one is at the top.  This
+     * list can be empty but not null.
+     *
+     * @return the list of principals beyond the original / ROOT.
+     */
+    List<AttributePrincipal> getProxiedPrincipals();
 
     /**
      * Invalidates the current session if its not invalid yet.  This fails silently (as in calling invalidate on an
@@ -122,11 +167,11 @@ public interface Session extends Serializable {
      * Associates a child session with this session.  A child session is generally one that depends on some aspect of
      * another session (generally the original session was used to authenticate to create the child one).
      *
-     * @param authentication the new authentication.
+     * @param authenticationResponse the response from authenticating.
      * @throws InvalidatedSessionException when a session is invalidated but you try to use it.
      * @return the newly created child session.
      */
-    Session createDelegatedSession(Authentication authentication) throws InvalidatedSessionException;
+    Session createDelegatedSession(AuthenticationResponse authenticationResponse) throws InvalidatedSessionException;
 
     /**
      * Locates a child session *if* you know its original identifier.

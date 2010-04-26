@@ -1,3 +1,22 @@
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.jasig.cas.server.authentication;
 
 import java.util.Date;
@@ -30,13 +49,6 @@ public interface Authentication {
     Map<String, List<Object>> getAuthenticationMetaData();
 
     /**
-     * The principal associated with this authentication request.
-     *
-     * @return the principal associated with this authentication request.  CANNOT be null.
-     */
-    AttributePrincipal getPrincipal();
-
-    /**
      * Notes whether this authentication is designed to be a long term authentication request.
      * <p>
      * Long term authentications should, but are not required, to utilize a strong authentication mechanism.
@@ -48,7 +60,7 @@ public interface Authentication {
     /**
      * Returns the way this thing was authenticated (i.e. Safeword, LDAP, etc.).  CANNOT be NULL.
      *
-     * @return 
+     * @return the type of authentication that was used.
      */
     String getAuthenticationMethod();
 }

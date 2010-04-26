@@ -1,6 +1,27 @@
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.jasig.cas.server.session;
 
+import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Authentication;
+import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.login.ServiceAccessRequest;
 
 import java.util.ArrayList;
@@ -21,7 +42,7 @@ public abstract class AbstractSession implements Session {
     /**
      * Retrieve the expiration policy, which defines whether this session is still valid or not.
      *
-     * @return the result of {@link org.jasig.cas.server.session.ExpirationPolicy#isExpired(State, Authentication)}
+     * @return the result of {@link org.jasig.cas.server.session.ExpirationPolicy#isExpired(State)}
      */
     protected abstract boolean executeExpirationPolicy();
 
@@ -97,12 +118,20 @@ public abstract class AbstractSession implements Session {
         return !isInvalid() && !executeExpirationPolicy() && (getParentSession() == null || getParentSession().isValid());
     }
 
-    public final Set<Authentication> getRootAuthentications() {
-        if (getParentSession() != null) {
-            return getParentSession().getRootAuthentications();
+    public final AttributePrincipal getRootPrincipal() {
+        if (isRoot()) {
+            return getPrincipal();
         }
 
-        return getAuthentications();
+        return getParentSession().getRootPrincipal();
+    }
+
+    public final Set<Authentication> getRootAuthentications() {
+        if (isRoot()) {
+            return getAuthentications();
+        }
+
+        return getParentSession().getRootAuthentications();
     }
 
     public final Session getRootSession() {
@@ -134,6 +163,16 @@ public abstract class AbstractSession implements Session {
         throw new IllegalStateException("No AccessFactories configured that can execute Access request.");
     }
 
+    public final List<AttributePrincipal> getProxiedPrincipals() {
+        if (getParentSession() == null) {
+            return new ArrayList<AttributePrincipal>();
+        }
+
+        final List<AttributePrincipal> principals = getParentSession().getProxiedPrincipals();
+        principals.add(getPrincipal());
+        return principals;
+    }
+
     public final List<Set<Authentication>> getProxiedAuthentications() {
         if (getParentSession() == null) {
             return new ArrayList<Set<Authentication>>();
@@ -157,12 +196,12 @@ public abstract class AbstractSession implements Session {
         return null;
     }
 
-    public synchronized final Session createDelegatedSession(Authentication authentication) {
+    public synchronized final Session createDelegatedSession(final AuthenticationResponse authenticationResponse) {
         updateState();
-        return createDelegatedSessionInternal(authentication);
+        return createDelegatedSessionInternal(authenticationResponse);
     }
 
-    protected abstract Session createDelegatedSessionInternal(Authentication authentication);
+    protected abstract Session createDelegatedSessionInternal(final AuthenticationResponse authenticationResponse);
 
     public boolean hasNotBeenUsed() {
         return getAccesses().isEmpty();
