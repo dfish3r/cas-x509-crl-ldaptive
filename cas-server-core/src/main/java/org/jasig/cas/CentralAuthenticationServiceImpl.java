@@ -33,7 +33,7 @@ import org.jasig.cas.services.UnauthorizedSsoServiceException;
 import org.jasig.cas.ticket.InvalidTicketException;
 import org.jasig.cas.ticket.TicketCreationException;
 import org.jasig.cas.ticket.TicketException;
-import org.jasig.cas.validation.Assertion;
+import org.jasig.cas.server.session.Assertion;
 import org.perf4j.aop.Profiled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -19,6 +19,8 @@
 
 package org.jasig.cas.validation;
 
+import org.jasig.cas.server.session.Assertion;
+
 /**
  * Validation specification for the CAS 2.0 protocol. This specification extends
  * the Cas10ProtocolValidationSpecification, checking for the presence of

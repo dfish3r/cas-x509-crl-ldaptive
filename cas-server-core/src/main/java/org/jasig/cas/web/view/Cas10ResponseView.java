@@ -24,7 +24,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jasig.cas.validation.Assertion;
+import org.jasig.cas.server.session.Assertion;
 
 /**
  * Custom View to Return the CAS 1.0 Protocol Response. Implemented as a view

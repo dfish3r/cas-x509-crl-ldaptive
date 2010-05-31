@@ -19,6 +19,8 @@
 
 package org.jasig.cas.validation;
 
+import org.jasig.cas.server.session.Assertion;
+
 /**
  * Validation specification for the CAS 1.0 protocol. This specification checks
  * for the presence of renew=true and if requested, succeeds only if ticket

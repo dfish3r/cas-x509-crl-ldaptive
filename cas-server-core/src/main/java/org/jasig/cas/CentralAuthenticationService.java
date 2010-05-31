@@ -19,10 +19,10 @@
 
 package org.jasig.cas;
 
-import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.ticket.TicketException;
-import org.jasig.cas.validation.Assertion;
+import org.jasig.cas.server.session.Assertion;
 
 /**
  * CAS viewed as a set of services to generate and validate Tickets.
