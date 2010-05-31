@@ -16,36 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.jasig.cas.server.login;
 
-package org.jasig.cas.authentication.handler;
-
-import junit.framework.TestCase;
+import java.util.Map;
 
 /**
+ * Constructs a ServiceAccessRequest from the provided information.  This is analogous to the ArgumentExtractor from CAS3.4.
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.0
+ * @since 3.5
  */
-public class UnsupportedCredentialsExceptionTests extends TestCase {
-    
-    private static final String CODE = "error.authentication.credentials.unsupported";
+public interface ServiceAccessRequestFactory {
 
-    public void testNoParamConstructor() {
-        new UnsupportedCredentialsException();
-    }
-
-    public void testGetCode() {
-        assertEquals(CODE,
-            new UnsupportedCredentialsException().getCode());
-    }
-    
-    public void testThrowableConstructor() {
-        final RuntimeException r = new RuntimeException();
-        final UnsupportedCredentialsException e = new UnsupportedCredentialsException(r);
-        
-        assertEquals(CODE, e.getCode());
-        assertEquals(r, e.getCause());
-    }
-    
-    
+    /**
+     * Returns a fully constructed ServiceAccessRequest or null if this factory can't make one.
+     *
+     * @param sessionId the session id if one exists.
+     * @param remoteIpAddress the remote ip address of the user.
+     * @param parameters the parameters we may obtain more information from.
+     * @return the service access request OR null.
+     */
+	ServiceAccessRequest getServiceAccessRequest(final String sessionId, final String remoteIpAddress, final Map parameters);
 }

@@ -23,6 +23,10 @@ import java.io.Serializable;
 
 /**
  * Warnings from the underlying authentication systems.
+ * <p>
+ * If a code is provided, it should be used first (the Message should only be used if a code does not exist).
+ * <p>
+ * Its designed to delegate message resolution to an external party, such as a Spring Message Resolver.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$

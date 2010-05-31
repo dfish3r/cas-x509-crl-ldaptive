@@ -16,15 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.authentication.handler.support;
 
-import org.jasig.cas.server.authentication.AbstractPreAndPostProcessingAuthenticationHandler;
+import org.jasig.cas.server.authentication.AbstractNamedAuthenticationHandler;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.UrlCredential;
 import org.jasig.cas.util.HttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.security.GeneralSecurityException;
@@ -42,7 +39,7 @@ import java.security.GeneralSecurityException;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class HttpBasedServiceCredentialsAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
+public final class HttpBasedServiceCredentialsAuthenticationHandler extends AbstractNamedAuthenticationHandler {
 
     /** The string representing the HTTPS protocol. */
     private static final String PROTOCOL_HTTPS = "https";
@@ -50,15 +47,11 @@ public class HttpBasedServiceCredentialsAuthenticationHandler extends AbstractPr
     /** Boolean variable denoting whether secure connection is required or not. */
     private boolean requireSecure = true;
 
-    /** Log instance. */
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     /** Instance of Apache Commons HttpClient */
     @NotNull
     private HttpClient httpClient;
 
-    @Override
-    protected final boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
+    public final boolean authenticate(final Credential credentials) throws GeneralSecurityException {
         final UrlCredential serviceCredentials = (UrlCredential) credentials;
         if (this.requireSecure
             && !serviceCredentials.getUrl().getProtocol().equals(PROTOCOL_HTTPS)) {
@@ -67,9 +60,7 @@ public class HttpBasedServiceCredentialsAuthenticationHandler extends AbstractPr
             }
             return false;
         }
-        log
-            .debug("Attempting to resolve credentials for "
-                + serviceCredentials);
+        log.debug("Attempting to resolve credentials for " + serviceCredentials);
 
         return this.httpClient.isValidEndPoint(serviceCredentials.getUrl());
     }

@@ -16,25 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.jasig.cas.server.logout;
 
-package org.jasig.cas.ticket;
+import java.util.Date;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.BadCredentialsAuthenticationException;
+/**
+ * @author Scott Battaglia
+ * @version $Revision$ $Date$
+ * @since 3.5
+ */
+public final class DefaultLogoutRequestImpl implements LogoutRequest {
 
-import junit.framework.TestCase;
+    private final Date date = new Date();
 
-public class InvalidTicketExceptionTests extends TestCase {
+    private final String sessionId;
 
-    public void testCodeNoThrowable() {
-        TicketException t = new InvalidTicketException();
-        assertEquals("INVALID_TICKET", t.getCode());
+    public DefaultLogoutRequestImpl(final String sessionId) {
+        this.sessionId = sessionId;
     }
 
-    public void testCodeWithThrowable() {
-        AuthenticationException a = new BadCredentialsAuthenticationException();
-        TicketException t = new InvalidTicketException(a);
+    public Date getDate() {
+        return new Date(date.getTime());
+    }
 
-        assertEquals(a.toString(), t.getCode());
+    public String getSessionId() {
+        return this.sessionId;
+    }
+
+    public String toString() {
+        return "sessionId=" + this.sessionId;
     }
 }

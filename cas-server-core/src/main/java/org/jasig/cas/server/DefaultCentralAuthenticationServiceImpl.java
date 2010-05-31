@@ -16,14 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package org.jasig.cas;
+package org.jasig.cas.server;
 
 import com.github.inspektr.audit.annotation.Audit;
 import org.jasig.cas.authentication.principal.*;
+import org.jasig.cas.server.AuthenticationResponsePlugin;
+import org.jasig.cas.server.CentralAuthenticationService;
+import org.jasig.cas.server.PreAuthenticationPlugin;
 import org.jasig.cas.server.authentication.*;
-import org.jasig.cas.server.login.ServiceAccessRequest;
-import org.jasig.cas.server.login.TokenServiceAccessRequest;
+import org.jasig.cas.server.login.*;
+import org.jasig.cas.server.logout.DefaultLogoutResponseImpl;
+import org.jasig.cas.server.logout.LogoutRequest;
+import org.jasig.cas.server.logout.LogoutResponse;
 import org.jasig.cas.server.session.*;
 import org.jasig.cas.services.RegisteredService;
 import org.jasig.cas.services.ServicesManager;
@@ -74,7 +78,7 @@ import java.util.*;
  * @version $Revision: 1.16 $ $Date: 2007/04/24 18:11:36 $
  * @since 3.0
  */
-public final class CentralAuthenticationServiceImpl implements CentralAuthenticationService {
+public final class DefaultCentralAuthenticationServiceImpl implements CentralAuthenticationService {
 
     /** Log instance for logging events, info, warnings, errors, etc. */
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -84,10 +88,10 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
      * obtaining tickets.
      */
     @NotNull
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     @NotNull
-    private SessionStorage sessionStorage;
+    private final SessionStorage sessionStorage;
 
     /** Implementation of Service Manager */
     @NotNull
@@ -97,31 +101,60 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
     @NotNull
     private PersistentIdGenerator persistentIdGenerator = new ShibbolethCompatiblePersistentIdGenerator();
 
-    /**
-     * Implementation of destoryTicketGrantingTicket expires the ticket provided
-     * and removes it from the TicketRegistry.
-     * 
-     * @throws IllegalArgumentException if the TicketGrantingTicket ID is null.
-     */
-    @Audit(action="TICKET_GRANTING_TICKET_DESTROYED",actionResolverName="DESTROY_TICKET_GRANTING_TICKET_RESOLVER",resourceResolverName="DESTROY_TICKET_GRANTING_TICKET_RESOURCE_RESOLVER")
-    @Profiled(tag = "DESTROY_TICKET_GRANTING_TICKET",logFailuresSeparately = false)
-    @Transactional(readOnly = false)
-    public void destroyTicketGrantingTicket(final String ticketGrantingTicketId) {
-        Assert.notNull(ticketGrantingTicketId);
+    @NotNull
+    private List<PreAuthenticationPlugin> preAuthenticationPlugins = new ArrayList<PreAuthenticationPlugin>();
 
-        if (log.isDebugEnabled()) {
-            log.debug("Removing ticket [" + ticketGrantingTicketId + "] from registry.");
+    @NotNull
+    private List<AuthenticationResponsePlugin> authenticationResponsePlugins = new ArrayList<AuthenticationResponsePlugin>();
+
+    public DefaultCentralAuthenticationServiceImpl(final AuthenticationManager authenticationManager, final SessionStorage sessionStorage) {
+        this.authenticationManager = authenticationManager;
+        this.sessionStorage = sessionStorage;
+    }
+
+    @Audit(action="CREATE_SESSION", actionResolverName="CREATE_SESSION_RESOLVER", resourceResolverName="CREATE_SESSION_RESOURCE_RESOLVER")
+    @Profiled(tag = "CREATE_SESSION", logFailuresSeparately = false)
+    public LoginResponse login(final LoginRequest loginRequest) {
+        Assert.notNull(loginRequest, "loginRequest cannot be null.");
+        final AuthenticationRequest authenticationRequest = new DefaultAuthenticationRequestImpl(loginRequest.getCredentials(), loginRequest.isLongTermLoginRequest());
+
+        for (final PreAuthenticationPlugin plugin : this.preAuthenticationPlugins) {
+            final LoginResponse loginResponse = plugin.continueWithAuthentication(loginRequest);
+
+            if (loginResponse != null) {
+                return loginResponse;
+            }
         }
 
-        final Session session = this.sessionStorage.destroySession(ticketGrantingTicketId);
+        final AuthenticationResponse authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
+
+        for (final AuthenticationResponsePlugin authenticationResponsePlugin : this.authenticationResponsePlugins) {
+            authenticationResponsePlugin.handle(loginRequest, authenticationResponse);
+        }
+
+        if (authenticationResponse.succeeded()) {
+            final Session session = this.sessionStorage.createSession(authenticationResponse);
+            return new DefaultLoginResponseImpl(session.getId(), authenticationResponse);
+        }
+
+        return new DefaultLoginResponseImpl(authenticationResponse);
+    }
+
+
+    /**
+     * Note, we only currently support this is on the top, user-initiated session.
+     */
+    @Audit(action="DESTROY_SESSION",actionResolverName="DESTROY_SESSION_RESOLVER",resourceResolverName="DESTROY_SESSION_RESOURCE_RESOLVER")
+    @Profiled(tag = "DESTROY_SESSION",logFailuresSeparately = false)
+    public LogoutResponse logout(final LogoutRequest logoutRequest) {
+        final Session session = this.sessionStorage.destroySession(logoutRequest.getSessionId());
 
         if (session != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Ticket found.  Expiring and then deleting.");
-            }
-
             session.invalidate();
+            return new DefaultLogoutResponseImpl(session);
         }
+
+        return new DefaultLogoutResponseImpl();
     }
 
     /**
@@ -154,7 +187,7 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
         }
 
         if (credentials != null) {
-                final AuthenticationRequest authenticationRequest = new AuthenticationRequestImpl(Arrays.asList(credentials), false);
+                final AuthenticationRequest authenticationRequest = new DefaultAuthenticationRequestImpl(Arrays.asList(credentials), false);
                 final AuthenticationResponse authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
 
                 if (!authenticationResponse.succeeded()) {
@@ -226,7 +259,7 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
     @Audit(action="SERVICE_TICKET", actionResolverName="GRANT_SERVICE_TICKET_RESOLVER", resourceResolverName="GRANT_SERVICE_TICKET_RESOURCE_RESOLVER")
     @Profiled(tag = "GRANT_SERVICE_TICKET",logFailuresSeparately = false)
     @Transactional(readOnly = false)
-    public String grantServiceTicket(final String ticketGrantingTicketId, final Service service) throws TicketException {
+    public String grantServiceTicket(final String ticketGrantingTicketId, final Service service) {
         return this.grantServiceTicket(ticketGrantingTicketId, service, null);
     }
 
@@ -237,12 +270,12 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
     @Audit(action="PROXY_GRANTING_TICKET",actionResolverName="GRANT_PROXY_GRANTING_TICKET_RESOLVER",resourceResolverName="GRANT_PROXY_GRANTING_TICKET_RESOURCE_RESOLVER")
     @Profiled(tag="GRANT_PROXY_GRANTING_TICKET",logFailuresSeparately = false)
     @Transactional(readOnly = false)
-    public String delegateTicketGrantingTicket(final String serviceTicketId, final Credential credential) throws TicketException {
+    public String delegateTicketGrantingTicket(final String serviceTicketId, final Credential credential) {
 
         Assert.notNull(serviceTicketId, "serviceTicketId cannot be null");
         Assert.notNull(credential, "credentials cannot be null");
 
-        final AuthenticationRequest authenticationRequest = new AuthenticationRequestImpl(Arrays.asList(credential), false);
+        final AuthenticationRequest authenticationRequest = new DefaultAuthenticationRequestImpl(Arrays.asList(credential), false);
         final AuthenticationResponse authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
 
         final Session session = this.sessionStorage.findSessionByAccessId(serviceTicketId);
@@ -303,7 +336,7 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
     @Audit(action="SERVICE_TICKET_VALIDATE",actionResolverName="VALIDATE_SERVICE_TICKET_RESOLVER",resourceResolverName="VALIDATE_SERVICE_TICKET_RESOURCE_RESOLVER")
     @Profiled(tag="VALIDATE_SERVICE_TICKET",logFailuresSeparately = false)
     @Transactional(readOnly = false)
-    public Assertion validateServiceTicket(final String serviceTicketId, final Service service) throws TicketException {
+    public Assertion validateServiceTicket(final String serviceTicketId, final Service service) {
         Assert.notNull(serviceTicketId, "serviceTicketId cannot be null");
         Assert.notNull(service, "service cannot be null");
 
@@ -467,36 +500,6 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
         */
     }
 
-    /**
-     * @throws IllegalArgumentException if the credentials are null.
-     */
-    @Audit(action="TICKET_GRANTING_TICKET", actionResolverName="CREATE_TICKET_GRANTING_TICKET_RESOLVER", resourceResolverName="CREATE_TICKET_GRANTING_TICKET_RESOURCE_RESOLVER")
-    @Profiled(tag = "CREATE_TICKET_GRANTING_TICKET", logFailuresSeparately = false)
-    @Transactional(readOnly = false)
-    public String createTicketGrantingTicket(final Credential credentials) throws TicketCreationException {
-        Assert.notNull(credentials, "credentials cannot be null");
-        final AuthenticationResponse authenticationResponse = this.authenticationManager.authenticate(new AuthenticationRequestImpl(Arrays.asList(credentials), false));
-
-        if (!authenticationResponse.succeeded()) {
-            throw new TicketCreationException();
-        }
-
-        try {
-            return this.sessionStorage.createSession(authenticationResponse).getId();
-        } catch (final Exception e) {
-            throw new TicketCreationException();
-        }
-    }
-
-    /**
-     * Method to inject the AuthenticationManager into the class.
-     * 
-     * @param authenticationManager The authenticationManager to set.
-     */
-    public void setAuthenticationManager(final AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
-
     public void setServicesManager(final ServicesManager servicesManager) {
         this.servicesManager = servicesManager;
     }
@@ -504,5 +507,13 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
     public void setPersistentIdGenerator(
         final PersistentIdGenerator persistentIdGenerator) {
         this.persistentIdGenerator = persistentIdGenerator;
+    }
+
+    public void setPreAuthenticationPlugins(final List<PreAuthenticationPlugin> preAuthenticationPlugins) {
+        this.preAuthenticationPlugins = preAuthenticationPlugins;
+    }
+
+    public void setAuthenticationResponsePlugins(final List<AuthenticationResponsePlugin> authenticationResponsePlugins) {
+        this.authenticationResponsePlugins = authenticationResponsePlugins;
     }
 }

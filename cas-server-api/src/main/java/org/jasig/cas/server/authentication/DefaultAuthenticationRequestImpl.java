@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.server.authentication;
 
 import java.util.ArrayList;
@@ -26,12 +25,14 @@ import java.util.List;
 
 /**
  * Immutable request for authentication.
+ * <p>
+ * Note, this is not truly immutable, since we have no control over the credentials passed in.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class AuthenticationRequestImpl implements AuthenticationRequest {
+public final class DefaultAuthenticationRequestImpl implements AuthenticationRequest {
 
     private final Date authenticationRequestDate = new Date();
 
@@ -39,7 +40,7 @@ public final class AuthenticationRequestImpl implements AuthenticationRequest {
 
     private final boolean longTermAuthenticationRequest;
 
-    public AuthenticationRequestImpl(final List<Credential> credentials, final boolean longTermAuthenticationRequest) {
+    public DefaultAuthenticationRequestImpl(final List<Credential> credentials, final boolean longTermAuthenticationRequest) {
         this.credentials.addAll(credentials);
         this.longTermAuthenticationRequest = longTermAuthenticationRequest;
     }

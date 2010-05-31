@@ -16,11 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.server.authentication;
 
-
 /**
+ * Transform the string typed into the login form into a tentative Principal Name to be
+ * validated by a specific type of Authentication Handler.
+ *
  * @author Howard Gilbert
  * @version $Revision$ $Date$
  * @since 3.3.6

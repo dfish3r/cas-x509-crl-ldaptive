@@ -16,26 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.jasig.cas.server;
 
-package org.jasig.cas.ticket;
-
-import junit.framework.TestCase;
+import org.jasig.cas.server.authentication.AuthenticationResponse;
+import org.jasig.cas.server.login.LoginRequest;
 
 /**
+ * A pluggable component for the {@link org.jasig.cas.server.CentralAuthenticationService} that allows you to execute a
+ * set of actions after the AuthenticationResponse has been generated (regardless of success or failure).
+ *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
- * @since 3.0
+ * @version $Revision $Date$
+ * @since 3.5
  */
-public class TicketCreationExceptionTests extends TestCase {
-
-    public void testNoParamConstructor() {
-        new TicketCreationException();
-    }
-
-    public void testThrowableParamConstructor() {
-        final Throwable THROWABLE = new Throwable();
-        TicketCreationException t = new TicketCreationException(THROWABLE);
-
-        assertEquals(THROWABLE, t.getCause());
-    }
+public interface AuthenticationResponsePlugin {
+    /**
+     * Perform an action after the authentication response has been generated.
+     *
+     * @param loginRequest the original login request.
+     * @param response the corresponding authentication response.
+     */
+    void handle(LoginRequest loginRequest, AuthenticationResponse response);
 }

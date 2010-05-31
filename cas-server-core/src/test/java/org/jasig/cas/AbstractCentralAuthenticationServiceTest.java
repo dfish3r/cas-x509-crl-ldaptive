@@ -19,6 +19,7 @@
 
 package org.jasig.cas;
 
+import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.authentication.AuthenticationManager;
 import org.jasig.cas.server.session.SessionStorage;
 import org.springframework.beans.factory.annotation.Autowired;

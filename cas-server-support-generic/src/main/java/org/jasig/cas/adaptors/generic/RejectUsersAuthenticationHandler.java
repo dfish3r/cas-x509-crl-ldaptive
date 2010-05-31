@@ -42,8 +42,7 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class RejectUsersAuthenticationHandler extends
-        AbstractUsernamePasswordAuthenticationHandler {
+public final class RejectUsersAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
 
     /** The collection of users to reject. */
     @NotNull
@@ -65,7 +64,7 @@ public class RejectUsersAuthenticationHandler extends
      * 
      * @param users The Collection of usernames we should not authenticate.
      */
-    public final void setUsers(final List<String> users) {
+    public void setUsers(final List<String> users) {
         this.users = users;
     }
 }

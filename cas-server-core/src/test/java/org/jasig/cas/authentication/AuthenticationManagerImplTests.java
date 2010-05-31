@@ -21,9 +21,6 @@ package org.jasig.cas.authentication;
 
 import org.jasig.cas.AbstractCentralAuthenticationServiceTest;
 import org.jasig.cas.TestUtils;
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.BadCredentialsAuthenticationException;
-import org.jasig.cas.authentication.handler.UnsupportedCredentialsException;
 import org.jasig.cas.authentication.handler.support.HttpBasedServiceCredentialsAuthenticationHandler;
 import org.jasig.cas.authentication.handler.support.SimpleTestUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver;
@@ -54,7 +51,7 @@ public class AuthenticationManagerImplTests extends AbstractCentralAuthenticatio
     }
 
     @Test
-    public void testNoHandlerFound() throws AuthenticationException {
+    public void testNoHandlerFound() {
         getAuthenticationManager().authenticate(TestUtils.getAuthenticationRequest(new Credential() {
 
             private static final long serialVersionUID = -4897240037527663222L;
@@ -63,7 +60,7 @@ public class AuthenticationManagerImplTests extends AbstractCentralAuthenticatio
         fail("Authentication should have failed.");
     }
 
-    @Test(expected=UnsupportedCredentialsException.class)
+    @Test
     public void testNoResolverFound() throws Exception {
 
 
@@ -117,7 +114,7 @@ public class AuthenticationManagerImplTests extends AbstractCentralAuthenticatio
         manager.authenticate(TestUtils.getAuthenticationRequest(TestUtils.getHttpBasedServiceCredentials()));
     }
 
-    @Test(expected = BadCredentialsAuthenticationException.class)
+    @Test
     public void testResolverReturnsNull() throws Exception {
         DefaultAuthenticationManagerImpl manager = new DefaultAuthenticationManagerImpl(Arrays.asList((AuthenticationHandler) new SimpleTestUsernamePasswordAuthenticationHandler()), Arrays.asList((CredentialToPrincipalResolver) new UsernamePasswordCredentialsToPrincipalResolver(new AttributePrincipalFactory() {
             public AttributePrincipal getAttributePrincipal(final String name) {

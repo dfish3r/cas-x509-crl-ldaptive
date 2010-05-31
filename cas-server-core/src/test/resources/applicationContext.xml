@@ -24,7 +24,7 @@
 <beans>
 	<bean
 		name="centralAuthenticationService"
-		class="org.jasig.cas.CentralAuthenticationServiceImpl">
+		class="org.jasig.cas.server.DefaultCentralAuthenticationServiceImpl">
 		<property
 			name="authenticationManager"
 			ref="authenticationManager" />

@@ -16,12 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package org.jasig.cas;
+package org.jasig.cas.server;
 
 import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.ticket.TicketException;
+import org.jasig.cas.server.login.LoginRequest;
+import org.jasig.cas.server.login.LoginResponse;
+import org.jasig.cas.server.logout.LogoutRequest;
+import org.jasig.cas.server.logout.LogoutResponse;
 import org.jasig.cas.server.session.Assertion;
 
 /**
@@ -41,22 +43,25 @@ import org.jasig.cas.server.session.Assertion;
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
- * <p>
- * This is a published and supported CAS Server 3 API.
- * </p>
  */
 public interface CentralAuthenticationService {
 
     /**
-     * Create a TicketGrantingTicket based on opaque credentials supplied by the
-     * caller.
-     * 
-     * @param credential The credentials to create the ticket for
-     * @return The String identifier of the ticket (may not be null).
-     * @throws TicketException if ticket cannot be created
+     * Initiate a single sign on session with the service by providing credentials
+     * to the system along with a request for authentication.
+     *
+     * @param loginRequest the request for authentication
+     * @return the response to the authentication request.
      */
-    String createTicketGrantingTicket(Credential credential)
-        throws TicketException;
+    LoginResponse login(LoginRequest loginRequest);
+
+    /**
+     * Log out of any existing session you may have with the system.
+     *
+     * @param logoutRequest the request to log out of the system.
+     * @return the response from the server about the logout request.
+     */
+    LogoutResponse logout(LogoutRequest logoutRequest);
 
     /**
      * Grant a ServiceTicket for a Service.
@@ -64,10 +69,8 @@ public interface CentralAuthenticationService {
      * @param ticketGrantingTicketId Proof of prior authentication.
      * @param service The target service of the ServiceTicket.
      * @return the ServiceTicket for target Service.
-     * @throws TicketException if the ticket could not be created.
      */
-    String grantServiceTicket(String ticketGrantingTicketId, Service service)
-        throws TicketException;
+    String grantServiceTicket(String ticketGrantingTicketId, Service service);
 
     /**
      * Grant a ServiceTicket for a Service *if* the principal resolved from the
@@ -79,11 +82,9 @@ public interface CentralAuthenticationService {
      * @param credentials the Credentials to present to receive the
      * ServiceTicket
      * @return the ServiceTicket for target Service.
-     * @throws TicketException if the ticket could not be created.
      */
     String grantServiceTicket(final String ticketGrantingTicketId,
-        final Service service, final Credential credentials)
-        throws TicketException;
+        final Service service, final Credential credentials);
 
     /**
      * Validate a ServiceTicket for a particular Service.
@@ -91,18 +92,9 @@ public interface CentralAuthenticationService {
      * @param serviceTicketId Proof of prior authentication.
      * @param service Service wishing to validate a prior authentication.
      * @return ServiceTicket if valid for the service
-     * @throws TicketException if there was an error validating the ticket.
      */
     Assertion validateServiceTicket(final String serviceTicketId,
-        final Service service) throws TicketException;
-
-    /**
-     * Destroy a TicketGrantingTicket. This has the effect of invalidating any
-     * Ticket that was derived from the TicketGrantingTicket being destroyed.
-     * 
-     * @param ticketGrantingTicketId the id of the ticket we want to destroy
-     */
-    void destroyTicketGrantingTicket(final String ticketGrantingTicketId);
+        final Service service);
 
     /**
      * Delegate a TicketGrantingTicket to a Service for proxying authentication
@@ -114,8 +106,7 @@ public interface CentralAuthenticationService {
      * TicketGrantingTicket delegated to it.
      * @return TicketGrantingTicket that can grant ServiceTickets that proxy
      * authentication.
-     * @throws TicketException if there was an error creating the ticket
      */
     String delegateTicketGrantingTicket(final String serviceTicketId,
-        final Credential credentials) throws TicketException;
+        final Credential credentials);
 }

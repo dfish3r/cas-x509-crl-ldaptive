@@ -26,7 +26,7 @@ package org.jasig.cas.ticket;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public abstract class TicketException extends Exception {
+public abstract class TicketException extends RuntimeException {
 
     /** Serializable Unique ID. */
     private static final long serialVersionUID = -6000583436059919480L;

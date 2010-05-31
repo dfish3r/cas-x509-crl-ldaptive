@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.server.authentication;
 
 import javax.validation.constraints.NotNull;
@@ -45,7 +44,6 @@ public final class DefaultUrlCredentialImpl implements UrlCredential {
         } catch (final MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }
-
     }
 
     public URL getUrl() {

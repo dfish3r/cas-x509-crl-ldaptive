@@ -42,7 +42,7 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class FileAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
+public final class FileAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
 
     /** The default separator in the file. */
     private static final String DEFAULT_SEPARATOR = "::";
@@ -55,7 +55,7 @@ public class FileAuthenticationHandler extends AbstractUsernamePasswordAuthentic
     @NotNull
     private Resource fileName;
 
-    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) {
+    protected boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) {
         BufferedReader bufferedReader = null;
 
         try {
@@ -93,14 +93,14 @@ public class FileAuthenticationHandler extends AbstractUsernamePasswordAuthentic
     /**
      * @param fileName The fileName to set.
      */
-    public final void setFileName(final Resource fileName) {
+    public void setFileName(final Resource fileName) {
         this.fileName = fileName;
     }
 
     /**
      * @param separator The separator to set.
      */
-    public final void setSeparator(final String separator) {
+    public void setSeparator(final String separator) {
         this.separator = separator;
     }
 }

@@ -16,15 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.server.authentication;
 
 /**
+ * Essentially, a no-op password encoder so we never have to check if a password encoder is null in the Authentication
+ * Handlers.
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public class PlainTextPasswordEncoder implements PasswordEncoder {
+public final class PlainTextPasswordEncoder implements PasswordEncoder {
 
     public boolean isValidPassword(final String encodedPassword, final String providedPassword, final Object salt) {
         return encodedPassword != null && providedPassword != null && encodedPassword.equals(providedPassword);

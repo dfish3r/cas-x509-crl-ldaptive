@@ -19,8 +19,10 @@
 
 package org.jasig.cas.integration.restlet;
 
-import org.jasig.cas.CentralAuthenticationService;
+import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.authentication.principal.SimpleWebApplicationServiceImpl;
+import org.jasig.cas.server.logout.DefaultLogoutRequestImpl;
+import org.jasig.cas.server.logout.LogoutRequest;
 import org.jasig.cas.util.HttpClient;
 import org.jasig.cas.ticket.InvalidTicketException;
 import org.restlet.Context;
@@ -80,7 +82,8 @@ public final class TicketGrantingTicketResource extends Resource {
     }
 
     public void removeRepresentations() throws ResourceException {
-        this.centralAuthenticationService.destroyTicketGrantingTicket(this.ticketGrantingTicketId);
+        final LogoutRequest logoutRequest = new DefaultLogoutRequestImpl(this.ticketGrantingTicketId);
+        this.centralAuthenticationService.logout(logoutRequest);
         getResponse().setStatus(Status.SUCCESS_OK);
     }
 

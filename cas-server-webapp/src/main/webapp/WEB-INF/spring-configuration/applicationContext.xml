@@ -78,7 +78,7 @@
           p:salt="casrocks"/>
 
     <!-- CentralAuthenticationService -->
-    <bean id="centralAuthenticationService" class="org.jasig.cas.CentralAuthenticationServiceImpl"
+    <bean id="centralAuthenticationService" class="org.jasig.cas.server.DefaultCentralAuthenticationServiceImpl"
           p:ticketGrantingTicketExpirationPolicy-ref="grantingTicketExpirationPolicy"
           p:serviceTicketExpirationPolicy-ref="serviceTicketExpirationPolicy"
           p:authenticationManager-ref="authenticationManager"

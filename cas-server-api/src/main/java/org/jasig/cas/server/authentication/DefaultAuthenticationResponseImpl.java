@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.server.authentication;
 
 import java.security.GeneralSecurityException;
@@ -28,6 +27,7 @@ import java.util.*;
  * @since 3.5.0
  */
 public final class DefaultAuthenticationResponseImpl implements AuthenticationResponse {
+
     private final boolean succeeded;
 
     private final Set<Authentication> authentication;
@@ -39,10 +39,6 @@ public final class DefaultAuthenticationResponseImpl implements AuthenticationRe
     private final Map<String, Object> attributes = new HashMap<String, Object>();
 
     private final AttributePrincipal attributePrincipal;
-
-    public DefaultAuthenticationResponseImpl() {
-        this(new ArrayList<GeneralSecurityException>(), new ArrayList<Message>());
-    }
 
     public DefaultAuthenticationResponseImpl(final List<GeneralSecurityException> authenticationExceptions, final List<Message> authenticationMessages) {
         this(null, null, authenticationExceptions, authenticationMessages);

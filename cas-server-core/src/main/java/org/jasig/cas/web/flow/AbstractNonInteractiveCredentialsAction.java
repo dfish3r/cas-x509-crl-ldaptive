@@ -19,11 +19,9 @@
 
 package org.jasig.cas.web.flow;
 
-import org.jasig.cas.CentralAuthenticationService;
-import org.jasig.cas.authentication.handler.AuthenticationException;
+import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.ticket.TicketException;
 import org.jasig.cas.web.support.WebUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.webflow.action.AbstractAction;
@@ -60,7 +58,7 @@ public abstract class AbstractNonInteractiveCredentialsAction extends
         
         final String ticketGrantingTicketId = WebUtils.getTicketGrantingTicketId(context);
         final Service service = WebUtils.getService(context);
-
+        /*
         if (isRenewPresent(context)
             && ticketGrantingTicketId != null
             && service != null) {
@@ -101,7 +99,8 @@ public abstract class AbstractNonInteractiveCredentialsAction extends
         } catch (final TicketException e) {
             onError(context, credentials);
             return error();
-        }
+        }  */
+        return error();
     }
     
     public final void setCentralAuthenticationService(

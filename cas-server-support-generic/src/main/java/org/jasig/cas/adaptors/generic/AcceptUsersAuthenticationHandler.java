@@ -44,7 +44,7 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class AcceptUsersAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
+public final class AcceptUsersAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
 
     /** The list of users we will accept. */
     @NotNull
@@ -68,7 +68,7 @@ public class AcceptUsersAuthenticationHandler extends AbstractUsernamePasswordAu
     /**
      * @param users The users to set.
      */
-    public final void setUsers(final Map<String, String> users) {
+    public void setUsers(final Map<String, String> users) {
         this.users = Collections.unmodifiableMap(users);
     }
 }

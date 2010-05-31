@@ -28,10 +28,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentials;
-import org.jasig.cas.server.authentication.AbstractPreAndPostProcessingAuthenticationHandler;
+import org.jasig.cas.server.authentication.AbstractNamedAuthenticationHandler;
 import org.jasig.cas.server.authentication.Credential;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 
@@ -52,7 +50,7 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.0.4
  */
-public class X509CredentialsAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
+public final class X509CredentialsAuthenticationHandler extends AbstractNamedAuthenticationHandler {
 
    /** Default setting to limit the number of intermediate certificates. */
    private static final int DEFAULT_MAXPATHLENGTH = 1;
@@ -68,9 +66,6 @@ public class X509CredentialsAuthenticationHandler extends AbstractPreAndPostProc
 
    /** Default subject pattern match. */
    private static final Pattern DEFAULT_SUBJECT_DN_PATTERN = Pattern.compile(".*");
-
-   /** Instance of Logging. */
-   private final Logger log = LoggerFactory.getLogger(getClass());
 
    /** The compiled pattern supplied by the deployer. */
    @NotNull
@@ -102,7 +97,7 @@ public class X509CredentialsAuthenticationHandler extends AbstractPreAndPostProc
    @NotNull
    private Pattern regExSubjectDnPattern = DEFAULT_SUBJECT_DN_PATTERN;
 
-   protected final boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
+   public boolean authenticate(final Credential credentials) throws GeneralSecurityException {
 
        final X509CertificateCredentials x509Credentials = (X509CertificateCredentials) credentials;
        final X509Certificate[] certificates = x509Credentials

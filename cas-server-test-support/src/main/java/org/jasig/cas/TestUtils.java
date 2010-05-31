@@ -19,16 +19,12 @@
 
 package org.jasig.cas;
 
-import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
 import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.session.Assertion;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockServletContext;
 
 /**
  * @author Scott Battaglia
@@ -60,7 +56,7 @@ public final class TestUtils {
     }
 
     public static AuthenticationRequest getAuthenticationRequest(final Credential credential) {
-        return new AuthenticationRequestImpl(Arrays.asList(credential), false);
+        return new DefaultAuthenticationRequestImpl(Arrays.asList(credential), false);
     }
 
     public static UserNamePasswordCredential getCredentialsWithSameUsernameAndPassword() {

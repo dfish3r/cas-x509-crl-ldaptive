@@ -23,7 +23,7 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jasig.cas.CentralAuthenticationServiceImpl;
+import org.jasig.cas.server.DefaultCentralAuthenticationServiceImpl;
 import org.jasig.cas.adaptors.x509.authentication.handler.support.X509CredentialsAuthenticationHandler;
 import org.jasig.cas.adaptors.x509.authentication.principal.AbstractX509CertificateTests;
 import org.jasig.cas.authentication.principal.SimpleWebApplicationServiceImpl;
@@ -43,7 +43,7 @@ public class X509CertificateCredentialsNonInteractiveActionTests extends
     
     protected void setUp() throws Exception {
         this.action = new X509CertificateCredentialsNonInteractiveAction();
-        final CentralAuthenticationServiceImpl centralAuthenticationService = new CentralAuthenticationServiceImpl();
+//        final DefaultCentralAuthenticationServiceImpl centralAuthenticationService = new DefaultCentralAuthenticationServiceImpl();
         final Map<String, UniqueTicketIdGenerator> idGenerators = new HashMap<String, UniqueTicketIdGenerator>();
         idGenerators.put(SimpleWebApplicationServiceImpl.class.getName(), new DefaultUniqueTicketIdGenerator());
 
@@ -60,7 +60,7 @@ public class X509CertificateCredentialsNonInteractiveActionTests extends
 */
 //        centralAuthenticationService.setAuthenticationManager(authenticationManager);
         
-        this.action.setCentralAuthenticationService(centralAuthenticationService);
+//        this.action.setCentralAuthenticationService(centralAuthenticationService);
         this.action.afterPropertiesSet();
     }
     

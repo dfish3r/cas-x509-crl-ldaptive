@@ -37,7 +37,7 @@ public class PrincipalFromRequestRemoteUserNonInteractiveCredentialsActionTests
     protected void setUp() throws Exception {
 
         this.action = new PrincipalFromRequestRemoteUserNonInteractiveCredentialsAction();
-        final CentralAuthenticationServiceImpl centralAuthenticationService = new CentralAuthenticationServiceImpl();
+        final DefaultCentralAuthenticationServiceImpl centralAuthenticationService = new DefaultCentralAuthenticationServiceImpl();
         centralAuthenticationService.setTicketRegistry(new DefaultTicketRegistry());
         final Map<String, UniqueTicketIdGenerator> idGenerators = new HashMap<String, UniqueTicketIdGenerator>();
         idGenerators.put(SimpleWebApplicationServiceImpl.class.getName(), new DefaultUniqueTicketIdGenerator());

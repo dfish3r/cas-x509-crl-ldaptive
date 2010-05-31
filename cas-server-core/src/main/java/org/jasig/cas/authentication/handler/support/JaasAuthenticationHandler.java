@@ -59,7 +59,7 @@ import java.security.GeneralSecurityException;
  * @see javax.security.auth.callback.PasswordCallback
  * @see javax.security.auth.callback.NameCallback
  */
-public class JaasAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
+public final class JaasAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
 
     /** If no realm is specified, we default to CAS. */
     private static final String DEFAULT_REALM = "CAS";
@@ -72,8 +72,7 @@ public class JaasAuthenticationHandler extends AbstractUsernamePasswordAuthentic
         Assert.notNull(Configuration.getConfiguration(), "Static Configuration cannot be null. Did you remember to specify \"java.security.auth.login.config\"?");
     }
 
-    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
-
+    protected boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
 
         try {

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.server.authentication;
 
 /**
@@ -33,7 +32,7 @@ public interface AttributePrincipalFactory {
      * Constructs a new AttributePrincipal based on the supplied values.
      *
      * @param name the name of the principal.  CANNOT be NULL.
-     * @return the principal.
+     * @return the principal.  CANNOT be NULL.
      */
     AttributePrincipal getAttributePrincipal(String name);
 }

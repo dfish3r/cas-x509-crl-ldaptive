@@ -25,10 +25,14 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jasig.cas.CentralAuthenticationService;
+import com.github.inspektr.common.web.ClientInfoHolder;
+import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;
+import org.jasig.cas.server.login.DefaultLoginRequestImpl;
+import org.jasig.cas.server.login.LoginRequest;
+import org.jasig.cas.server.login.LoginResponse;
 import org.jasig.cas.ticket.TicketException;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -77,9 +81,11 @@ public class TicketResource extends Resource {
      
         final Credential c = obtainCredentials();
         try {
-            final String ticketGrantingTicketId = this.centralAuthenticationService.createTicketGrantingTicket(c);
+            final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, ClientInfoHolder.getClientInfo().getClientIpAddress(), false, false, null);
+            loginRequest.getCredentials().add(c);
+            final LoginResponse loginResponse = this.centralAuthenticationService.login(loginRequest);
             getResponse().setStatus(determineStatus());
-            final Reference ticket_ref = getRequest().getResourceRef().addSegment(ticketGrantingTicketId);
+            final Reference ticket_ref = getRequest().getResourceRef().addSegment(loginResponse.getSessionId());
             getResponse().setLocationRef(ticket_ref);
             getResponse().setEntity("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\"><html><head><title>" + getResponse().getStatus().getCode() + " " + getResponse().getStatus().getDescription() + "</title></head><body><h1>TGT Created</h1><form action=\"" + ticket_ref + "\" method=\"POST\">Service:<input type=\"text\" name=\"service\" value=\"\"><br><input type=\"submit\" value=\"Submit\"></form></body></html>", MediaType.TEXT_HTML);        
         } catch (final TicketException e) {

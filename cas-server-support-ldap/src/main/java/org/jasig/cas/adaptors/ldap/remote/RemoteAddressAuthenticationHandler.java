@@ -22,8 +22,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 
-import org.jasig.cas.server.authentication.AbstractPreAndPostProcessingAuthenticationHandler;
-import org.jasig.cas.server.authentication.AuthenticationHandler;
+import org.jasig.cas.server.authentication.AbstractNamedAuthenticationHandler;
 import org.jasig.cas.server.authentication.Credential;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +38,7 @@ import javax.validation.constraints.NotNull;
  * @since 3.2.1
  *
  */
-public class RemoteAddressAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
-    
-    private final Logger log = LoggerFactory.getLogger(getClass());
+public final class RemoteAddressAuthenticationHandler extends AbstractNamedAuthenticationHandler {
     
     /** The network netmask */
     @NotNull
@@ -51,8 +48,7 @@ public class RemoteAddressAuthenticationHandler extends AbstractPreAndPostProces
     @NotNull
     private InetAddress inetNetwork = null;
 
-    @Override
-    protected boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
+    public boolean authenticate(final Credential credentials) throws GeneralSecurityException {
         final RemoteAddressCredentials c = (RemoteAddressCredentials) credentials;
         try {
             final InetAddress inetAddress = InetAddress.getByName(c.getRemoteAddress().trim());
@@ -62,7 +58,7 @@ public class RemoteAddressAuthenticationHandler extends AbstractPreAndPostProces
         }
     }
 
-    public final boolean supports(final Credential credentials) {
+    public boolean supports(final Credential credentials) {
         return credentials.getClass().equals(RemoteAddressCredentials.class);
     }
     
@@ -120,7 +116,7 @@ public class RemoteAddressAuthenticationHandler extends AbstractPreAndPostProces
     /**
      * @param ipAddressRange the IP address range that should be allowed trusted logins     * 
      */
-    public final void setIpNetworkRange(final String ipAddressRange) {
+    public void setIpNetworkRange(final String ipAddressRange) {
             
         if(ipAddressRange != null) {
         

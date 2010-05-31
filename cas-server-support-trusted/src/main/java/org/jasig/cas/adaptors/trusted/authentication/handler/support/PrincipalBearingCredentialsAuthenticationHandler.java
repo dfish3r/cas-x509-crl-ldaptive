@@ -16,15 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.trusted.authentication.handler.support;
 
 import org.jasig.cas.adaptors.trusted.authentication.principal.PrincipalBearingCredentials;
-import org.jasig.cas.server.authentication.AbstractPreAndPostProcessingAuthenticationHandler;
-import org.jasig.cas.server.authentication.AuthenticationHandler;
+import org.jasig.cas.server.authentication.AbstractNamedAuthenticationHandler;
 import org.jasig.cas.server.authentication.Credential;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.security.GeneralSecurityException;
 
@@ -39,19 +35,16 @@ import java.security.GeneralSecurityException;
  * @version $Revision$ $Date$
  * @since 3.0.5
  */
-public class PrincipalBearingCredentialsAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
+public final class PrincipalBearingCredentialsAuthenticationHandler extends AbstractNamedAuthenticationHandler {
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @Override
-    protected final boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
+    public final boolean authenticate(final Credential credentials) throws GeneralSecurityException {
         if (log.isDebugEnabled()) {
             log.debug("Trusting credentials for: " + credentials);
         }
         return true;
     }
 
-    public final boolean supports(final Credential credentials) {
+    public boolean supports(final Credential credentials) {
         return credentials.getClass().equals(PrincipalBearingCredentials.class);
     }
 }

@@ -31,7 +31,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Class to represent that this service wants to use SAML. We use this in
- * combination with the CentralAuthenticationServiceImpl to choose the right
+ * combination with the DefaultCentralAuthenticationServiceImpl to choose the right
  * UniqueTicketIdGenerator.
  * 
  * @author Scott Battaglia

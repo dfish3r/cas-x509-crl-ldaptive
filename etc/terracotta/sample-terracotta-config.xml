@@ -81,7 +81,7 @@
                     <lock-name>ticketReadLock</lock-name>
                 </named-lock>
                 <named-lock>
-                    <method-expression>* org.jasig.cas.CentralAuthenticationServiceImpl.*(..)</method-expression>
+                    <method-expression>* org.jasig.cas.server.DefaultCentralAuthenticationServiceImpl.*(..)</method-expression>
                     <lock-level>write</lock-level>
                     <lock-name>casWriteLock</lock-name>
                 </named-lock>

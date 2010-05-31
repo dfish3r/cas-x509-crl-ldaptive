@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.radius.authentication.handler.support;
 
 import java.security.GeneralSecurityException;
@@ -36,7 +35,7 @@ import javax.validation.constraints.Size;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class RadiusAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
+public final class RadiusAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
 
     /** Array of RADIUS servers to authenticate against. */
     @NotNull
@@ -55,7 +54,7 @@ public class RadiusAuthenticationHandler extends AbstractUsernamePasswordAuthent
      */
     private boolean failoverOnAuthenticationFailure;
 
-    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+    protected boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
 
         for (final RadiusServer radiusServer : this.servers) {
             try {

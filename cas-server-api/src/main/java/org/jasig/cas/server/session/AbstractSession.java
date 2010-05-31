@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.authentication.AttributePrincipal;
@@ -97,6 +96,14 @@ public abstract class AbstractSession implements Session {
      * Updates the internal state of a subclass.
      */
     protected abstract void updateState();
+
+    /**
+     * Executes after the default actions must happen when createDelegatedSession is called.
+     *
+     * @param authenticationResponse the authentication response
+     * @return the delegated session.
+     */
+    protected abstract Session createDelegatedSessionInternal(final AuthenticationResponse authenticationResponse);
 
     public synchronized final Set<Access> invalidate() {
         final Set<Access> accesses = new HashSet<Access>();
@@ -200,8 +207,6 @@ public abstract class AbstractSession implements Session {
         updateState();
         return createDelegatedSessionInternal(authenticationResponse);
     }
-
-    protected abstract Session createDelegatedSessionInternal(final AuthenticationResponse authenticationResponse);
 
     public final boolean hasNotBeenUsed() {
         return getAccesses().isEmpty();

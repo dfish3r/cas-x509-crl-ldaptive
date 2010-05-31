@@ -33,7 +33,7 @@ import java.security.GeneralSecurityException;
  * This is a published and supported CAS Server 3 API.
  * </p>
  */
-public abstract class AbstractUsernamePasswordAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
+public abstract class AbstractUsernamePasswordAuthenticationHandler extends AbstractNamedAuthenticationHandler {
 
     /** Default class to support if one is not supplied. */
     private static final Class<UserNamePasswordCredential> DEFAULT_CLASS = UserNamePasswordCredential.class;
@@ -63,7 +63,7 @@ public abstract class AbstractUsernamePasswordAuthenticationHandler extends Abst
      * and delegates to abstract authenticateUsernamePasswordInternal so
      * subclasses do not need to cast.
      */
-    protected final boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
+    public final boolean authenticate(final Credential credentials) throws GeneralSecurityException {
         return authenticateUsernamePasswordInternal((UserNamePasswordCredential) credentials);
     }
 

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.support.spnego.authentication.handler.support;
 
 import jcifs.Config;
@@ -29,7 +28,7 @@ import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbSession;
 
-import org.jasig.cas.server.authentication.AbstractPreAndPostProcessingAuthenticationHandler;
+import org.jasig.cas.server.authentication.AbstractNamedAuthenticationHandler;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.SimplePrincipal;
 import org.jasig.cas.support.spnego.authentication.principal.SpnegoCredentials;
@@ -48,7 +47,7 @@ import java.security.GeneralSecurityException;
  * @since 3.1
  */
 
-public class NtlmAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
+public final class NtlmAuthenticationHandler extends AbstractNamedAuthenticationHandler {
 
     private boolean loadBalance = true;
 
@@ -57,7 +56,7 @@ public class NtlmAuthenticationHandler extends AbstractPreAndPostProcessingAuthe
     
     private String includePattern = null;
 
-    protected final boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
+    public final boolean authenticate(final Credential credentials) throws GeneralSecurityException {
         final SpnegoCredentials ntlmCredentials = (SpnegoCredentials) credentials;
         final byte[] src = ntlmCredentials.getInitToken();
 
@@ -69,16 +68,17 @@ public class NtlmAuthenticationHandler extends AbstractPreAndPostProcessingAuthe
             	// find the first dc that matches the includepattern
             	if(this.includePattern != null){
             		NbtAddress [] dcs  = NbtAddress.getAllByName(this.domainController,0x1C, null,null);
-            		for(int i=0;i<dcs.length;i++){
-            			if(dcs[i].getHostAddress().matches(this.includePattern)){
-            				dc = new UniAddress(dcs[i]);
+
+                    for (final NbtAddress nbt : dcs) {
+            			if(nbt.getHostAddress().matches(this.includePattern)){
+            				dc = new UniAddress(nbt);
             				break;
             			}
             		}
             	}
-            	else
-            		dc = new UniAddress(NbtAddress.getByName(this.domainController,
-            				0x1C, null));
+            	else {
+            		dc = new UniAddress(NbtAddress.getByName(this.domainController, 0x1C, null));
+                }
             } else {
                 dc = UniAddress.getByName(this.domainController, true);
             }
@@ -124,8 +124,7 @@ public class NtlmAuthenticationHandler extends AbstractPreAndPostProcessingAuthe
     }
 
     public boolean supports(final Credential credentials) {
-        return credentials != null
-            && SpnegoCredentials.class.equals(credentials.getClass());
+        return credentials != null && SpnegoCredentials.class.equals(credentials.getClass());
     }
 
     public void setLoadBalance(final boolean loadBalance) {

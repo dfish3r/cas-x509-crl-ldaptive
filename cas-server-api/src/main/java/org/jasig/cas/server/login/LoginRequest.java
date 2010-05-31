@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.authentication.Credential;
@@ -27,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *  Represents a request for a user to create a session with the system.  The basic LoginRequest interface is designed
+ * Represents a request for a user to create a session with the system.  The basic LoginRequest interface is designed
  * to handle the most common cases.  Developers who need more specific features (such as forceAuthentication when
  * the IP address changes) may extend the interface.
  *
@@ -74,13 +73,6 @@ public interface LoginRequest extends Serializable {
      * @return the current session identifier, if there is one.
      */
     String getSessionId();
-
-    /**
-     * Allows one to set the session id to be used.
-     *
-     * @param sessionId the session id to be used.
-     */
-    void setSessionId(final String sessionId);
 
     /**
      * Determines whether the user should be prompted for credentials or not.  In CAS terminology, this is "gateway"

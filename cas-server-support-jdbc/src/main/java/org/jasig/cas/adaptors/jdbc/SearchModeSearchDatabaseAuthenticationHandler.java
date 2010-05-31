@@ -37,7 +37,7 @@ import java.security.GeneralSecurityException;
  * @since 3.0
  */
 
-public class SearchModeSearchDatabaseAuthenticationHandler extends AbstractJdbcUsernamePasswordAuthenticationHandler implements InitializingBean {
+public final class SearchModeSearchDatabaseAuthenticationHandler extends AbstractJdbcUsernamePasswordAuthenticationHandler implements InitializingBean {
 
     private static final String SQL_PREFIX = "Select count('x') from ";
 
@@ -70,21 +70,21 @@ public class SearchModeSearchDatabaseAuthenticationHandler extends AbstractJdbcU
     /**
      * @param fieldPassword The fieldPassword to set.
      */
-    public final void setFieldPassword(final String fieldPassword) {
+    public void setFieldPassword(final String fieldPassword) {
         this.fieldPassword = fieldPassword;
     }
 
     /**
      * @param fieldUser The fieldUser to set.
      */
-    public final void setFieldUser(final String fieldUser) {
+    public void setFieldUser(final String fieldUser) {
         this.fieldUser = fieldUser;
     }
 
     /**
      * @param tableUsers The tableUsers to set.
      */
-    public final void setTableUsers(final String tableUsers) {
+    public void setTableUsers(final String tableUsers) {
         this.tableUsers = tableUsers;
     }
 }

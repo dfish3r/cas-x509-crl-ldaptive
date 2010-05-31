@@ -3,6 +3,8 @@ package org.jasig.cas.server.authentication;
 import java.security.Principal;
 
 /**
+ * Designed for the instances where we need to return a principal that is then discarded.
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5

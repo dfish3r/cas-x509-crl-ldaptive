@@ -29,10 +29,9 @@ import java.util.Map;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 4.0.0
+ * @since 3.5
  */
 public interface AttributePrincipal extends Principal, Serializable {
-
 
     /**
      * Returns all of the attribute values associated with this attribute or NULL if none exist.

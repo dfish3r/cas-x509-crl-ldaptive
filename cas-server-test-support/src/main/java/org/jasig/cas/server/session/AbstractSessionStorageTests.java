@@ -55,7 +55,7 @@ public abstract class AbstractSessionStorageTests {
     }
 
     protected final Authentication getConstructedAuthentication() {
-        return this.authenticationFactory.getAuthentication(Collections.<String, List<Object>>emptyMap(), new AuthenticationRequestImpl(Collections.<Credential>emptyList(), false), "myMethod");
+        return this.authenticationFactory.getAuthentication(Collections.<String, List<Object>>emptyMap(), new DefaultAuthenticationRequestImpl(Collections.<Credential>emptyList(), false), "myMethod");
     }
 
     @Before

@@ -19,9 +19,13 @@
 
 package org.jasig.cas.remoting.server;
 
-import org.jasig.cas.CentralAuthenticationService;
+import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.login.LoginRequest;
+import org.jasig.cas.server.login.LoginResponse;
+import org.jasig.cas.server.logout.LogoutRequest;
+import org.jasig.cas.server.logout.LogoutResponse;
 import org.jasig.cas.server.session.Assertion;
 import org.jasig.cas.ticket.TicketException;
 import org.springframework.util.Assert;
@@ -57,42 +61,35 @@ public final class RemoteCentralAuthenticationService implements CentralAuthenti
     @NotNull
     private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    /**
-     * @throws IllegalArgumentException if the Credentials are null or if given
-     * invalid credentials.
-     */
-    public String createTicketGrantingTicket(final Credential credentials) throws TicketException {
-        Assert.notNull(credentials, "credentials cannot be null");
-        checkForErrors(credentials);
-
-        return this.centralAuthenticationService.createTicketGrantingTicket(credentials);
+    public LoginResponse login(final LoginRequest loginRequest) {
+        return this.centralAuthenticationService.login(loginRequest);
     }
 
-    public String grantServiceTicket(final String ticketGrantingTicketId, final Service service) throws TicketException {
+    public LogoutResponse logout(LogoutRequest logoutRequest) {
+        return this.centralAuthenticationService.logout(logoutRequest);
+    }
+
+    public String grantServiceTicket(final String ticketGrantingTicketId, final Service service) {
         return this.centralAuthenticationService.grantServiceTicket(ticketGrantingTicketId, service);
     }
 
     /**
      * @throws IllegalArgumentException if given invalid credentials
      */
-    public String grantServiceTicket(final String ticketGrantingTicketId, final Service service, final Credential credentials) throws TicketException {
+    public String grantServiceTicket(final String ticketGrantingTicketId, final Service service, final Credential credentials) {
         checkForErrors(credentials);
 
         return this.centralAuthenticationService.grantServiceTicket(ticketGrantingTicketId, service, credentials);
     }
 
-    public Assertion validateServiceTicket(final String serviceTicketId, final Service service) throws TicketException {
+    public Assertion validateServiceTicket(final String serviceTicketId, final Service service) {
         return this.centralAuthenticationService.validateServiceTicket(serviceTicketId, service);
     }
 
-    public void destroyTicketGrantingTicket(final String ticketGrantingTicketId) {
-        this.centralAuthenticationService.destroyTicketGrantingTicket(ticketGrantingTicketId);
-    }
-
-    /**
+     /**
      * @throws IllegalArgumentException if the credentials are invalid.
      */
-    public String delegateTicketGrantingTicket(final String serviceTicketId, final Credential credentials) throws TicketException {
+    public String delegateTicketGrantingTicket(final String serviceTicketId, final Credential credentials) {
         checkForErrors(credentials);
 
         return this.centralAuthenticationService.delegateTicketGrantingTicket(serviceTicketId, credentials);

@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
-import org.jasig.cas.CentralAuthenticationService;
+import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.authentication.principal.SimpleWebApplicationServiceImpl;
 import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.ticket.TicketException;
