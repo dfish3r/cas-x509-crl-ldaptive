@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.authentication.principal;
 
 import java.util.Arrays;
@@ -26,9 +25,9 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
-
 
 /**
  * 
@@ -69,6 +68,10 @@ public abstract class AbstractLdapPersonDirectoryCredentialsToPrincipalResolver 
 
     /** The amount of time to wait. */
     private int timeout = DEFAULT_TIMEOUT;
+
+    protected AbstractLdapPersonDirectoryCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
+        super(attributePrincipalFactory);
+    }
 
     protected final SearchControls getSearchControls() {
         final SearchControls constraints = new SearchControls();

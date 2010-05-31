@@ -20,7 +20,6 @@
 package org.jasig.cas;
 
 import org.jasig.cas.server.authentication.AuthenticationManager;
-import org.jasig.cas.server.session.Session;
 import org.jasig.cas.server.session.SessionStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;

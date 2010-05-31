@@ -16,19 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.generic;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jasig.cas.adaptors.generic.AcceptUsersAuthenticationHandler;
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.principal.HttpBasedServiceCredentials;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.TestUtils;
 import junit.framework.TestCase;
+import org.jasig.cas.server.authentication.DefaultUrlCredentialImpl;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 
 /**
  * @author Scott Battaglia
@@ -54,92 +53,69 @@ public class AcceptUsersAuthenticationHandlerTests extends TestCase {
     }
     
     public void testSupportsSpecialCharacters() throws Exception {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-        c.setUsername("brian");
-        c.setPassword("tést");
+        final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("brian", "tést");
         assertTrue(this.authenticationHandler.authenticate(c));
-
     }
 
     public void testSupportsProperUserCredentials() throws Exception {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-
-        c.setUsername("scott");
-        c.setPassword("rutgers");
+        final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("scott", "rutgers");
         this.authenticationHandler.authenticate(c);
     }
 
     public void testDoesntSupportBadUserCredentials() {
         try {
-            assertFalse(this.authenticationHandler
-                .supports(new HttpBasedServiceCredentials(new URL(
-                    "http://www.rutgers.edu"))));
+            assertFalse(this.authenticationHandler.supports(new DefaultUrlCredentialImpl(new URL("http://www.rutgers.edu"))));
         } catch (MalformedURLException e) {
             fail("Could not resolve URL.");
         }
     }
 
     public void testAuthenticatesUserInMap() {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-
-        c.setUsername("scott");
-        c.setPassword("rutgers");
+        final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("scott", "rutgers");
 
         try {
             assertTrue(this.authenticationHandler.authenticate(c));
-        } catch (AuthenticationException e) {
+        } catch (GeneralSecurityException e) {
             fail("AuthenticationException caught but it should not have been thrown.");
         }
     }
 
     public void testFailsUserNotInMap() {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-
-        c.setUsername("fds");
-        c.setPassword("rutgers");
+        final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("fds", "rutgers");
 
         try {
             assertFalse(this.authenticationHandler.authenticate(c));
-        } catch (AuthenticationException e) {
+        } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
     }
 
     public void testFailsNullUserName() {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-
-        c.setUsername(null);
-        c.setPassword("user");
+        final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword(null, "user");
 
         try {
             assertFalse(this.authenticationHandler.authenticate(c));
-        } catch (AuthenticationException e) {
+        } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
     }
 
     public void testFailsNullUserNameAndPassword() {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-
-        c.setUsername(null);
-        c.setPassword(null);
+        final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword(null, null);
 
         try {
             assertFalse(this.authenticationHandler.authenticate(c));
-        } catch (AuthenticationException e) {
+        } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
     }
 
     public void testFailsNullPassword() {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-
-        c.setUsername("scott");
-        c.setPassword(null);
+        final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("Scott", null);
 
         try {
             assertFalse(this.authenticationHandler.authenticate(c));
-        } catch (AuthenticationException e) {
+        } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
     }

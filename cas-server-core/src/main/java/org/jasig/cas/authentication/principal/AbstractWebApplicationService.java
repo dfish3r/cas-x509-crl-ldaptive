@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.util.DefaultUniqueTicketIdGenerator;
 import org.jasig.cas.util.HttpClient;
 import org.jasig.cas.util.SamlUtils;

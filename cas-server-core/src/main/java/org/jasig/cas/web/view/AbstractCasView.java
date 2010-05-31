@@ -21,7 +21,7 @@ package org.jasig.cas.web.view;
 
 import java.util.Map;
 
-import org.jasig.cas.validation.Assertion;
+import org.jasig.cas.server.session.Assertion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.view.AbstractView;

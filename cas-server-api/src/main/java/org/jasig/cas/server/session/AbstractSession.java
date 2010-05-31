@@ -203,7 +203,7 @@ public abstract class AbstractSession implements Session {
 
     protected abstract Session createDelegatedSessionInternal(final AuthenticationResponse authenticationResponse);
 
-    public boolean hasNotBeenUsed() {
+    public final boolean hasNotBeenUsed() {
         return getAccesses().isEmpty();
     }
 }

@@ -19,15 +19,15 @@
 
 package org.jasig.cas.server.session;
 
+import org.jasig.cas.TestUtils;
 import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.util.Cleanable;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.security.GeneralSecurityException;
+import java.util.*;
 
 /**
  * Abstract class to ensure all session storage are run against the same tests.
@@ -50,9 +50,12 @@ public abstract class AbstractSessionStorageTests {
 
     protected abstract AttributePrincipalFactory getAttributePrincipalFactory();
 
-    protected final Authentication getConstructedAuthentication(final String name) {
-        final AttributePrincipal attributePrincipal = this.attributePrincipalFactory.getAttributePrincipal(name);
-        return this.authenticationFactory.getAuthentication(attributePrincipal, Collections.<String, List<Object>>emptyMap(), new AuthenticationRequestImpl(Collections.<Credential>emptyList(), false));
+    protected final AuthenticationResponse getAuthenticationResponse(final String principal) {
+        return new DefaultAuthenticationResponseImpl(new HashSet<Authentication>(Arrays.asList(getConstructedAuthentication())), TestUtils.getPrincipal(principal), Collections.<GeneralSecurityException>emptyList(), Collections.<Message>emptyList());
+    }
+
+    protected final Authentication getConstructedAuthentication() {
+        return this.authenticationFactory.getAuthentication(Collections.<String, List<Object>>emptyMap(), new AuthenticationRequestImpl(Collections.<Credential>emptyList(), false), "myMethod");
     }
 
     @Before
@@ -62,13 +65,13 @@ public abstract class AbstractSessionStorageTests {
 
     @Test
     public final void testCreateSession() {
-        final Session session = this.sessionStorage.createSession(getConstructedAuthentication("test"));
+        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test"));
         assertNotNull(session);
     }
 
     @Test
     public final void testDestroySessionThatExists() {
-        final Session session = this.sessionStorage.createSession(getConstructedAuthentication("test"));
+        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test"));
         assertNotNull(session);
 
         assertNotNull(this.sessionStorage.findSessionBySessionId(session.getId()));
@@ -84,7 +87,7 @@ public abstract class AbstractSessionStorageTests {
 
     @Test
     public final void testRetrieveRootSessionThatExists() {
-        final Session session = this.sessionStorage.createSession(getConstructedAuthentication("test"));
+        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test"));
         assertNotNull(session);
 
         final Session session2 = this.sessionStorage.findSessionBySessionId(session.getId());
@@ -95,7 +98,7 @@ public abstract class AbstractSessionStorageTests {
 
     @Test
     public final void testRetrieveRootSessionThatDoesNotExist() {
-        final Session session = this.sessionStorage.createSession(getConstructedAuthentication("test"));
+        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test"));
         assertNotNull(session);
 
         final Session session2 = this.sessionStorage.findSessionBySessionId("FOOBAR");
@@ -104,8 +107,8 @@ public abstract class AbstractSessionStorageTests {
 
     @Test
     public final void testRetrieveSessionsForUserThatDoesNotExist() {
-        this.sessionStorage.createSession(getConstructedAuthentication("test"));
-        this.sessionStorage.createSession(getConstructedAuthentication("test"));
+        this.sessionStorage.createSession(getAuthenticationResponse("test"));
+        this.sessionStorage.createSession(getAuthenticationResponse("test"));
 
         final Set<Session> sessions = this.sessionStorage.findSessionsByPrincipal("FOOBAR");
 
@@ -114,9 +117,9 @@ public abstract class AbstractSessionStorageTests {
 
     @Test
     public final void testRetrieveSessionsForUserThatDoestExist() {
-        this.sessionStorage.createSession(getConstructedAuthentication("test"));
-        this.sessionStorage.createSession(getConstructedAuthentication("test"));
-        this.sessionStorage.createSession(getConstructedAuthentication("FOOBAR"));
+        this.sessionStorage.createSession(getAuthenticationResponse("test"));
+        this.sessionStorage.createSession(getAuthenticationResponse("test"));
+        this.sessionStorage.createSession(getAuthenticationResponse("FOOBAR"));
 
         assertEquals(2, this.sessionStorage.findSessionsByPrincipal("test").size());
         assertEquals(1, this.sessionStorage.findSessionsByPrincipal("FOOBAR").size());

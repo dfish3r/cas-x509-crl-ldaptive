@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 
 import javax.validation.constraints.NotNull;
 
@@ -44,15 +44,14 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class AcceptUsersAuthenticationHandler extends
-    AbstractUsernamePasswordAuthenticationHandler {
+public class AcceptUsersAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
 
     /** The list of users we will accept. */
     @NotNull
     private Map<String, String> users;
 
-    protected final boolean authenticateUsernamePasswordInternal(final UsernamePasswordCredentials credentials) {
-        final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUsername());
+    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) {
+        final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
         final String cachedPassword = this.users.get(transformedUsername);
 
         if (cachedPassword == null) {
@@ -63,10 +62,7 @@ public class AcceptUsersAuthenticationHandler extends
             return false;
         }
 
-        final String encodedPassword = this.getPasswordEncoder().encode(
-            credentials.getPassword());
-
-        return (cachedPassword.equals(encodedPassword));
+        return this.getPasswordEncoder().isValidPassword(cachedPassword, credentials.getPassword(), null);
     }
 
     /**
