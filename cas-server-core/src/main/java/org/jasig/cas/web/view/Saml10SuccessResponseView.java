@@ -26,9 +26,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
-import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Authentication;
-import org.jasig.cas.validation.Assertion;
+import org.jasig.cas.server.session.Assertion;
 import org.opensaml.SAMLAssertion;
 import org.opensaml.SAMLAttribute;
 import org.opensaml.SAMLAttributeStatement;

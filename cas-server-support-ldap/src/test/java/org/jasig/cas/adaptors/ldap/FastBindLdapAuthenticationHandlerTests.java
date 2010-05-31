@@ -16,10 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.ldap;
 
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import static org.junit.Assert.*;
@@ -42,8 +41,8 @@ public class FastBindLdapAuthenticationHandlerTests extends AbstractJUnit4Spring
 
 
     public void testSuccessUsernamePassword() throws Exception {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-        c.setUsername(this.fastBindTestConfig.getExistsCredential());
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
+        c.setUserName(this.fastBindTestConfig.getExistsCredential());
         c.setPassword(this.fastBindTestConfig.getExistsSuccessPassword());
 
         assertTrue(this.fastBindAuthHandler.authenticate(c));
@@ -51,8 +50,8 @@ public class FastBindLdapAuthenticationHandlerTests extends AbstractJUnit4Spring
 
 
     public void testSuccessUsernameSaslMd5Password() throws Exception {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-        c.setUsername(this.saslMd5FastBindTestConfig.getExistsCredential());
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
+        c.setUserName(this.saslMd5FastBindTestConfig.getExistsCredential());
         c.setPassword(this.saslMd5FastBindTestConfig.getExistsSuccessPassword());
 
         assertTrue(this.saslMd5FastBindAuthHandler.authenticate(c));
@@ -60,8 +59,8 @@ public class FastBindLdapAuthenticationHandlerTests extends AbstractJUnit4Spring
 
 
     public void testBadUsernamePassword() throws Exception {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-        c.setUsername(this.fastBindTestConfig.getExistsCredential());
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
+        c.setUserName(this.fastBindTestConfig.getExistsCredential());
         c.setPassword(this.fastBindTestConfig.getExistsFailurePassword());
 
         assertFalse(this.fastBindAuthHandler.authenticate(c));
@@ -69,8 +68,8 @@ public class FastBindLdapAuthenticationHandlerTests extends AbstractJUnit4Spring
 
 
     public void testNotExistsUsername() throws Exception {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-        c.setUsername(this.fastBindTestConfig.getNotExistsCredential());
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
+        c.setUserName(this.fastBindTestConfig.getNotExistsCredential());
         c.setPassword("");
 
         assertFalse(this.fastBindAuthHandler.authenticate(c));

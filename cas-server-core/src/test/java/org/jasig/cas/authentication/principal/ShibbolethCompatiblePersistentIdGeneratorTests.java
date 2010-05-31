@@ -23,6 +23,7 @@ import org.jasig.cas.TestUtils;
 
 import junit.framework.TestCase;
 import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.Service;
 
 /**
  * @author Scott Battaglia

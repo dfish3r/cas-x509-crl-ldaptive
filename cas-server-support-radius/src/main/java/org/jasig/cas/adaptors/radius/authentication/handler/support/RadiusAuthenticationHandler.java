@@ -19,12 +19,12 @@
 
 package org.jasig.cas.adaptors.radius.authentication.handler.support;
 
+import java.security.GeneralSecurityException;
 import java.util.List;
 
 import org.jasig.cas.adaptors.radius.RadiusServer;
-import org.jasig.cas.authentication.handler.AuthenticationException;
 import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -36,8 +36,7 @@ import javax.validation.constraints.Size;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class RadiusAuthenticationHandler extends
-    AbstractUsernamePasswordAuthenticationHandler {
+public class RadiusAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
 
     /** Array of RADIUS servers to authenticate against. */
     @NotNull
@@ -56,7 +55,7 @@ public class RadiusAuthenticationHandler extends
      */
     private boolean failoverOnAuthenticationFailure;
 
-    protected final boolean authenticateUsernamePasswordInternal(final UsernamePasswordCredentials credentials) throws AuthenticationException {
+    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
 
         for (final RadiusServer radiusServer : this.servers) {
             try {
@@ -89,8 +88,7 @@ public class RadiusAuthenticationHandler extends
      * @param failoverOnAuthenticationFailure boolean on whether to failover or
      * not.
      */
-    public void setFailoverOnAuthenticationFailure(
-        final boolean failoverOnAuthenticationFailure) {
+    public void setFailoverOnAuthenticationFailure(final boolean failoverOnAuthenticationFailure) {
         this.failoverOnAuthenticationFailure = failoverOnAuthenticationFailure;
     }
 

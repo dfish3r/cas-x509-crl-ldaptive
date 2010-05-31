@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public final class JpaAuthenticationFactory implements AuthenticationFactory {
 
-    public Authentication getAuthentication(final AttributePrincipal principal, final Map<String, List<Object>> authenticationMetaData, final AuthenticationRequest authenticationRequest) {
-        return new JpaAuthenticationImpl(principal, authenticationRequest.isLongTermAuthenticationRequest(), authenticationMetaData);
+    public Authentication getAuthentication(final Map<String, List<Object>> authenticationMetaData, final AuthenticationRequest authenticationRequest, final String authenticationType) {
+        return new JpaAuthenticationImpl(authenticationRequest.isLongTermAuthenticationRequest(), authenticationMetaData, authenticationType);
     }
 }

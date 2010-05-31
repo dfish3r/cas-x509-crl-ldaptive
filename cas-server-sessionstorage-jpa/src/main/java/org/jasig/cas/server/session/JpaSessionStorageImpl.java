@@ -20,6 +20,7 @@
 package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.authentication.Authentication;
+import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.util.Cleanable;
 import org.springframework.util.Assert;
 
@@ -94,18 +95,34 @@ public final class JpaSessionStorageImpl extends AbstractSessionStorage implemen
         } */
     }
 
-    public Session createSession(final Authentication authentication) {
+    public Session createSession(final AuthenticationResponse authenticationResponse) {
         JpaSessionImpl.setAccessFactories(getAccessFactories());
         JpaSessionImpl.setExpirationPolicy(getExpirationPolicy());
 
-        final Session session = new JpaSessionImpl(authentication);
+        final Session session = new JpaSessionImpl(authenticationResponse);
         return this.entityManager.merge(session);
     }
 
     public Set<Session> findSessionsByPrincipal(final String principalName) {
         Assert.notNull(principalName);
-        final List<Session> listSessions = (List<Session>) this.entityManager.createQuery("select s from session s where s.authentication.attributePrincipal.name = :name").setParameter("name", principalName).getResultList();
+        final List<Session> listSessions = (List<Session>) this.entityManager.createQuery("select s from session s where s.attributePrincipal.name = :name").setParameter("name", principalName).getResultList();
         return new HashSet<Session>(listSessions);
+    }
+
+    public int getCountOfActiveSessions() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int getCountOfInactiveSessions() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int getCountOfUnusedAccesses() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int getCountOfUsedAccesses() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void purge() {

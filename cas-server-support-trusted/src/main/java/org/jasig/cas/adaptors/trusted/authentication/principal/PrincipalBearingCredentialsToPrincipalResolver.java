@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.trusted.authentication.principal;
 
 import org.jasig.cas.authentication.principal.AbstractPersonDirectoryCredentialsToPrincipalResolver;
-import org.jasig.cas.authentication.principal.Credentials;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.Credential;
 
 /**
  * Extracts the Principal out of PrincipalBearingCredentials. It is very simple
@@ -28,20 +28,20 @@ import org.jasig.cas.authentication.principal.Credentials;
  * already bear the ready-to-go Principal.
  * 
  * @author Andrew Petro
- * @version $Revision$ $Date: 2007-06-10 09:17:55 -0400 (Sun, 10 Jun
- * 2007) $
+ * @version $Revision$ $Date$
  * @since 3.0.5
  */
-public final class PrincipalBearingCredentialsToPrincipalResolver extends
-    AbstractPersonDirectoryCredentialsToPrincipalResolver {
+public final class PrincipalBearingCredentialsToPrincipalResolver extends AbstractPersonDirectoryCredentialsToPrincipalResolver {
 
-    protected String extractPrincipalId(Credentials credentials) {
-        return ((PrincipalBearingCredentials) credentials).getPrincipal()
-            .getId();
+    public PrincipalBearingCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
+        super(attributePrincipalFactory);
     }
 
-    public boolean supports(final Credentials credentials) {
-        return credentials != null
-            && credentials.getClass().equals(PrincipalBearingCredentials.class);
+    protected String extractPrincipalId(final Credential credentials) {
+        return ((PrincipalBearingCredentials) credentials).getPrincipal().getName();
+    }
+
+    public boolean supports(final Credential credentials) {
+        return credentials != null && credentials.getClass().equals(PrincipalBearingCredentials.class);
     }
 }

@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public final class MemcachedAuthenticationImplFactory implements AuthenticationFactory {
 
-    public Authentication getAuthentication(AttributePrincipal principal, Map<String, List<Object>> authenticationMetaData, AuthenticationRequest authenticationRequest) {
-        return new MemcachedAuthenticationImpl(principal, authenticationMetaData, authenticationRequest.isLongTermAuthenticationRequest());
+    public Authentication getAuthentication(Map<String, List<Object>> authenticationMetaData, AuthenticationRequest authenticationRequest, final String authenticationMethod) {
+        return new MemcachedAuthenticationImpl(authenticationMetaData, authenticationRequest.isLongTermAuthenticationRequest(), authenticationMethod);
     }
 }

@@ -19,6 +19,10 @@
 
 package org.jasig.cas.authentication.principal;
 
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.CredentialToPrincipalResolver;
 import org.jasig.cas.util.LdapUtils;
 import org.springframework.ldap.core.AttributesMapper;
 
@@ -42,11 +46,14 @@ public final class CredentialsToLDAPAttributePrincipalResolver extends AbstractL
      * request
      */
     @NotNull
-    private CredentialsToPrincipalResolver credentialsToPrincipalResolver;
+    private CredentialToPrincipalResolver credentialsToPrincipalResolver;
+
+    public CredentialsToLDAPAttributePrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
+        super(attributePrincipalFactory);
+    }
     
-    protected String extractPrincipalId(final Credentials credentials) {
-        final Principal principal = this.credentialsToPrincipalResolver
-            .resolvePrincipal(credentials);
+    protected String extractPrincipalId(final Credential credentials) {
+        final AttributePrincipal principal = this.credentialsToPrincipalResolver.resolve(credentials);
 
         if (principal == null) {
             log.info("Initial principal could not be resolved from request, "
@@ -58,10 +65,10 @@ public final class CredentialsToLDAPAttributePrincipalResolver extends AbstractL
             log.debug("Resolved " + principal + ". Trying LDAP resolve now...");
         }
 
-        final String ldapPrincipal = resolveFromLDAP(principal.getId());
+        final String ldapPrincipal = resolveFromLDAP(principal.getName());
 
         if (ldapPrincipal == null) {
-            log.info("Initial principal \"" + principal.getId()
+            log.info("Initial principal \"" + principal.getName()
                 + "\" was not found in LDAP, returning null");
         } else {
             log.debug("Resolved " + principal + " to " + ldapPrincipal);
@@ -119,7 +126,7 @@ public final class CredentialsToLDAPAttributePrincipalResolver extends AbstractL
     /*
      * Delegates checking to the configured CredentialsToPrincipalResolver.
      */
-    public boolean supports(final Credentials credentials) {
+    public boolean supports(final Credential credentials) {
         return this.credentialsToPrincipalResolver.supports(credentials);
     }
 
@@ -127,8 +134,7 @@ public final class CredentialsToLDAPAttributePrincipalResolver extends AbstractL
      * @param credentialsToPrincipalResolver The credentialsToPrincipalResolver
      * to set.
      */
-    public final void setCredentialsToPrincipalResolver(
-        CredentialsToPrincipalResolver credentialsToPrincipalResolver) {
+    public final void setCredentialsToPrincipalResolver(CredentialToPrincipalResolver credentialsToPrincipalResolver) {
         this.credentialsToPrincipalResolver = credentialsToPrincipalResolver;
     }
 }

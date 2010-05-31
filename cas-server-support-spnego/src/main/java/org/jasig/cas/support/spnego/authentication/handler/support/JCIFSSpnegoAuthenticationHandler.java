@@ -20,15 +20,15 @@
 package org.jasig.cas.support.spnego.authentication.handler.support;
 
 import jcifs.spnego.Authentication;
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.BadCredentialsAuthenticationException;
 import org.jasig.cas.server.authentication.AbstractPreAndPostProcessingAuthenticationHandler;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.SimplePrincipal;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.SimplePrincipal;
 import org.jasig.cas.support.spnego.authentication.principal.SpnegoCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.security.auth.login.CredentialException;
+import java.security.GeneralSecurityException;
 import java.security.Principal;
 import java.util.regex.Pattern;
 
@@ -42,8 +42,7 @@ import java.util.regex.Pattern;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public final class JCIFSSpnegoAuthenticationHandler extends
-        AbstractPreAndPostProcessingAuthenticationHandler {
+public final class JCIFSSpnegoAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -59,8 +58,7 @@ public final class JCIFSSpnegoAuthenticationHandler extends
      */
     private boolean isNTLMallowed = false;
 
-    protected boolean doAuthentication(final Credentials credentials)
-        throws AuthenticationException {
+    protected boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
         final SpnegoCredentials spnegoCredentials = (SpnegoCredentials) credentials;
         Principal principal;
         byte[] nextToken;
@@ -73,7 +71,7 @@ public final class JCIFSSpnegoAuthenticationHandler extends
                 nextToken = this.authentication.getNextToken();
             }
         } catch (jcifs.spnego.AuthenticationException e) {
-            throw new BadCredentialsAuthenticationException(e);
+            throw new CredentialException(e.getMessage());
         }
         // evaluate jcifs response
         if (nextToken != null) {
@@ -109,7 +107,7 @@ public final class JCIFSSpnegoAuthenticationHandler extends
         return false;
     }
 
-    public boolean supports(final Credentials credentials) {
+    public boolean supports(final Credential credentials) {
         return credentials != null
             && SpnegoCredentials.class.equals(credentials.getClass());
     }
@@ -126,14 +124,12 @@ public final class JCIFSSpnegoAuthenticationHandler extends
         this.isNTLMallowed = isNTLMallowed;
     }
 
-    protected SimplePrincipal getSimplePrincipal(final String name,
-        final boolean isNtlm) {
+    protected Principal getSimplePrincipal(final String name, final boolean isNtlm) {
         if (this.principalWithDomainName) {
             return new SimplePrincipal(name);
         }
         if (isNtlm) {
-        	return Pattern.matches("\\S+\\\\\\S+", name) ? new SimplePrincipal
-        			(name.split("\\\\")[1]) : new SimplePrincipal(name);
+        	return Pattern.matches("\\S+\\\\\\S+", name) ? new SimplePrincipal(name.split("\\\\")[1]) : new SimplePrincipal(name);
         }
         return new SimplePrincipal(name.split("@")[0]);
     }

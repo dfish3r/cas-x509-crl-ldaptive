@@ -37,16 +37,16 @@ public final class MemcachedAuthenticationImpl implements Authentication, Serial
 
     private final Date date = new Date();
 
-    private final AttributePrincipal principal;
-
     private final Map<String, List<Object>> authenticationMetaData;
 
     private final boolean longTermAuthentication;
 
-    public MemcachedAuthenticationImpl(final AttributePrincipal principal, final Map<String, List<Object>> authenticationMetaData, final boolean longTermAuthentication) {
-        this.principal = principal;
+    private final String authenticationMethod;
+
+    public MemcachedAuthenticationImpl(final Map<String, List<Object>> authenticationMetaData, final boolean longTermAuthentication, final String authenticationMethod) {
         this.authenticationMetaData = Collections.unmodifiableMap(authenticationMetaData);
         this.longTermAuthentication = longTermAuthentication;
+        this.authenticationMethod = authenticationMethod;
     }
 
     public Date getAuthenticationDate() {
@@ -57,11 +57,11 @@ public final class MemcachedAuthenticationImpl implements Authentication, Serial
         return this.authenticationMetaData;
     }
 
-    public AttributePrincipal getPrincipal() {
-        return this.principal;
-    }
-
     public boolean isLongTermAuthentication() {
         return this.longTermAuthentication;
+    }
+
+    public String getAuthenticationMethod() {
+        return this.authenticationMethod;
     }
 }

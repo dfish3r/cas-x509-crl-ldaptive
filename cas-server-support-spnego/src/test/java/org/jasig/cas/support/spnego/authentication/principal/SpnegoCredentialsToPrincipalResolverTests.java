@@ -19,10 +19,10 @@
 
 package org.jasig.cas.support.spnego.authentication.principal;
 
-import org.jasig.cas.authentication.principal.SimplePrincipal;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
-import org.jasig.cas.support.spnego.authentication.principal.SpnegoCredentials;
-import org.jasig.cas.support.spnego.authentication.principal.SpnegoCredentialsToPrincipalResolver;
+import org.jasig.cas.TestUtils;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
 
 import junit.framework.TestCase;
 
@@ -39,19 +39,22 @@ public class SpnegoCredentialsToPrincipalResolverTests extends TestCase {
 	private SpnegoCredentials spnegoCredentials;
 
 	protected void setUp() throws Exception {
-		this.resolver = new SpnegoCredentialsToPrincipalResolver();
+		this.resolver = new SpnegoCredentialsToPrincipalResolver(new AttributePrincipalFactory() {
+            public AttributePrincipal getAttributePrincipal(String name) {
+                return TestUtils.getPrincipal(name);
+            }
+        });
 		this.spnegoCredentials = new SpnegoCredentials(new byte[] { 0, 1, 2 });
 	}
 
 	public void testValidCredentials() {
-		this.spnegoCredentials.setPrincipal(new SimplePrincipal("test"));
-		assertEquals("test", this.resolver.resolvePrincipal(this.spnegoCredentials)
-				.getId());
+		this.spnegoCredentials.setPrincipal(TestUtils.getPrincipal("test"));
+		assertEquals("test", this.resolver.resolve(this.spnegoCredentials).getName());
 	}
 
 	public void testSupports() {
 		assertFalse(this.resolver.supports(null));
 		assertTrue(this.resolver.supports(this.spnegoCredentials));
-		assertFalse(this.resolver.supports(new UsernamePasswordCredentials()));
+		assertFalse(this.resolver.supports(new DefaultUserNamePasswordCredential()));
 	}
 }

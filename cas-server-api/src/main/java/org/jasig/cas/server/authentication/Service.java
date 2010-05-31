@@ -17,9 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication.principal;
-
-import org.jasig.cas.server.authentication.AttributePrincipal;
+package org.jasig.cas.server.authentication;
 
 /**
  * Marker interface for Services. Services are generally either remote

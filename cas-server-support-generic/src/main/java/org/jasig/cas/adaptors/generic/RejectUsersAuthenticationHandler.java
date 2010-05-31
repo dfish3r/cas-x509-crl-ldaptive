@@ -19,13 +19,13 @@
 
 package org.jasig.cas.adaptors.generic;
 
+import java.security.GeneralSecurityException;
 import java.util.List;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.BlockedCredentialsAuthenticationException;
 import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 
+import javax.security.auth.login.AccountLockedException;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -49,12 +49,12 @@ public class RejectUsersAuthenticationHandler extends
     @NotNull
     private List<String> users;
 
-    protected final boolean authenticateUsernamePasswordInternal(final UsernamePasswordCredentials credentials) throws AuthenticationException {
+    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
 
-        final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUsername());
+        final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
 
         if (this.users.contains(transformedUsername)) {
-            throw new BlockedCredentialsAuthenticationException();
+            throw new AccountLockedException();
         }
 
         return true;

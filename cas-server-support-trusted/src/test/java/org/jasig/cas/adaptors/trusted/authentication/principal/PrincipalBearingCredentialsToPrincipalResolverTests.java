@@ -16,13 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.trusted.authentication.principal;
 
-import org.jasig.cas.authentication.principal.SimplePrincipal;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
-
 import junit.framework.TestCase;
+import org.jasig.cas.TestUtils;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
+import org.jasig.cas.server.authentication.SimplePrincipal;
 
 /**
  * 
@@ -36,17 +37,21 @@ public class PrincipalBearingCredentialsToPrincipalResolverTests extends
     private PrincipalBearingCredentialsToPrincipalResolver resolver;
     
     public void setUp() throws Exception {
-        this.resolver = new PrincipalBearingCredentialsToPrincipalResolver();
+        this.resolver = new PrincipalBearingCredentialsToPrincipalResolver(new AttributePrincipalFactory() {
+            public AttributePrincipal getAttributePrincipal(String name) {
+                return TestUtils.getPrincipal(name);
+            }
+        });
     }
     
     public void testSupports() {
         assertTrue(this.resolver.supports(new PrincipalBearingCredentials(new SimplePrincipal("test"))));
-        assertFalse(this.resolver.supports(new UsernamePasswordCredentials()));
+        assertFalse(this.resolver.supports(new DefaultUserNamePasswordCredential()));
         assertFalse(this.resolver.supports(null));
     }
     
     public void testReturnedPrincipal() {
-        assertEquals("test", this.resolver.resolvePrincipal(new PrincipalBearingCredentials(new SimplePrincipal("test"))).getId());
+        assertEquals("test", this.resolver.resolve(new PrincipalBearingCredentials(new SimplePrincipal("test"))).getName());
     }
     
 }

@@ -19,7 +19,7 @@
 
 package org.jasig.cas.services.web;
 
-import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.services.RegisteredService;
 import org.jasig.cas.services.ServicesManager;
 import org.jasig.cas.web.support.ArgumentExtractor;

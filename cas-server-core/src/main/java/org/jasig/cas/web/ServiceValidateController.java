@@ -19,7 +19,6 @@
 
 package org.jasig.cas.web;
 
-import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -28,11 +27,11 @@ import org.jasig.cas.CentralAuthenticationService;
 import org.jasig.cas.authentication.principal.WebApplicationService;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.DefaultUrlCredentialImpl;
+import org.jasig.cas.server.session.Assertion;
 import org.jasig.cas.services.UnauthorizedServiceException;
 import org.jasig.cas.ticket.TicketException;
 import org.jasig.cas.ticket.TicketValidationException;
 import org.jasig.cas.ticket.proxy.ProxyHandler;
-import org.jasig.cas.validation.Assertion;
 import org.jasig.cas.validation.ValidationSpecification;
 import org.jasig.cas.validation.Cas20ProtocolValidationSpecification;
 import org.jasig.cas.web.support.ArgumentExtractor;

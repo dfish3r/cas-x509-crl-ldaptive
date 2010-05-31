@@ -19,20 +19,16 @@
 
 package org.jasig.cas;
 
+import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import org.jasig.cas.authentication.principal.*;
 import org.jasig.cas.server.authentication.*;
-import org.jasig.cas.validation.Assertion;
-import org.jasig.cas.validation.ImmutableAssertionImpl;
+import org.jasig.cas.server.session.Assertion;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
-import org.springframework.validation.BindException;
-import org.springframework.webflow.context.servlet.ServletExternalContext;
-import org.springframework.webflow.test.MockRequestContext;
 
 /**
  * @author Scott Battaglia
@@ -146,9 +142,23 @@ public final class TestUtils {
     }
 
     public static Service getService(final String name) {
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addParameter("service", name);
-        return SimpleWebApplicationServiceImpl.createServiceFrom(request);
+        return new Service() {
+            public String getId() {
+                return name;
+            }
+
+            public void setPrincipal(AttributePrincipal principal) {
+
+            }
+
+            public boolean logOutOfService(String sessionIdentifier) {
+                return false;
+            }
+
+            public boolean matches(Service service) {
+                return name.equals(service.getId());
+            }
+        };
     }
 
     public static Authentication getAuthentication() {
@@ -224,13 +234,30 @@ public final class TestUtils {
         final List<Authentication> list = new ArrayList<Authentication>();
         list.add(TestUtils.getAuthentication());
 
-        for (int i = 0; i < extraPrincipals.length; i++) {
-            list.add(TestUtils.getAuthentication(extraPrincipals[i]));
+        for (final String extraPrincipal : extraPrincipals) {
+            list.add(TestUtils.getAuthentication(extraPrincipal));
         }
-        return new ImmutableAssertionImpl(list, TestUtils.getService(),
-            fromNewLogin);
+
+        return new Assertion() {
+            public List<Authentication> getChainedAuthentications() {
+                return list;
+            }
+
+            public AttributePrincipal getPrincipal() {
+                return TestUtils.getPrincipal();
+            }
+
+            public boolean isFromNewLogin() {
+                return fromNewLogin;
+            }
+
+            public Service getService() {
+                return getService();
+            }
+        };
     }
 
+    /*
     public static MockRequestContext getContext() {
         return getContext(new MockHttpServletRequest());
     }
@@ -265,5 +292,5 @@ public final class TestUtils {
                     CONST_CREDENTIALS));
 
         return context;
-    }
+    } */
 }

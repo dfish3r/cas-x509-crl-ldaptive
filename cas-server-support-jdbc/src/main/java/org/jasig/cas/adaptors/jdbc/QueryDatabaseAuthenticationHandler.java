@@ -19,11 +19,11 @@
 
 package org.jasig.cas.adaptors.jdbc;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
 import javax.validation.constraints.NotNull;
+import java.security.GeneralSecurityException;
 
 /**
  * Class that if provided a query that returns a password (parameter of query
@@ -36,22 +36,19 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class QueryDatabaseAuthenticationHandler extends
-    AbstractJdbcUsernamePasswordAuthenticationHandler {
+public final class QueryDatabaseAuthenticationHandler extends AbstractJdbcUsernamePasswordAuthenticationHandler {
 
     @NotNull
     private String sql;
 
-    protected final boolean authenticateUsernamePasswordInternal(final UsernamePasswordCredentials credentials) throws AuthenticationException {
-        final String username = getPrincipalNameTransformer().transform(credentials.getUsername());
+    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+        final String username = getPrincipalNameTransformer().transform(credentials.getUserName());
         final String password = credentials.getPassword();
-        final String encryptedPassword = this.getPasswordEncoder().encode(
-            password);
-        
+
         try {
             final String dbPassword = getJdbcTemplate().queryForObject(
                 this.sql, String.class, username);
-            return dbPassword.equals(encryptedPassword);
+            return getPasswordEncoder().isValidPassword(dbPassword, password, null);
         } catch (final IncorrectResultSizeDataAccessException e) {
             // this means the username was not found.
             return false;

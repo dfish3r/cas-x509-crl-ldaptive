@@ -16,15 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.ldap.remote;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.AuthenticationHandler;
-import org.jasig.cas.authentication.principal.Credentials;
+import org.jasig.cas.server.authentication.AuthenticationHandler;
+import org.jasig.cas.server.authentication.Credential;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +38,7 @@ import javax.validation.constraints.NotNull;
  * @since 3.2.1
  *
  */
-public final class RemoteAddressAuthenticationHandler implements
-    AuthenticationHandler {
+public final class RemoteAddressAuthenticationHandler implements AuthenticationHandler {
     
     private final Logger log = LoggerFactory.getLogger(getClass());
     
@@ -52,8 +50,9 @@ public final class RemoteAddressAuthenticationHandler implements
     @NotNull
     private InetAddress inetNetwork = null;
 
-    public boolean authenticate(final Credentials credentials)
-        throws AuthenticationException {
+    private String name;
+
+    public boolean authenticate(final Credential credentials) throws GeneralSecurityException {
         final RemoteAddressCredentials c = (RemoteAddressCredentials) credentials;
         try {
             final InetAddress inetAddress = InetAddress.getByName(c.getRemoteAddress().trim());
@@ -63,7 +62,15 @@ public final class RemoteAddressAuthenticationHandler implements
         }  
     }
 
-    public boolean supports(final Credentials credentials) {
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public boolean supports(final Credential credentials) {
         return credentials.getClass().equals(RemoteAddressCredentials.class);
     }
     

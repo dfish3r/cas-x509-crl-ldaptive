@@ -19,7 +19,9 @@
 
 package org.jasig.cas.server.session;
 
+import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Authentication;
+import org.jasig.cas.server.authentication.AuthenticationResponse;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -46,20 +48,30 @@ public final class MemcachedSessionImpl extends AbstractStaticSession implements
 
     private final Map<String, Access> accesses = new ConcurrentHashMap<String,Access>();
 
-    private Authentication authentication;
+    private final AttributePrincipal attributePrincipal;
 
-    private final State state = new SimpleStateImpl();
+    private final SimpleStateImpl state = new SimpleStateImpl();
 
     private final Set<Session> childSessions = new HashSet<Session>();
 
-    public MemcachedSessionImpl(final Authentication authentication) {
-        this(null, authentication);
+    private final Set<Authentication> authentications = new HashSet<Authentication>();
+
+    public MemcachedSessionImpl(final AuthenticationResponse authenticationResponse) {
+        this(null, authenticationResponse);
     }
     
-    protected MemcachedSessionImpl(final Session parentSession, final Authentication authentication) {
+    protected MemcachedSessionImpl(final Session parentSession, final AuthenticationResponse authenticationResponse) {
+        this.attributePrincipal = authenticationResponse.getPrincipal();
         this.parentSession = parentSession;
-        this.authentication = authentication;
+        this.authentications.addAll(authenticationResponse.getAuthentications());
         updateId();
+
+        for (final Authentication authentication : authenticationResponse.getAuthentications()) {
+            if (authentication.isLongTermAuthentication()) {
+                this.state.setLongTermSessionExists(true);
+                break;
+            }
+        }
     }
 
     protected Set<Session> getChildSessions() {
@@ -71,7 +83,7 @@ public final class MemcachedSessionImpl extends AbstractStaticSession implements
     }
 
     protected boolean executeExpirationPolicy() {
-        return getExpirationPolicy().isExpired(state, getRootAuthentication());
+        return getExpirationPolicy().isExpired(state);
     }
 
     protected boolean isInvalid() {
@@ -84,14 +96,6 @@ public final class MemcachedSessionImpl extends AbstractStaticSession implements
 
     public String getId() {
         return this.id;
-    }
-
-    public void updateAuthentication(final Authentication authentication) {
-        this.authentication = authentication;
-    }
-
-    public Authentication getAuthentication() {
-        return this.authentication;
     }
 
     protected void setInvalidFlag() {
@@ -114,9 +118,24 @@ public final class MemcachedSessionImpl extends AbstractStaticSession implements
         this.state.updateState();
     }
 
-    protected Session createDelegatedSessionInternal(final Authentication authentication) {
-        final Session session = new MemcachedSessionImpl(this, authentication);
+    @Override
+    protected Session createDelegatedSessionInternal(AuthenticationResponse authenticationResponse) {
+        final Session session = new MemcachedSessionImpl(this, authenticationResponse);
         this.childSessions.add(session);
         return session;
+    }
+
+    public Set<Authentication> getAuthentications() {
+        return this.authentications;
+    }
+
+    public AttributePrincipal getPrincipal() {
+        return this.attributePrincipal;
+    }
+
+    public void addAuthentication(final Authentication authentication) {
+        if (authentication.isLongTermAuthentication()) {
+            this.state.setLongTermSessionExists(true);
+        }
     }
 }

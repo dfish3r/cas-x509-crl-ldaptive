@@ -19,7 +19,7 @@
 
 package org.jasig.cas.mock;
 
-import org.jasig.cas.validation.Assertion;
+import org.jasig.cas.server.session.Assertion;
 import org.jasig.cas.validation.ValidationSpecification;
 
 /**

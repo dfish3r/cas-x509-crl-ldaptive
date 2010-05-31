@@ -19,11 +19,11 @@
 
 package org.jasig.cas.adaptors.jdbc;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.validation.constraints.NotNull;
+import java.security.GeneralSecurityException;
 
 /**
  * Class that given a table, username field and password field will query a
@@ -53,12 +53,12 @@ public class SearchModeSearchDatabaseAuthenticationHandler extends
 
     private String sql;
 
-    protected final boolean authenticateUsernamePasswordInternal(final UsernamePasswordCredentials credentials) throws AuthenticationException {
-        final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUsername());
-        final String encyptedPassword = getPasswordEncoder().encode(credentials.getPassword());
+    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+        final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
+//        final String encyptedPassword = getPasswordEncoder().encode(credentials.getPassword());
 
-        final int count = getJdbcTemplate().queryForInt(this.sql,
-           transformedUsername, encyptedPassword);
+        // TODO we should be comparing the encrypted one.
+        final int count = getJdbcTemplate().queryForInt(this.sql, transformedUsername, credentials.getPassword());
 
         return count > 0;
     }

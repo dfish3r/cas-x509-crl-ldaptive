@@ -19,10 +19,11 @@
 
 package org.jasig.cas.support.spnego.authentication.principal;
 
+import java.security.Principal;
 import java.util.Arrays;
 
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.Principal;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.support.spnego.util.SpnegoConstants;
 import org.springframework.util.Assert;
 
@@ -34,7 +35,7 @@ import org.springframework.util.Assert;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public final class SpnegoCredentials implements Credentials {
+public final class SpnegoCredentials implements Credential {
 
     /**
      * Unique id for serialization.
@@ -102,7 +103,7 @@ public final class SpnegoCredentials implements Credentials {
     }
     
     public String toString() {
-        return this.principal!=null?this.principal.getId():"Principal is null";
+        return this.principal!=null?this.principal.getName():"Principal is null";
     }
 
     public boolean equals(final Object obj) {

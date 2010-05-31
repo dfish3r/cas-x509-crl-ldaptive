@@ -24,8 +24,8 @@ import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jasig.cas.adaptors.trusted.authentication.principal.PrincipalBearingCredentials;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.SimplePrincipal;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.SimplePrincipal;
 import org.jasig.cas.web.flow.AbstractNonInteractiveCredentialsAction;
 import org.jasig.cas.web.support.WebUtils;
 import org.springframework.webflow.execution.RequestContext;
@@ -44,8 +44,7 @@ import org.springframework.webflow.execution.RequestContext;
 public final class PrincipalFromRequestUserPrincipalNonInteractiveCredentialsAction
     extends AbstractNonInteractiveCredentialsAction {
 
-    protected Credentials constructCredentialsFromRequest(
-        final RequestContext context) {
+    protected Credential constructCredentialsFromRequest(final RequestContext context) {
         final HttpServletRequest request = WebUtils
             .getHttpServletRequest(context);
         final Principal principal = request.getUserPrincipal();
@@ -55,8 +54,7 @@ public final class PrincipalFromRequestUserPrincipalNonInteractiveCredentialsAct
                 logger.debug("UserPrincipal [" + principal.getName()
                     + "] found in HttpServletRequest");
             }
-            return new PrincipalBearingCredentials(new SimplePrincipal(
-                principal.getName()));
+            return new PrincipalBearingCredentials(new SimplePrincipal(principal.getName()));
         }
 
         if (logger.isDebugEnabled()) {

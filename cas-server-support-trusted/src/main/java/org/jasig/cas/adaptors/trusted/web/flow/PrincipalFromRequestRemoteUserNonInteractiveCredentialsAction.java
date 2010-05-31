@@ -16,14 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.trusted.web.flow;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.jasig.cas.adaptors.trusted.authentication.principal.PrincipalBearingCredentials;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.SimplePrincipal;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.SimplePrincipal;
 import org.jasig.cas.web.flow.AbstractNonInteractiveCredentialsAction;
 import org.jasig.cas.web.support.WebUtils;
 import org.springframework.util.StringUtils;
@@ -43,10 +42,8 @@ import org.springframework.webflow.execution.RequestContext;
 public final class PrincipalFromRequestRemoteUserNonInteractiveCredentialsAction
     extends AbstractNonInteractiveCredentialsAction {
 
-    protected Credentials constructCredentialsFromRequest(
-        final RequestContext context) {
-        final HttpServletRequest request = WebUtils
-            .getHttpServletRequest(context);
+    protected Credential constructCredentialsFromRequest(final RequestContext context) {
+        final HttpServletRequest request = WebUtils.getHttpServletRequest(context);
         final String remoteUser = request.getRemoteUser();
 
         if (StringUtils.hasText(remoteUser)) {
@@ -54,8 +51,7 @@ public final class PrincipalFromRequestRemoteUserNonInteractiveCredentialsAction
                 logger.debug("Remote  User [" + remoteUser
                     + "] found in HttpServletRequest");
             }
-            return new PrincipalBearingCredentials(new SimplePrincipal(
-                remoteUser));
+            return new PrincipalBearingCredentials(new SimplePrincipal(remoteUser));
         }
 
         if (logger.isDebugEnabled()) {

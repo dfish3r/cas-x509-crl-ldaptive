@@ -29,15 +29,14 @@ import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbSession;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.BadCredentialsAuthenticationException;
 import org.jasig.cas.server.authentication.AbstractPreAndPostProcessingAuthenticationHandler;
-import org.jasig.cas.authentication.principal.Credentials;
-
-import org.jasig.cas.authentication.principal.SimplePrincipal;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.SimplePrincipal;
 import org.jasig.cas.support.spnego.authentication.principal.SpnegoCredentials;
 
+import javax.security.auth.login.CredentialException;
 import javax.validation.constraints.NotNull;
+import java.security.GeneralSecurityException;
 
 /**
  * Implementation of an AuthenticationHandler for NTLM supports.
@@ -49,8 +48,7 @@ import javax.validation.constraints.NotNull;
  * @since 3.1
  */
 
-public class NtlmAuthenticationHandler extends
-    AbstractPreAndPostProcessingAuthenticationHandler {
+public class NtlmAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
 
     private boolean loadBalance = true;
 
@@ -59,8 +57,7 @@ public class NtlmAuthenticationHandler extends
     
     private String includePattern = null;
 
-    protected final boolean doAuthentication(final Credentials credentials)
-        throws AuthenticationException {
+    protected final boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
         final SpnegoCredentials ntlmCredentials = (SpnegoCredentials) credentials;
         final byte[] src = ntlmCredentials.getInitToken();
 
@@ -120,13 +117,13 @@ public class NtlmAuthenticationHandler extends
             }
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
-            throw new BadCredentialsAuthenticationException(e);
+            throw new CredentialException(e.getMessage());
         }
 
         return false;
     }
 
-    public boolean supports(final Credentials credentials) {
+    public boolean supports(final Credential credentials) {
         return credentials != null
             && SpnegoCredentials.class.equals(credentials.getClass());
     }

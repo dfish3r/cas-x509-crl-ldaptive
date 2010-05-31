@@ -71,12 +71,7 @@ public final class InMemorySessionImpl extends AbstractSession {
         updateId();
     }
 
-    @Override
-    public boolean hasNotBeenUsed() {
-        return this.accesses.isEmpty();
-    }
-
-    public Set<Authentication> getAuthentications() {
+     public Set<Authentication> getAuthentications() {
         return this.authentications;
     }
 

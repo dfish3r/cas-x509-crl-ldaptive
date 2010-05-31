@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.radius;
 
 import java.net.InetAddress;
@@ -34,7 +33,7 @@ import net.jradius.packet.AccessRequest;
 import net.jradius.packet.RadiusPacket;
 import net.jradius.packet.attribute.AttributeFactory;
 import net.jradius.packet.attribute.AttributeList;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -170,13 +169,12 @@ public final class JRadiusServerImpl implements RadiusServer {
         this.inetAddress = InetAddress.getByName(hostName);
     }
 
-    public boolean authenticate(
-        final UsernamePasswordCredentials usernamePasswordCredentials) {
+    public boolean authenticate(final UserNamePasswordCredential usernamePasswordCredentials) {
         final RadiusClient radiusClient = getNewRadiusClient();
 
         final AttributeList attributeList = new AttributeList();
         attributeList.add(new Attr_UserName(usernamePasswordCredentials
-            .getUsername()));
+            .getUserName()));
         attributeList.add(new Attr_UserPassword(usernamePasswordCredentials
             .getPassword()));
 
@@ -192,14 +190,14 @@ public final class JRadiusServerImpl implements RadiusServer {
                 LOG.debug("Authentication request suceeded for host:"
                     + this.inetAddress.getCanonicalHostName()
                     + " and username "
-                    + usernamePasswordCredentials.getUsername());
+                    + usernamePasswordCredentials.getUserName());
                 return true;
             }
 
             // rejected
             LOG.debug("Authentication request failed for host:"
                 + this.inetAddress.getCanonicalHostName() + " and username "
-                + usernamePasswordCredentials.getUsername());
+                + usernamePasswordCredentials.getUserName());
             return false;
         } catch (final UnknownAttributeException e) {
             throw new IllegalArgumentException(
@@ -213,7 +211,6 @@ public final class JRadiusServerImpl implements RadiusServer {
     }
 
     private RadiusClient getNewRadiusClient() {
-        return new RadiusClient(this.inetAddress, this.sharedSecret,
-            this.authenticationPort, this.accountingPort, this.socketTimeout);
+        return new RadiusClient(this.inetAddress, this.sharedSecret, this.authenticationPort, this.accountingPort, this.socketTimeout);
     }
 }

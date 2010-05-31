@@ -19,9 +19,10 @@
 
 package org.jasig.cas.adaptors.trusted.authentication.principal;
 
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.Principal;
+import org.jasig.cas.server.authentication.Credential;
 import org.springframework.util.Assert;
+
+import java.security.Principal;
 
 /**
  * Credentials that bear the fully resolved and authenticated Principal, or an
@@ -38,7 +39,7 @@ import org.springframework.util.Assert;
  * @version $Revision$ $Date$
  * @since 3.0.5
  */
-public final class PrincipalBearingCredentials implements Credentials {
+public final class PrincipalBearingCredentials implements Credential {
 
     /** Unique id for serialization */
     private static final long serialVersionUID = -3779730112251585974L;

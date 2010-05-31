@@ -16,5 +16,13 @@
 			<artifactId>cas-server-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-test-support</artifactId>
+            <scope>test</scope>
+            <version>${project.version}</version>
+        </dependency>
+
 	</dependencies>
 </project>

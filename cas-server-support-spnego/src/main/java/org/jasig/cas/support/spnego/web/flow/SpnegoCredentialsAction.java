@@ -16,11 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.support.spnego.web.flow;
 
 import jcifs.util.Base64;
-import org.jasig.cas.authentication.principal.Credentials;
+import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.support.spnego.authentication.principal.SpnegoCredentials;
 import org.jasig.cas.support.spnego.util.SpnegoConstants;
 import org.jasig.cas.web.flow.AbstractNonInteractiveCredentialsAction;
@@ -51,13 +50,10 @@ public final class SpnegoCredentialsAction extends
 
     private String messageBeginPrefix = constructMessagePrefix();
 
-    protected Credentials constructCredentialsFromRequest(
-        final RequestContext context) {
-        final HttpServletRequest request = WebUtils
-            .getHttpServletRequest(context);
+    protected Credential constructCredentialsFromRequest(final RequestContext context) {
+        final HttpServletRequest request = WebUtils.getHttpServletRequest(context);
 
-        final String authorizationHeader = request
-            .getHeader(SpnegoConstants.HEADER_AUTHORIZATION);
+        final String authorizationHeader = request.getHeader(SpnegoConstants.HEADER_AUTHORIZATION);
 
         if (StringUtils.hasText(authorizationHeader)
             && authorizationHeader.startsWith(this.messageBeginPrefix)
@@ -83,18 +79,15 @@ public final class SpnegoCredentialsAction extends
             + " ";
     }
 
-    protected void onError(final RequestContext context,
-        final Credentials credentials) {
+    protected void onError(final RequestContext context, final Credential credentials) {
         setResponseHeader(context, credentials);
     }
 
-    protected void onSuccess(final RequestContext context,
-        final Credentials credentials) {
+    protected void onSuccess(final RequestContext context, final Credential credentials) {
         setResponseHeader(context, credentials);
     }
 
-    private void setResponseHeader(final RequestContext context,
-        final Credentials credentials) {
+    private void setResponseHeader(final RequestContext context, final Credential credentials) {
         if (credentials == null) {
             return;
         }

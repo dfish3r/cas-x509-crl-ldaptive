@@ -21,14 +21,13 @@ package org.jasig.cas.adaptors.generic;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jasig.cas.adaptors.generic.RejectUsersAuthenticationHandler;
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.principal.HttpBasedServiceCredentials;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 import junit.framework.TestCase;
+import org.jasig.cas.server.authentication.DefaultUrlCredentialImpl;
+import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
 
 /**
  * @author Scott Battaglia
@@ -52,14 +51,14 @@ public class RejectUsersAuthenticationHandlerTests extends TestCase {
         this.authenticationHandler.setUsers(this.users);
     }
 
-    public void testSupportsProperUserCredentials() {
-        UsernamePasswordCredentials c = new UsernamePasswordCredentials();
+    public void testSupportsProperUserCredentials() throws GeneralSecurityException {
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
 
-        c.setUsername("fff");
+        c.setUserName("fff");
         c.setPassword("rutgers");
         try {
             this.authenticationHandler.authenticate(c);
-        } catch (AuthenticationException e) {
+        } catch (GeneralSecurityException e) {
             fail("AuthenticationException caught.");
         }
     }
@@ -67,7 +66,7 @@ public class RejectUsersAuthenticationHandlerTests extends TestCase {
     public void testDoesntSupportBadUserCredentials() {
         try {
             assertFalse(this.authenticationHandler
-                .supports(new HttpBasedServiceCredentials(new URL(
+                .supports(new DefaultUrlCredentialImpl(new URL(
                     "http://www.rutgers.edu"))));
         } catch (MalformedURLException e) {
             fail("Could not resolve URL.");
@@ -75,54 +74,54 @@ public class RejectUsersAuthenticationHandlerTests extends TestCase {
     }
 
     public void testFailsUserInMap() {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
 
-        c.setUsername("scott");
+        c.setUserName("scott");
         c.setPassword("rutgers");
 
         try {
             assertFalse(this.authenticationHandler.authenticate(c));
-        } catch (AuthenticationException e) {
+        } catch (GeneralSecurityException e) {
             // fail("AuthenticationException caught but it should not have been
             // thrown.");
         }
     }
 
     public void testPassesUserNotInMap() {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
 
-        c.setUsername("fds");
+        c.setUserName("fds");
         c.setPassword("rutgers");
 
         try {
             assertTrue(this.authenticationHandler.authenticate(c));
-        } catch (AuthenticationException e) {
+        } catch (GeneralSecurityException e) {
             fail("Exception thrown but not expected.");
         }
     }
 
     public void testFailsNullUserName() {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
 
-        c.setUsername(null);
+        c.setUserName(null);
         c.setPassword("user");
 
         try {
             assertTrue(this.authenticationHandler.authenticate(c));
-        } catch (AuthenticationException e) {
+        } catch (GeneralSecurityException e) {
             fail("Exception expected as null should never be in map.");
         }
     }
 
     public void testFailsNullUserNameAndPassword() {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
 
-        c.setUsername(null);
+        c.setUserName(null);
         c.setPassword(null);
 
         try {
             assertTrue(this.authenticationHandler.authenticate(c));
-        } catch (AuthenticationException e) {
+        } catch (GeneralSecurityException e) {
             fail("Exception expected as null should never be in map.");
         }
     }

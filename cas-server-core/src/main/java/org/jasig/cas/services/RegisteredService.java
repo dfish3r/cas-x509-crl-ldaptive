@@ -22,7 +22,7 @@ package org.jasig.cas.services;
 import java.io.Serializable;
 import java.util.List;
 
-import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Service;
 
 /**
  * Interface for a service that can be registered by the Services Management

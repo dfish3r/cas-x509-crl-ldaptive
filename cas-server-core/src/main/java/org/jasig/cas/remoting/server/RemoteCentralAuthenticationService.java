@@ -20,10 +20,10 @@
 package org.jasig.cas.remoting.server;
 
 import org.jasig.cas.CentralAuthenticationService;
-import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.session.Assertion;
 import org.jasig.cas.ticket.TicketException;
-import org.jasig.cas.validation.Assertion;
 import org.springframework.util.Assert;
 
 import javax.validation.*;

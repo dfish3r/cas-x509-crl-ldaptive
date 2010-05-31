@@ -20,8 +20,8 @@
 package org.jasig.cas.integration.restlet;
 
 import org.jasig.cas.CentralAuthenticationService;
-import org.jasig.cas.util.HttpClient;
 import org.jasig.cas.authentication.principal.SimpleWebApplicationServiceImpl;
+import org.jasig.cas.util.HttpClient;
 import org.jasig.cas.ticket.InvalidTicketException;
 import org.restlet.Context;
 import org.restlet.data.Form;

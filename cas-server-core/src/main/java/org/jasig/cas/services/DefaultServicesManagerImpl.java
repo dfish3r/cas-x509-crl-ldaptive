@@ -22,7 +22,7 @@ package org.jasig.cas.services;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;

@@ -22,6 +22,7 @@ package org.jasig.cas.server.session;
 import net.spy.memcached.DefaultConnectionFactory;
 import net.spy.memcached.MemcachedClient;
 import org.jasig.cas.server.authentication.Authentication;
+import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.login.LoginRequest;
 import org.springframework.util.Assert;
 
@@ -97,16 +98,32 @@ public class MemcachedSessionStorageImpl extends AbstractSessionStorage {
 	    }
 	}
 
-    public Session createSession(final Authentication authentication) {
+    public Session createSession(AuthenticationResponse authenticationResponse) {
         // TODO we need a better way to set this.
         AbstractStaticSession.setAccessFactories(getAccessFactories());
         AbstractStaticSession.setExpirationPolicy(getExpirationPolicy());
-        final Session session = new MemcachedSessionImpl(authentication);
+        final Session session = new MemcachedSessionImpl(authenticationResponse);
 
         this.memcachedClient.add(ROOT_SESSION_PREFIX + session.getId(), this.sessionTimeOut, session.getId());
         handleSynchronousRequest(this.memcachedClient.set(session.getId(), this.sessionTimeOut, session));
 
         return session;
+    }
+
+    public int getCountOfActiveSessions() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int getCountOfInactiveSessions() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int getCountOfUnusedAccesses() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int getCountOfUsedAccesses() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Session destroySession(final String sessionId) {

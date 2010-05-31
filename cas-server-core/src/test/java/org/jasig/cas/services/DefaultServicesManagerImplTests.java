@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Service;
 
 import junit.framework.TestCase;
 import org.jasig.cas.server.authentication.AttributePrincipal;

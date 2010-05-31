@@ -16,10 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.radius;
 
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 
 /**
  * Interface representing a Radius Server.
@@ -36,6 +35,6 @@ public interface RadiusServer {
      * @param credentials the credentials to authenticate.
      * @return true if authenticated, false otherwise.
      */
-    boolean authenticate(UsernamePasswordCredentials credentials);
+    boolean authenticate(UserNamePasswordCredential credentials);
 
 }

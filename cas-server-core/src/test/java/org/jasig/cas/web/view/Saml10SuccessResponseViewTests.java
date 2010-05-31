@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 import org.jasig.cas.TestUtils;
 import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Authentication;
-import org.jasig.cas.validation.Assertion;
+import org.jasig.cas.server.session.Assertion;
 import org.jasig.cas.validation.ImmutableAssertionImpl;
 import org.jasig.cas.web.view.Cas10ResponseViewTests.MockWriterHttpMockHttpServletResponse;
 import org.opensaml.SAMLAuthenticationStatement;

@@ -21,7 +21,7 @@ package org.jasig.cas.services;
 
 import java.util.Collection;
 
-import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Service;
 
 /**
  * Manages the storage, retrieval, and matching of Services wishing to use CAS

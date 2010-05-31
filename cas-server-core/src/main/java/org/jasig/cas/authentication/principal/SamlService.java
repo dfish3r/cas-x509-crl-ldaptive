@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.util.HttpClient;
 import org.springframework.util.StringUtils;
 

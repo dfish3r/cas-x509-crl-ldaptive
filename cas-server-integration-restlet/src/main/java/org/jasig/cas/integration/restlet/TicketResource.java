@@ -26,8 +26,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.jasig.cas.CentralAuthenticationService;
-import org.jasig.cas.authentication.principal.Credentials;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.jasig.cas.ticket.TicketException;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -74,7 +75,7 @@ public class TicketResource extends Resource {
             log.debug(getRequest().getEntityAsForm().toString());
         }
      
-        final Credentials c = obtainCredentials();
+        final Credential c = obtainCredentials();
         try {
             final String ticketGrantingTicketId = this.centralAuthenticationService.createTicketGrantingTicket(c);
             getResponse().setStatus(determineStatus());
@@ -98,14 +99,14 @@ public class TicketResource extends Resource {
         return Status.SUCCESS_CREATED;
     }
     
-    protected Credentials obtainCredentials() {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
+    protected Credential obtainCredentials() {
+        final UserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
         final WebRequestDataBinder binder = new WebRequestDataBinder(c);
         final RestletWebRequest webRequest = new RestletWebRequest(getRequest());
         
         if (log.isDebugEnabled()) {
             log.debug(getRequest().getEntityAsForm().toString());
-            log.debug("Username from RestletWebRequest: " + webRequest.getParameter("username"));
+            log.debug("Username from RestletWebRequest: " + webRequest.getParameter("userName"));
         }
         
         binder.bind(webRequest);
@@ -204,7 +205,7 @@ public class TicketResource extends Resource {
         }
 
         public String getHeader(final String s) {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
+            return null;
         }
 
         public String[] getHeaderValues(String s) {
@@ -212,15 +213,15 @@ public class TicketResource extends Resource {
         }
 
         public Iterator<String> getHeaderNames() {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
+            return null;
         }
 
         public Iterator<String> getParameterNames() {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
+            return null;
         }
 
         public Object resolveReference(String s) {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
+            return null;
         }
     }
 }

@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.core.io.Resource;
 
 import javax.validation.constraints.NotNull;
@@ -42,8 +42,7 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class FileAuthenticationHandler extends
-        AbstractUsernamePasswordAuthenticationHandler {
+public class FileAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
 
     /** The default separator in the file. */
     private static final String DEFAULT_SEPARATOR = "::";
@@ -56,7 +55,7 @@ public class FileAuthenticationHandler extends
     @NotNull
     private Resource fileName;
 
-    protected final boolean authenticateUsernamePasswordInternal(final UsernamePasswordCredentials credentials) {
+    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) {
         BufferedReader bufferedReader = null;
 
         try {
@@ -67,10 +66,9 @@ public class FileAuthenticationHandler extends
                 final String userName = lineFields[0];
                 final String password = lineFields[1];
 
-                final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUsername());
+                final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
                 if (transformedUsername.equals(userName)) {
-                    if (this.getPasswordEncoder().encode(
-                        credentials.getPassword()).equals(password)) {
+                    if (this.getPasswordEncoder().isValidPassword(password, credentials.getPassword(), null)) {
                         return true;
                     }
                     break;

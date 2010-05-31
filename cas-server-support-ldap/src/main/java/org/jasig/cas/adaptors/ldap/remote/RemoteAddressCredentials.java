@@ -19,7 +19,7 @@
 
 package org.jasig.cas.adaptors.ldap.remote;
 
-import org.jasig.cas.authentication.principal.Credentials;
+import org.jasig.cas.server.authentication.Credential;
 
 /**
  * 
@@ -28,7 +28,7 @@ import org.jasig.cas.authentication.principal.Credentials;
  * @since 3.2.1
  *
  */
-public final class RemoteAddressCredentials implements Credentials {
+public final class RemoteAddressCredentials implements Credential {
     
     /**
      * Unique Id for serialization

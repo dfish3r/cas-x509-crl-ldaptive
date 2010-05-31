@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.support.spnego.authentication.principal;
 
 import java.util.Locale;
 
 import org.jasig.cas.authentication.principal.AbstractPersonDirectoryCredentialsToPrincipalResolver;
-import org.jasig.cas.authentication.principal.Credentials;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.Credential;
 
 import javax.validation.constraints.NotNull;
 
@@ -36,28 +36,31 @@ import javax.validation.constraints.NotNull;
  * 2007) $
  * @since 3.1
  */
-public final class SpnegoCredentialsToPrincipalResolver extends
-    AbstractPersonDirectoryCredentialsToPrincipalResolver {
-    
+public final class SpnegoCredentialsToPrincipalResolver extends AbstractPersonDirectoryCredentialsToPrincipalResolver {
+
     public static enum Transform {NONE, UPPERCASE, LOWERCASE}
     
     @NotNull
     private Transform transformPrincipalId = Transform.NONE; 
 
-    protected String extractPrincipalId(final Credentials credentials) {
+    public SpnegoCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
+        super(attributePrincipalFactory);
+    }
+
+    protected String extractPrincipalId(final Credential credentials) {
         final SpnegoCredentials c = (SpnegoCredentials) credentials;
         
         switch (this.transformPrincipalId) {
             case UPPERCASE:
-                return c.getPrincipal().getId().toUpperCase(Locale.ENGLISH);
+                return c.getPrincipal().getName().toUpperCase(Locale.ENGLISH);
             case LOWERCASE:
-                return c.getPrincipal().getId().toLowerCase(Locale.ENGLISH);
+                return c.getPrincipal().getName().toLowerCase(Locale.ENGLISH);
             default:
-                return c.getPrincipal().getId();
+                return c.getPrincipal().getName();
         }
     }
 
-    public boolean supports(final Credentials credentials) {
+    public boolean supports(final Credential credentials) {
         return credentials != null
             && SpnegoCredentials.class.equals(credentials.getClass());
     }

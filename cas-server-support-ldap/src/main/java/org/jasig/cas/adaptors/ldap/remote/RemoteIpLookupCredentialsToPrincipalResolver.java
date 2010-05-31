@@ -29,7 +29,8 @@ import javax.naming.directory.Attributes;
 import javax.validation.constraints.NotNull;
 
 import org.jasig.cas.authentication.principal.AbstractLdapPersonDirectoryCredentialsToPrincipalResolver;
-import org.jasig.cas.authentication.principal.Credentials;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.util.LdapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,11 @@ public final class RemoteIpLookupCredentialsToPrincipalResolver extends Abstract
     @NotNull
     private String ipAddressFormat = ADDR_STANDARD;
 
-    protected String extractPrincipalId(final Credentials credentials) {
+    public RemoteIpLookupCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
+        super(attributePrincipalFactory);
+    }
+
+    protected String extractPrincipalId(final Credential credentials) {
         final RemoteAddressCredentials c = (RemoteAddressCredentials) credentials;
         final String formattedIpAddress = getFormattedIpAddress(c.getRemoteAddress().trim());      
         
@@ -97,7 +102,7 @@ public final class RemoteIpLookupCredentialsToPrincipalResolver extends Abstract
         return (String) principalList.get(0);
     }
 
-    public boolean supports(final Credentials credentials) {
+    public boolean supports(final Credential credentials) {
         return credentials.getClass().equals(RemoteAddressCredentials.class);
     }
 

@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public final class InMemoryAuthenticationImplFactory implements AuthenticationFactory {
 
-    public Authentication getAuthentication(AttributePrincipal principal, Map<String, List<Object>> authenticationMetaData, final AuthenticationRequest authenticationRequest) {
-        return new InMemoryAuthenticationImpl(principal, authenticationMetaData, authenticationRequest.isLongTermAuthenticationRequest());
+    public Authentication getAuthentication(Map<String, List<Object>> authenticationMetaData, final AuthenticationRequest authenticationRequest, final String authenticationMethod) {
+        return new InMemoryAuthenticationImpl(authenticationMetaData, authenticationRequest.isLongTermAuthenticationRequest(), authenticationMethod);
     }
 }

@@ -16,15 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.ldap;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.jasig.cas.util.LdapUtils;
 import org.springframework.ldap.NamingException;
 
 import javax.naming.directory.DirContext;
+import java.security.GeneralSecurityException;
 
 /**
  * Implementation of an LDAP handler to do a "fast bind." A fast bind skips the
@@ -37,10 +36,10 @@ import javax.naming.directory.DirContext;
  */
 public final class FastBindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordAuthenticationHandler {
 
-    protected boolean authenticateUsernamePasswordInternal(final UsernamePasswordCredentials credentials) throws AuthenticationException {
+    protected boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         DirContext dirContext = null;
         try {
-            final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUsername());
+            final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
             final String bindDn = LdapUtils.getFilterWithValues(getFilter(), transformedUsername);
             this.log.debug("Performing LDAP bind with credential: " + bindDn);
             dirContext = this.getContextSource().getContext(bindDn, credentials.getPassword());

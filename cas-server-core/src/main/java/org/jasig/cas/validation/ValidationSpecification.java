@@ -19,6 +19,8 @@
 
 package org.jasig.cas.validation;
 
+import org.jasig.cas.server.session.Assertion;
+
 /**
  * An interface to impose restrictions and requirements on validations (e.g.
  * renew=true).

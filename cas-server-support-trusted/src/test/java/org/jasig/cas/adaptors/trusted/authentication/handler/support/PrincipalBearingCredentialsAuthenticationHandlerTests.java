@@ -16,14 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.trusted.authentication.handler.support;
 
 import org.jasig.cas.adaptors.trusted.authentication.principal.PrincipalBearingCredentials;
-import org.jasig.cas.authentication.principal.SimplePrincipal;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 
 import junit.framework.TestCase;
+import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
+import org.jasig.cas.server.authentication.SimplePrincipal;
+
+import java.security.GeneralSecurityException;
 
 /**
  * @author Andrew Petro
@@ -33,12 +34,11 @@ import junit.framework.TestCase;
 public final class PrincipalBearingCredentialsAuthenticationHandlerTests 
     extends TestCase {
 
-    private PrincipalBearingCredentialsAuthenticationHandler handler 
-        = new PrincipalBearingCredentialsAuthenticationHandler();    
+    private PrincipalBearingCredentialsAuthenticationHandler handler = new PrincipalBearingCredentialsAuthenticationHandler();    
     /**
      * When the credentials bear a Principal, succeed the authentication.
      */
-    public void testNonNullPrincipal() {
+    public void testNonNullPrincipal() throws GeneralSecurityException {
         PrincipalBearingCredentials credentials = new PrincipalBearingCredentials(new SimplePrincipal("scott"));
         assertTrue(this.handler.authenticate(credentials));
     }    
@@ -46,6 +46,6 @@ public final class PrincipalBearingCredentialsAuthenticationHandlerTests
     public void testSupports() {
         PrincipalBearingCredentials credentials = new PrincipalBearingCredentials(new SimplePrincipal("scott"));
         assertTrue(this.handler.supports(credentials));
-        assertFalse(this.handler.supports(new UsernamePasswordCredentials()));
+        assertFalse(this.handler.supports(new DefaultUserNamePasswordCredential()));
     }
 }

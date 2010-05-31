@@ -19,20 +19,20 @@
 
 package org.jasig.cas.authentication.principal;
 
+import org.jasig.cas.util.HttpClient;
+import org.springframework.util.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.jasig.cas.authentication.principal.Response.ResponseType;
-import org.jasig.cas.util.HttpClient;
-import org.springframework.util.StringUtils;
 
 /**
  * Represents a service which wishes to use the CAS protocol.
  * 
  * @author Scott Battaglia
- * @version $Revision: 1.3 $ $Date: 2007/04/24 18:19:22 $
+ * @version $Revision$ $Date$
  * @since 3.1
  */
 public final class SimpleWebApplicationServiceImpl extends
@@ -46,7 +46,7 @@ public final class SimpleWebApplicationServiceImpl extends
 
     private static final String CONST_PARAM_METHOD = "method";
 
-    private final ResponseType responseType;
+    private final Response.ResponseType responseType;
 
     /**
      * Unique Id for Serialization
@@ -63,7 +63,7 @@ public final class SimpleWebApplicationServiceImpl extends
 
     private SimpleWebApplicationServiceImpl(final String id,
         final String originalUrl, final String artifactId,
-        final ResponseType responseType, final HttpClient httpClient) {
+        final Response.ResponseType responseType, final HttpClient httpClient) {
         super(id, originalUrl, artifactId, httpClient);
         this.responseType = responseType;
     }
@@ -88,8 +88,8 @@ public final class SimpleWebApplicationServiceImpl extends
         final String artifactId = request.getParameter(CONST_PARAM_TICKET);
 
         return new SimpleWebApplicationServiceImpl(id, serviceToUse,
-            artifactId, "POST".equals(method) ? ResponseType.POST
-                : ResponseType.REDIRECT, httpClient);
+            artifactId, "POST".equals(method) ? Response.ResponseType.POST
+                : Response.ResponseType.REDIRECT, httpClient);
     }
 
     public Response getResponse(final String ticketId) {
@@ -99,7 +99,7 @@ public final class SimpleWebApplicationServiceImpl extends
             parameters.put(CONST_PARAM_TICKET, ticketId);
         }
 
-        if (ResponseType.POST == this.responseType) {
+        if (Response.ResponseType.POST == this.responseType) {
             return Response.getPostResponse(getOriginalUrl(), parameters);
         }
         return Response.getRedirectResponse(getOriginalUrl(), parameters);

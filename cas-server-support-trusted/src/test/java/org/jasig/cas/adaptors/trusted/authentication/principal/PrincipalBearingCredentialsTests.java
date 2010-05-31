@@ -19,9 +19,8 @@
 
 package org.jasig.cas.adaptors.trusted.authentication.principal;
 
-import org.jasig.cas.authentication.principal.SimplePrincipal;
-
 import junit.framework.TestCase;
+import org.jasig.cas.server.authentication.SimplePrincipal;
 
 /**
  * 
@@ -39,6 +38,6 @@ public class PrincipalBearingCredentialsTests extends TestCase {
         }
         
         public void testGetOfPrincipal() {
-            assertEquals("test", this.principalBearingCredentials.getPrincipal().getId());
+            assertEquals("test", this.principalBearingCredentials.getPrincipal().getName());
         }
 }

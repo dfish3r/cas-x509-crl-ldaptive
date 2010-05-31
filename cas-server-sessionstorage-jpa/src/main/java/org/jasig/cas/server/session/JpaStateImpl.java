@@ -41,6 +41,17 @@ public final class JpaStateImpl implements State {
     @Column(name="session_state_last_used",insertable = true, updatable = true, nullable = false)
     private long lastUsedTime = System.currentTimeMillis();
 
+    @Column(name="long_term_auth", insertable = true, updatable = true, nullable = false)
+    private boolean longTermAuthentication = false;
+
+    public boolean longTermAuthenticationExists() {
+        return longTermAuthentication;
+    }
+
+    public void setLongTermAuthentication(final boolean longTermAuthentication) {
+        this.longTermAuthentication = longTermAuthentication;
+    }
+
     public synchronized void updateState() {
         this.count++;
         this.lastUsedTime = System.currentTimeMillis();

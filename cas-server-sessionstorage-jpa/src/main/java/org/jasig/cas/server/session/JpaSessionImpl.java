@@ -16,12 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.server.session;
 
-import org.jasig.cas.server.authentication.Authentication;
-import org.jasig.cas.server.authentication.JpaAuthenticationImpl;
-import org.springframework.util.Assert;
+import org.jasig.cas.server.authentication.*;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -56,9 +53,6 @@ public final class JpaSessionImpl extends AbstractStaticSession {
     @Column(name="session_invalid",updatable = true, insertable = true)
     private boolean invalid = false;
 
-    @Embedded
-    private JpaAuthenticationImpl authentication;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentSession", fetch = FetchType.EAGER, targetEntity = JpaSessionImpl.class)
     private Set<Session> childSessions = new HashSet<Session>();
 
@@ -66,20 +60,34 @@ public final class JpaSessionImpl extends AbstractStaticSession {
     @JoinColumn(name="parent_session_id")
     private JpaSessionImpl parentSession;
 
+    @Embedded
+    private JpaAttributePrincipalImpl attributePrincipal;
+
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,targetEntity = JpaAuthenticationImpl.class)
+    private Set<Authentication> authentications = new HashSet<Authentication>();
+
 //    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentSession", fetch = FetchType.EAGER)
 //    private Set<JpaCasProtocolAccessImpl> casProtocolAccesses = new HashSet<JpaCasProtocolAccessImpl>();
 
     public JpaSessionImpl() {
         // this is for JPA
     }
-   public JpaSessionImpl(final Authentication authentication) {
-        this(null, authentication);
+   public JpaSessionImpl(final AuthenticationResponse authenticationResponse) {
+        this(null, authenticationResponse);
     }
 
-    public JpaSessionImpl(final Session parentSession, final Authentication authentication) {
+    public JpaSessionImpl(final Session parentSession, final AuthenticationResponse authenticationResponse) {
         this.parentSession = (JpaSessionImpl) parentSession;
-        this.authentication = (JpaAuthenticationImpl) authentication;
+        this.authentications.addAll(authenticationResponse.getAuthentications());
+        this.attributePrincipal = (JpaAttributePrincipalImpl) authenticationResponse.getPrincipal();
         updateId();
+
+        for (final Authentication authentication : this.authentications) {
+            if (authentication.isLongTermAuthentication()) {
+                this.state.setLongTermAuthentication(true);
+                break;
+            }
+        }
     }
 
     protected void updateState() {
@@ -87,7 +95,7 @@ public final class JpaSessionImpl extends AbstractStaticSession {
     }
 
     protected boolean executeExpirationPolicy() {
-        return getExpirationPolicy().isExpired(this.state, this.authentication);
+        return getExpirationPolicy().isExpired(this.state);
     }
 
     protected boolean isInvalid() {
@@ -120,15 +128,6 @@ public final class JpaSessionImpl extends AbstractStaticSession {
         return this.sessionId;
     }
 
-    public Authentication getAuthentication() {
-        return this.authentication;
-    }
-
-    public void updateAuthentication(Authentication authentication) {
-        Assert.isInstanceOf(JpaAuthenticationImpl.class, authentication);
-        this.authentication = (JpaAuthenticationImpl) authentication;
-    }
-
     public Access getAccess(final String accessId) {
 //        for (final Access access : this.casProtocolAccesses) {
 //           if (access.getId().equals(accessId)) {
@@ -147,10 +146,26 @@ public final class JpaSessionImpl extends AbstractStaticSession {
         return accesses;
     }
 
-    protected Session createDelegatedSessionInternal(final Authentication authentication) {
-        final Session session = new JpaSessionImpl(this, authentication);
+    @Override
+    protected Session createDelegatedSessionInternal(final AuthenticationResponse authenticationResponse) {
+        final Session session = new JpaSessionImpl(this, authenticationResponse);
         this.childSessions.add(session);
         return session;
+    }
 
+    public Set<Authentication> getAuthentications() {
+        return this.authentications;
+    }
+
+    public AttributePrincipal getPrincipal() {
+        return this.attributePrincipal;
+    }
+
+    public void addAuthentication(final Authentication authentication) {
+        if (authentication.isLongTermAuthentication()) {
+            this.state.setLongTermAuthentication(true);
+        }
+
+        this.authentications.add(authentication);
     }
 }

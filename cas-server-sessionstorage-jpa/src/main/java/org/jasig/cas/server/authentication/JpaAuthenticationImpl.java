@@ -37,7 +37,7 @@ import java.util.Map;
  */
 @Entity(name = "authentication")
 @Embeddable()
-public final class JpaAuthenticationImpl implements Authentication {
+public class JpaAuthenticationImpl implements Authentication {
 
     @Column(name = "auth_date", nullable = false, insertable = true, updatable = false)
     @Temporal(javax.persistence.TemporalType.TIME)
@@ -46,37 +46,36 @@ public final class JpaAuthenticationImpl implements Authentication {
     @Column(name = "auth_long_term", nullable = false, insertable = true, updatable = false)
     private boolean longTermAuthentication;
 
-    @Embedded
-    private JpaAttributePrincipalImpl attributePrincipal;
-
     @Lob
     @Column(name="auth_meta_data")
     private HashMap<String, List<Object>> authenticationMetaData = new HashMap<String, List<Object>>();
+
+    @Column(name = "auth_method", nullable = true, insertable = true, updatable = true)
+    private String authenticationMethod;
 
     public JpaAuthenticationImpl() {
         // this should only be called by JPA
     }
 
-    public JpaAuthenticationImpl(final AttributePrincipal attributePrincipal, final boolean longTermAuthentication, final Map<String, List<Object>> metaData) {
-        Assert.isInstanceOf(JpaAttributePrincipalImpl.class, attributePrincipal);
+    public JpaAuthenticationImpl(final boolean longTermAuthentication, final Map<String, List<Object>> metaData, final String authenticationMethod) {
         this.longTermAuthentication = longTermAuthentication;
-        this.attributePrincipal = (JpaAttributePrincipalImpl) attributePrincipal;
         this.authenticationMetaData.putAll(metaData);
+        this.authenticationMethod = authenticationMethod;
     }
 
-    public Date getAuthenticationDate() {
+    public final Date getAuthenticationDate() {
         return new Date(this.authenticationDate.getTime());
     }
 
-    public Map<String, List<Object>> getAuthenticationMetaData() {
+    public final Map<String, List<Object>> getAuthenticationMetaData() {
         return this.authenticationMetaData;
     }
 
-    public AttributePrincipal getPrincipal() {
-        return this.attributePrincipal;
+    public final boolean isLongTermAuthentication() {
+        return this.longTermAuthentication;
     }
 
-    public boolean isLongTermAuthentication() {
-        return this.longTermAuthentication;
+    public final String getAuthenticationMethod() {
+        return this.authenticationMethod;
     }
 }
