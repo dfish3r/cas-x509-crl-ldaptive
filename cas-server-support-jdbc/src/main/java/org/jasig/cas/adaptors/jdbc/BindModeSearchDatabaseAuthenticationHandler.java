@@ -19,11 +19,11 @@
 
 package org.jasig.cas.adaptors.jdbc;
 
+import java.security.GeneralSecurityException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 /**
@@ -37,13 +37,10 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class BindModeSearchDatabaseAuthenticationHandler extends
-    AbstractJdbcUsernamePasswordAuthenticationHandler {
+public class BindModeSearchDatabaseAuthenticationHandler extends AbstractJdbcUsernamePasswordAuthenticationHandler {
 
-    protected final boolean authenticateUsernamePasswordInternal(
-        final UsernamePasswordCredentials credentials)
-        throws AuthenticationException {
-        final String username = credentials.getUsername();
+    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+        final String username = credentials.getUserName();
         final String password = credentials.getPassword();
 
         try {

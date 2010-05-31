@@ -16,14 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.ldap;
 
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import static org.junit.Assert.*;
-
 
 /**
  * Unit test for {@link BindLdapAuthenticationHandler} class.
@@ -40,8 +38,8 @@ public class BindLdapAuthenticationHandlerTests extends AbstractJUnit4SpringCont
     protected BindTestConfig bindTestConfig;
 
     public void testSuccessUsernamePassword() throws Exception {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-        c.setUsername(this.bindTestConfig.getExistsCredential());
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
+        c.setUserName(this.bindTestConfig.getExistsCredential());
         c.setPassword(this.bindTestConfig.getExistsSuccessPassword());
         
         assertTrue(this.bindAuthHandler.authenticate(c));
@@ -49,8 +47,8 @@ public class BindLdapAuthenticationHandlerTests extends AbstractJUnit4SpringCont
 
 
     public void testBadUsernamePassword() throws Exception {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-        c.setUsername(this.bindTestConfig.getExistsCredential());
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
+        c.setUserName(this.bindTestConfig.getExistsCredential());
         c.setPassword(this.bindTestConfig.getExistsFailurePassword());
         
         assertFalse(this.bindAuthHandler.authenticate(c));
@@ -58,8 +56,8 @@ public class BindLdapAuthenticationHandlerTests extends AbstractJUnit4SpringCont
 
 
     public void testNotExistsUsername() throws Exception {
-        final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
-        c.setUsername(this.bindTestConfig.getNotExistsCredential());
+        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
+        c.setUserName(this.bindTestConfig.getNotExistsCredential());
         c.setPassword("");
         
         assertFalse(this.bindAuthHandler.authenticate(c));

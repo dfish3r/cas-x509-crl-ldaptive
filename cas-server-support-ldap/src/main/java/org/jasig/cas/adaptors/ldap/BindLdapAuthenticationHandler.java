@@ -19,8 +19,7 @@
 
 package org.jasig.cas.adaptors.ldap;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.jasig.cas.util.LdapUtils;
 import org.springframework.ldap.core.NameClassPairCallbackHandler;
 import org.springframework.ldap.core.SearchExecutor;
@@ -32,6 +31,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,16 +68,14 @@ public class BindLdapAuthenticationHandler extends
     /** Boolean of whether multiple accounts are allowed. */
     private boolean allowMultipleAccounts;
 
-    protected final boolean authenticateUsernamePasswordInternal(
-        final UsernamePasswordCredentials credentials)
-        throws AuthenticationException {
+    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
 
         final List<String> cns = new ArrayList<String>();
         
         final SearchControls searchControls = getSearchControls();
         
         final String base = this.searchBase;
-        final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUsername());
+        final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
         final String filter = LdapUtils.getFilterWithValues(getFilter(), transformedUsername);
         this.getLdapTemplate().search(
             new SearchExecutor() {
@@ -124,8 +122,7 @@ public class BindLdapAuthenticationHandler extends
         return false;
     }
 
-    protected String composeCompleteDnToCheck(final String dn,
-        final UsernamePasswordCredentials credentials) {
+    protected String composeCompleteDnToCheck(final String dn, final UserNamePasswordCredential credentials) {
         return dn;
     }
 
