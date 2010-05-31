@@ -34,8 +34,7 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.0.3
  */
-public abstract class AbstractLdapUsernamePasswordAuthenticationHandler extends
-        AbstractUsernamePasswordAuthenticationHandler implements InitializingBean {
+public abstract class AbstractLdapUsernamePasswordAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler implements InitializingBean {
 
     /** LdapTemplate to execute ldap queries. */
     @NotNull

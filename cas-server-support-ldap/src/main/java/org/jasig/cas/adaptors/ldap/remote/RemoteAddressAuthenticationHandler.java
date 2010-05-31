@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 
+import org.jasig.cas.server.authentication.AbstractPreAndPostProcessingAuthenticationHandler;
 import org.jasig.cas.server.authentication.AuthenticationHandler;
 import org.jasig.cas.server.authentication.Credential;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ import javax.validation.constraints.NotNull;
  * @since 3.2.1
  *
  */
-public final class RemoteAddressAuthenticationHandler implements AuthenticationHandler {
+public class RemoteAddressAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
     
     private final Logger log = LoggerFactory.getLogger(getClass());
     
@@ -50,27 +51,18 @@ public final class RemoteAddressAuthenticationHandler implements AuthenticationH
     @NotNull
     private InetAddress inetNetwork = null;
 
-    private String name;
-
-    public boolean authenticate(final Credential credentials) throws GeneralSecurityException {
+    @Override
+    protected boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
         final RemoteAddressCredentials c = (RemoteAddressCredentials) credentials;
         try {
             final InetAddress inetAddress = InetAddress.getByName(c.getRemoteAddress().trim());
             return containsAddress(this.inetNetwork, this.inetNetmask, inetAddress);
         } catch (final UnknownHostException e) {
             return false;
-        }  
+        }
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public boolean supports(final Credential credentials) {
+    public final boolean supports(final Credential credentials) {
         return credentials.getClass().equals(RemoteAddressCredentials.class);
     }
     
@@ -128,7 +120,7 @@ public final class RemoteAddressAuthenticationHandler implements AuthenticationH
     /**
      * @param ipAddressRange the IP address range that should be allowed trusted logins     * 
      */
-    public void setIpNetworkRange(final String ipAddressRange) {
+    public final void setIpNetworkRange(final String ipAddressRange) {
             
         if(ipAddressRange != null) {
         
@@ -144,7 +136,7 @@ public final class RemoteAddressAuthenticationHandler implements AuthenticationH
                     if(log.isDebugEnabled()) {
                         log.debug("InetAddress network: " + this.inetNetwork.toString());
                     }                    
-                } catch (final UnknownHostException e ) {
+                } catch (final UnknownHostException e) {
                     log.error("The network address was not valid: " + e.getMessage());
                 }
                 
@@ -153,7 +145,7 @@ public final class RemoteAddressAuthenticationHandler implements AuthenticationH
                     if(log.isDebugEnabled()) {
                         log.debug("InetAddress netmask: " + this.inetNetmask.toString());
                     }                    
-                } catch (final UnknownHostException e ) {
+                } catch (final UnknownHostException e) {
                     log.error("The network netmask was not valid: " + e.getMessage());
                 }
             }

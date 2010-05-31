@@ -36,7 +36,7 @@ import java.security.GeneralSecurityException;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class QueryDatabaseAuthenticationHandler extends AbstractJdbcUsernamePasswordAuthenticationHandler {
+public class QueryDatabaseAuthenticationHandler extends AbstractJdbcUsernamePasswordAuthenticationHandler {
 
     @NotNull
     private String sql;

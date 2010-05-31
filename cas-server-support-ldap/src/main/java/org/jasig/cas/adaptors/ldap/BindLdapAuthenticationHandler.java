@@ -42,8 +42,7 @@ import java.util.List;
  * @version $Revision$ $Date$
  * @since 3.0.3
  */
-public class BindLdapAuthenticationHandler extends
-    AbstractLdapUsernamePasswordAuthenticationHandler {
+public class BindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordAuthenticationHandler {
 
     /** The default maximum number of results to return. */
     private static final int DEFAULT_MAX_NUMBER_OF_RESULTS = 1000;

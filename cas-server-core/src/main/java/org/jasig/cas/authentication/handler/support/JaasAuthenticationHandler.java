@@ -59,8 +59,7 @@ import java.security.GeneralSecurityException;
  * @see javax.security.auth.callback.PasswordCallback
  * @see javax.security.auth.callback.NameCallback
  */
-public class JaasAuthenticationHandler extends
-        AbstractUsernamePasswordAuthenticationHandler {
+public class JaasAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
 
     /** If no realm is specified, we default to CAS. */
     private static final String DEFAULT_REALM = "CAS";

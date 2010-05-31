@@ -37,8 +37,7 @@ import java.security.GeneralSecurityException;
  * @since 3.0
  */
 
-public class SearchModeSearchDatabaseAuthenticationHandler extends
-    AbstractJdbcUsernamePasswordAuthenticationHandler implements InitializingBean {
+public class SearchModeSearchDatabaseAuthenticationHandler extends AbstractJdbcUsernamePasswordAuthenticationHandler implements InitializingBean {
 
     private static final String SQL_PREFIX = "Select count('x') from ";
 

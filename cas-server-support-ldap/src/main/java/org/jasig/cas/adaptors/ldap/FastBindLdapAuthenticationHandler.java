@@ -34,9 +34,9 @@ import java.security.GeneralSecurityException;
  * @version $Revision$ $Date$
  * @since 3.0.3
  */
-public final class FastBindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordAuthenticationHandler {
+public class FastBindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordAuthenticationHandler {
 
-    protected boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         DirContext dirContext = null;
         try {
             final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
