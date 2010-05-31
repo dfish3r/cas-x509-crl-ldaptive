@@ -18,32 +18,30 @@
  */
 package org.jasig.cas.server.session;
 
-import org.jasig.cas.server.authentication.Authentication;
-
-import javax.validation.constraints.Min;
+import org.junit.Test;
 
 /**
- * Expiration policy that is based on a certain time period for a ticket to
- * exist.
- * <p>
- * The expiration policy defined by this class is one of inactivity.  If you are inactive for the specified
- * amount of time, the ticket will be expired.
+ * Implements tests for the {@link org.jasig.cas.server.session.NeverExpiresExpirationPolicy} class.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class UsageTimeoutExpirationPolicy implements ExpirationPolicy {
+public final class NeverExpiresExpirationPolicyTests extends AbstractExpirationPolicyTests {
 
-    /** The time to kill in milliseconds. */
-    @Min(1)
-    private final long timeToKillInMilliSeconds;
-
-    public UsageTimeoutExpirationPolicy(final long timeToKillInMilliSeconds) {
-        this.timeToKillInMilliSeconds = timeToKillInMilliSeconds;
+    public NeverExpiresExpirationPolicyTests() {
+        super(new NeverExpiresExpirationPolicy());
     }
 
-    public boolean isExpired(final State state) {
-        return System.currentTimeMillis() - state.getLastUsedTime() >= this.timeToKillInMilliSeconds;
+    @Test
+    public void testDoesItExpire() {
+         final State state = new SimpleStateImpl();
+        assertFalse(getExpirationPolicy().isExpired(state));
+
+        for (int i = 1; i < 10; i++) {
+            state.updateState();
+        }
+
+        assertFalse(this.getExpirationPolicy().isExpired(state));
     }
 }

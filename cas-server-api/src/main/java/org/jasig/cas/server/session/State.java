@@ -49,7 +49,7 @@ public interface State {
     long getCreationTime();
 
     /**
-     * The time the state was last "used."
+     * The time the state was last "used."   When first initialized, the creation and last used time should be the same.
      *
      * @return the time last used.  Cannot be less than the creation time.
      */

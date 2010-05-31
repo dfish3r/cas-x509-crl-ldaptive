@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.server.session;
 
 import java.io.Serializable;
@@ -35,7 +34,7 @@ public final class SimpleStateImpl implements State, Serializable {
 
     private final long creationTime = System.currentTimeMillis();
 
-    private volatile long lastUsedTime = System.currentTimeMillis();
+    private volatile long lastUsedTime = this.creationTime;
 
     private boolean longTermSession;
 

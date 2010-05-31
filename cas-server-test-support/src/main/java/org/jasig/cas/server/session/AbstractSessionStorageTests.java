@@ -19,12 +19,12 @@
 
 package org.jasig.cas.server.session;
 
+import junit.framework.TestCase;
 import org.jasig.cas.TestUtils;
 import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.util.Cleanable;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import java.security.GeneralSecurityException;
 import java.util.*;
@@ -36,7 +36,7 @@ import java.util.*;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public abstract class AbstractSessionStorageTests {
+public abstract class AbstractSessionStorageTests extends TestCase {
 
     private final AttributePrincipalFactory attributePrincipalFactory = getAttributePrincipalFactory();
 
