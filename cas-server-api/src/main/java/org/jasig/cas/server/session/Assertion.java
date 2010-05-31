@@ -17,12 +17,12 @@
  * under the License.
  */
 
-package org.jasig.cas.validation;
+package org.jasig.cas.server.session;
 
 import java.io.Serializable;
 import java.util.List;
 
-import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Authentication;
 

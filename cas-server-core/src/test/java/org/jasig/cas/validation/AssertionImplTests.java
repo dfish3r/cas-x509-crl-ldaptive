@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jasig.cas.TestUtils;
-import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Authentication;
-import org.jasig.cas.validation.ImmutableAssertionImpl;
 
 import junit.framework.TestCase;
+import org.jasig.cas.server.session.Assertion;
 
 /**
  * @author Scott Battaglia
