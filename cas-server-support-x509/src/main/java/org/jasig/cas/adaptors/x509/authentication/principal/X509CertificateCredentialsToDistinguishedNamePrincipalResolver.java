@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.adaptors.x509.authentication.principal;
+
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 
 import java.security.cert.X509Certificate;
 
@@ -28,11 +29,13 @@ import java.security.cert.X509Certificate;
  * @version $Revision$ $Date$
  * @since 3.0.4
  */
-public final class X509CertificateCredentialsToDistinguishedNamePrincipalResolver
-    extends AbstractX509CertificateCredentialsToPrincipalResolver {
+public final class X509CertificateCredentialsToDistinguishedNamePrincipalResolver extends AbstractX509CertificateCredentialsToPrincipalResolver {
 
-    protected String resolvePrincipalInternal(
-        final X509Certificate certificate) {
+    public X509CertificateCredentialsToDistinguishedNamePrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
+        super(attributePrincipalFactory);
+    }
+
+    protected String resolvePrincipalInternal(final X509Certificate certificate) {
         return certificate.getSubjectDN().getName();
     }
 }

@@ -21,8 +21,10 @@ package org.jasig.cas.adaptors.x509.authentication.principal;
 
 import java.security.cert.X509Certificate;
 
-import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentials;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.TestUtils;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
 
 /**
  * @author Scott Battaglia
@@ -34,7 +36,11 @@ import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 public class X509CertificateCredentialsToSNAndIssuerDNPrincipalResolverTests
     extends AbstractX509CertificateTests {
     
-    private X509CertificateCredentialsToSerialNumberAndIssuerDNPrincipalResolver resolver = new X509CertificateCredentialsToSerialNumberAndIssuerDNPrincipalResolver();
+    private X509CertificateCredentialsToSerialNumberAndIssuerDNPrincipalResolver resolver = new X509CertificateCredentialsToSerialNumberAndIssuerDNPrincipalResolver(new AttributePrincipalFactory() {
+        public AttributePrincipal getAttributePrincipal(String name) {
+            return TestUtils.getPrincipal(name);
+        }
+    });
     
     public void testResolvePrincipalInternal() {
         final X509CertificateCredentials c = new X509CertificateCredentials(new X509Certificate[] {VALID_CERTIFICATE});
@@ -43,7 +49,7 @@ public class X509CertificateCredentialsToSNAndIssuerDNPrincipalResolverTests
         
         final String value = "SERIALNUMBER=" + VALID_CERTIFICATE.getSerialNumber().toString() + ", " + VALID_CERTIFICATE.getIssuerDN().getName();
         
-        assertEquals(value, this.resolver.resolvePrincipal(c).getId());
+        assertEquals(value, this.resolver.resolve(c).getName());
     }
     
     public void testSupport() {
@@ -52,7 +58,7 @@ public class X509CertificateCredentialsToSNAndIssuerDNPrincipalResolverTests
     }
     
     public void testSupportFalse() {
-        assertFalse(this.resolver.supports(new UsernamePasswordCredentials()));
+        assertFalse(this.resolver.supports(new DefaultUserNamePasswordCredential()));
     }
     
 }

@@ -24,9 +24,10 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
-import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentials;
-import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentialsToIdentifierPrincipalResolver;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.TestUtils;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
 
 
 /**
@@ -39,7 +40,11 @@ import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 public class X509CertificateCredentialsToIdentifierPrincipalResolverTests
     extends AbstractX509CertificateTests {
 
-    X509CertificateCredentialsToIdentifierPrincipalResolver resolver = new X509CertificateCredentialsToIdentifierPrincipalResolver();
+    X509CertificateCredentialsToIdentifierPrincipalResolver resolver = new X509CertificateCredentialsToIdentifierPrincipalResolver(new AttributePrincipalFactory() {
+        public AttributePrincipal getAttributePrincipal(String name) {
+            return TestUtils.getPrincipal(name);
+        }
+    });
     
     public void testResolvePrincipalInternal() throws Exception {
         final X509CertificateCredentials credentials = new X509CertificateCredentials(
@@ -47,10 +52,8 @@ public class X509CertificateCredentialsToIdentifierPrincipalResolverTests
         credentials.setCertificate(getTestCertificate());
 
         this.resolver.setIdentifier("$C, $CN");
-        assertEquals("The principals should match", this.resolver.resolvePrincipal(
-            credentials).getId(), "SE, test testsson");
-        assertFalse("The principals should not match", this.resolver
-            .resolvePrincipal(credentials).getId().equals("SE, Altcom Test"));
+        assertEquals("The principals should match", this.resolver.resolve(credentials).getName(), "SE, test testsson");
+        assertFalse("The principals should not match", this.resolver.resolve(credentials).getName().equals("SE, Altcom Test"));
     }
 
     public void testSupport() {
@@ -59,7 +62,7 @@ public class X509CertificateCredentialsToIdentifierPrincipalResolverTests
     }
     
     public void testSupportFalse() {
-        assertFalse(this.resolver.supports(new UsernamePasswordCredentials()));
+        assertFalse(this.resolver.supports(new DefaultUserNamePasswordCredential()));
     }
 
     private X509Certificate getTestCertificate() {

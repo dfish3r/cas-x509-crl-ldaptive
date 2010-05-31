@@ -19,6 +19,7 @@
 
 package org.jasig.cas.adaptors.x509.authentication.handler.support;
 
+import java.security.GeneralSecurityException;
 import java.security.Principal;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -27,9 +28,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentials;
-import org.jasig.cas.authentication.handler.AuthenticationException;
 import org.jasig.cas.server.authentication.AbstractPreAndPostProcessingAuthenticationHandler;
-import org.jasig.cas.authentication.principal.Credentials;
+import org.jasig.cas.server.authentication.Credential;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,8 +102,7 @@ public class X509CredentialsAuthenticationHandler extends AbstractPreAndPostProc
    @NotNull
    private Pattern regExSubjectDnPattern = DEFAULT_SUBJECT_DN_PATTERN;
 
-   protected final boolean doAuthentication(final Credentials credentials)
-       throws AuthenticationException {
+   protected final boolean doAuthentication(final Credential credentials) throws GeneralSecurityException {
 
        final X509CertificateCredentials x509Credentials = (X509CertificateCredentials) credentials;
        final X509Certificate[] certificates = x509Credentials
@@ -156,7 +155,7 @@ public class X509CredentialsAuthenticationHandler extends AbstractPreAndPostProc
 
                    // check pathLength when CA cert
                    //if unlimited/unspecified and unlimited/unspecified not allowed: warn+stop
-                   if (pathLength == Integer.MAX_VALUE && this.maxPathLength_allowUnspecified != true) {
+                   if (pathLength == Integer.MAX_VALUE && !this.maxPathLength_allowUnspecified) {
                        if (log.isWarnEnabled()) {
                            log.warn("authentication failed; cert pathLength not specified"
                                    + " and unlimited/unspecified not allowed by config [see maxPathLength_allow_unlimited]");
@@ -351,9 +350,7 @@ public class X509CredentialsAuthenticationHandler extends AbstractPreAndPostProc
        return result;
    }
 
-   public boolean supports(final Credentials credentials) {
-       return credentials != null
-           && X509CertificateCredentials.class.isAssignableFrom(credentials
-               .getClass());
+   public boolean supports(final Credential credentials) {
+       return credentials != null && X509CertificateCredentials.class.isAssignableFrom(credentials.getClass());
    }
 }

@@ -19,6 +19,8 @@
 
 package org.jasig.cas.authentication.principal;
 
+import org.jasig.cas.server.authentication.Service;
+
 /**
  * Represents a service using CAS that comes from the web.
  * 

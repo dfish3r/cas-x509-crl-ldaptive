@@ -21,10 +21,9 @@ package org.jasig.cas.adaptors.x509.authentication.handler.support;
 
 import java.security.cert.X509Certificate;
 
-import org.jasig.cas.adaptors.x509.authentication.handler.support.X509CredentialsAuthenticationHandler;
 import org.jasig.cas.adaptors.x509.authentication.principal.AbstractX509CertificateTests;
 import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentials;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
 
 /**
  * 
@@ -46,7 +45,7 @@ public class X509CredentialsAuthenticationHandlerTests extends AbstractX509Certi
     }
     
     public void testDoesntSupportClass() {
-        assertFalse(this.authenticationHandler.supports(new UsernamePasswordCredentials()));
+        assertFalse(this.authenticationHandler.supports(new DefaultUserNamePasswordCredential()));
     }
     
     public void testInvalidCertificate() throws Exception {

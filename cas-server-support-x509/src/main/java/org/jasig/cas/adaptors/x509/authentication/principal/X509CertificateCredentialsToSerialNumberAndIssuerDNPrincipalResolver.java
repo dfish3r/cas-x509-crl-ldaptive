@@ -19,6 +19,8 @@
 
 package org.jasig.cas.adaptors.x509.authentication.principal;
 
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+
 import javax.validation.constraints.NotNull;
 import java.security.cert.X509Certificate;
 
@@ -39,8 +41,7 @@ import java.security.cert.X509Certificate;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public final class X509CertificateCredentialsToSerialNumberAndIssuerDNPrincipalResolver
-    extends AbstractX509CertificateCredentialsToPrincipalResolver {
+public final class X509CertificateCredentialsToSerialNumberAndIssuerDNPrincipalResolver extends AbstractX509CertificateCredentialsToPrincipalResolver {
 
     /** Prefix for Certificate Serial Number. */
     @NotNull
@@ -49,6 +50,11 @@ public final class X509CertificateCredentialsToSerialNumberAndIssuerDNPrincipalR
     /** Prefix for Value Delimiter. */
     @NotNull
     private String valueDelimiter = ", ";
+
+    public X509CertificateCredentialsToSerialNumberAndIssuerDNPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
+        super(attributePrincipalFactory);
+    }
+
 
     /**
      * Sets a prefix for the certificate serialnumber (default: "SERIALNUMBER=")

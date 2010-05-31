@@ -19,11 +19,13 @@
 
 package org.jasig.cas.adaptors.x509.authentication.principal;
 
+import org.jasig.cas.TestUtils;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
+
 import java.security.cert.X509Certificate;
 
-import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentials;
-import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentialsToDistinguishedNamePrincipalResolver;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 
 /**
  * @author Scott Battaglia
@@ -32,15 +34,18 @@ import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
  * @since 3.0.6
  *
  */
-public class X509CertificateCredentialsToDistinguishedNamePrincipalResolverTests
-    extends AbstractX509CertificateTests {
+public class X509CertificateCredentialsToDistinguishedNamePrincipalResolverTests extends AbstractX509CertificateTests {
 
-    private X509CertificateCredentialsToDistinguishedNamePrincipalResolver resolver = new X509CertificateCredentialsToDistinguishedNamePrincipalResolver();
+    private X509CertificateCredentialsToDistinguishedNamePrincipalResolver resolver = new X509CertificateCredentialsToDistinguishedNamePrincipalResolver(new AttributePrincipalFactory() {
+        public AttributePrincipal getAttributePrincipal(String name) {
+            return TestUtils.getPrincipal(name);
+        }
+    });
     
     public void testResolvePrincipalInternal() {
         final X509CertificateCredentials c = new X509CertificateCredentials(new X509Certificate[] {VALID_CERTIFICATE});
         c.setCertificate(VALID_CERTIFICATE);        
-        assertEquals(VALID_CERTIFICATE.getSubjectDN().getName(), this.resolver.resolvePrincipal(c).getId());
+        assertEquals(VALID_CERTIFICATE.getSubjectDN().getName(), this.resolver.resolve(c).getName());
     }
     
     public void testSupport() {
@@ -49,7 +54,7 @@ public class X509CertificateCredentialsToDistinguishedNamePrincipalResolverTests
     }
     
     public void testSupportFalse() {
-        assertFalse(this.resolver.supports(new UsernamePasswordCredentials()));
+        assertFalse(this.resolver.supports(new DefaultUserNamePasswordCredential()));
     }
     
 }

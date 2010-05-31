@@ -20,20 +20,13 @@
 package org.jasig.cas.adaptors.x509.web.flow;
 
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jasig.cas.CentralAuthenticationServiceImpl;
 import org.jasig.cas.adaptors.x509.authentication.handler.support.X509CredentialsAuthenticationHandler;
 import org.jasig.cas.adaptors.x509.authentication.principal.AbstractX509CertificateTests;
-import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentialsToSerialNumberPrincipalResolver;
-import org.jasig.cas.authentication.DefaultAuthenticationManagerImpl;
-import org.jasig.cas.authentication.handler.AuthenticationHandler;
-import org.jasig.cas.authentication.principal.CredentialsToPrincipalResolver;
 import org.jasig.cas.authentication.principal.SimpleWebApplicationServiceImpl;
-import org.jasig.cas.ticket.registry.DefaultTicketRegistry;
-import org.jasig.cas.ticket.support.NeverExpiresExpirationPolicy;
 import org.jasig.cas.util.DefaultUniqueTicketIdGenerator;
 import org.jasig.cas.util.UniqueTicketIdGenerator;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -51,24 +44,21 @@ public class X509CertificateCredentialsNonInteractiveActionTests extends
     protected void setUp() throws Exception {
         this.action = new X509CertificateCredentialsNonInteractiveAction();
         final CentralAuthenticationServiceImpl centralAuthenticationService = new CentralAuthenticationServiceImpl();
-        centralAuthenticationService.setTicketRegistry(new DefaultTicketRegistry());
         final Map<String, UniqueTicketIdGenerator> idGenerators = new HashMap<String, UniqueTicketIdGenerator>();
         idGenerators.put(SimpleWebApplicationServiceImpl.class.getName(), new DefaultUniqueTicketIdGenerator());
 
-
-        final DefaultAuthenticationManagerImpl authenticationManager = new DefaultAuthenticationManagerImpl();
-
         final X509CredentialsAuthenticationHandler a = new X509CredentialsAuthenticationHandler();
         a.setTrustedIssuerDnPattern("JA-SIG");
-        
-        authenticationManager.setAuthenticationHandlers(Arrays.asList(new AuthenticationHandler[] {a}));
-        authenticationManager.setCredentialsToPrincipalResolvers(Arrays.asList(new CredentialsToPrincipalResolver[] {new X509CertificateCredentialsToSerialNumberPrincipalResolver()}));
-        
+
+//        final DefaultAuthenticationManagerImpl authenticationManager = new DefaultAuthenticationManagerImpl(Arrays.asList(a), Arrays.asList(new CredentialToPrincipalResolver[] {new X509CertificateCredentialsToSerialNumberPrincipalResolver()}));
+
+/*
         centralAuthenticationService.setTicketGrantingTicketUniqueTicketIdGenerator(new DefaultUniqueTicketIdGenerator());
         centralAuthenticationService.setUniqueTicketIdGeneratorsForService(idGenerators);
         centralAuthenticationService.setServiceTicketExpirationPolicy(new NeverExpiresExpirationPolicy());
         centralAuthenticationService.setTicketGrantingTicketExpirationPolicy(new NeverExpiresExpirationPolicy());
-        centralAuthenticationService.setAuthenticationManager(authenticationManager);
+*/
+//        centralAuthenticationService.setAuthenticationManager(authenticationManager);
         
         this.action.setCentralAuthenticationService(centralAuthenticationService);
         this.action.afterPropertiesSet();

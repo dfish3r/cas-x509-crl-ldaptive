@@ -21,7 +21,7 @@ package org.jasig.cas.adaptors.x509.authentication.principal;
 
 import java.security.cert.X509Certificate;
 
-import org.jasig.cas.authentication.principal.Credentials;
+import org.jasig.cas.server.authentication.Credential;
 
 /**
  * 
@@ -30,7 +30,7 @@ import org.jasig.cas.authentication.principal.Credentials;
  * @since 3.0.4
  *
  */
-public final class X509CertificateCredentials implements Credentials {
+public final class X509CertificateCredentials implements Credential {
 
     /** Unique Id for serialization. */
     private static final long serialVersionUID = 7579713688326827121L;

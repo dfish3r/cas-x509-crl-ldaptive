@@ -19,6 +19,8 @@
 
 package org.jasig.cas.adaptors.x509.authentication.principal;
 
+import org.jasig.cas.server.authentication.AttributePrincipalFactory;
+
 import javax.validation.constraints.NotNull;
 import java.security.cert.X509Certificate;
 
@@ -32,8 +34,7 @@ import java.util.Comparator;
  * @version $Revision$ $Date$
  * @since 3.0.4
  */
-public final class X509CertificateCredentialsToIdentifierPrincipalResolver extends
-    AbstractX509CertificateCredentialsToPrincipalResolver {
+public final class X509CertificateCredentialsToIdentifierPrincipalResolver extends AbstractX509CertificateCredentialsToPrincipalResolver {
 
     private static final String DEFAULT_IDENTIFIER = "$OU $CN";
 
@@ -45,8 +46,11 @@ public final class X509CertificateCredentialsToIdentifierPrincipalResolver exten
     @NotNull
     private String identifier = DEFAULT_IDENTIFIER;
 
-    protected String resolvePrincipalInternal(
-        final X509Certificate certificate) {
+    public X509CertificateCredentialsToIdentifierPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
+        super(attributePrincipalFactory);
+    }
+
+    protected String resolvePrincipalInternal(final X509Certificate certificate) {
         String username = this.identifier;
         
         if (log.isInfoEnabled()) {

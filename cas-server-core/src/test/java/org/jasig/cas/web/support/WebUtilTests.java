@@ -21,7 +21,7 @@ package org.jasig.cas.web.support;
 
 import java.util.Arrays;
 
-import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.server.authentication.Service;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import junit.framework.TestCase;
