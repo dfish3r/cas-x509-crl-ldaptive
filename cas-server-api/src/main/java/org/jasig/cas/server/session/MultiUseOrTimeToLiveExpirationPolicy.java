@@ -55,14 +55,6 @@ public final class MultiUseOrTimeToLiveExpirationPolicy implements ExpirationPol
     }
 
     public boolean isExpired(final State state) {
-        if (state.getUsageCount() >= this.maxNumberOfUses) {
-            return true;
-        }
-
-        if (System.currentTimeMillis() - state.getCreationTime() >= this.timeToLive) {
-            return true;
-        }
-
-        return false;
+        return (state.getUsageCount() >= this.maxNumberOfUses) || (System.currentTimeMillis() - state.getCreationTime() >= this.timeToLive);
     }
 }
