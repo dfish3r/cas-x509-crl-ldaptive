@@ -19,6 +19,7 @@
 package org.jasig.cas.server.session;
 
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Implements tests for the {@link org.jasig.cas.server.session.NeverExpiresExpirationPolicy} class.

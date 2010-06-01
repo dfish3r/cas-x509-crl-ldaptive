@@ -28,7 +28,7 @@ import javax.validation.constraints.Min;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 4.0.0
+ * @since 3.5
  */
 public final class MultiUseOrTimeToLiveExpirationPolicy implements ExpirationPolicy {
 
@@ -39,14 +39,14 @@ public final class MultiUseOrTimeToLiveExpirationPolicy implements ExpirationPol
     private long timeToLive;
 
     /**
-     * Creates a new MultiUseOrTimeToLiveExpirationPolicy with the maximum number of uses or the time to live (in seconds).
+     * Creates a new MultiUseOrTimeToLiveExpirationPolicy with the maximum number of uses or the time to live (in milliseconds).
      *
      * @param maxNumberOfUses the maximum number of uses
      * @param timeToLive time to live, in seconds.
      */
     public MultiUseOrTimeToLiveExpirationPolicy(final int maxNumberOfUses, final long timeToLive) {
         this.maxNumberOfUses = maxNumberOfUses;
-        this.timeToLive = timeToLive * 1000;
+        this.timeToLive = timeToLive;
     }
 
     public MultiUseOrTimeToLiveExpirationPolicy(final long timeToLive) {

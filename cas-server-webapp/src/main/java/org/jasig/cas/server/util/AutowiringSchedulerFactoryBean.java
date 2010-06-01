@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.util;
+package org.jasig.cas.server.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

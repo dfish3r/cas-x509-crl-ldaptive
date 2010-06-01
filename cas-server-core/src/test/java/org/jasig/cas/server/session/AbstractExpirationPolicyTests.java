@@ -18,7 +18,8 @@
  */
 package org.jasig.cas.server.session;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.*;
+import org.junit.Test;
 
 /**
  * Base class which can hold some basic tests as well as helper methods.
@@ -27,7 +28,7 @@ import junit.framework.TestCase;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public abstract class AbstractExpirationPolicyTests extends TestCase {
+public abstract class AbstractExpirationPolicyTests {
 
     private final ExpirationPolicy expirationPolicy;
 
@@ -47,7 +48,8 @@ public abstract class AbstractExpirationPolicyTests extends TestCase {
         }
     }
 
-    public void testImmediateUsage() {
+    @Test
+    public void immediateUsage() {
         final State state = new SimpleStateImpl();
         assertFalse(this.expirationPolicy.isExpired(state));
     }

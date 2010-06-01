@@ -16,10 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.jasig.cas.server.util;
 
-package org.jasig.cas.web.support;
-
-import org.jasig.cas.web.support.AbstractInMemoryThrottledSubmissionHandlerInterceptorAdapter;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,8 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import junit.framework.TestCase;
 
 
-public class ThrottledSubmissionByIpAddressHandlerInterceptorAdapterTests extends
-    TestCase {
+public class ThrottledSubmissionByIpAddressHandlerInterceptorAdapterTests extends TestCase {
 
     private InMemoryThrottledSubmissionByIpAddressHandlerInterceptorAdapter adapter;
     

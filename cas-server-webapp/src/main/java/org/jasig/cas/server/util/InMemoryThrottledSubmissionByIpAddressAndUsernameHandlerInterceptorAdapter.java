@@ -17,23 +17,28 @@
  * under the License.
  */
 
-package org.jasig.cas.web.support;
+package org.jasig.cas.server.util;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.jasig.cas.authentication.principal.SamlService;
-import org.jasig.cas.authentication.principal.WebApplicationService;
-
 /**
- * Retrieve the ticket and artifact based on the SAML 1.1 profile.
- * 
+ * Attempts to throttle by both IP Address and username.  Protects against instances where there is a NAT, such as
+ * a local campus wireless network.
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.1
+ * @since 3.3.5
  */
-public final class SamlArgumentExtractor extends AbstractSingleSignOutEnabledArgumentExtractor {
+public final class InMemoryThrottledSubmissionByIpAddressAndUsernameHandlerInterceptorAdapter extends AbstractInMemoryThrottledSubmissionHandlerInterceptorAdapter {
 
-    public WebApplicationService extractServiceInternal(final HttpServletRequest request) {
-        return SamlService.createServiceFrom(request, getHttpClientIfSingleSignOutEnabled());
+    @Override
+    protected String constructKey(final HttpServletRequest request, final String usernameParameter) {
+        final String username = request.getParameter(usernameParameter);
+
+        if (username == null) {
+            return request.getRemoteAddr();
+        }
+
+        return request.getRemoteAddr() + ";" + username.toLowerCase();
     }
 }

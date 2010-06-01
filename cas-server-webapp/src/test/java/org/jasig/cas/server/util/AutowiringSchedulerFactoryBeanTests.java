@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.util;
+package org.jasig.cas.server.util;
 
 import junit.framework.TestCase;
 
@@ -26,7 +26,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.quartz.Scheduler;
 
 /**
- * Test case for {@link org.jasig.cas.util.AutowiringSchedulerFactoryBean} class.
+ * Test case for {@link org.jasig.cas.server.util.AutowiringSchedulerFactoryBean} class.
  *
  * @author Marvin S. Addison
  * @version $Revision: $ $Date: $

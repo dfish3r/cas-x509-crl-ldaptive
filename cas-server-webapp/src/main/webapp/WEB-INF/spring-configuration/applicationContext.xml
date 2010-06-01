@@ -101,5 +101,5 @@
     <bean id="validationAnnotationBeanPostProcessor" class="org.jasig.cas.util.CustomBeanValidationPostProcessor" />
 
     <!-- The scheduler bean wires up any triggers that define scheduled tasks -->
-    <bean id="scheduler" class="org.jasig.cas.util.AutowiringSchedulerFactoryBean"/>
+    <bean id="scheduler" class="org.jasig.cas.server.util.AutowiringSchedulerFactoryBean"/>
 </beans>

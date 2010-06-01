@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
 import org.jasig.cas.authentication.principal.WebApplicationService;
-import org.jasig.cas.web.support.SamlArgumentExtractor;
 import org.opensaml.SAMLException;
 import org.opensaml.SAMLResponse;
 
@@ -44,7 +43,7 @@ public class Saml10FailureResponseView extends AbstractCasView {
 
     private static final String DEFAULT_ENCODING = "UTF-8";
 
-    private final SamlArgumentExtractor samlArgumentExtractor = new SamlArgumentExtractor();
+//    private final SamlArgumentExtractor samlArgumentExtractor = new SamlArgumentExtractor();
 
     @NotNull
     private String encoding = DEFAULT_ENCODING;
@@ -52,7 +51,8 @@ public class Saml10FailureResponseView extends AbstractCasView {
     protected void renderMergedOutputModel(final Map model,
         final HttpServletRequest request, final HttpServletResponse response)
         throws Exception {
-        final WebApplicationService service = this.samlArgumentExtractor.extractService(request);
+        final WebApplicationService service = null;
+        // this.samlArgumentExtractor.extractService(request);
         final String errorMessage = (String) model.get("description");
 
         final SAMLResponse samlResponse = new SAMLResponse(service.getArtifactId(), service.getId(), new ArrayList<Object>(), new SAMLException(errorMessage));

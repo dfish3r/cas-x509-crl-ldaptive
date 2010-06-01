@@ -17,22 +17,24 @@
  * under the License.
  */
 
-package org.jasig.cas.web.support;
+package org.jasig.cas.server.util;
+
+import org.springframework.webflow.context.servlet.DefaultFlowUrlHandler;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Throttles access attempts for failed logins by IP Address.  This stores the attempts in memory.  This is not good for a
- * clustered environment unless the intended behavior is that this blocking is per-machine.
+ * Extends the {@link org.springframework.webflow.context.servlet.DefaultFlowUrlHandler} to support the CAS requirement
+ * that tokens be retrieved via the "lt" request parameter.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.3.5
+ * @since 3.4
  */
-public final class InMemoryThrottledSubmissionByIpAddressHandlerInterceptorAdapter extends AbstractInMemoryThrottledSubmissionHandlerInterceptorAdapter {
+public class CasDefaultFlowUrlHandler extends DefaultFlowUrlHandler {
 
     @Override
-    protected String constructKey(final HttpServletRequest request, final String usernameParameter) {
-        return request.getRemoteAddr();
+    public String getFlowExecutionKey(final HttpServletRequest request) {
+        return request.getParameter("lt");
     }
 }
