@@ -11,14 +11,4 @@
     <artifactId>cas-server-api</artifactId>
     <name>Jasig CAS - API</name>
     <description>The main APIs for the Jasig CAS service.</description>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.jasig.cas</groupId>
-            <artifactId>cas-server-test-support</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
-    </dependencies>
 </project>

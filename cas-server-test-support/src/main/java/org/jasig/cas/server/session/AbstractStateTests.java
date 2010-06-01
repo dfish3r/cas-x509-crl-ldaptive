@@ -18,7 +18,7 @@
  */
 package org.jasig.cas.server.session;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,12 +29,12 @@ import org.junit.Test;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public abstract class AbstractStateTests extends TestCase {
+public abstract class AbstractStateTests {
 
     private State state;
 
     @Before
-    public final void initialize() throws Exception {
+    public final void initialize() {
         this.state = getNewState();
     }
 
@@ -45,7 +45,7 @@ public abstract class AbstractStateTests extends TestCase {
     protected abstract State getNewState();
 
     @Test
-    public final void testInitialState() {
+    public final void initialState() {
         final long currentTime = System.currentTimeMillis();
         assertEquals(currentTime, this.state.getCreationTime());
         assertEquals(0, this.state.getUsageCount());
@@ -54,7 +54,7 @@ public abstract class AbstractStateTests extends TestCase {
     }
 
     @Test
-    public final void testUpdatedState() {
+    public final void updatedState() {
         final long currentTime = System.currentTimeMillis();
         this.state.updateState();
         assertEquals(currentTime, this.state.getCreationTime());

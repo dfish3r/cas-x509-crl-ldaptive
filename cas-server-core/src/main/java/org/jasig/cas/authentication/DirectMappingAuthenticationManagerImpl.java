@@ -21,10 +21,7 @@ package org.jasig.cas.authentication;
 
 import java.util.Map;
 
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.BadCredentialsAuthenticationException;
 import org.jasig.cas.server.authentication.*;
-import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

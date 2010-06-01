@@ -20,9 +20,6 @@
 package org.jasig.cas.authentication;
 
 import com.github.inspektr.audit.annotation.Audit;
-import org.jasig.cas.authentication.handler.AuthenticationException;
-import org.jasig.cas.authentication.handler.BadCredentialsAuthenticationException;
-import org.jasig.cas.authentication.handler.UnsupportedCredentialsException;
 import org.jasig.cas.server.authentication.*;
 import org.perf4j.aop.Profiled;
 
