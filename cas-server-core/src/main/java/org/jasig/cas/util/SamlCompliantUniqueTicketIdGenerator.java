@@ -19,11 +19,13 @@
 
 package org.jasig.cas.util;
 
+import org.opensaml.artifact.SAMLArtifact;
 import org.opensaml.artifact.SAMLArtifactType0001;
 import org.opensaml.artifact.SAMLArtifactType0002;
 import org.opensaml.artifact.URI;
 
 import javax.validation.constraints.NotNull;
+import java.security.MessageDigest;
 
 /**
  * Unique Ticket Id Generator compliant with the SAML 1.1 specification for
@@ -38,6 +40,9 @@ import javax.validation.constraints.NotNull;
 public final class SamlCompliantUniqueTicketIdGenerator implements UniqueTicketIdGenerator {
 
     /** SAML defines the source id as the server name. */
+    private final byte[] sourceIdDigest;
+
+    /** SAML defines the source id as the server name. */
     @NotNull
     private final String sourceLocation;
 
@@ -48,6 +53,13 @@ public final class SamlCompliantUniqueTicketIdGenerator implements UniqueTicketI
 
     public SamlCompliantUniqueTicketIdGenerator(final String sourceId) {
         this.sourceLocation = sourceId;
+        try {
+            final MessageDigest messageDigest = MessageDigest.getInstance("SHA");
+            messageDigest.update(sourceId.getBytes("8859_1"));
+            this.sourceIdDigest = messageDigest.digest();
+        } catch (final Exception e) {
+            throw new IllegalStateException("Exception generating digest which should not happen...EVER");
+        }
     }
 
     /**
@@ -57,7 +69,7 @@ public final class SamlCompliantUniqueTicketIdGenerator implements UniqueTicketI
         if (saml2compliant) {
             return new SAMLArtifactType0002(this.randomStringGenerator.getNewStringAsBytes(), new URI(this.sourceLocation)).encode();
         } else {
-            return new SAMLArtifactType0001(this.randomStringGenerator.getNewStringAsBytes(), new URI(this.sourceLocation).toBytes()).encode();
+            return new SAMLArtifactType0001(this.sourceIdDigest, this.randomStringGenerator.getNewStringAsBytes()).encode();
         }
     }
 
