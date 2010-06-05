@@ -16,31 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jasig.cas.server.logout;
-
-import java.io.Serializable;
-import java.util.Date;
+package org.jasig.cas.server.session;
 
 /**
- * Represents a request to the service to destroy an existing single sign on session.
+ * Abstract exception for Accesses.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public interface LogoutRequest extends Serializable {
+public abstract class AccessException extends Exception {
 
-    /**
-     * The Date/Time that the logout request was created.
-     *
-     * @return the data/time that the logout request was created.  This cannot be null.
-     */
-    Date getDate();
-
-    /**
-     * Retrieve the Session Identifier for the session you wish to log out of.
-     *
-     * @return the session identifier.  This cannot be null.
-     */
-    String getSessionId();
+    protected AccessException(final String message) {
+        super(message);
+    }
 }
