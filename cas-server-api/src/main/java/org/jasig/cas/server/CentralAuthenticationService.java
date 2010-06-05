@@ -64,6 +64,15 @@ public interface CentralAuthenticationService {
     LogoutResponse logout(LogoutRequest logoutRequest);
 
     /**
+     * Special function to administratively log out a user.  This should not be exposed by the web tier to
+     * normal users.  It is an administrative function only. I.e. an administration tool or JMX.
+     *
+     * @param userId the user name to destory all sessions for.  CANNOT be NULL.
+     * @return the response to the logout attempt. 
+     */
+    LogoutResponse logout(String userId);
+
+    /**
      * Grant a ServiceTicket for a Service.
      * 
      * @param ticketGrantingTicketId Proof of prior authentication.

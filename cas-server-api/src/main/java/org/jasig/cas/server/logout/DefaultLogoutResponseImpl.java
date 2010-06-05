@@ -3,10 +3,7 @@ package org.jasig.cas.server.logout;
 import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.Session;
 
-import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Default implementation of the {@link LogoutResponse}
@@ -31,14 +28,20 @@ public class DefaultLogoutResponseImpl implements LogoutResponse {
      * @param session the session to grab the accesses from.
      */
     public DefaultLogoutResponseImpl(final Session session) {
+        this(Arrays.asList(session));
+    }
+
+    public DefaultLogoutResponseImpl(final Collection<Session> sessions) {
         final List<Access> loggedOutAccesses = new ArrayList<Access>();
         final List<Access> loggedInAccesses = new ArrayList<Access>();
 
-        for (final Access access : session.getAccesses()) {
-            if (access.isLocalSessionDestroyed()) {
-                loggedOutAccesses.add(access);
-            } else {
-                loggedInAccesses.add(access);
+        for (final Session session : sessions) {
+            for (final Access access : session.getAccesses()) {
+                if (access.isLocalSessionDestroyed()) {
+                    loggedOutAccesses.add(access);
+                } else {
+                    loggedInAccesses.add(access);
+                }
             }
         }
 

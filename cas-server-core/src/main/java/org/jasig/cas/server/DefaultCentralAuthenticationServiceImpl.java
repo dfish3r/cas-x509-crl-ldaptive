@@ -157,6 +157,26 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         return new DefaultLogoutResponseImpl();
     }
 
+    @Audit(action="ADMIN_DESTROY_SESSIONS",actionResolverName="ADMIN_DESTROY_SESSIONS_RESOLVER",resourceResolverName="ADMIN_DESTROY_SESSIONS_RESOURCE_RESOLVER")
+    @Profiled(tag = "ADMIN_DESTROY_SESSION",logFailuresSeparately = false)
+    public LogoutResponse logout(final String userId) {
+        Assert.notNull(userId, "userId cannot be null");
+        final Set<Session> sessions = this.sessionStorage.findSessionsByPrincipal(userId);
+
+        if (sessions.isEmpty()) {
+            return new DefaultLogoutResponseImpl();
+        }
+
+        final Set<Session> destroyedSessions = new HashSet<Session>();
+
+        for (final Session session : sessions) {
+            final Session destroyedSession = this.sessionStorage.destroySession(session.getId());
+            destroyedSessions.add(destroyedSession);
+        }
+
+        return new DefaultLogoutResponseImpl(destroyedSessions);
+    }
+
     /**
      * @throws IllegalArgumentException if TicketGrantingTicket ID, Credentials
      * or Service are null.
