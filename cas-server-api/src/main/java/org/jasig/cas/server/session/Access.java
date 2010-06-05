@@ -21,6 +21,8 @@ package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
 
+import java.io.Serializable;
+
 /**
  * Represents a request to access a resource.  Implementations of this interface would be specific versions of how to
  * access that resource, i.e. either via the CAS1 or CAS2 protocol, etc.
@@ -29,7 +31,7 @@ import org.jasig.cas.server.login.TokenServiceAccessRequest;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public interface Access {
+public interface Access extends Serializable {
 
     /**
      * Returns the unique identifier for this Access.

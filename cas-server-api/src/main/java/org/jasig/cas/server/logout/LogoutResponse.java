@@ -20,6 +20,7 @@ package org.jasig.cas.server.logout;
 
 import org.jasig.cas.server.session.Access;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Date;
 
@@ -30,7 +31,7 @@ import java.util.Date;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public interface LogoutResponse {
+public interface LogoutResponse extends Serializable {
 
     /**
      * Returns the date when the logout response was generated.
