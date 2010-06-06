@@ -25,6 +25,7 @@ import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.util.Cleanable;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.Mockito.*;
 
 import java.security.GeneralSecurityException;
 import java.util.*;
@@ -51,11 +52,21 @@ public abstract class AbstractSessionStorageTests extends TestCase {
     protected abstract AttributePrincipalFactory getAttributePrincipalFactory();
 
     protected final AuthenticationResponse getAuthenticationResponse(final String principal) {
-        return new DefaultAuthenticationResponseImpl(new HashSet<Authentication>(Arrays.asList(getConstructedAuthentication())), TestUtils.getPrincipal(principal), Collections.<GeneralSecurityException>emptyList(), Collections.<Message>emptyList());
+        final AuthenticationResponse response = mock(AuthenticationResponse.class);
+        when(response.getAuthentications()).thenReturn(new HashSet<Authentication>(Arrays.asList(getConstructedAuthentication())));
+        when(response.getPrincipal()).thenReturn(TestUtils.getPrincipal(principal));
+        when(response.getGeneralSecurityExceptions()).thenReturn(Collections.<GeneralSecurityException>emptyList());
+        when(response.getAuthenticationMessages()).thenReturn(Collections.<Message>emptyList());
+
+        return response;
     }
 
     protected final Authentication getConstructedAuthentication() {
-        return this.authenticationFactory.getAuthentication(Collections.<String, List<Object>>emptyMap(), new DefaultAuthenticationRequestImpl(Collections.<Credential>emptyList(), false), "myMethod");
+        final AuthenticationRequest authenticationRequest = mock(AuthenticationRequest.class);
+        when(authenticationRequest.getAuthenticationRequestDate()).thenReturn(new Date());
+        when(authenticationRequest.getCredentials()).thenReturn(Collections.<Credential>emptyList());
+        when(authenticationRequest.isLongTermAuthenticationRequest()).thenReturn(false);
+        return this.authenticationFactory.getAuthentication(Collections.<String, List<Object>>emptyMap(), authenticationRequest, "myMethod");
     }
 
     @Before

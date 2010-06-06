@@ -25,6 +25,7 @@ import java.util.*;
 
 import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.session.Assertion;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Scott Battaglia
@@ -56,7 +57,11 @@ public final class TestUtils {
     }
 
     public static AuthenticationRequest getAuthenticationRequest(final Credential credential) {
-        return new DefaultAuthenticationRequestImpl(Arrays.asList(credential), false);
+        final AuthenticationRequest authenticationRequest = mock(AuthenticationRequest.class);
+        when(authenticationRequest.getAuthenticationRequestDate()).thenReturn(new Date());
+        when(authenticationRequest.isLongTermAuthenticationRequest()).thenReturn(false);
+        when(authenticationRequest.getCredentials()).thenReturn(Arrays.asList(credential));
+        return authenticationRequest;
     }
 
     public static UserNamePasswordCredential getCredentialsWithSameUsernameAndPassword() {
