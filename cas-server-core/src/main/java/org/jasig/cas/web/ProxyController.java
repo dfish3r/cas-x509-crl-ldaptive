@@ -82,9 +82,9 @@ public final class ProxyController extends AbstractController {
         }
 
         try {
+            // this is clearly wrong, but will suffice for now.
             return new ModelAndView(CONST_PROXY_SUCCESS, MODEL_SERVICE_TICKET,
-                this.centralAuthenticationService.grantServiceTicket(ticket,
-                    targetService));
+                    this.centralAuthenticationService.grantAccess(null));
         } catch (TicketException e) {
             return generateErrorView(e.getCode(), e.getCode(),
                 new Object[] {ticket});

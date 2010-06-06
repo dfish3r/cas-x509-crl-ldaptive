@@ -20,9 +20,6 @@ package org.jasig.cas.server;
 
 import com.github.inspektr.audit.annotation.Audit;
 import org.jasig.cas.authentication.principal.*;
-import org.jasig.cas.server.AuthenticationResponsePlugin;
-import org.jasig.cas.server.CentralAuthenticationService;
-import org.jasig.cas.server.PreAuthenticationPlugin;
 import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.login.*;
 import org.jasig.cas.server.logout.DefaultLogoutResponseImpl;
@@ -33,10 +30,7 @@ import org.jasig.cas.services.RegisteredService;
 import org.jasig.cas.services.ServicesManager;
 import org.jasig.cas.services.UnauthorizedProxyingException;
 import org.jasig.cas.services.UnauthorizedServiceException;
-import org.jasig.cas.services.UnauthorizedSsoServiceException;
 import org.jasig.cas.ticket.InvalidTicketException;
-import org.jasig.cas.ticket.TicketCreationException;
-import org.jasig.cas.ticket.TicketException;
 import org.jasig.cas.server.session.Assertion;
 import org.perf4j.aop.Profiled;
 import org.slf4j.Logger;
@@ -177,23 +171,23 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         return new DefaultLogoutResponseImpl(destroyedSessions);
     }
 
-    /**
-     * @throws IllegalArgumentException if TicketGrantingTicket ID, Credentials
-     * or Service are null.
-     */
-    @Audit(action="SERVICE_TICKET",actionResolverName="GRANT_SERVICE_TICKET_RESOLVER",resourceResolverName="GRANT_SERVICE_TICKET_RESOURCE_RESOLVER")
-    @Profiled(tag="GRANT_SERVICE_TICKET", logFailuresSeparately = false)
-    @Transactional(readOnly = false)
-    public String grantServiceTicket(final String ticketGrantingTicketId, final Service service, final Credential credentials) throws TicketException {
-        Assert.notNull(ticketGrantingTicketId, "ticketGrantingticketId cannot be null");
-        Assert.notNull(service, "service cannot be null");
+    @Audit(action="ACCESS",actionResolverName="GRANT_ACCESS_RESOLVER",resourceResolverName="GRANT_ACCESS_RESOURCE_RESOLVER")
+    @Profiled(tag="GRANT_ACCESS", logFailuresSeparately = false)
+    public ServiceAccessResponse grantAccess(final ServiceAccessRequest serviceAccessRequest) throws SessionException, AccessException {
+        Assert.notNull(serviceAccessRequest, "serviceAccessRequest cannot be null.");
 
-        final Session session = this.sessionStorage.findSessionBySessionId(ticketGrantingTicketId);
+        final Session session = this.sessionStorage.findSessionBySessionId(serviceAccessRequest.getSessionId());
 
         if (session == null) {
-            throw new InvalidTicketException();
+            throw new NotFoundSessionException(String.format("Session [%s] cound not be found.", serviceAccessRequest.getSessionId()));
         }
 
+        if (!session.isValid()) {
+            throw new InvalidatedSessionException(String.format("Session [%s] is no longer valid.", session.getId()));
+        }
+
+        /*
+        TODO we need to re-enable service checks
         final RegisteredService registeredService = this.servicesManager.findServiceBy(service);
 
         if (registeredService == null || !registeredService.isEnabled()) {
@@ -204,83 +198,41 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         if (!registeredService.isSsoEnabled() && credentials == null && !session.hasNotBeenUsed()) {
             log.warn("ServiceManagement: Service Not Allowed to use SSO.  Service [" + service.getId() + "]");
             throw new UnauthorizedSsoServiceException();
+        } */
+
+        final Session sessionToWorkWith;
+        final List<Access> remainingAccesses = new ArrayList<Access>();
+        final AuthenticationResponse authenticationResponse;
+        if (serviceAccessRequest.isForceAuthentication()) {
+            // TODO we need to do all the steps, including the pre-auth ones above under login.
+            final AuthenticationRequest authenticationRequest = new DefaultAuthenticationRequestImpl(serviceAccessRequest.getCredentials(), serviceAccessRequest.isLongTermLoginRequest());
+            authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
+
+            if (!authenticationResponse.succeeded()) {
+                // get the hell out of here
+            }
+
+            if (!authenticationResponse.getPrincipal().equals(session.getPrincipal())) {
+                // expire the existing session and get a new session
+                final Session destroyedSession = this.sessionStorage.destroySession(session.getId());
+                destroyedSession.invalidate();
+                final LogoutResponse logoutResponse = new DefaultLogoutResponseImpl(destroyedSession);
+                remainingAccesses.addAll(logoutResponse.getLoggedInAccesses());
+                sessionToWorkWith = this.sessionStorage.createSession(authenticationResponse);
+
+            } else {
+                session.getAuthentications().addAll(authenticationResponse.getAuthentications());
+                sessionToWorkWith = session;
+            }
+        } else {
+            authenticationResponse = null;
+            sessionToWorkWith = session;
         }
 
-        if (credentials != null) {
-                final AuthenticationRequest authenticationRequest = new DefaultAuthenticationRequestImpl(Arrays.asList(credentials), false);
-                final AuthenticationResponse authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
+        final Access access = sessionToWorkWith.grant(serviceAccessRequest);
+        this.sessionStorage.updateSession(sessionToWorkWith);
 
-                if (!authenticationResponse.succeeded()) {
-                    throw new TicketCreationException(); // TODO we'll want to actually grab the right exceptions
-                }
-
-            // TODO is this correct?
-                if (!(authenticationResponse.getPrincipal().equals(session.getPrincipal()))) {
-                    throw new TicketCreationException();
-                }
-        }
-
-        // TODO replace this once we get everything in place
-        final ServiceAccessRequest serviceAccessRequest = new ServiceAccessRequest() {
-            public String getServiceId() {
-                return service.getId();
-            }
-
-            public String getPassiveAuthenticationRedirectUrl() {
-                return service.getId();
-            }
-
-            public List<Credential> getCredentials() {
-                return Collections.emptyList();
-            }
-
-            public Date getDate() {
-                return new Date();
-            }
-
-            public boolean isForceAuthentication() {
-                return credentials != null;
-            }
-
-            public String getRemoteIpAddress() {
-                return "";
-            }
-
-            public String getSessionId() {
-                return null;
-            }
-
-            public void setSessionId(String sessionId) {
-
-            }
-
-            public boolean isPassiveAuthentication() {
-                return false;
-            }
-
-            public boolean isLongTermLoginRequest() {
-                return false;
-            }
-
-            public Access getOriginalAccess() {
-                return null;
-            }
-        };
-
-        try {
-            final Access access = session.grant(serviceAccessRequest);
-            this.sessionStorage.updateSession(session);
-            return access.getId();
-        } catch (final InvalidatedSessionException e) {
-            throw new InvalidTicketException(e);
-        }
-    }
-
-    @Audit(action="SERVICE_TICKET", actionResolverName="GRANT_SERVICE_TICKET_RESOLVER", resourceResolverName="GRANT_SERVICE_TICKET_RESOURCE_RESOLVER")
-    @Profiled(tag = "GRANT_SERVICE_TICKET",logFailuresSeparately = false)
-    @Transactional(readOnly = false)
-    public String grantServiceTicket(final String ticketGrantingTicketId, final Service service) {
-        return this.grantServiceTicket(ticketGrantingTicketId, service, null);
+        return new DefaultServiceAccessResponseImpl(access, remainingAccesses, sessionToWorkWith.getId(), authenticationResponse);
     }
 
     /**
@@ -524,8 +476,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         this.servicesManager = servicesManager;
     }
 
-    public void setPersistentIdGenerator(
-        final PersistentIdGenerator persistentIdGenerator) {
+    public void setPersistentIdGenerator(final PersistentIdGenerator persistentIdGenerator) {
         this.persistentIdGenerator = persistentIdGenerator;
     }
 

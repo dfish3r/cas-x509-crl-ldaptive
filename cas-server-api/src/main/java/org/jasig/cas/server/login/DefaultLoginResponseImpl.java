@@ -50,15 +50,18 @@ public class DefaultLoginResponseImpl implements LoginResponse {
 
     private final Map<String, Object> attributes;
 
-    public DefaultLoginResponseImpl(final String sessionId, final List<GeneralSecurityException> authenticationExceptions, final List<Message> authenticationMessages, final Map<String, Object> attributes) {
-        this.sessionId = sessionId;
-        this.authenticationExceptions = Collections.unmodifiableList(authenticationExceptions);
-        this.authenticationMessages = Collections.unmodifiableList(authenticationMessages);
-        this.attributes = Collections.unmodifiableMap(attributes);
-    }
-
     public DefaultLoginResponseImpl(final String sessionId, final AuthenticationResponse authenticationResponse) {
-        this(sessionId, authenticationResponse.getGeneralSecurityExceptions(), authenticationResponse.getAuthenticationMessages(), authenticationResponse.getAttributes());
+        this.sessionId = sessionId;
+        
+        if (authenticationResponse != null) {
+            this.authenticationExceptions = Collections.unmodifiableList(authenticationResponse.getGeneralSecurityExceptions());
+            this.authenticationMessages = Collections.unmodifiableList(authenticationResponse.getAuthenticationMessages());
+            this.attributes = Collections.unmodifiableMap(authenticationResponse.getAttributes());
+        } else {
+            this.authenticationExceptions = Collections.emptyList();
+            this.authenticationMessages = Collections.emptyList();
+            this.attributes = Collections.emptyMap();
+        }
     }
 
     public DefaultLoginResponseImpl(final AuthenticationResponse authenticationResponse) {

@@ -19,13 +19,11 @@
 package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.authentication.AuthenticationResponse;
-import org.jasig.cas.server.authentication.Message;
 import org.jasig.cas.server.session.Access;
+import sun.jvm.hotspot.utilities.Assert;
 
-import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Default implementation of the {@link ServiceAccessResponse} that gets sent back when a user requests access
@@ -42,12 +40,6 @@ public class DefaultServiceAccessResponseImpl extends DefaultLoginResponseImpl i
 
     private final List<Access> accesses;
 
-    public DefaultServiceAccessResponseImpl(final Access access, final List<Access> loggedOutServices, String sessionId, List<GeneralSecurityException> authenticationExceptions, List<Message> authenticationMessages, Map<String, Object> attributes) {
-        super(sessionId, authenticationExceptions, authenticationMessages, attributes);
-        this.access = access;
-        this.accesses = Collections.unmodifiableList(loggedOutServices);
-    }
-
     public DefaultServiceAccessResponseImpl(final Access access, final List<Access> loggedOutServices, String sessionId, AuthenticationResponse authenticationResponse) {
         super(sessionId, authenticationResponse);
         this.access = access;
@@ -55,9 +47,7 @@ public class DefaultServiceAccessResponseImpl extends DefaultLoginResponseImpl i
     }
 
     public DefaultServiceAccessResponseImpl(final Access access, final List<Access> loggedOutServices, AuthenticationResponse authenticationResponse) {
-        super(authenticationResponse);
-        this.access = access;
-        this.accesses = Collections.unmodifiableList(loggedOutServices);
+        this(access, loggedOutServices, null, authenticationResponse);
     }
 
     public final Access getAccess() {

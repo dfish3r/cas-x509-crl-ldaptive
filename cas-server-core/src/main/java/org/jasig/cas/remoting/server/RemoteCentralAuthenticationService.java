@@ -24,11 +24,13 @@ import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.login.LoginRequest;
 import org.jasig.cas.server.login.LoginResponse;
+import org.jasig.cas.server.login.ServiceAccessRequest;
+import org.jasig.cas.server.login.ServiceAccessResponse;
 import org.jasig.cas.server.logout.LogoutRequest;
 import org.jasig.cas.server.logout.LogoutResponse;
+import org.jasig.cas.server.session.AccessException;
 import org.jasig.cas.server.session.Assertion;
-import org.jasig.cas.ticket.TicketException;
-import org.springframework.util.Assert;
+import org.jasig.cas.server.session.SessionException;
 
 import javax.validation.*;
 import javax.validation.constraints.NotNull;
@@ -69,18 +71,14 @@ public final class RemoteCentralAuthenticationService implements CentralAuthenti
         return this.centralAuthenticationService.logout(logoutRequest);
     }
 
-    public String grantServiceTicket(final String ticketGrantingTicketId, final Service service) {
-        return this.centralAuthenticationService.grantServiceTicket(ticketGrantingTicketId, service);
+    public LogoutResponse logout(final String userId) {
+        return this.centralAuthenticationService.logout(userId);
     }
 
-    /**
-     * @throws IllegalArgumentException if given invalid credentials
-     */
-    public String grantServiceTicket(final String ticketGrantingTicketId, final Service service, final Credential credentials) {
-        checkForErrors(credentials);
-
-        return this.centralAuthenticationService.grantServiceTicket(ticketGrantingTicketId, service, credentials);
+    public ServiceAccessResponse grantAccess(final ServiceAccessRequest serviceAccessRequest) throws SessionException, AccessException {
+        return this.centralAuthenticationService.grantAccess(serviceAccessRequest);
     }
+
 
     public Assertion validateServiceTicket(final String serviceTicketId, final Service service) {
         return this.centralAuthenticationService.validateServiceTicket(serviceTicketId, service);

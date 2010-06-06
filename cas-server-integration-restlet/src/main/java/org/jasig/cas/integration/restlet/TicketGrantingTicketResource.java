@@ -20,11 +20,11 @@
 package org.jasig.cas.integration.restlet;
 
 import org.jasig.cas.server.CentralAuthenticationService;
-import org.jasig.cas.authentication.principal.SimpleWebApplicationServiceImpl;
+import org.jasig.cas.server.login.ServiceAccessResponse;
 import org.jasig.cas.server.logout.DefaultLogoutRequestImpl;
 import org.jasig.cas.server.logout.LogoutRequest;
+import org.jasig.cas.server.session.NotFoundSessionException;
 import org.jasig.cas.util.HttpClient;
-import org.jasig.cas.ticket.InvalidTicketException;
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -92,9 +92,10 @@ public final class TicketGrantingTicketResource extends Resource {
         final Form form = getRequest().getEntityAsForm();
         final String serviceUrl = form.getFirstValue("service");
         try {
-            final String serviceTicketId = this.centralAuthenticationService.grantServiceTicket(this.ticketGrantingTicketId, new SimpleWebApplicationServiceImpl(serviceUrl, this.httpClient));
+            final ServiceAccessResponse serviceAccessResponse = this.centralAuthenticationService.grantAccess(null);
+            final String serviceTicketId = serviceAccessResponse.getAccess().getId();
             getResponse().setEntity(serviceTicketId, MediaType.TEXT_PLAIN);
-        } catch (final InvalidTicketException e) {
+        } catch (final NotFoundSessionException e) {
             log.error(e.getMessage(),e);
             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND, "TicketGrantingTicket could not be found.");
         } catch (final Exception e) {

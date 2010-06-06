@@ -22,9 +22,13 @@ import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.login.LoginRequest;
 import org.jasig.cas.server.login.LoginResponse;
+import org.jasig.cas.server.login.ServiceAccessRequest;
+import org.jasig.cas.server.login.ServiceAccessResponse;
 import org.jasig.cas.server.logout.LogoutRequest;
 import org.jasig.cas.server.logout.LogoutResponse;
+import org.jasig.cas.server.session.AccessException;
 import org.jasig.cas.server.session.Assertion;
+import org.jasig.cas.server.session.SessionException;
 
 /**
  * CAS viewed as a set of services to generate and validate Tickets.
@@ -73,27 +77,14 @@ public interface CentralAuthenticationService {
     LogoutResponse logout(String userId);
 
     /**
-     * Grant a ServiceTicket for a Service.
-     * 
-     * @param ticketGrantingTicketId Proof of prior authentication.
-     * @param service The target service of the ServiceTicket.
-     * @return the ServiceTicket for target Service.
+     * Method to request access to a particular service, or resource.
+     *
+     * @param serviceAccessRequest the actual request.  CANNOT be NULL.
+     * @return the response to the request for access.  This is only returned for a successful access.
+     * @throws SessionException when there is a problem with the actual session.
+     * @throws AccessException when there is a problem granting an access request.
      */
-    String grantServiceTicket(String ticketGrantingTicketId, Service service);
-
-    /**
-     * Grant a ServiceTicket for a Service *if* the principal resolved from the
-     * credentials matches the principal associated with the
-     * TicketGrantingTicket.
-     * 
-     * @param ticketGrantingTicketId Proof of prior authentication.
-     * @param service The target service of the ServiceTicket.
-     * @param credentials the Credentials to present to receive the
-     * ServiceTicket
-     * @return the ServiceTicket for target Service.
-     */
-    String grantServiceTicket(final String ticketGrantingTicketId,
-        final Service service, final Credential credentials);
+    ServiceAccessResponse grantAccess(ServiceAccessRequest serviceAccessRequest) throws SessionException, AccessException;
 
     /**
      * Validate a ServiceTicket for a particular Service.
@@ -102,8 +93,7 @@ public interface CentralAuthenticationService {
      * @param service Service wishing to validate a prior authentication.
      * @return ServiceTicket if valid for the service
      */
-    Assertion validateServiceTicket(final String serviceTicketId,
-        final Service service);
+    Assertion validateServiceTicket(final String serviceTicketId, final Service service);
 
     /**
      * Delegate a TicketGrantingTicket to a Service for proxying authentication
@@ -116,6 +106,5 @@ public interface CentralAuthenticationService {
      * @return TicketGrantingTicket that can grant ServiceTickets that proxy
      * authentication.
      */
-    String delegateTicketGrantingTicket(final String serviceTicketId,
-        final Credential credentials);
+    String delegateTicketGrantingTicket(final String serviceTicketId, final Credential credentials);
 }
