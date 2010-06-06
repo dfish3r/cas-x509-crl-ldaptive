@@ -253,7 +253,7 @@ public final class TestUtils {
             }
 
             public Service getService() {
-                return getService();
+                return null;
             }
         };
     }
