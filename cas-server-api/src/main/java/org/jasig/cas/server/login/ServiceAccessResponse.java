@@ -32,7 +32,7 @@ import java.util.List;
 public interface ServiceAccessResponse extends LoginResponse {
 
     /**
-     * The access requested.  CANNOT be null.
+     * The access requested.  CAN only be null if authentication has failed.
      * @return the access requested.
      */
     Access getAccess();

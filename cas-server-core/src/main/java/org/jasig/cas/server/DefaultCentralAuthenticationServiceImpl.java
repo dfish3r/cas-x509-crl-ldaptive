@@ -209,7 +209,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
             authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
 
             if (!authenticationResponse.succeeded()) {
-                // get the hell out of here
+                return new DefaultServiceAccessResponseImpl(null, Collections.<Access>emptyList(), authenticationResponse);
             }
 
             if (!authenticationResponse.getPrincipal().equals(session.getPrincipal())) {

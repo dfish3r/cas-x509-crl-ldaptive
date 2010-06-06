@@ -42,7 +42,6 @@ public class DefaultServiceAccessResponseImpl extends DefaultLoginResponseImpl i
 
     public DefaultServiceAccessResponseImpl(final Access access, final List<Access> loggedOutServices, String sessionId, AuthenticationResponse authenticationResponse) {
         super(sessionId, authenticationResponse);
-        Assert.notNull(access, "access cannot be null");
         this.access = access;
         this.accesses = Collections.unmodifiableList(loggedOutServices);
     }
