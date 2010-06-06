@@ -20,7 +20,7 @@ package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.session.Access;
-import sun.jvm.hotspot.utilities.Assert;
+import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +42,7 @@ public class DefaultServiceAccessResponseImpl extends DefaultLoginResponseImpl i
 
     public DefaultServiceAccessResponseImpl(final Access access, final List<Access> loggedOutServices, String sessionId, AuthenticationResponse authenticationResponse) {
         super(sessionId, authenticationResponse);
+        Assert.notNull(access, "access cannot be null");
         this.access = access;
         this.accesses = Collections.unmodifiableList(loggedOutServices);
     }

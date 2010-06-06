@@ -50,8 +50,8 @@ public class DefaultLogoutResponseImpl implements LogoutResponse {
     }
 
     public DefaultLogoutResponseImpl() {
-        this.loggedInAccesses = new ArrayList<Access>();
-        this.loggedOutAccesses = new ArrayList<Access>();
+        this.loggedInAccesses = Collections.emptyList();
+        this.loggedOutAccesses = Collections.emptyList();
     }
 
     public Date getDate() {

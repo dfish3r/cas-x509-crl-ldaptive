@@ -18,6 +18,8 @@
  */
 package org.jasig.cas.server.login;
 
+import org.springframework.util.Assert;
+
 /**
  * The default {@link org.jasig.cas.server.login.TokenServiceAccessRequest} implementation.  Used when the underlying
  * protocol implementation is token/validate.
@@ -34,6 +36,7 @@ public class DefaultTokenServiceAccessRequestImpl extends DefaultLoginRequestImp
 
     public DefaultTokenServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final String token, final String serviceId, final boolean passiveAuthentication) {
         super(sessionId, remoteIpAddress, forceAuthentication, passiveAuthentication,null);
+        Assert.notNull(token, "token cannot be null");
         this.serviceId = serviceId;
         this.token = token;
     }

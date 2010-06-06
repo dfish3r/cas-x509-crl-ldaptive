@@ -20,6 +20,7 @@ package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.session.Access;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Date;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 4.0.0
+ * @since 3.5
  */
 public class DefaultLoginRequestImpl implements LoginRequest {
 
@@ -57,6 +58,7 @@ public class DefaultLoginRequestImpl implements LoginRequest {
     private final Access access;
 
     public DefaultLoginRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final boolean passiveAuthentication, final Access access) {
+        Assert.notNull(remoteIpAddress, "remoteIpAddress cannot be null");        
         this.sessionId = sessionId;
         this.forceAuthentication = forceAuthentication;
         this.remoteIpAddress = remoteIpAddress;
