@@ -16,22 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jasig.cas.server.session;
+package org.jasig.cas.server.authentication;
+
+import org.junit.Test;
 
 import static org.junit.Assert.*;
-import org.junit.Test;
 
 /**
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class InvalidatedSessionExceptionTests {
+public final class NoOpPrincipalNameTransformerTests {
 
-    private InvalidatedSessionException e = new InvalidatedSessionException("myMessage");
+    private NoOpPrincipalNameTransformer transformer = new NoOpPrincipalNameTransformer();
 
     @Test
-    public void getMessage() {
-        assertEquals("myMessage", e.getMessage());
+    public void nullCheck() {
+        assertNull(this.transformer.transform(null));
     }
+
+    @Test
+    public void noTransformCheck() {
+        assertEquals("foo", this.transformer.transform("foo"));
+    }
+
 }

@@ -40,8 +40,7 @@ public interface AuthenticationMetaDataResolver {
      *
      * @param request the original request for authentication.
      * @param credentials the credentials that were successfully validated.
-     * @param principal the resolved principal.
      * @return any attributes that correlate to the provided values.  This can be empty, but CANNOT be null.
      */
-    Map<String, List<Object>> resolve(AuthenticationRequest request, List<Credential> credentials, Principal principal);
+    Map<String, List<Object>> resolve(AuthenticationRequest request, Credential credentials);
 }

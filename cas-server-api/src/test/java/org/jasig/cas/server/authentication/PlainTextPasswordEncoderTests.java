@@ -16,22 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jasig.cas.server.session;
+package org.jasig.cas.server.authentication;
+
+import org.junit.Test;
 
 import static org.junit.Assert.*;
-import org.junit.Test;
 
 /**
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class InvalidatedSessionExceptionTests {
+public final class PlainTextPasswordEncoderTests {
 
-    private InvalidatedSessionException e = new InvalidatedSessionException("myMessage");
+    private final PlainTextPasswordEncoder encoder = new PlainTextPasswordEncoder();
 
     @Test
-    public void getMessage() {
-        assertEquals("myMessage", e.getMessage());
+    public void nullTest() {
+        assertFalse(encoder.isValidPassword(null, null, null));
+        assertFalse(encoder.isValidPassword(null, "foo", null));
+        assertFalse(encoder.isValidPassword("foo", null, null));
+    }
+
+    @Test
+    public void nonNullTest() {
+        assertTrue(encoder.isValidPassword("foo", "foo", null));
     }
 }

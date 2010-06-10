@@ -17,14 +17,16 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication;
+package org.jasig.cas.server.authentication;
 
 import java.security.GeneralSecurityException;
 import java.util.*;
 
 import com.github.inspektr.audit.annotation.Audit;
-import org.jasig.cas.server.authentication.*;
 import org.perf4j.aop.Profiled;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -65,7 +67,9 @@ import javax.validation.constraints.Size;
  * @see org.jasig.cas.server.authentication.AuthenticationMetaDataResolver
  */
 
-public final class DefaultAuthenticationManagerImpl implements AuthenticationManager {
+public final class DefaultAuthenticationManagerImpl extends AbstractAuthenticationManager {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /** An array of authentication handlers. */
     @NotNull
@@ -77,52 +81,41 @@ public final class DefaultAuthenticationManagerImpl implements AuthenticationMan
     @Size(min=1)
     private final List<CredentialToPrincipalResolver> credentialsToPrincipalResolvers;
 
-    @NotNull
-    private final AuthenticationFactory authenticationFactory;
-
-    @NotNull
-    private List<AuthenticationMetaDataResolver> authenticationMetaDataResolvers = new ArrayList<AuthenticationMetaDataResolver>();
-
-    private boolean allCredentialsMustSucceed = true;
-
     public DefaultAuthenticationManagerImpl(final List<AuthenticationHandler> authenticationHandlers, final List<CredentialToPrincipalResolver> credentialsToPrincipalResolvers, final AuthenticationFactory authenticationFactory) {
+        super(authenticationFactory);
         this.authenticationHandlers = authenticationHandlers;
         this.credentialsToPrincipalResolvers = credentialsToPrincipalResolvers;
-        this.authenticationFactory = authenticationFactory;
     }
 
     @Profiled(tag="defaultAuthenticationManager_authenticate")
     @Audit(action="AUTHENTICATION", actionResolverName="AUTHENTICATION_RESOLVER", resourceResolverName="AUTHENTICATION_RESOURCE_RESOLVER")
-    // TODO this algorithm is WRONG
     public AuthenticationResponse authenticate(final AuthenticationRequest authenticationRequest) {
+        Assert.notEmpty(authenticationRequest.getCredentials(), "At least one credential is required.");
+
         final List<Credential> successfulCredentials = new ArrayList<Credential>();
         final List<Credential> failedCredentials = new ArrayList<Credential>();
         final List<GeneralSecurityException> authenticationExceptions = new ArrayList<GeneralSecurityException>();
+        final Set<Authentication> successfulAuthentications = new HashSet<Authentication>();
+        final List<Message> messages = new ArrayList<Message>();
 
-        if (authenticationRequest.getCredentials().isEmpty()) {
-            throw new IllegalArgumentException("At least one form of credentials is required.");
-        }
-
-        // authenticate all credentials
         for (final Credential credential : authenticationRequest.getCredentials()) {
             try {
-                final boolean value = authenticateCredential(credential);
+                final Authentication authentication = authenticateCredential(authenticationRequest, credential, messages);
 
-                if (value) {
-                    successfulCredentials.add(credential);
-                } else {
+                if (authentication == null) {
                     failedCredentials.add(credential);
-                }
+                } else {
+                    successfulCredentials.add(credential);
+                    successfulAuthentications.add(authentication);
 
+                }
             } catch (final GeneralSecurityException e) {
                 authenticationExceptions.add(e);
                 failedCredentials.add(credential);
             }
         }
 
-        final List<Message> messages = new ArrayList<Message>();
-
-        if (!failedCredentials.isEmpty() && this.allCredentialsMustSucceed) {
+        if (!failedCredentials.isEmpty() && this.isAllCredentialsMustSucceed()) {
             return new DefaultAuthenticationResponseImpl(authenticationExceptions, messages);
         }
 
@@ -132,55 +125,57 @@ public final class DefaultAuthenticationManagerImpl implements AuthenticationMan
             return new DefaultAuthenticationResponseImpl(authenticationExceptions, messages);
         }
 
-        final Map<String, List<Object>> authenticationAttributes = new HashMap<String, List<Object>>();
-
-        for (final AuthenticationMetaDataResolver authenticationMetaDataResolver : this.authenticationMetaDataResolvers) {
-            authenticationAttributes.putAll(authenticationMetaDataResolver.resolve(authenticationRequest, successfulCredentials, principal));
-        }
-
-        // TODO replace with the real authentication type
-        final Authentication authentication = this.authenticationFactory.getAuthentication(authenticationAttributes, authenticationRequest, "foo");
-
-
-        return new DefaultAuthenticationResponseImpl(new HashSet<Authentication>(Arrays.asList(authentication)), principal, authenticationExceptions, messages);
+        return new DefaultAuthenticationResponseImpl(successfulAuthentications, principal, authenticationExceptions, messages);
     }
 
-    protected boolean authenticateCredential(final Credential c) throws GeneralSecurityException {
+    protected Authentication authenticateCredential(final AuthenticationRequest request, final Credential c, final List<Message> messages) throws GeneralSecurityException {
         for (final AuthenticationHandler authenticationHandler : this.authenticationHandlers) {
             if (authenticationHandler.supports(c)) {
                 final boolean value = authenticationHandler.authenticate(c);
 
                 if (value) {
-                    return true;
+                    final Map<String, List<Object>> attributes = new HashMap<String, List<Object>>();
+                    for (final AuthenticationMetaDataResolver authenticationMetaDataResolver : getAuthenticationMetaDataResolvers()) {
+                        attributes.putAll(authenticationMetaDataResolver.resolve(request, c));
+                    }
+
+                    for (final MessageResolver mr : getMessageResolvers()) {
+                        messages.addAll(mr.resolveMessagesFor(c, authenticationHandler));
+                    }
+
+                    return getAuthenticationFactory().getAuthentication(attributes, request, authenticationHandler.getName());
                 }
             }
         }
-        return false;
+        return null;
     }
 
-    // TODO implement a better algorithm since we need them all to actually match
     protected AttributePrincipal resolvePrincipal(final List<Credential> successfulCredentials) {
+        AttributePrincipal original = null;
 
         for (final Credential credential : successfulCredentials) {
             for (final CredentialToPrincipalResolver c  : this.credentialsToPrincipalResolvers) {
                 if (c.supports(credential)) {
                     final AttributePrincipal p = c.resolve(credential);
 
-                    if (p != null) {
-                        return p;
+                    if (p == null) {
+                        log.debug(String.format("Credential [%s] did not resolve to a principal.  Aborting principal resolution.", credential));
+                        return null;
+                    }
+
+                    if (original == null) {
+                        original = p;
+                        continue;
+                    }
+
+                    if (!original.getName().equals(p.getName())) {
+                        log.debug(String.format("Credential [%s] with principal [%s] did not match prior principal [%s]", credential, p.getName(), original.getName()));
+                        return null;
                     }
                 }
             }
         }
 
-        return null;
-    }
-
-    public void setAuthenticationMetaDataResolvers(final List<AuthenticationMetaDataResolver> authenticationMetaDataResolvers) {
-        this.authenticationMetaDataResolvers = authenticationMetaDataResolvers;
-    }
-
-    public void setAllCredentialsMustSucceed(final boolean allCredentialsMustSucceed) {
-        this.allCredentialsMustSucceed = allCredentialsMustSucceed;
+        return original;
     }
 }

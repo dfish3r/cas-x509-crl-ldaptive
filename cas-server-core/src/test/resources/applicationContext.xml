@@ -67,7 +67,7 @@
 	
 	<bean
 		id="authenticationManager"
-		class="org.jasig.cas.authentication.DefaultAuthenticationManagerImpl">
+		class="org.jasig.cas.server.authentication.DefaultAuthenticationManagerImpl">
 		<property
 			name="credentialsToPrincipalResolvers">
 			<list>

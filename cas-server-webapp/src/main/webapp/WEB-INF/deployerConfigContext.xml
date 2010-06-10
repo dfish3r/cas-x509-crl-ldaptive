@@ -48,7 +48,7 @@
 		| need to change in context.
 		+-->
     <bean id="authenticationManager"
-          class="org.jasig.cas.authentication.DefaultAuthenticationManagerImpl">
+          class="org.jasig.cas.server.authentication.DefaultAuthenticationManagerImpl">
         <!--
 			| This is the List of CredentialToPrincipalResolvers that identify what Principal is trying to authenticate.
 			| The DefaultAuthenticationManagerImpl considers them in order, finding a CredentialToPrincipalResolver which

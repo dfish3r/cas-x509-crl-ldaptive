@@ -18,7 +18,7 @@
  */
 package org.jasig.cas.server.session;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -26,7 +26,7 @@ import org.junit.Test;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class NotFoundSessionExceptionTests extends TestCase {
+public final class NotFoundSessionExceptionTests {
 
     private NotFoundSessionException e = new NotFoundSessionException("myMessage");
 
