@@ -19,6 +19,7 @@
 package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.session.Access;
+import org.jasig.cas.server.session.Session;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -37,14 +38,16 @@ public final class DefaultServiceAccessResponseImplTests {
     @Test
     public void firstConstructor() {
         final Access access = mock(Access.class);
-        final DefaultServiceAccessResponseImpl response = new DefaultServiceAccessResponseImpl(access, Collections.<Access>emptyList(), CONST_SESSION_ID, null);
+        final Session session = mock(Session.class);
+        when(session.getId()).thenReturn(CONST_SESSION_ID);
+        final DefaultServiceAccessResponseImpl response = new DefaultServiceAccessResponseImpl(access, Collections.<Access>emptyList(), session, null);
 
         assertNotNull(response.getAccess());
         assertNotNull(response.getLoggedOutAccesses());
         assertNotNull(response.getAttributes());
         assertNotNull(response.getDate());
-        assertNotNull(response.getSessionId());
-        assertEquals(CONST_SESSION_ID, response.getSessionId());
+        assertNotNull(response.getSession());
+        assertEquals(CONST_SESSION_ID, response.getSession().getId());
         assertNotNull(response.getGeneralSecurityExceptions());
         assertNotNull(response.getAuthenticationWarnings());
     }
@@ -58,7 +61,7 @@ public final class DefaultServiceAccessResponseImplTests {
         assertNotNull(response.getLoggedOutAccesses());
         assertNotNull(response.getAttributes());
         assertNotNull(response.getDate());
-        assertNull(response.getSessionId());
+        assertNull(response.getSession());
         assertNotNull(response.getGeneralSecurityExceptions());
         assertNotNull(response.getAuthenticationWarnings());
     }

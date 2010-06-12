@@ -124,7 +124,7 @@
 		
 	<bean
 		id="httpBasedServiceCredentialsAuthenticationHandler"
-		class="org.jasig.cas.authentication.handler.support.HttpBasedServiceCredentialsAuthenticationHandler">
+		class="org.jasig.cas.server.authentication.UrlCredentialAuthenticationHandler">
 		<property name="httpClient">
 			<bean class="org.jasig.cas.util.HttpClient" />
 		</property>
@@ -132,7 +132,7 @@
 	
 	<bean
 		id="simpleTestUsernamePasswordAuthenticationHandler"
-		class="org.jasig.cas.authentication.handler.support.SimpleTestUsernamePasswordAuthenticationHandler" />		
+		class="org.jasig.cas.server.authentication.SimpleTestUsernamePasswordAuthenticationHandler" />
 		
 	<bean
 		id="authenticationMetaDataPopulator"

@@ -46,82 +46,30 @@ public final class DirectMappingAuthenticationManagerImpl extends AbstractAuthen
         this.credentialsMapping = credentialsMapping;
     }
 
-    public AuthenticationResponse authenticate(final AuthenticationRequest authenticationRequest) {
-        final List<Credential> failedCredentials = new ArrayList<Credential>();
-        final List<GeneralSecurityException> authenticationExceptions = new ArrayList<GeneralSecurityException>();
-        final Set<Authentication> successfulAuthentications = new HashSet<Authentication>();
-        final List<Message> messages = new ArrayList<Message>();
-        final List<AttributePrincipal> successPrincipals = new ArrayList<AttributePrincipal>();
-
-
+    @Override
+    protected void obtainAuthenticationsAndPrincipals(final AuthenticationRequest authenticationRequest, final Collection<Authentication> authentications, final Collection<AttributePrincipal> principals, final Collection<GeneralSecurityException> exceptions, final Collection<Message> messages) {
         for (final Credential credential : authenticationRequest.getCredentials()) {
             final DirectAuthenticationHandlerMappingHolder holder = this.credentialsMapping.get(credential.getClass());
-
             Assert.notNull(holder, "missing mapping");
 
             final AuthenticationHandler handler = holder.getAuthenticationHandler();
 
             try {
-                final boolean value = handler.authenticate(credential);
 
-                if (value) {
-                    final Map<String, List<Object>> attributes = new HashMap<String, List<Object>>();
-
-                    for (final AuthenticationMetaDataResolver resolve : getAuthenticationMetaDataResolvers()) {
-                        attributes.putAll(resolve.resolve(authenticationRequest, credential));
-                    }
-
-                    for (final MessageResolver messageResolver : getMessageResolvers()) {
-                        messages.addAll(messageResolver.resolveMessagesFor(credential, handler));
-                    }
-
+                if (handler.authenticate(credential)) {
                     final AttributePrincipal principal = holder.getCredentialsToPrincipalResolver().resolve(credential);
 
-                    if (principal == null) {
-                        failedCredentials.add(credential);
-                        continue;
+                    if (principal != null) {
+                        final Map<String, List<Object>> attributes = obtainAttributesFor(authenticationRequest, credential);
+                        obtainMessagesFor(credential, handler, messages);
+                        authentications.add(getAuthenticationFactory().getAuthentication(attributes, authenticationRequest, handler.getName()));
+                        principals.add(principal);
                     }
-
-                    final Authentication authentication = getAuthenticationFactory().getAuthentication(attributes, authenticationRequest, handler.getName());
-                    successfulAuthentications.add(authentication);
-                    successPrincipals.add(principal);
-                } else {
-                    failedCredentials.add(credential);
                 }
             } catch (final GeneralSecurityException e) {
-                failedCredentials.add(credential);
-                authenticationExceptions.add(e);
+                exceptions.add(e);
             }
         }
-
-        if (!failedCredentials.isEmpty() && this.isAllCredentialsMustSucceed()) {
-            return new DefaultAuthenticationResponseImpl(authenticationExceptions, messages);
-        }
-
-        final AttributePrincipal principal = resolvePrincipal(successPrincipals);
-
-        if (principal == null) {
-            return new DefaultAuthenticationResponseImpl(authenticationExceptions, messages);
-        }
-
-        return new DefaultAuthenticationResponseImpl(successfulAuthentications, principal, authenticationExceptions, messages);
-    }
-
-    protected AttributePrincipal resolvePrincipal(final List<AttributePrincipal> successfulPrincipals) {
-        AttributePrincipal principal = null;
-
-        for (final AttributePrincipal p : successfulPrincipals) {
-            if (principal == null) {
-                principal = p;
-                continue;
-            }
-
-            if (!principal.getName().equals(p.getName())) {
-                return null;
-            }
-        }
-
-        return principal;
     }
 
     public static final class DirectAuthenticationHandlerMappingHolder {

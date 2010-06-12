@@ -20,6 +20,7 @@ package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.authentication.Message;
+import org.jasig.cas.server.session.Session;
 import org.junit.Test;
 
 import java.security.GeneralSecurityException;
@@ -44,9 +45,12 @@ public final class DefaultLoginResponseImplTests {
         when(mockedAuthenticationResponse.getAuthenticationMessages()).thenReturn(Arrays.asList(message));
         when(mockedAuthenticationResponse.getGeneralSecurityExceptions()).thenReturn(Arrays.asList(new GeneralSecurityException()));
 
-        final DefaultLoginResponseImpl login = new DefaultLoginResponseImpl(CONST_SESSION_ID, mockedAuthenticationResponse);
+        final Session session = mock(Session.class);
+        when(session.getId()).thenReturn(CONST_SESSION_ID);
 
-        assertEquals(CONST_SESSION_ID, login.getSessionId());
+        final DefaultLoginResponseImpl login = new DefaultLoginResponseImpl(session, mockedAuthenticationResponse);
+
+        assertEquals(CONST_SESSION_ID, login.getSession().getId());
         assertNotNull(login.getGeneralSecurityExceptions());
         assertNotNull(login.getAuthenticationWarnings());
         assertNotNull(login.getDate());
@@ -63,7 +67,7 @@ public final class DefaultLoginResponseImplTests {
 
         final DefaultLoginResponseImpl login = new DefaultLoginResponseImpl(mockedAuthenticationResponse);
 
-        assertNull(login.getSessionId());
+        assertNull(login.getSession());
         assertNotNull(login.getGeneralSecurityExceptions());
         assertNotNull(login.getAuthenticationWarnings());
         assertNotNull(login.getDate());

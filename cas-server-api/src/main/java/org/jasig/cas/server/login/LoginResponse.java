@@ -19,6 +19,7 @@
 package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.authentication.Message;
+import org.jasig.cas.server.session.Session;
 
 import java.util.Date;
 import java.util.List;
@@ -43,15 +44,15 @@ public interface LoginResponse extends Serializable {
     Date getDate();
 
     /**
-     * If a session identifier was created it should be returned in the response.  Depending on the implementation of
-     * the service, this identifier can change on each request and systems that refer to the identifier should always
+     * If a session was created it should be returned in the response.  Depending on the implementation of
+     * the service, the session identifier can change on each request and systems that refer to the identifier should always
      * update their identifier to use the most recent one returned.
      * <p>
      * This CAN be null.
      *
-     * @return the session identifier created with the login request.
+     * @return the session created with the login request.
      */
-    String getSessionId();
+    Session getSession();
 
     /**
      * Returns the list of problems, if there were any, with this login request.

@@ -22,11 +22,8 @@ package org.jasig.cas.server.authentication;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
-import com.github.inspektr.audit.annotation.Audit;
-import org.perf4j.aop.Profiled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -87,95 +84,50 @@ public final class DefaultAuthenticationManagerImpl extends AbstractAuthenticati
         this.credentialsToPrincipalResolvers = credentialsToPrincipalResolvers;
     }
 
-    @Profiled(tag="defaultAuthenticationManager_authenticate")
-    @Audit(action="AUTHENTICATION", actionResolverName="AUTHENTICATION_RESOLVER", resourceResolverName="AUTHENTICATION_RESOURCE_RESOLVER")
-    public AuthenticationResponse authenticate(final AuthenticationRequest authenticationRequest) {
-        Assert.notEmpty(authenticationRequest.getCredentials(), "At least one credential is required.");
-
-        final List<Credential> successfulCredentials = new ArrayList<Credential>();
-        final List<Credential> failedCredentials = new ArrayList<Credential>();
-        final List<GeneralSecurityException> authenticationExceptions = new ArrayList<GeneralSecurityException>();
-        final Set<Authentication> successfulAuthentications = new HashSet<Authentication>();
-        final List<Message> messages = new ArrayList<Message>();
-
+    @Override
+    protected void obtainAuthenticationsAndPrincipals(final AuthenticationRequest authenticationRequest, final Collection<Authentication> authentications, final Collection<AttributePrincipal> principals, final Collection<GeneralSecurityException> exceptions, final Collection<Message> messages) {
         for (final Credential credential : authenticationRequest.getCredentials()) {
-            try {
-                final Authentication authentication = authenticateCredential(authenticationRequest, credential, messages);
-
-                if (authentication == null) {
-                    failedCredentials.add(credential);
-                } else {
-                    successfulCredentials.add(credential);
-                    successfulAuthentications.add(authentication);
-
+            for (final AuthenticationHandler handler : this.authenticationHandlers) {
+                if (!handler.supports(credential)) {
+                    continue;
                 }
-            } catch (final GeneralSecurityException e) {
-                authenticationExceptions.add(e);
-                failedCredentials.add(credential);
+
+                try {
+                    if (handler.authenticate(credential)) {
+                        final AttributePrincipal p = getAttributePrincipal(credential);
+
+                        if (p == null) {
+                            break;
+                        }
+
+                        final Map<String, List<Object>> attributes = obtainAttributesFor(authenticationRequest, credential);
+                        obtainMessagesFor(credential, handler, messages);
+                        authentications.add(getAuthenticationFactory().getAuthentication(attributes, authenticationRequest, handler.getName()));
+                        principals.add(p);
+                        break;
+
+                    }
+                } catch (final GeneralSecurityException e) {
+                    exceptions.add(e);
+                    break;
+                }
             }
+
+
         }
-
-        if (!failedCredentials.isEmpty() && this.isAllCredentialsMustSucceed()) {
-            return new DefaultAuthenticationResponseImpl(authenticationExceptions, messages);
-        }
-
-        final AttributePrincipal principal = resolvePrincipal(successfulCredentials);
-
-        if (principal == null) {
-            return new DefaultAuthenticationResponseImpl(authenticationExceptions, messages);
-        }
-
-        return new DefaultAuthenticationResponseImpl(successfulAuthentications, principal, authenticationExceptions, messages);
     }
 
-    protected Authentication authenticateCredential(final AuthenticationRequest request, final Credential c, final List<Message> messages) throws GeneralSecurityException {
-        for (final AuthenticationHandler authenticationHandler : this.authenticationHandlers) {
-            if (authenticationHandler.supports(c)) {
-                final boolean value = authenticationHandler.authenticate(c);
+    protected AttributePrincipal getAttributePrincipal(final Credential c) {
+        for (final CredentialToPrincipalResolver credentialToPrincipalResolver : this.credentialsToPrincipalResolvers) {
+            if (credentialToPrincipalResolver.supports(c)) {
+                final AttributePrincipal p = credentialToPrincipalResolver.resolve(c);
 
-                if (value) {
-                    final Map<String, List<Object>> attributes = new HashMap<String, List<Object>>();
-                    for (final AuthenticationMetaDataResolver authenticationMetaDataResolver : getAuthenticationMetaDataResolvers()) {
-                        attributes.putAll(authenticationMetaDataResolver.resolve(request, c));
-                    }
-
-                    for (final MessageResolver mr : getMessageResolvers()) {
-                        messages.addAll(mr.resolveMessagesFor(c, authenticationHandler));
-                    }
-
-                    return getAuthenticationFactory().getAuthentication(attributes, request, authenticationHandler.getName());
+                if (p != null) {
+                    return p;
                 }
             }
         }
+
         return null;
-    }
-
-    protected AttributePrincipal resolvePrincipal(final List<Credential> successfulCredentials) {
-        AttributePrincipal original = null;
-
-        for (final Credential credential : successfulCredentials) {
-            for (final CredentialToPrincipalResolver c  : this.credentialsToPrincipalResolvers) {
-                if (c.supports(credential)) {
-                    final AttributePrincipal p = c.resolve(credential);
-
-                    if (p == null) {
-                        log.debug(String.format("Credential [%s] did not resolve to a principal.  Aborting principal resolution.", credential));
-                        return null;
-                    }
-
-                    if (original == null) {
-                        original = p;
-                        continue;
-                    }
-
-                    if (!original.getName().equals(p.getName())) {
-                        log.debug(String.format("Credential [%s] with principal [%s] did not match prior principal [%s]", credential, p.getName(), original.getName()));
-                        return null;
-                    }
-                }
-            }
-        }
-
-        return original;
     }
 }

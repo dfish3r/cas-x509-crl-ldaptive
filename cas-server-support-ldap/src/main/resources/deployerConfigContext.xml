@@ -98,7 +98,7 @@
 					| a server side SSL certificate.
 					+-->
 				<bean
-					class="org.jasig.cas.authentication.handler.support.HttpBasedServiceCredentialsAuthenticationHandler" />
+					class="org.jasig.cas.server.authentication.UrlCredentialAuthenticationHandler" />
 
 				<!--
 					| This is the authentication handler declaration that every CAS deployer will need to change before deploying CAS 

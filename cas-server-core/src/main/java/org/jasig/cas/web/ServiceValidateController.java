@@ -29,8 +29,6 @@ import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.DefaultUrlCredentialImpl;
 import org.jasig.cas.server.session.Assertion;
 import org.jasig.cas.services.UnauthorizedServiceException;
-import org.jasig.cas.ticket.TicketException;
-import org.jasig.cas.ticket.TicketValidationException;
 import org.jasig.cas.ticket.proxy.ProxyHandler;
 import org.jasig.cas.validation.ValidationSpecification;
 import org.jasig.cas.validation.Cas20ProtocolValidationSpecification;
@@ -135,14 +133,9 @@ public class ServiceValidateController extends AbstractController {
 
             // XXX should be able to validate AND THEN use
             if (serviceCredentials != null) {
-                try {
                     proxyGrantingTicketId = this.centralAuthenticationService
                         .delegateTicketGrantingTicket(serviceTicketId,
                             serviceCredentials);
-                } catch (final TicketException e) {
-                    logger.error("TicketException generating ticket for: "
-                        + serviceCredentials, e);
-                }
             }
 
             final Assertion assertion = this.centralAuthenticationService.validateServiceTicket(serviceTicketId, service);
@@ -168,11 +161,6 @@ public class ServiceValidateController extends AbstractController {
             }
 
             return success;
-        } catch (final TicketValidationException e) {
-            return generateErrorView(e.getCode(), e.getCode(), new Object[] {serviceTicketId, e.getOriginalService().getId(), service.getId()});
-        } catch (final TicketException te) {
-            return generateErrorView(te.getCode(), te.getCode(),
-                new Object[] {serviceTicketId});
         } catch (final UnauthorizedServiceException e) {
             return generateErrorView(e.getMessage(), e.getMessage(), null);
         }

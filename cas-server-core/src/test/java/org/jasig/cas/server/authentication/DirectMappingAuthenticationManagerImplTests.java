@@ -17,36 +17,23 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication;
+package org.jasig.cas.server.authentication;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.jasig.cas.TestUtils;
 import org.jasig.cas.server.authentication.DirectMappingAuthenticationManagerImpl.DirectAuthenticationHandlerMappingHolder;
-import org.jasig.cas.authentication.handler.support.SimpleTestUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver;
 
 import junit.framework.TestCase;
-import org.jasig.cas.server.authentication.*;
-
 
 public class DirectMappingAuthenticationManagerImplTests extends TestCase {
 
-    private DirectMappingAuthenticationManagerImpl manager = new DirectMappingAuthenticationManagerImpl();
+    private DirectMappingAuthenticationManagerImpl manager;
 
     protected void setUp() throws Exception {
-        this.manager = new DirectMappingAuthenticationManagerImpl();
-        
         final Map<Class<? extends Credential>, DirectAuthenticationHandlerMappingHolder> mappings = new HashMap<Class<? extends Credential>, DirectAuthenticationHandlerMappingHolder>();
-        final List<AuthenticationMetaDataResolver> populators = new ArrayList<AuthenticationMetaDataResolver>();
-//        populators.add(new SamlAuthenticationMetaDataPopulator());
-        
-//        this.manager.setAuthenticationMetaDataPopulators(populators);
-        
         final DirectAuthenticationHandlerMappingHolder d = new DirectAuthenticationHandlerMappingHolder();
         d.setAuthenticationHandler(new SimpleTestUsernamePasswordAuthenticationHandler());
         d.setCredentialToPrincipalResolver(new UsernamePasswordCredentialsToPrincipalResolver(new AttributePrincipalFactory() {
@@ -56,8 +43,31 @@ public class DirectMappingAuthenticationManagerImplTests extends TestCase {
         }));
         
         mappings.put(UserNamePasswordCredential.class, d);
-        
-        this.manager.setCredentialsMapping(mappings);
+
+        this.manager = new DirectMappingAuthenticationManagerImpl(mappings, new AuthenticationFactory() {
+            public Authentication getAuthentication(final Map<String, List<Object>> authenticationMetaData, AuthenticationRequest authenticationRequest, final String authenticationType) {
+                return new Authentication() {
+
+                    private final Date date = new Date();
+
+                    public Date getAuthenticationDate() {
+                        return date;
+                    }
+
+                    public Map<String, List<Object>> getAuthenticationMetaData() {
+                        return authenticationMetaData;
+                    }
+
+                    public boolean isLongTermAuthentication() {
+                        return false;
+                    }
+
+                    public String getAuthenticationMethod() {
+                        return authenticationType;
+                    }
+                };
+            }
+        });
         super.setUp();
     }
     

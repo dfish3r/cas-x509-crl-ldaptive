@@ -20,6 +20,7 @@ package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.authentication.Message;
+import org.jasig.cas.server.session.Session;
 
 import java.util.Date;
 import java.util.List;
@@ -42,7 +43,7 @@ public class DefaultLoginResponseImpl implements LoginResponse {
 
     private final Date date = new Date();
 
-    private final String sessionId;
+    private final Session session;
 
     private final List<GeneralSecurityException> authenticationExceptions;
 
@@ -50,8 +51,8 @@ public class DefaultLoginResponseImpl implements LoginResponse {
 
     private final Map<String, Object> attributes;
 
-    public DefaultLoginResponseImpl(final String sessionId, final AuthenticationResponse authenticationResponse) {
-        this.sessionId = sessionId;
+    public DefaultLoginResponseImpl(final Session session, final AuthenticationResponse authenticationResponse) {
+        this.session = session;
         
         if (authenticationResponse != null) {
             this.authenticationExceptions = Collections.unmodifiableList(authenticationResponse.getGeneralSecurityExceptions());
@@ -72,8 +73,8 @@ public class DefaultLoginResponseImpl implements LoginResponse {
         return new Date(date.getTime());
     }
 
-    public final String getSessionId() {
-        return this.sessionId;
+    public final Session getSession() {
+        return this.session;
     }
 
     public final List<GeneralSecurityException> getGeneralSecurityExceptions() {

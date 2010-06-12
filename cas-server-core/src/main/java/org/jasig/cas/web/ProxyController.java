@@ -26,7 +26,6 @@ import javax.validation.constraints.NotNull;
 import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.authentication.principal.SimpleWebApplicationServiceImpl;
 import org.jasig.cas.server.authentication.Service;
-import org.jasig.cas.ticket.TicketException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -81,14 +80,9 @@ public final class ProxyController extends AbstractController {
                 "INVALID_REQUEST_PROXY", null);
         }
 
-        try {
             // this is clearly wrong, but will suffice for now.
             return new ModelAndView(CONST_PROXY_SUCCESS, MODEL_SERVICE_TICKET,
                     this.centralAuthenticationService.grantAccess(null));
-        } catch (TicketException e) {
-            return generateErrorView(e.getCode(), e.getCode(),
-                new Object[] {ticket});
-        }
     }
 
     private Service getTargetService(final HttpServletRequest request) {

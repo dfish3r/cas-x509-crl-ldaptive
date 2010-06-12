@@ -20,6 +20,7 @@ package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.session.Access;
+import org.jasig.cas.server.session.Session;
 import org.springframework.util.Assert;
 
 import java.util.Collections;
@@ -40,8 +41,8 @@ public class DefaultServiceAccessResponseImpl extends DefaultLoginResponseImpl i
 
     private final List<Access> accesses;
 
-    public DefaultServiceAccessResponseImpl(final Access access, final List<Access> loggedOutServices, String sessionId, AuthenticationResponse authenticationResponse) {
-        super(sessionId, authenticationResponse);
+    public DefaultServiceAccessResponseImpl(final Access access, final List<Access> loggedOutServices, Session session, AuthenticationResponse authenticationResponse) {
+        super(session, authenticationResponse);
         this.access = access;
         this.accesses = Collections.unmodifiableList(loggedOutServices);
     }

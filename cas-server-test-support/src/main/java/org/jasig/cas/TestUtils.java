@@ -163,7 +163,6 @@ public final class TestUtils {
     }
 
     public static Authentication getAuthentication() {
-        final AttributePrincipal attributePrincipal = getPrincipal();
 
         return new Authentication() {
 
@@ -178,10 +177,6 @@ public final class TestUtils {
                 return Collections.emptyMap();
             }
 
-            public AttributePrincipal getPrincipal() {
-                return attributePrincipal;
-            }
-
             public boolean isLongTermAuthentication() {
                 return false;
             }
@@ -190,10 +185,6 @@ public final class TestUtils {
                 return "foo";
             }
         };
-    }
-
-    public static Authentication getAuthenticationWithService() {
-        return getAuthentication();
     }
 
     public static Authentication getAuthentication(final String name) {

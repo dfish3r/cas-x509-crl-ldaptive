@@ -17,10 +17,11 @@
  * under the License.
  */
 
-package org.jasig.cas.aspect;
+package org.jasig.cas.server.util;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
@@ -31,14 +32,14 @@ import java.util.Arrays;
 
 /**
  * 
- *
+ * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.3.6
  */
 @Aspect
-public class LogAspect {
+public final class LogAspect {
 
-    @Around("(execution (public * org.jasig.cas..*.*(..))) && !(execution( * org.jasig.cas..*.set*(..)))")
+    @Around("(execution (public * org.jasig.cas.server..*.*(..))) && !(execution( * org.jasig.cas.server..*.set*(..)))")
     public Object traceMethod(final ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object returnVal = null;
         final Logger log = getLog(proceedingJoinPoint);
@@ -62,6 +63,11 @@ public class LogAspect {
                 log.trace("Leaving method [" + methodName + "] with return value [" + (returnVal != null ? returnVal.toString() : "null") + "].");
             }
         }
+    }
+
+    @AfterThrowing(pointcut = "(execution (* org.jasig.cas.server..*.*(..)))", throwing="throwable")
+    public void logErrorFromThrownException(final JoinPoint joinPoint, final Throwable throwable) {
+        getLog(joinPoint).error(throwable.getMessage(),throwable);
     }
 
     protected Logger getLog(final JoinPoint joinPoint) {

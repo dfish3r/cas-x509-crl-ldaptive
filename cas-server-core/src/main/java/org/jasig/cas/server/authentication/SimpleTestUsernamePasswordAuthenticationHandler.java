@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jasig.cas.authentication.handler.support;
+package org.jasig.cas.server.authentication;
 
 import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;

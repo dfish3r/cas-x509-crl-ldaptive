@@ -30,7 +30,6 @@ import org.jasig.cas.services.RegisteredService;
 import org.jasig.cas.services.ServicesManager;
 import org.jasig.cas.services.UnauthorizedProxyingException;
 import org.jasig.cas.services.UnauthorizedServiceException;
-import org.jasig.cas.ticket.InvalidTicketException;
 import org.jasig.cas.server.session.Assertion;
 import org.perf4j.aop.Profiled;
 import org.slf4j.Logger;
@@ -128,7 +127,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
 
         if (authenticationResponse.succeeded()) {
             final Session session = this.sessionStorage.createSession(authenticationResponse);
-            return new DefaultLoginResponseImpl(session.getId(), authenticationResponse);
+            return new DefaultLoginResponseImpl(session, authenticationResponse);
         }
 
         return new DefaultLoginResponseImpl(authenticationResponse);
@@ -232,7 +231,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         final Access access = sessionToWorkWith.grant(serviceAccessRequest);
         this.sessionStorage.updateSession(sessionToWorkWith);
 
-        return new DefaultServiceAccessResponseImpl(access, remainingAccesses, sessionToWorkWith.getId(), authenticationResponse);
+        return new DefaultServiceAccessResponseImpl(access, remainingAccesses, sessionToWorkWith, authenticationResponse);
     }
 
     /**
@@ -253,14 +252,14 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         final Session session = this.sessionStorage.findSessionByAccessId(serviceTicketId);
 
         if (session == null) {
-            throw new InvalidTicketException();
+            throw new IllegalStateException();
         }
 
         final Access access = session.getAccess(serviceTicketId);
 
         // TODO we should be doing more a check than this.  Not sure why I didn't have that on the interface
         if (access == null) {
-            throw new InvalidTicketException();
+            throw new IllegalStateException();
         }
 
         final RegisteredService registeredService = this.servicesManager.findServiceBy(new Service() {
@@ -297,7 +296,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
             return this.sessionStorage.updateSession(delegatedSession).getId();
 
         } catch (final InvalidatedSessionException e) {
-            throw new InvalidTicketException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -316,7 +315,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
 
         if (session == null) {
             log.info("ServiceTicket [" + serviceTicketId + "] does not exist.");
-            throw new InvalidTicketException();
+            throw new IllegalStateException();
         }
         final Access access = session.getAccess(serviceTicketId);
         final RegisteredService registeredService = this.servicesManager.findServiceBy(service);

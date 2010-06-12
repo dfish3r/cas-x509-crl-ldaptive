@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication.handler.support;
+package org.jasig.cas.server.authentication;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -120,24 +120,19 @@ public final class JaasAuthenticationHandler extends AbstractUsernamePasswordAut
          * @param userName name to be used for authentication
          * @param password Password to be used for authentication
          */
-        protected UsernamePasswordCallbackHandler(final String userName,
-            final String password) {
+        protected UsernamePasswordCallbackHandler(final String userName, final String password) {
             this.userName = userName;
             this.password = password;
-
         }
 
-        public void handle(final Callback[] callbacks)
-            throws UnsupportedCallbackException {
+        public void handle(final Callback[] callbacks) throws UnsupportedCallbackException {
             for (final Callback callback : callbacks ) {
                 if (callback.getClass().equals(NameCallback.class)) {
                     ((NameCallback) callback).setName(this.userName);
                 } else if (callback.getClass().equals(PasswordCallback.class)) {
-                    ((PasswordCallback) callback).setPassword(this.password
-                        .toCharArray());
+                    ((PasswordCallback) callback).setPassword(this.password.toCharArray());
                 } else {
-                    throw new UnsupportedCallbackException(callback,
-                        "Unrecognized Callback");
+                    throw new UnsupportedCallbackException(callback, "Unrecognized Callback");
                 }
             }
         }

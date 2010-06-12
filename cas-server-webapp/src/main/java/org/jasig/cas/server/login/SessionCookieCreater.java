@@ -41,7 +41,7 @@ public final class SessionCookieCreater {
     }
 
     public boolean createSessionCookie(final LoginResponse loginResponse, final ServiceAccessResponse serviceAccessResponse, final ExternalContext externalContext) {
-        final String sessionId = serviceAccessResponse != null ? serviceAccessResponse.getSessionId() : loginResponse.getSessionId();
+        final String sessionId = serviceAccessResponse != null ? serviceAccessResponse.getSession().getId() : loginResponse.getSession().getId();
         WebUtils.setCookieValue(this.cookieGenerator, externalContext, sessionId);
 
         return true;

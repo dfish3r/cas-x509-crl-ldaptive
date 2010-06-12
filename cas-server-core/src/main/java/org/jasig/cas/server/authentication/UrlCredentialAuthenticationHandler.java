@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jasig.cas.authentication.handler.support;
+package org.jasig.cas.server.authentication;
 
 import org.jasig.cas.server.authentication.AbstractNamedAuthenticationHandler;
 import org.jasig.cas.server.authentication.Credential;
@@ -39,7 +39,7 @@ import java.security.GeneralSecurityException;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class HttpBasedServiceCredentialsAuthenticationHandler extends AbstractNamedAuthenticationHandler {
+public final class UrlCredentialAuthenticationHandler extends AbstractNamedAuthenticationHandler {
 
     /** The string representing the HTTPS protocol. */
     private static final String PROTOCOL_HTTPS = "https";
@@ -49,18 +49,21 @@ public final class HttpBasedServiceCredentialsAuthenticationHandler extends Abst
 
     /** Instance of Apache Commons HttpClient */
     @NotNull
-    private HttpClient httpClient;
+    private final HttpClient httpClient;
+
+    public UrlCredentialAuthenticationHandler(final HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
 
     public final boolean authenticate(final Credential credentials) throws GeneralSecurityException {
         final UrlCredential serviceCredentials = (UrlCredential) credentials;
-        if (this.requireSecure
-            && !serviceCredentials.getUrl().getProtocol().equals(PROTOCOL_HTTPS)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Authentication failed because url was not secure.");
-            }
+        if (this.requireSecure && !serviceCredentials.getUrl().getProtocol().equals(PROTOCOL_HTTPS)) {
+            log.debug("Authentication failed because url was not secure.");
             return false;
         }
-        log.debug("Attempting to resolve credentials for " + serviceCredentials);
+        if (log.isDebugEnabled()) {
+            log.debug("Attempting to resolve credentials for " + serviceCredentials);
+        }
 
         return this.httpClient.isValidEndPoint(serviceCredentials.getUrl());
     }
@@ -71,11 +74,6 @@ public final class HttpBasedServiceCredentialsAuthenticationHandler extends Abst
      */
     public final boolean supports(final Credential credentials) {
         return credentials != null && UrlCredential.class.isAssignableFrom(credentials.getClass());
-    }
-
-    /** Sets the HttpClient which will do all of the connection stuff. */
-    public final void setHttpClient(final HttpClient httpClient) {
-        this.httpClient = httpClient;
     }
 
     /**

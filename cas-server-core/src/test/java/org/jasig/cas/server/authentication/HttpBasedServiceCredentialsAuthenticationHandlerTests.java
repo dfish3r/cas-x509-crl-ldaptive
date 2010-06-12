@@ -17,9 +17,10 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication.handler.support;
+package org.jasig.cas.server.authentication;
 
 import org.jasig.cas.TestUtils;
+import org.jasig.cas.server.authentication.UrlCredentialAuthenticationHandler;
 import org.jasig.cas.util.HttpClient;
 
 import junit.framework.TestCase;
@@ -33,11 +34,10 @@ import java.security.GeneralSecurityException;
  */
 public final class HttpBasedServiceCredentialsAuthenticationHandlerTests extends TestCase {
 
-    private HttpBasedServiceCredentialsAuthenticationHandler authenticationHandler;
+    private UrlCredentialAuthenticationHandler authenticationHandler;
 
     protected void setUp() throws Exception {
-        this.authenticationHandler = new HttpBasedServiceCredentialsAuthenticationHandler();
-        this.authenticationHandler.setHttpClient(new HttpClient());
+        this.authenticationHandler = new UrlCredentialAuthenticationHandler(new HttpClient());
     }
 
     public void testSupportsProperUserCredentials() {
@@ -66,7 +66,6 @@ public final class HttpBasedServiceCredentialsAuthenticationHandlerTests extends
     }
     
     public void testAcceptsNonHttpsCredentials() throws GeneralSecurityException {
-        this.authenticationHandler.setHttpClient(new HttpClient());
         this.authenticationHandler.setRequireSecure(false);
         assertTrue(this.authenticationHandler.authenticate(TestUtils
             .getHttpBasedServiceCredentials("http://www.ja-sig.org")));
@@ -80,8 +79,7 @@ public final class HttpBasedServiceCredentialsAuthenticationHandlerTests extends
     public void testNoAcceptableStatusCodeButOneSet() throws Exception {
         final HttpClient httpClient = new HttpClient();
         httpClient.setAcceptableCodes(new int[] {900});
-        this.authenticationHandler.setHttpClient(httpClient);
-        assertFalse(this.authenticationHandler.authenticate(TestUtils
-            .getHttpBasedServiceCredentials("https://www.ja-sig.org")));
+        this.authenticationHandler = new UrlCredentialAuthenticationHandler(httpClient);
+        assertFalse(this.authenticationHandler.authenticate(TestUtils.getHttpBasedServiceCredentials("https://www.ja-sig.org")));
     }
 }

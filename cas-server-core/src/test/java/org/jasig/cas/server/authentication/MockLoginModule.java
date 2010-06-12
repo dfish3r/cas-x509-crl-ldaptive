@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication.handler.support;
+package org.jasig.cas.server.authentication;
 
 import java.util.Map;
 

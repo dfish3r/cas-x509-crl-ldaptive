@@ -33,7 +33,6 @@ import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.jasig.cas.server.login.DefaultLoginRequestImpl;
 import org.jasig.cas.server.login.LoginRequest;
 import org.jasig.cas.server.login.LoginResponse;
-import org.jasig.cas.ticket.TicketException;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
@@ -80,17 +79,17 @@ public class TicketResource extends Resource {
         }
      
         final Credential c = obtainCredentials();
-        try {
-            final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, ClientInfoHolder.getClientInfo().getClientIpAddress(), false, false, null);
-            loginRequest.getCredentials().add(c);
-            final LoginResponse loginResponse = this.centralAuthenticationService.login(loginRequest);
-            getResponse().setStatus(determineStatus());
-            final Reference ticket_ref = getRequest().getResourceRef().addSegment(loginResponse.getSessionId());
+
+        final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, ClientInfoHolder.getClientInfo().getClientIpAddress(), false, false, null);
+        loginRequest.getCredentials().add(c);
+        final LoginResponse loginResponse = this.centralAuthenticationService.login(loginRequest);
+        getResponse().setStatus(determineStatus());
+        if (loginResponse.getSession() != null) {
+            final Reference ticket_ref = getRequest().getResourceRef().addSegment(loginResponse.getSession().getId());
             getResponse().setLocationRef(ticket_ref);
-            getResponse().setEntity("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\"><html><head><title>" + getResponse().getStatus().getCode() + " " + getResponse().getStatus().getDescription() + "</title></head><body><h1>TGT Created</h1><form action=\"" + ticket_ref + "\" method=\"POST\">Service:<input type=\"text\" name=\"service\" value=\"\"><br><input type=\"submit\" value=\"Submit\"></form></body></html>", MediaType.TEXT_HTML);        
-        } catch (final TicketException e) {
-            log.error(e.getMessage(),e);
-            getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST, e.getMessage());
+            getResponse().setEntity("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\"><html><head><title>" + getResponse().getStatus().getCode() + " " + getResponse().getStatus().getDescription() + "</title></head><body><h1>TGT Created</h1><form action=\"" + ticket_ref + "\" method=\"POST\">Service:<input type=\"text\" name=\"service\" value=\"\"><br><input type=\"submit\" value=\"Submit\"></form></body></html>", MediaType.TEXT_HTML);
+        } else {
+            getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST, loginResponse.getGeneralSecurityExceptions().toString());                
         }
     }
     

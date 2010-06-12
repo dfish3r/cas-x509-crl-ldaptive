@@ -17,11 +17,12 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication.handler.support;
+package org.jasig.cas.server.authentication;
 
 import org.jasig.cas.TestUtils;
 
 import junit.framework.TestCase;
+import org.jasig.cas.server.authentication.JaasAuthenticationHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

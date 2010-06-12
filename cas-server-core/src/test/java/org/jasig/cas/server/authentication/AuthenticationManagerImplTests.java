@@ -17,12 +17,12 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication;
+package org.jasig.cas.server.authentication;
 
 import org.jasig.cas.AbstractCentralAuthenticationServiceTest;
 import org.jasig.cas.TestUtils;
-import org.jasig.cas.authentication.handler.support.HttpBasedServiceCredentialsAuthenticationHandler;
-import org.jasig.cas.authentication.handler.support.SimpleTestUsernamePasswordAuthenticationHandler;
+import org.jasig.cas.server.authentication.UrlCredentialAuthenticationHandler;
+import org.jasig.cas.server.authentication.SimpleTestUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver;
 import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.util.HttpClient;
@@ -109,8 +109,7 @@ public class AuthenticationManagerImplTests extends AbstractCentralAuthenticatio
                 };
             }
         });
-        HttpBasedServiceCredentialsAuthenticationHandler authenticationHandler = new HttpBasedServiceCredentialsAuthenticationHandler();
-        authenticationHandler.setHttpClient(new HttpClient());
+        UrlCredentialAuthenticationHandler authenticationHandler = new UrlCredentialAuthenticationHandler(new HttpClient());
         manager.authenticate(TestUtils.getAuthenticationRequest(TestUtils.getHttpBasedServiceCredentials()));
     }
 
@@ -162,8 +161,7 @@ public class AuthenticationManagerImplTests extends AbstractCentralAuthenticatio
             }
         });
 
-        HttpBasedServiceCredentialsAuthenticationHandler authenticationHandler = new HttpBasedServiceCredentialsAuthenticationHandler();
-        authenticationHandler.setHttpClient(new HttpClient());
+        UrlCredentialAuthenticationHandler authenticationHandler = new UrlCredentialAuthenticationHandler(new HttpClient());
         manager.authenticate(TestUtils.getAuthenticationRequest(TestUtils.getHttpBasedServiceCredentials()));
     }
     
