@@ -79,26 +79,16 @@
 
     <!-- CentralAuthenticationService -->
     <bean id="centralAuthenticationService" class="org.jasig.cas.server.DefaultCentralAuthenticationServiceImpl"
-          p:ticketGrantingTicketExpirationPolicy-ref="grantingTicketExpirationPolicy"
-          p:serviceTicketExpirationPolicy-ref="serviceTicketExpirationPolicy"
-          p:authenticationManager-ref="authenticationManager"
-          p:ticketGrantingTicketUniqueTicketIdGenerator-ref="ticketGrantingTicketUniqueIdGenerator"
-          p:ticketRegistry-ref="ticketRegistry"
-          p:servicesManager-ref="servicesManager"
-          p:persistentIdGenerator-ref="persistentIdGenerator"
-          p:uniqueTicketIdGeneratorsForService-ref="uniqueIdGeneratorsMap"/>
-
-    <bean id="proxy10Handler" class="org.jasig.cas.ticket.proxy.support.Cas10ProxyHandler"/>
-
-    <bean id="proxy20Handler" class="org.jasig.cas.ticket.proxy.support.Cas20ProxyHandler"
-          p:httpClient-ref="httpClient"
-          p:uniqueTicketIdGenerator-ref="proxy20TicketUniqueIdGenerator"/>
+        p:servicesManager-ref="servicesManager">
+        <constructor-arg index="0" ref="authenticationManager" />
+        <constructor-arg index="1" ref="sessionStorage" />
+    </bean>
 
     <!-- ADVISORS -->
     <bean id="advisorAutoProxyCreator"
           class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
-    <bean id="validationAnnotationBeanPostProcessor" class="org.jasig.cas.util.CustomBeanValidationPostProcessor" />
+    <bean id="validationAnnotationBeanPostProcessor" class="org.jasig.cas.server.util.CustomBeanValidationPostProcessor" />
 
     <!-- The scheduler bean wires up any triggers that define scheduled tasks -->
     <bean id="scheduler" class="org.jasig.cas.server.util.AutowiringSchedulerFactoryBean"/>

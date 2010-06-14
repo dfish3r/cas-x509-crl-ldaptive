@@ -17,11 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication.principal;
-
-import org.jasig.cas.server.authentication.AttributePrincipalFactory;
-import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.server.authentication.UserNamePasswordCredential;
+package org.jasig.cas.server.authentication;
 
 /**
  * Implementation of CredentialsToPrincipalResolver for Credentials based on
@@ -37,22 +33,14 @@ import org.jasig.cas.server.authentication.UserNamePasswordCredential;
  * @since 3.0
  * @see org.jasig.cas.server.authentication.AttributePrincipal
  */
-public final class UsernamePasswordCredentialsToPrincipalResolver extends AbstractPersonDirectoryCredentialsToPrincipalResolver {
+public final class UsernamePasswordCredentialsToPrincipalResolver extends AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver {
 
     public UsernamePasswordCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
-        super(attributePrincipalFactory);
+        super(attributePrincipalFactory, UserNamePasswordCredential.class);
     }
 
     protected String extractPrincipalId(final Credential credentials) {
         final UserNamePasswordCredential usernamePasswordCredentials = (UserNamePasswordCredential) credentials;
         return usernamePasswordCredentials.getUserName();
-    }
-
-    /**
-     * Return true if Credentials are UsernamePasswordCredentials, false
-     * otherwise.
-     */
-    public boolean supports(final Credential credentials) {
-        return credentials != null && UserNamePasswordCredential.class.isAssignableFrom(credentials.getClass());
     }
 }

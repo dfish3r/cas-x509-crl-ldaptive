@@ -1,0 +1,191 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<bean id="proxyValidateController" class="org.jasig.cas.web.ServiceValidateController"
+		p:centralAuthenticationService-ref="centralAuthenticationService"
+		p:proxyHandler-ref="proxy20Handler"
+		p:argumentExtractor-ref="casArgumentExtractor" />
+
+	<bean id="serviceValidateController" class="org.jasig.cas.web.ServiceValidateController"
+		p:validationSpecificationClass="org.jasig.cas.validation.Cas20WithoutProxyingValidationSpecification"
+		p:centralAuthenticationService-ref="centralAuthenticationService"
+		p:proxyHandler-ref="proxy20Handler"
+		p:argumentExtractor-ref="casArgumentExtractor" />
+
+	<bean id="samlValidateController" class="org.jasig.cas.web.ServiceValidateController"
+		p:validationSpecificationClass="org.jasig.cas.validation.Cas20WithoutProxyingValidationSpecification"
+		p:centralAuthenticationService-ref="centralAuthenticationService"
+		p:proxyHandler-ref="proxy20Handler"
+		p:argumentExtractor-ref="samlArgumentExtractor"
+		p:successView="casSamlServiceSuccessView"
+		p:failureView="casSamlServiceFailureView" />
+
+	<bean id="legacyValidateController" class="org.jasig.cas.web.ServiceValidateController"
+		p:proxyHandler-ref="proxy10Handler"
+		p:successView="cas1ServiceSuccessView"
+		p:failureView="cas1ServiceFailureView"
+		p:validationSpecificationClass="org.jasig.cas.validation.Cas10ProtocolValidationSpecification"
+		p:centralAuthenticationService-ref="centralAuthenticationService"
+		p:argumentExtractor-ref="casArgumentExtractor" />
+
+	<bean id="proxyController" class="org.jasig.cas.web.ProxyController"
+		p:centralAuthenticationService-ref="centralAuthenticationService" />
+
+    <bean id="viewStatisticsController" class="org.jasig.cas.web.StatisticsController"
+        p:casTicketSuffix="${host.name}">
+        <constructor-arg index="0" ref="ticketRegistry" />
+    </bean>
+	
+	<bean id="addRegisteredServiceSimpleFormController" class="org.jasig.cas.services.web.RegisteredServiceSimpleFormController"
+		p:formView="addServiceView"
+		p:successView="addServiceView"
+		p:commandName="registeredService"
+		p:validator-ref="registeredServiceValidator"
+		p:sessionForm="true">
+		<constructor-arg index="0" ref="servicesManager" />
+		<constructor-arg index="1" ref="attributeRepository" />
+	</bean>
+
+	<bean id="editRegisteredServiceSimpleFormController" class="org.jasig.cas.services.web.RegisteredServiceSimpleFormController"
+		p:formView="editServiceView"
+		p:successView="editServiceView"
+		p:commandName="registeredService"
+		p:validator-ref="registeredServiceValidator"
+		p:sessionForm="false">
+		<constructor-arg index="0" ref="servicesManager" />
+		<constructor-arg index="1" ref="attributeRepository" />
+	</bean>
+
+	<bean id="registeredServiceValidator" class="org.jasig.cas.services.web.support.RegisteredServiceValidator"
+		p:servicesManager-ref="servicesManager" />
+
+	<bean id="manageRegisteredServicesMultiActionController" class="org.jasig.cas.services.web.ManageRegisteredServicesMultiActionController">
+		<constructor-arg index="0" ref="servicesManager" />
+        <constructor-arg index="1" value="${cas.securityContext.serviceProperties.service}" />
+	</bean>
+
+    <bean id="passThroughController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" /> 
+
+	<bean
+		id="openIdProviderController"
+		class="org.jasig.cas.web.OpenIdProviderController"
+		p:loginUrl="${cas.securityContext.casProcessingFilterEntryPoint.loginUrl}" />
+
+	<bean
+		id="serviceLogoutViewController"
+		class="org.springframework.web.servlet.mvc.ParameterizableViewController"
+		p:viewName="serviceLogoutView" />
+
+	<bean
+		id="handlerMappingC"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property
+			name="mappings">
+			<props>
+				<prop
+					key="/logout">
+					logoutController
+				</prop>
+				<prop
+					key="/serviceValidate">
+					serviceValidateController
+				</prop>
+				<prop
+					key="/validate">
+					legacyValidateController
+				</prop>
+				<prop
+					key="/proxy">
+					proxyController
+				</prop>
+				<prop
+					key="/proxyValidate">
+					proxyValidateController
+				</prop>
+				<prop
+					key="/samlValidate">
+					samlValidateController
+				</prop>
+
+				<prop
+					key="/services/add.html">
+					addRegisteredServiceSimpleFormController
+				</prop>
+
+				<prop
+					key="/services/edit.html">
+					editRegisteredServiceSimpleFormController
+				</prop>
+
+				<prop
+					key="/services/loggedOut.html">
+					serviceLogoutViewController
+				</prop>
+
+                <prop key="/services/viewStatistics.html">
+                    viewStatisticsController
+                </prop>
+
+				<prop
+					key="/services/*">
+					manageRegisteredServicesMultiActionController
+				</prop>
+				<prop
+					key="/openid/*">openIdProviderController</prop>
+                <prop
+                        key="/authorizationFailure.html">passThroughController</prop>
+			</props>
+		</property>
+		<property
+			name="alwaysUseFullPath" value="true" />
+		<!--
+		uncomment this to enable sending PageRequest events.
+		<property
+			name="interceptors">
+			<list>
+				<ref bean="pageRequestHandlerInterceptorAdapter" />
+			</list>
+		</property>
+		 -->
+	</bean>
+
+	<!-- Theme Resolver -->
+	<bean id="themeResolver" class="org.jasig.cas.services.web.ServiceThemeResolver"
+		p:defaultThemeName="${cas.themeResolver.defaultThemeName}"
+        p:argumentExtractors-ref="argumentExtractors"
+        p:servicesManager-ref="servicesManager">
+        <property name="mobileBrowsers">
+            <map>
+                <entry key=".*iPhone.*" value="iphone" />
+                <entry key=".*Android.*" value="iphone" />
+                <entry key=".*Safari.*Pre.*" value="iphone" />
+                <entry key=".*Nokia.*AppleWebKit.*" value="iphone" />
+            </map>
+        </property>
+    </bean>
+
+
+	<bean id="urlBasedViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"
+		p:viewClass="org.springframework.web.servlet.view.InternalResourceView"
+        p:prefix="/WEB-INF/view/jsp/"
+        p:suffix=".jsp"
+        p:order="1"/>
+
+	<bean id="errorHandlerResolver" class="org.jasig.cas.web.NoSuchFlowExecutionExceptionResolver" />
+
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+
+	<bean id="casPropertyPlaceholderConfigurer2" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		p:location="/WEB-INF/cas.properties" />
+
+    <bean id="proxy10Handler" class="org.jasig.cas.ticket.proxy.support.Cas10ProxyHandler"/>
+
+    <bean id="proxy20Handler" class="org.jasig.cas.ticket.proxy.support.Cas20ProxyHandler"
+          p:httpClient-ref="httpClient"
+          p:uniqueTicketIdGenerator-ref="proxy20TicketUniqueIdGenerator"/>
+
+</beans>

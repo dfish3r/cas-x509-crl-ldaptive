@@ -18,7 +18,7 @@
  */
 package org.jasig.cas.adaptors.trusted.authentication.principal;
 
-import org.jasig.cas.authentication.principal.AbstractPersonDirectoryCredentialsToPrincipalResolver;
+import org.jasig.cas.server.authentication.AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver;
 import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.jasig.cas.server.authentication.Credential;
 
@@ -31,7 +31,7 @@ import org.jasig.cas.server.authentication.Credential;
  * @version $Revision$ $Date$
  * @since 3.0.5
  */
-public final class PrincipalBearingCredentialsToPrincipalResolver extends AbstractPersonDirectoryCredentialsToPrincipalResolver {
+public final class PrincipalBearingCredentialsToPrincipalResolver extends AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver {
 
     public PrincipalBearingCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
         super(attributePrincipalFactory);

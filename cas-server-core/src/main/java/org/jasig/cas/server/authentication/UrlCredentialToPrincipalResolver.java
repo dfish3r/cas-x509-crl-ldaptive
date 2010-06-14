@@ -17,11 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication.principal;
-
-import org.jasig.cas.server.authentication.*;
-
-import javax.validation.constraints.NotNull;
+package org.jasig.cas.server.authentication;
 
 /**
  * UrlCredentialToPrincipalResolver extracts the callbackUrl from
@@ -32,31 +28,15 @@ import javax.validation.constraints.NotNull;
  * @version $Revision: 1.5 $ $Date: 2007/02/27 19:31:58 $
  * @since 3.0
  */
-public final class UrlCredentialToPrincipalResolver implements CredentialToPrincipalResolver {
-
-    @NotNull
-    private final AttributePrincipalFactory attributePrincipalFactory;
+public final class UrlCredentialToPrincipalResolver extends AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver {
 
     public UrlCredentialToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
-        this.attributePrincipalFactory = attributePrincipalFactory;
+        super(attributePrincipalFactory, UrlCredential.class);
     }
 
-    /**
-     * Method to return a simple Service Principal with the identifier set to be
-     * the callback url.
-     */
-    public AttributePrincipal resolve(final Credential credentials) {
+    @Override
+    protected String extractPrincipalId(final Credential credentials) {
         final UrlCredential serviceCredentials = (UrlCredential) credentials;
-        return this.attributePrincipalFactory.getAttributePrincipal(serviceCredentials.getUrl().toExternalForm());
-    }
-
-    /**
-     * @return true if the credentials provided are not null and are assignable
-     * from HttpBasedServiceCredentials, otherwise returns false.
-     */
-    public boolean supports(final Credential credentials) {
-        return credentials != null
-            && UrlCredential.class.isAssignableFrom(credentials
-                .getClass());
+        return serviceCredentials.getUrl().toExternalForm();
     }
 }

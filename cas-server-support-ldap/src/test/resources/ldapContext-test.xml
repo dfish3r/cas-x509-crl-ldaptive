@@ -110,7 +110,7 @@
     p:contextSource-ref="contextSource">
     <property name="credentialsToPrincipalResolver">
       <bean
-        class="org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver">
+        class="org.jasig.cas.server.authentication.UsernamePasswordCredentialsToPrincipalResolver">
       </bean>
     </property>
   </bean>

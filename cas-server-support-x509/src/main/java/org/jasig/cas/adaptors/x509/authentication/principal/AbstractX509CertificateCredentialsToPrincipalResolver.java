@@ -21,7 +21,7 @@ package org.jasig.cas.adaptors.x509.authentication.principal;
 
 import java.security.cert.X509Certificate;
 
-import org.jasig.cas.authentication.principal.AbstractPersonDirectoryCredentialsToPrincipalResolver;
+import org.jasig.cas.server.authentication.AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver;
 import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.jasig.cas.server.authentication.Credential;
 
@@ -32,7 +32,7 @@ import org.jasig.cas.server.authentication.Credential;
  * @version $Revision$ $Date$
  * @since 3.0.4
  */
-public abstract class AbstractX509CertificateCredentialsToPrincipalResolver extends AbstractPersonDirectoryCredentialsToPrincipalResolver {
+public abstract class AbstractX509CertificateCredentialsToPrincipalResolver extends AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver {
 
     protected AbstractX509CertificateCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
         super(attributePrincipalFactory);

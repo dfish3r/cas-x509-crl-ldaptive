@@ -21,10 +21,6 @@ package org.jasig.cas.server.authentication;
 
 import org.jasig.cas.AbstractCentralAuthenticationServiceTest;
 import org.jasig.cas.TestUtils;
-import org.jasig.cas.server.authentication.UrlCredentialAuthenticationHandler;
-import org.jasig.cas.server.authentication.SimpleTestUsernamePasswordAuthenticationHandler;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver;
-import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.util.HttpClient;
 import org.junit.Test;
 

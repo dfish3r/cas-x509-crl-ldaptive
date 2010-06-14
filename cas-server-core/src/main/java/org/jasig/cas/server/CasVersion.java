@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas;
+package org.jasig.cas.server;
 
 /**
  * Class that exposes the CAS version. Fetches the "Implementation-Version"
@@ -34,12 +34,14 @@ public final class CasVersion {
      * this class.
      */
     private CasVersion() {
-        // this class is not instantiable
+        // this class cannot be instansiated.
     }
 
     /**
      * Return the full CAS version string.
-     * 
+     *
+     * @return the current CAS version.  CANNOT be NULL.
+     *
      * @see java.lang.Package#getImplementationVersion
      */
     public static String getVersion() {

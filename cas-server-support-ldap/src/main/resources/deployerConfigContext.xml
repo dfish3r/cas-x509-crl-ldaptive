@@ -71,7 +71,7 @@
 					| Credentials you are using.
 					+-->
 				<bean
-					class="org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver" />
+					class="org.jasig.cas.server.authentication.UsernamePasswordCredentialsToPrincipalResolver" />
 				<!--
 					| UrlCredentialToPrincipalResolver supports HttpBasedCredentials.  It supports the CAS 2.0 approach of
 					| authenticating services by SSL callback, extracting the callback URL from the Credentials and representing it as a
@@ -81,7 +81,7 @@
 					| receive a proxy callback, you will need to change this bean declaration (or add additional declarations).
 					+-->
 				<bean
-					class="org.jasig.cas.authentication.principal.UrlCredentialToPrincipalResolver" />
+					class="org.jasig.cas.server.authentication.UrlCredentialToPrincipalResolver" />
 			</list>
 		</property>
 

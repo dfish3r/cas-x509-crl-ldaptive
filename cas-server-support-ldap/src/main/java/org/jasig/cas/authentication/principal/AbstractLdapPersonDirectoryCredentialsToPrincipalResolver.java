@@ -25,6 +25,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.jasig.cas.server.authentication.AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver;
 import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
@@ -37,7 +38,7 @@ import org.springframework.ldap.core.support.LdapContextSource;
  *
  */
 public abstract class AbstractLdapPersonDirectoryCredentialsToPrincipalResolver extends
-    AbstractPersonDirectoryCredentialsToPrincipalResolver {
+        AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver {
 
     /** The default maximum number of results to return. */
     private static final int DEFAULT_MAX_NUMBER_OF_RESULTS = 2;

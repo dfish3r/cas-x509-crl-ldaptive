@@ -24,7 +24,6 @@ import java.util.*;
 
 import org.jasig.cas.TestUtils;
 import org.jasig.cas.server.authentication.DirectMappingAuthenticationManagerImpl.DirectAuthenticationHandlerMappingHolder;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver;
 
 import junit.framework.TestCase;
 

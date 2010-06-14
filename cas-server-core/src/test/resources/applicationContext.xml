@@ -116,11 +116,11 @@
 
 	<bean
 		id="usernamePasswordCredentialsToPrincipalResolver"
-		class="org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver" />
+		class="org.jasig.cas.server.authentication.UsernamePasswordCredentialsToPrincipalResolver" />
 		
 	<bean
 		id="httpBasedServiceCredentialsToPrincipalResolver"
-		class="org.jasig.cas.authentication.principal.UrlCredentialToPrincipalResolver" />
+		class="org.jasig.cas.server.authentication.UrlCredentialToPrincipalResolver" />
 		
 	<bean
 		id="httpBasedServiceCredentialsAuthenticationHandler"
@@ -138,5 +138,5 @@
 		id="authenticationMetaDataPopulator"
 		class="org.jasig.cas.mock.MockAuthenticationMetaDataPopulator" />
 
-    <bean id="validationAnnotationBeanPostProcessor" class="org.jasig.cas.util.CustomBeanValidationPostProcessor" />
+    <bean id="validationAnnotationBeanPostProcessor" class="org.jasig.cas.server.util.CustomBeanValidationPostProcessor" />
 </beans>

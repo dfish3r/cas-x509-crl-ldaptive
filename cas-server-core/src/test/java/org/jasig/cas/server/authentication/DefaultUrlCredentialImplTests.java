@@ -17,42 +17,47 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication.principal;
+package org.jasig.cas.server.authentication;
 
 import java.net.URL;
 
 import org.jasig.cas.TestUtils;
 
-import junit.framework.TestCase;
 import org.jasig.cas.server.authentication.DefaultUrlCredentialImpl;
 import org.jasig.cas.server.authentication.UrlCredential;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class HttpBasedServiceCredentialsTests extends TestCase {
+public final class DefaultUrlCredentialImplTests {
 
-    public void testProperUrl() {
+    @Test
+    public void properUrl() {
         assertEquals(TestUtils.CONST_GOOD_URL, TestUtils.getHttpBasedServiceCredentials().getUrl().toExternalForm());
     }
-    
-    public void testEqualsWithNull() throws Exception {
+
+    @Test
+    public void equalsWithNull() throws Exception {
         final UrlCredential c = new DefaultUrlCredentialImpl(new URL("http://www.cnn.com"));
         
         assertFalse(c.equals(null));
     }
-    
-    public void testEqualsWithFalse() throws Exception {
+
+    @Test
+    public void equalsWithFalse() throws Exception {
         final DefaultUrlCredentialImpl c = new DefaultUrlCredentialImpl(new URL("http://www.cnn.com"));
         final DefaultUrlCredentialImpl c2 = new DefaultUrlCredentialImpl(new URL("http://www.msn.com"));
         
         assertFalse(c.equals(c2));
         assertFalse(c.equals(new Object()));
     }
-    
-    public void testEqualsWithTrue() throws Exception {
+
+    @Test
+    public void equalsWithTrue() throws Exception {
         final DefaultUrlCredentialImpl c = new DefaultUrlCredentialImpl(new URL("http://www.cnn.com"));
         final DefaultUrlCredentialImpl c2 = new DefaultUrlCredentialImpl(new URL("http://www.cnn.com"));
         

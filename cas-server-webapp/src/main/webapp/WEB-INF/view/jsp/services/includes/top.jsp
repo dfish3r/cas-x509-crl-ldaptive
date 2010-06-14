@@ -1,3 +1,4 @@
+<%@ page import="org.jasig.cas.server.CasVersion" %>
 <%--
 
     Licensed to Jasig under one or more contributor license
@@ -31,7 +32,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <title><spring:message code="${pageTitle}" text="Logged Out" /></title>
-  <meta name="version" content="<%=org.jasig.cas.CasVersion.getVersion()%>" />
+  <meta name="version" content="<%=CasVersion.getVersion()%>" />
   <link rel="stylesheet" href="../css/services/cas.css" type="text/css" media="screen" />
   <script type="text/javascript" src="../js/common_rosters.js"></script>
 

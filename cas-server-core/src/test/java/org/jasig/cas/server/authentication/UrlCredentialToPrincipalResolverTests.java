@@ -17,35 +17,36 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication.principal;
+package org.jasig.cas.server.authentication;
 
 import org.jasig.cas.TestUtils;
 
-import junit.framework.TestCase;
 import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.jasig.cas.server.authentication.CredentialToPrincipalResolver;
+import org.jasig.cas.server.authentication.UrlCredentialToPrincipalResolver;
+import org.junit.Test;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import static org.junit.Assert.*;
 
 /**
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class HttpBasedServiceCredentialsToPrincipalResolverTests extends
-    TestCase {
+public final class UrlCredentialToPrincipalResolverTests {
 
     private CredentialToPrincipalResolver resolver = new UrlCredentialToPrincipalResolver(new AttributePrincipalFactory() {
         public AttributePrincipal getAttributePrincipal(final String name) {
             return new AttributePrincipal() {
-                public List<Object> getAttributeValues(String attribute) {
+                public List<Object> getAttributeValues(final String attribute) {
                     return null;
                 }
 
-                public Object getAttributeValue(String attribute) {
+                public Object getAttributeValue(final String attribute) {
                     return null;
                 }
 
@@ -60,23 +61,23 @@ public final class HttpBasedServiceCredentialsToPrincipalResolverTests extends
         }
     });
 
-    public void testInValidSupportsCredentials() {
-        assertFalse(this.resolver.supports(TestUtils
-            .getCredentialsWithSameUsernameAndPassword()));
+    @Test
+    public void inValidSupportsCredentials() {
+        assertFalse(this.resolver.supports(TestUtils.getCredentialsWithSameUsernameAndPassword()));
     }
 
-    public void testNullSupportsCredentials() {
+    @Test
+    public void nullSupportsCredentials() {
         assertFalse(this.resolver.supports(null));
     }
 
-    public void testValidSupportsCredentials() {
-        assertTrue(this.resolver.supports(TestUtils
-            .getHttpBasedServiceCredentials()));
+    @Test
+    public void validSupportsCredentials() {
+        assertTrue(this.resolver.supports(TestUtils.getHttpBasedServiceCredentials()));
     }
 
-    public void testValidCredentials() {
-        assertEquals(this.resolver.resolve(
-            TestUtils.getHttpBasedServiceCredentials()).getName(), TestUtils
-            .getHttpBasedServiceCredentials().getUrl().toExternalForm());
+    @Test
+    public void validCredentials() {
+        assertEquals(this.resolver.resolve(TestUtils.getHttpBasedServiceCredentials()).getName(), TestUtils.getHttpBasedServiceCredentials().getUrl().toExternalForm());
     }
 }
