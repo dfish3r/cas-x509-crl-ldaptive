@@ -48,8 +48,8 @@ public final class CredentialsToLDAPAttributePrincipalResolver extends AbstractL
     @NotNull
     private CredentialToPrincipalResolver credentialsToPrincipalResolver;
 
-    public CredentialsToLDAPAttributePrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
-        super(attributePrincipalFactory);
+    public CredentialsToLDAPAttributePrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory, final Class<?> clazz) {
+        super(attributePrincipalFactory, clazz);
     }
     
     protected String extractPrincipalId(final Credential credentials) {
@@ -126,6 +126,7 @@ public final class CredentialsToLDAPAttributePrincipalResolver extends AbstractL
     /*
      * Delegates checking to the configured CredentialsToPrincipalResolver.
      */
+    @Override
     public boolean supports(final Credential credentials) {
         return this.credentialsToPrincipalResolver.supports(credentials);
     }

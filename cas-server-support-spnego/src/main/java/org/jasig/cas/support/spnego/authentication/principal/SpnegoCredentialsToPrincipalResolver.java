@@ -44,7 +44,7 @@ public final class SpnegoCredentialsToPrincipalResolver extends AbstractAttribut
     private Transform transformPrincipalId = Transform.NONE; 
 
     public SpnegoCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
-        super(attributePrincipalFactory);
+        super(attributePrincipalFactory, SpnegoCredentials.class);
     }
 
     protected String extractPrincipalId(final Credential credentials) {
@@ -58,11 +58,6 @@ public final class SpnegoCredentialsToPrincipalResolver extends AbstractAttribut
             default:
                 return c.getPrincipal().getName();
         }
-    }
-
-    public boolean supports(final Credential credentials) {
-        return credentials != null
-            && SpnegoCredentials.class.equals(credentials.getClass());
     }
     
     public void setTransformPrincipalId(final Transform transform) {

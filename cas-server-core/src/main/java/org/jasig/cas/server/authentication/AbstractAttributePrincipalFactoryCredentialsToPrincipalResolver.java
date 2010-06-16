@@ -50,10 +50,12 @@ public abstract class AbstractAttributePrincipalFactoryCredentialsToPrincipalRes
     }
 
     /**
+     * Can be overridden, but not really recommended.
+     *
      * @return true if the credentials provided are not null and are assignable
      * from {@link AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver#clazz}, otherwise returns false.
      */
-    public final boolean supports(final Credential credentials) {
+    public boolean supports(final Credential credentials) {
         return credentials != null && clazz.isAssignableFrom(credentials.getClass());
     }
 

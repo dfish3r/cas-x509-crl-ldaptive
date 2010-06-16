@@ -34,14 +34,10 @@ import org.jasig.cas.server.authentication.Credential;
 public final class PrincipalBearingCredentialsToPrincipalResolver extends AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver {
 
     public PrincipalBearingCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
-        super(attributePrincipalFactory);
+        super(attributePrincipalFactory, PrincipalBearingCredentials.class);
     }
 
     protected String extractPrincipalId(final Credential credentials) {
         return ((PrincipalBearingCredentials) credentials).getPrincipal().getName();
-    }
-
-    public boolean supports(final Credential credentials) {
-        return credentials != null && credentials.getClass().equals(PrincipalBearingCredentials.class);
     }
 }

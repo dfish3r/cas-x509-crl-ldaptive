@@ -60,7 +60,7 @@ public final class RemoteIpLookupCredentialsToPrincipalResolver extends Abstract
     private String ipAddressFormat = ADDR_STANDARD;
 
     public RemoteIpLookupCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
-        super(attributePrincipalFactory);
+        super(attributePrincipalFactory, RemoteAddressCredentials.class);
     }
 
     protected String extractPrincipalId(final Credential credentials) {
@@ -100,10 +100,6 @@ public final class RemoteIpLookupCredentialsToPrincipalResolver extends Abstract
             return null;
         }
         return (String) principalList.get(0);
-    }
-
-    public boolean supports(final Credential credentials) {
-        return credentials.getClass().equals(RemoteAddressCredentials.class);
     }
 
     /**

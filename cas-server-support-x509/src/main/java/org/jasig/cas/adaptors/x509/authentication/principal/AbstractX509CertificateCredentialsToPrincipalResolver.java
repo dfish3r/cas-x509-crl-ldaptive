@@ -35,15 +35,11 @@ import org.jasig.cas.server.authentication.Credential;
 public abstract class AbstractX509CertificateCredentialsToPrincipalResolver extends AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver {
 
     protected AbstractX509CertificateCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
-        super(attributePrincipalFactory);
+        super(attributePrincipalFactory, X509CertificateCredentials.class);
     }
 
     protected String extractPrincipalId(final Credential credentials) {
         return resolvePrincipalInternal(((X509CertificateCredentials) credentials).getCertificate());
-    }
-
-    public boolean supports(final Credential credentials) {
-        return credentials != null && X509CertificateCredentials.class.isAssignableFrom(credentials.getClass());
     }
 
     protected abstract String resolvePrincipalInternal(

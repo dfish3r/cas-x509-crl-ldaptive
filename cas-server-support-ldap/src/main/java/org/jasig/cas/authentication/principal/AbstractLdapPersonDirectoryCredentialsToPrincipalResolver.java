@@ -70,8 +70,8 @@ public abstract class AbstractLdapPersonDirectoryCredentialsToPrincipalResolver 
     /** The amount of time to wait. */
     private int timeout = DEFAULT_TIMEOUT;
 
-    protected AbstractLdapPersonDirectoryCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
-        super(attributePrincipalFactory);
+    protected AbstractLdapPersonDirectoryCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory, final Class<?> clazz) {
+        super(attributePrincipalFactory, clazz);
     }
 
     protected final SearchControls getSearchControls() {
