@@ -30,12 +30,12 @@
                         <label for="username" class="fl-label"><spring:message code="screen.welcome.label.netid" /></label>
 						<c:if test="${not empty sessionScope.openIdLocalId}">
 						<strong>${sessionScope.openIdLocalId}</strong>
-						<input type="hidden" id="username" name="username" value="${sessionScope.openIdLocalId}" />
+						<input type="hidden" id="userName" name="userName" value="${sessionScope.openIdLocalId}" />
 						</c:if>
 
 						<c:if test="${empty sessionScope.openIdLocalId}">
 						<spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
-						<form:input cssClass="required" cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="false" htmlEscape="true" />
+						<form:input cssClass="required" cssErrorClass="error" id="userName" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="userName" autocomplete="false" htmlEscape="true" />
 						</c:if>
                     </div>
                     <div class="row fl-controls-left">

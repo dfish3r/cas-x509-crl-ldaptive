@@ -31,6 +31,9 @@
         p:flowExecutor-ref="flowExecutor"
         p:flowUrlHandler-ref="flowUrlHandler" />
 
+    <bean class="org.springframework.web.servlet.theme.FixedThemeResolver" id="themeResolver"
+            p:defaultThemeName="default"/>
+
     <bean id="flowUrlHandler" class="org.jasig.cas.server.util.CasDefaultFlowUrlHandler" />
 
     <webflow:flow-executor id="flowExecutor" flow-registry="flowRegistry">
@@ -58,7 +61,7 @@
 		p:order="0">
 		<property name="basenames">
 			<list>
-				<value>${cas.viewResolver.basename}</value>
+				<value>default_views</value>
 				<value>protocol_views</value>
 			</list>
 		</property>
