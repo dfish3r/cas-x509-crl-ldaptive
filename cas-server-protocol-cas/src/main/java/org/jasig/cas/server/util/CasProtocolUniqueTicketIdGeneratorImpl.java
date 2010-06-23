@@ -17,10 +17,13 @@
  * under the License.
  */
 
-package org.jasig.cas.util;
+package org.jasig.cas.server.util;
+
+import org.jasig.cas.util.DefaultLongNumericGenerator;
+import org.jasig.cas.util.DefaultRandomStringGenerator;
 
 /**
- * Default implementation of {@link UniqueTicketIdGenerator}. Implementation
+ * Default implementation of {@link org.jasig.cas.server.util.UniqueTicketIdGenerator}. Implementation
  * utilizes a DefaultLongNumericGeneraor and a DefaultRandomStringGenerator to
  * construct the ticket id.
  * <p>
@@ -31,8 +34,8 @@ package org.jasig.cas.util;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class DefaultUniqueTicketIdGenerator implements
-    UniqueTicketIdGenerator {
+public final class CasProtocolUniqueTicketIdGeneratorImpl implements
+        UniqueTicketIdGenerator {
 
     /** The numeric generator to generate the static part of the id. */
     private final NumericGenerator numericGenerator;
@@ -47,34 +50,34 @@ public final class DefaultUniqueTicketIdGenerator implements
     private final String suffix;
 
     /**
-     * Creates an instance of DefaultUniqueTicketIdGenerator with default values
-     * including a {@link DefaultLongNumericGenerator} with a starting value of
+     * Creates an instance of CasProtocolUniqueTicketIdGeneratorImpl with default values
+     * including a {@link org.jasig.cas.util.DefaultLongNumericGenerator} with a starting value of
      * 1.
      */
-    public DefaultUniqueTicketIdGenerator() {
+    public CasProtocolUniqueTicketIdGeneratorImpl() {
         this(null);
     }
 
     /**
-     * Creates an instance of DefaultUniqueTicketIdGenerator with a specified
+     * Creates an instance of CasProtocolUniqueTicketIdGeneratorImpl with a specified
      * maximum length for the random portion.
      * 
      * @param maxLength the maximum length of the random string used to generate
      * the id.
      */
-    public DefaultUniqueTicketIdGenerator(final int maxLength) {
+    public CasProtocolUniqueTicketIdGeneratorImpl(final int maxLength) {
         this(maxLength, null);
     }
 
     /**
-     * Creates an instance of DefaultUniqueTicketIdGenerator with default values
-     * including a {@link DefaultLongNumericGenerator} with a starting value of
+     * Creates an instance of CasProtocolUniqueTicketIdGeneratorImpl with default values
+     * including a {@link org.jasig.cas.util.DefaultLongNumericGenerator} with a starting value of
      * 1.
      * 
      * @param suffix the value to append at the end of the unique id to ensure
      * uniqueness across JVMs.
      */
-    public DefaultUniqueTicketIdGenerator(final String suffix) {
+    public CasProtocolUniqueTicketIdGeneratorImpl(final String suffix) {
         this.numericGenerator = new DefaultLongNumericGenerator(1);
         this.randomStringGenerator = new DefaultRandomStringGenerator();
 
@@ -86,7 +89,7 @@ public final class DefaultUniqueTicketIdGenerator implements
     }
 
     /**
-     * Creates an instance of DefaultUniqueTicketIdGenerator with a specified
+     * Creates an instance of CasProtocolUniqueTicketIdGeneratorImpl with a specified
      * maximum length for the random portion.
      * 
      * @param maxLength the maximum length of the random string used to generate
@@ -94,7 +97,7 @@ public final class DefaultUniqueTicketIdGenerator implements
      * @param suffix the value to append at the end of the unique id to ensure
      * uniqueness across JVMs.
      */
-    public DefaultUniqueTicketIdGenerator(final int maxLength,
+    public CasProtocolUniqueTicketIdGeneratorImpl(final int maxLength,
         final String suffix) {
         this.numericGenerator = new DefaultLongNumericGenerator(1);
         this.randomStringGenerator = new DefaultRandomStringGenerator(maxLength);

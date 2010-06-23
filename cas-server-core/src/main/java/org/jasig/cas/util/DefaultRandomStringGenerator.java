@@ -19,6 +19,8 @@
 
 package org.jasig.cas.util;
 
+import org.jasig.cas.server.util.RandomStringGenerator;
+
 import java.security.SecureRandom;
 
 /**
@@ -30,7 +32,7 @@ import java.security.SecureRandom;
  * @since 3.0
  */
 public final class DefaultRandomStringGenerator implements
-    RandomStringGenerator {
+        RandomStringGenerator {
 
     /** The array of printable characters to be used in our random string. */
     private static final char[] PRINTABLE_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345679"

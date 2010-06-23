@@ -19,6 +19,8 @@
 
 package org.jasig.cas.util;
 
+import org.jasig.cas.server.util.LongNumericGenerator;
+
 import java.util.concurrent.atomic.AtomicLong;
 
 /**

@@ -17,29 +17,32 @@
  * under the License.
  */
 
-package org.jasig.cas.server.authentication;
-
-import java.util.List;
+package org.jasig.cas.server.util;
 
 /**
- * Resolves the messages for a given credential.  These are not per principal because its more likely that a given
- * credential has warnings or messages versus a principal.  Though these should be able to still find them.
+ * Determines if two service identifiers match.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
- *
  */
-public interface MessageResolver {
+public interface ServiceIdentifierMatcher {
+
+    enum ServiceIdentifierMatcherType {EXACT, REGEX, ANT_PATTERN, CUSTOM}
 
     /**
-     * Resolves messages for a given credential.  This should only execute if the authentication was successful.
-     * <p>
-     * GeneralSecurityExceptions should be used to relay messages when authentication failed.
+     * Determines if two identifiers match, based on some algorithm.
      *
-     * @param credential the credentials.  Cannot be null.
-     * @param authenticationHandler the authentication handler.  Cannot be null.
-     * @return the messages.  CANNOT be NULL.  But can be empty.
+     * @param identifier1 the first identifier
+     * @param identifier2  the second identifier.
+     * @return true if they do, false otherwise.
      */
-    List<Message> resolveMessagesFor(Credential credential, AuthenticationHandler authenticationHandler);
+    boolean matches(String identifier1, String identifier2);
+
+    /**
+     * Returns the type of matching possible with this matcher.
+     *
+     * @return the type of matching.  CANNOT be NULL.
+     */
+    ServiceIdentifierMatcherType getSupportedServiceIdentifierMatcherType();
 }

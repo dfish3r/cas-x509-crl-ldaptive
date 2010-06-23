@@ -25,10 +25,9 @@ import java.util.Map;
 
 import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Service;
-import org.jasig.cas.util.DefaultUniqueTicketIdGenerator;
+import org.jasig.cas.server.util.UniqueTicketIdGenerator;
 import org.jasig.cas.util.HttpClient;
 import org.jasig.cas.util.SamlUtils;
-import org.jasig.cas.util.UniqueTicketIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,8 +44,9 @@ public abstract class AbstractWebApplicationService implements WebApplicationSer
     protected static final Logger LOG = LoggerFactory.getLogger(SamlService.class);
     
     private static final Map<String, Object> EMPTY_MAP = Collections.unmodifiableMap(new HashMap<String, Object>());
-    
-    private static final UniqueTicketIdGenerator GENERATOR = new DefaultUniqueTicketIdGenerator();
+
+    // TODO disabled
+    private static final UniqueTicketIdGenerator GENERATOR = null;
     
     /** The id of the service. */
     private final String id;

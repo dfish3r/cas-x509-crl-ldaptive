@@ -32,7 +32,7 @@
     </description>
        
 	<!-- ID Generators -->
-	<bean id="ticketGrantingTicketUniqueIdGenerator" class="org.jasig.cas.util.DefaultUniqueTicketIdGenerator">
+	<bean id="ticketGrantingTicketUniqueIdGenerator" class="org.jasig.cas.server.util.CasProtocolUniqueTicketIdGeneratorImpl">
 		<constructor-arg
 			index="0"
 			type="int"
@@ -41,7 +41,7 @@
 			index="1" value="${host.name}" />
 	</bean>
 
-	<bean id="serviceTicketUniqueIdGenerator" class="org.jasig.cas.util.DefaultUniqueTicketIdGenerator">
+	<bean id="serviceTicketUniqueIdGenerator" class="org.jasig.cas.server.util.CasProtocolUniqueTicketIdGeneratorImpl">
 		<constructor-arg
 			index="0"
 			type="int"
@@ -52,7 +52,7 @@
 	
 <bean
       id="proxy20TicketUniqueIdGenerator"
-      class="org.jasig.cas.util.DefaultUniqueTicketIdGenerator">
+      class="org.jasig.cas.server.util.CasProtocolUniqueTicketIdGeneratorImpl">
 		<constructor-arg
 			index="0"
 			type="int"

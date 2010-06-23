@@ -17,35 +17,42 @@
  * under the License.
  */
 
-package org.jasig.cas.server.authentication;
+package org.jasig.cas.server.session;
+
+import org.jasig.cas.server.authentication.Credential;
+
+import java.io.Writer;
 
 /**
- * Default, simple, mutable version of the {@link org.jasig.cas.server.authentication.UserNamePasswordCredential}
- * interface.  Suitable for things like Spring Binding.
+ * Default implementation of the {@link org.jasig.cas.server.session.AccessResponseRequest}.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public class DefaultUserNamePasswordCredential implements UserNamePasswordCredential {
+public class DefaultAccessResponseRequestImpl implements AccessResponseRequest {
 
-    private String userName;
+    private final Writer writer;
 
-    private String password;
+    private final String proxySessionId;
 
-    public final void setUserName(final String userName) {
-        this.userName = userName;
+    private final Credential credential;
+
+    public DefaultAccessResponseRequestImpl(final Writer writer, final String proxySessionId, final Credential credential) {
+        this.writer = writer;
+        this.proxySessionId = proxySessionId;
+        this.credential = credential;
     }
 
-    public final void setPassword(final String password) {
-        this.password = password;
+    public final Writer getWriter() {
+        return this.writer;
     }
 
-    public final String getUserName() {
-        return userName;
+    public final String getProxySessionId() {
+        return this.proxySessionId;
     }
 
-    public final String getPassword() {
-        return password;
+    public final Credential getProxiedCredential() {
+        return this.credential;
     }
 }

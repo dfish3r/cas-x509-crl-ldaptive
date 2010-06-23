@@ -17,23 +17,27 @@
  * under the License.
  */
 
-package org.jasig.cas.ticket.proxy.support;
+package org.jasig.cas.server.login;
 
-import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.ticket.proxy.ProxyHandler;
+import org.jasig.cas.server.CasProtocolVersion;
 
 /**
- * Dummy ProxyHandler that does nothing. Useful for Cas 1.0 compliance as CAS
- * 1.0 has no proxying capabilities.
- * 
+ * Extension to the TokenServiceAccessRequest that defines which version of the CAS protocol to validate against.
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.0
+ * @since 3.5
  */
-public final class Cas10ProxyHandler implements ProxyHandler {
+public final class CasTokenServiceAccessRequestImpl extends DefaultTokenServiceAccessRequestImpl {
 
-    public String handle(final Credential credentials, final String proxyGrantingTicketId) {
-        return null;
+    private final CasProtocolVersion casVersion;
+
+    public CasTokenServiceAccessRequestImpl(final CasProtocolVersion casVersion, final String token, final String serviceId, final boolean renew, final boolean gateway) {
+        super(null, null, renew, token, serviceId, gateway);
+        this.casVersion = casVersion;
     }
 
+    public CasProtocolVersion getCasVersion() {
+        return this.casVersion;
+    }
 }

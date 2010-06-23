@@ -22,13 +22,12 @@ package org.jasig.cas.adaptors.x509.web.flow;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-import org.jasig.cas.server.DefaultCentralAuthenticationServiceImpl;
 import org.jasig.cas.adaptors.x509.authentication.handler.support.X509CredentialsAuthenticationHandler;
 import org.jasig.cas.adaptors.x509.authentication.principal.AbstractX509CertificateTests;
 import org.jasig.cas.authentication.principal.SimpleWebApplicationServiceImpl;
-import org.jasig.cas.util.DefaultUniqueTicketIdGenerator;
-import org.jasig.cas.util.UniqueTicketIdGenerator;
+import org.jasig.cas.server.util.UniqueTicketIdGenerator;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
@@ -45,7 +44,11 @@ public class X509CertificateCredentialsNonInteractiveActionTests extends
         this.action = new X509CertificateCredentialsNonInteractiveAction();
 //        final DefaultCentralAuthenticationServiceImpl centralAuthenticationService = new DefaultCentralAuthenticationServiceImpl();
         final Map<String, UniqueTicketIdGenerator> idGenerators = new HashMap<String, UniqueTicketIdGenerator>();
-        idGenerators.put(SimpleWebApplicationServiceImpl.class.getName(), new DefaultUniqueTicketIdGenerator());
+        idGenerators.put(SimpleWebApplicationServiceImpl.class.getName(), new UniqueTicketIdGenerator() {
+            public String getNewTicketId(String prefix) {
+                return UUID.randomUUID().toString();
+            }
+        });
 
         final X509CredentialsAuthenticationHandler a = new X509CredentialsAuthenticationHandler();
         a.setTrustedIssuerDnPattern("JA-SIG");

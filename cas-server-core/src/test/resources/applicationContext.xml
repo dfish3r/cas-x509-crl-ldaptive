@@ -112,7 +112,7 @@
 		
 	<bean
 		id="uniqueTicketIdGenerator" 
-		class="org.jasig.cas.util.DefaultUniqueTicketIdGenerator" />
+		class="org.jasig.cas.server.util.CasProtocolUniqueTicketIdGeneratorImpl" />
 
 	<bean
 		id="usernamePasswordCredentialsToPrincipalResolver"

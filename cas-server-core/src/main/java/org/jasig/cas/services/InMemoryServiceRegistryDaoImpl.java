@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jasig.cas.util.DefaultLongNumericGenerator;
-import org.jasig.cas.util.LongNumericGenerator;
+import org.jasig.cas.server.util.LongNumericGenerator;
 
 import javax.validation.constraints.NotNull;
 

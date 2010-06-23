@@ -17,23 +17,19 @@
  * under the License.
  */
 
-package org.jasig.cas.server.session;
-
-import org.jasig.cas.server.login.ServiceAccessRequest;
-import org.jasig.cas.server.login.ServiceAccessRequestFactory;
-
-import java.util.Map;
+package org.jasig.cas.server;
 
 /**
- * Created by IntelliJ IDEA.
- * User: scottbattaglia
- * Date: Jun 15, 2010
- * Time: 11:48:07 PM
- * To change this template use File | Settings | File Templates.
+ * @author Scott Battaglia
+ * @version $Revision$ $Date$
+ * @since 3.5
  */
-public class TestServiceAccessRequestFactory implements ServiceAccessRequestFactory {
+public enum CasProtocolVersion {
 
-    public ServiceAccessRequest getServiceAccessRequest(String sessionId, String remoteIpAddress, Map parameters) {
-        return null;
+    UNDEFINED, CAS1, CAS2, CAS2_WITH_PROXYING;
+
+    public final String asString() {
+        final String casVersion = this.name();
+        return casVersion.contains("_") ? casVersion.substring(0, casVersion.indexOf("_")) : casVersion;
     }
 }

@@ -17,25 +17,31 @@
  * under the License.
  */
 
-package org.jasig.cas.util;
+package org.jasig.cas.server.util;
 
 /**
- * Interface that enables for pluggable unique ticket Ids strategies.
+ * Interface to return a random String.
  * 
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
- * <p>
- * This is a published and supported CAS Server 3 API.
- * </p>
  */
-public interface UniqueTicketIdGenerator {
+public interface RandomStringGenerator {
 
     /**
-     * Return a new unique ticket id beginning with the prefix.
-     * 
-     * @param prefix The prefix we want attached to the ticket.
-     * @return the unique ticket id
+     * @return the minimum length as an int guaranteed by this generator.
      */
-    String getNewTicketId(String prefix);
+    int getMinLength();
+
+    /**
+     * @return the maximum length as an int guaranteed by this generator.
+     */
+    int getMaxLength();
+
+    /**
+     * @return the new random string
+     */
+    String getNewString();
+    
+    byte[] getNewStringAsBytes();
 }

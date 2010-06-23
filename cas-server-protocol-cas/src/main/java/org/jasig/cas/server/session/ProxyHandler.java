@@ -17,29 +17,25 @@
  * under the License.
  */
 
-package org.jasig.cas.util;
+package org.jasig.cas.server.session;
 
-import junit.framework.TestCase;
+import org.jasig.cas.server.authentication.Credential;
 
 /**
+ * Handles the request to return the proxy granting ticket to the system.
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.0
+ * @since 3.5
  */
-public class DefaultUniqueTicketIdGeneratorTests extends TestCase {
+public interface ProxyHandler {
 
-    public void testUniqueGenerationOfTicketIds() {
-        DefaultUniqueTicketIdGenerator generator = new DefaultUniqueTicketIdGenerator(
-            10);
-
-        assertNotSame(generator.getNewTicketId("TEST"), generator
-            .getNewTicketId("TEST"));
-    }
-    
-    public void testSuffix() {
-        final String SUFFIX = "suffix";
-        DefaultUniqueTicketIdGenerator generator = new DefaultUniqueTicketIdGenerator(SUFFIX);
-        
-        assertTrue(generator.getNewTicketId("test").endsWith(SUFFIX));
-    }
+    /**
+     * Handles the actual transfer of the proxy information from the CAS server to the original system.
+     *
+     * @param proxySessionId the proxy session id
+     * @param proxyCredential the original credentials of the proxying system.
+     * @return a unique identifier
+     */
+    String handleProxyGrantingRequest(String proxySessionId, Credential proxyCredential);
 }

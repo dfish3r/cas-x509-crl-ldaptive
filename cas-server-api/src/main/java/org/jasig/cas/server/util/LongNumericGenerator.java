@@ -17,31 +17,21 @@
  * under the License.
  */
 
-package org.jasig.cas.util;
+package org.jasig.cas.server.util;
 
 /**
- * Interface to return a random String.
+ * Interface to guaranteed to return a long.
  * 
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public interface RandomStringGenerator {
+public interface LongNumericGenerator extends NumericGenerator {
 
     /**
-     * @return the minimum length as an int guaranteed by this generator.
+     * Get the next long in the sequence.
+     * 
+     * @return the next long in the sequence.
      */
-    int getMinLength();
-
-    /**
-     * @return the maximum length as an int guaranteed by this generator.
-     */
-    int getMaxLength();
-
-    /**
-     * @return the new random string
-     */
-    String getNewString();
-    
-    byte[] getNewStringAsBytes();
+    long getNextLong();
 }

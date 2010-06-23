@@ -17,21 +17,25 @@
  * under the License.
  */
 
-package org.jasig.cas.util;
+package org.jasig.cas.server.util;
+
+import junit.framework.TestCase;
 
 /**
- * Interface to guaranteed to return a long.
- * 
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public interface LongNumericGenerator extends NumericGenerator {
+public class CasProtocolUniqueTicketIdGeneratorImplTests extends TestCase {
 
-    /**
-     * Get the next long in the sequence.
-     * 
-     * @return the next long in the sequence.
-     */
-    long getNextLong();
+    public void testUniqueGenerationOfTicketIds() {
+        final UniqueTicketIdGenerator generator = new CasProtocolUniqueTicketIdGeneratorImpl(10);
+        assertNotSame(generator.getNewTicketId("TEST"), generator.getNewTicketId("TEST"));
+    }
+    
+    public void testSuffix() {
+        final String SUFFIX = "suffix";
+        final UniqueTicketIdGenerator generator = new CasProtocolUniqueTicketIdGeneratorImpl(SUFFIX);
+        assertTrue(generator.getNewTicketId("test").endsWith(SUFFIX));
+    }
 }

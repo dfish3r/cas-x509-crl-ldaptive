@@ -17,28 +17,25 @@
  * under the License.
  */
 
-package org.jasig.cas.ticket.proxy.support;
-
-import org.jasig.cas.TestUtils;
-import org.jasig.cas.ticket.proxy.ProxyHandler;
-import org.jasig.cas.ticket.proxy.support.Cas10ProxyHandler;
-import junit.framework.TestCase;
+package org.jasig.cas.server.util;
 
 /**
+ * Interface that enables for pluggable unique ticket Ids strategies.
+ * 
  * @author Scott Battaglia
- * @version $Revision$ Date$
+ * @version $Revision$ $Date$
  * @since 3.0
+ * <p>
+ * This is a published and supported CAS Server 3 API.
+ * </p>
  */
-public class Cas10ProxyHandlerTests extends TestCase {
+public interface UniqueTicketIdGenerator {
 
-    private ProxyHandler proxyHandler = new Cas10ProxyHandler();
-
-    public void testNoCredentialsOrProxy() {
-        assertNull(this.proxyHandler.handle(null, null));
-    }
-
-    public void testCredentialsAndProxy() {
-        assertNull(this.proxyHandler.handle(TestUtils
-            .getCredentialsWithSameUsernameAndPassword(), "test"));
-    }
+    /**
+     * Return a new unique ticket id beginning with the prefix.
+     * 
+     * @param prefix The prefix we want attached to the ticket.
+     * @return the unique ticket id
+     */
+    String getNewTicketId(String prefix);
 }

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.util;
+package org.jasig.cas.server.util;
 
 /**
  * Interface to return a new sequential number for each call.
