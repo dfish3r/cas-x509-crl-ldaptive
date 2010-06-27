@@ -21,6 +21,8 @@ package org.jasig.cas.server.login;
 
 import com.github.inspektr.common.web.ClientInfoHolder;
 import org.jasig.cas.server.util.WebUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.util.CookieGenerator;
 import org.springframework.webflow.execution.RequestContext;
 
@@ -44,13 +46,14 @@ import java.util.Map;
 public final class LoginRequestFactory {
 
     @NotNull
-	private CookieGenerator cookieGenerator;
+	private final CookieGenerator cookieGenerator;
 
     @NotNull
     @Size(min=1)
-    private List<ServiceAccessRequestFactory> serviceAccessRequestFactories;
+    private final List<ServiceAccessRequestFactory> serviceAccessRequestFactories;
 
-    public LoginRequestFactory(final CookieGenerator cookieGenerator, final List<ServiceAccessRequestFactory> serviceAccessRequestFactories) {
+    @Autowired(required=true)
+    public LoginRequestFactory(@Qualifier("tgt") final CookieGenerator cookieGenerator, final List<ServiceAccessRequestFactory> serviceAccessRequestFactories) {
         this.cookieGenerator = cookieGenerator;
         this.serviceAccessRequestFactories = serviceAccessRequestFactories;
     }

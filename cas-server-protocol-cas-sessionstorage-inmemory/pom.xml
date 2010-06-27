@@ -7,28 +7,18 @@
         <groupId>org.jasig.cas</groupId>
         <version>3.5-SNAPSHOT</version>
     </parent>
+    <name>Jasig CAS - CAS Protocol Implementation for In-Memory</name>
     <modelVersion>4.0.0</modelVersion>
-    <name>Jasig CAS - CAS Protocol</name>
 
-    <artifactId>cas-server-protocol-cas</artifactId>
+    <artifactId>cas-server-protocol-cas-sessionstorage-inmemory</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.jasig.cas</groupId>
-            <artifactId>cas-server-api</artifactId>
+            <artifactId>cas-server-protocol-cas</artifactId>
+            <type>jar</type>
             <scope>compile</scope>
             <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jasig.cas</groupId>
-            <artifactId>cas-server-core</artifactId>
-            <scope>compile</scope>
-            <version>${project.version}</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
-
-
 </project>

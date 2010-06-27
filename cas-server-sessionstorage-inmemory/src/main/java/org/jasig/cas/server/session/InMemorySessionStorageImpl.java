@@ -23,6 +23,7 @@ import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.login.LoginRequest;
 import org.jasig.cas.server.util.Cleanable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -39,6 +40,7 @@ public class InMemorySessionStorageImpl extends AbstractSessionStorage implement
 
     private Map<String,String> accessIdToSessionIdMapping = new ConcurrentHashMap<String,String>();
 
+    @Autowired(required=true)
     public InMemorySessionStorageImpl(final List<AccessFactory> accessFactories) {
         super(accessFactories);
     }

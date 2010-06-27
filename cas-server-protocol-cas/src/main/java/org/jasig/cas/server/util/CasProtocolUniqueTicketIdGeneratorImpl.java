@@ -34,8 +34,7 @@ import org.jasig.cas.util.DefaultRandomStringGenerator;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class CasProtocolUniqueTicketIdGeneratorImpl implements
-        UniqueTicketIdGenerator {
+public final class CasProtocolUniqueTicketIdGeneratorImpl implements UniqueTicketIdGenerator {
 
     /** The numeric generator to generate the static part of the id. */
     private final NumericGenerator numericGenerator;

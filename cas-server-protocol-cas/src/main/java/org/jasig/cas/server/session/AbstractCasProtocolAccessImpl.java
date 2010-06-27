@@ -27,6 +27,7 @@ import org.jasig.cas.server.util.ServiceIdentifierMatcher;
 import org.jasig.cas.server.util.UniqueTicketIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,10 +63,7 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
 
     public final synchronized void validate(final TokenServiceAccessRequest tokenServiceAccessRequest) {
         final ValidationStatus validationStatus = getValidationStatus();
-
-        if (!(tokenServiceAccessRequest instanceof CasTokenServiceAccessRequestImpl)) {
-            throw new IllegalArgumentException("Invalid token validation request.");
-        }
+        Assert.isInstanceOf(CasTokenServiceAccessRequestImpl.class, tokenServiceAccessRequest, "Invalid token validation request");
 
         final CasTokenServiceAccessRequestImpl casTokenServiceAccessRequest = (CasTokenServiceAccessRequestImpl) tokenServiceAccessRequest;
         setCasProtocolVersion(casTokenServiceAccessRequest.getCasVersion());

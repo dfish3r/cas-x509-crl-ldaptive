@@ -22,15 +22,17 @@ package org.jasig.cas.server.session;
 import org.jasig.cas.server.login.ServiceAccessRequest;
 
 /**
- * Created by IntelliJ IDEA.
- * User: scottbattaglia
- * Date: Jun 15, 2010
- * Time: 10:38:34 PM
- * To change this template use File | Settings | File Templates.
+ * Simple {@link org.jasig.cas.server.session.AccessFactory} for instaniating instances of the
+ * {@link org.jasig.cas.server.session.InMemoryCasProtocolAccessImpl}
+ *
+ * @author Scott Battaglia
+ * @version $Revision$ $Date$
+ * @since 3.5
+ *
  */
-public class TestAccessFactory implements AccessFactory {
+public final class InMemoryCasProtocolAccessImplAccessFactory extends AbstractCasProtocolAccessImplFactory {
 
-    public Access getAccess(Session session, ServiceAccessRequest serviceAccessRequest) {
-        return null;
+    public Access getAccess(final Session session, final ServiceAccessRequest serviceAccessRequest) {
+        return new InMemoryCasProtocolAccessImpl(session,  serviceAccessRequest, getServiceIdentifierMatcher(), getProxyHandler());
     }
 }
