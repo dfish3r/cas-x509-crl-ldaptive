@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public interface AccessResponseResult {
 
-    enum Operation {REDIRECT, POST, NONE}
+    enum Operation {REDIRECT, POST, VIEW, NONE}
 
     /**
      * The operation that the higher level should perform based on this result.
@@ -52,4 +52,11 @@ public interface AccessResponseResult {
      * @return the parameters map.  CAN be empty but NOT null.
      */
     Map<String, List<String>> getParameters();
+
+    /**
+     * The name of the view to use when constructing this response.
+     *
+     * @return the view.  CANNOT be NULL if the Operation is VIEW.
+     */
+    String getViewName();
 }

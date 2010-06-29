@@ -47,24 +47,20 @@ public class JaasAuthenticationHandlerTests extends TestCase {
     public void testWithAlternativeRealm() throws Exception {
 
         this.handler.setRealm("TEST");
-        assertFalse(this.handler.authenticate(TestUtils
-            .getCredentialsWithDifferentUsernameAndPassword("test", "test1")));
+        assertFalse(this.handler.authenticate(TestUtils.getCredentialsWithDifferentUsernameAndPassword("test", "test1")));
     }
 
     public void testWithAlternativeRealmAndValidCredentials() throws Exception {
         this.handler.setRealm("TEST");
-        assertTrue(this.handler.authenticate(TestUtils
-            .getCredentialsWithDifferentUsernameAndPassword("test", "test")));
+        assertTrue(this.handler.authenticate(TestUtils.getCredentialsWithDifferentUsernameAndPassword("test", "test")));
     }
 
     public void testWithValidCredenials() throws Exception {
-        assertTrue(this.handler.authenticate(TestUtils
-            .getCredentialsWithSameUsernameAndPassword()));
+        final boolean value = this.handler.authenticate(TestUtils.getCredentialsWithSameUsernameAndPassword());
+        assertTrue(value);
     }
 
     public void testWithInvalidCredentials() throws Exception {
-        assertFalse(this.handler.authenticate(TestUtils
-            .getCredentialsWithDifferentUsernameAndPassword("test", "test1")));
+        assertFalse(this.handler.authenticate(TestUtils.getCredentialsWithDifferentUsernameAndPassword("test", "test1")));
     }
-
 }

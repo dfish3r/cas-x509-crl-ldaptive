@@ -21,6 +21,8 @@ package org.jasig.cas.server.authentication;
 
 import com.github.inspektr.audit.annotation.Audit;
 import org.perf4j.aop.Profiled;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.security.GeneralSecurityException;
@@ -32,6 +34,8 @@ import java.util.*;
  * @since 3.5
  */
 public abstract class AbstractAuthenticationManager implements AuthenticationManager {
+
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @NotNull
     private final AuthenticationFactory authenticationFactory;

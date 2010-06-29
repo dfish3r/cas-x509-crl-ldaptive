@@ -50,7 +50,11 @@ public final class DirectMappingAuthenticationManagerImpl extends AbstractAuthen
     protected void obtainAuthenticationsAndPrincipals(final AuthenticationRequest authenticationRequest, final Collection<Authentication> authentications, final Collection<AttributePrincipal> principals, final Collection<GeneralSecurityException> exceptions, final Collection<Message> messages) {
         for (final Credential credential : authenticationRequest.getCredentials()) {
             final DirectAuthenticationHandlerMappingHolder holder = this.credentialsMapping.get(credential.getClass());
-            Assert.notNull(holder, "missing mapping");
+
+            if (holder == null) {
+                log.warn(String.format("No handler mapping found for %s", credential.getClass().getSimpleName()));
+                continue;
+            }
 
             final AuthenticationHandler handler = holder.getAuthenticationHandler();
 
@@ -80,6 +84,11 @@ public final class DirectMappingAuthenticationManagerImpl extends AbstractAuthen
 
         public DirectAuthenticationHandlerMappingHolder() {
             // nothing to do
+        }
+
+        public DirectAuthenticationHandlerMappingHolder(final AuthenticationHandler authenticationHandler, final CredentialToPrincipalResolver credentialToPrincipalResolver) {
+            this.authenticationHandler = authenticationHandler;
+            this.credentialsToPrincipalResolver = credentialToPrincipalResolver;
         }
 
         public final AuthenticationHandler getAuthenticationHandler() {

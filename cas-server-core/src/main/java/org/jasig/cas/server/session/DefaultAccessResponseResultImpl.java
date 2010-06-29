@@ -33,7 +33,7 @@ import java.io.UnsupportedEncodingException;
  */
 public final class DefaultAccessResponseResultImpl implements AccessResponseResult {
 
-    public static final AccessResponseResult NONE = new DefaultAccessResponseResultImpl(AccessResponseResult.Operation.NONE, new HashMap<String, List<String>>(), null);
+    public static final AccessResponseResult NONE = new DefaultAccessResponseResultImpl(AccessResponseResult.Operation.NONE, new HashMap<String, List<String>>(), null, null);
 
     private final Operation operation;
 
@@ -41,10 +41,13 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
 
     private final String url;
 
-    public DefaultAccessResponseResultImpl(final AccessResponseResult.Operation operation, final Map<String, List<String>> params, final String url) {
+    private final String viewName;
+
+    public DefaultAccessResponseResultImpl(final AccessResponseResult.Operation operation, final Map<String, List<String>> params, final String url, final String viewName) {
         this.operation = operation;
         this.url =  url;
         this.parameters = Collections.unmodifiableMap(params);
+        this.viewName = viewName;
     }
 
     public Operation getOperationToPerform() {
@@ -83,6 +86,10 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
 
     public Map<String, List<String>> getParameters() {
         return this.parameters;
+    }
+
+    public String getViewName() {
+        return this.viewName;
     }
 
     private String parseEntriesForItem(final String key, final List<String> values) {

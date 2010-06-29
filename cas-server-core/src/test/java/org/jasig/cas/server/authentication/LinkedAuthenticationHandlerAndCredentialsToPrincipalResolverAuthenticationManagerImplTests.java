@@ -19,25 +19,23 @@
 
 package org.jasig.cas.server.authentication;
 
-
-import org.jasig.cas.TestUtils;
-
+import java.util.HashMap;
 import java.util.Map;
-import static org.mockito.Mockito.*;
 
 /**
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class DirectMappingAuthenticationManagerImplTests extends AbstractAuthenticationManagerTests {
+public final class LinkedAuthenticationHandlerAndCredentialsToPrincipalResolverAuthenticationManagerImplTests extends AbstractAuthenticationManagerTests {
 
     @Override
     protected AuthenticationManager getAuthenticationManager() {
-        final Map<Class <? extends Credential>,DirectMappingAuthenticationManagerImpl.DirectAuthenticationHandlerMappingHolder> holders = mock(Map.class);
-        when(holders.get(TestUtils.getCredentialsWithSameUsernameAndPassword().getClass())).thenReturn(new DirectMappingAuthenticationManagerImpl.DirectAuthenticationHandlerMappingHolder(getUsernamePasswordAuthenticationHandler(), getUsernamePasswordCredentialsToPrincipalResolver()));
-        when(holders.get(UrlCredential.class)).thenReturn(new DirectMappingAuthenticationManagerImpl.DirectAuthenticationHandlerMappingHolder(getUrlCredentialAuthenticationHandler(), null));
 
-        return new DirectMappingAuthenticationManagerImpl(holders, getAuthenticationFactory());
+        final Map<AuthenticationHandler, CredentialToPrincipalResolver> resolvers = new HashMap<AuthenticationHandler, CredentialToPrincipalResolver>();
+        resolvers.put(getUsernamePasswordAuthenticationHandler(), getUsernamePasswordCredentialsToPrincipalResolver());
+        resolvers.put(getUrlCredentialAuthenticationHandler(), null);
+
+        return new LinkedAuthenticationHandlerAndCredentialsToPrincipalResolverAuthenticationManagerImpl(resolvers, getAuthenticationFactory());
     }
 }

@@ -19,25 +19,20 @@
 
 package org.jasig.cas.server.authentication;
 
-
-import org.jasig.cas.TestUtils;
-
-import java.util.Map;
-import static org.mockito.Mockito.*;
+import java.util.Arrays;
 
 /**
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class DirectMappingAuthenticationManagerImplTests extends AbstractAuthenticationManagerTests {
+public final class DefaultAuthenticationManagerImplTests extends AbstractAuthenticationManagerTests {
 
-    @Override
+     @Override
     protected AuthenticationManager getAuthenticationManager() {
-        final Map<Class <? extends Credential>,DirectMappingAuthenticationManagerImpl.DirectAuthenticationHandlerMappingHolder> holders = mock(Map.class);
-        when(holders.get(TestUtils.getCredentialsWithSameUsernameAndPassword().getClass())).thenReturn(new DirectMappingAuthenticationManagerImpl.DirectAuthenticationHandlerMappingHolder(getUsernamePasswordAuthenticationHandler(), getUsernamePasswordCredentialsToPrincipalResolver()));
-        when(holders.get(UrlCredential.class)).thenReturn(new DirectMappingAuthenticationManagerImpl.DirectAuthenticationHandlerMappingHolder(getUrlCredentialAuthenticationHandler(), null));
-
-        return new DirectMappingAuthenticationManagerImpl(holders, getAuthenticationFactory());
+        return new DefaultAuthenticationManagerImpl(
+                Arrays.asList(getUrlCredentialAuthenticationHandler(), getUsernamePasswordAuthenticationHandler()),
+                Arrays.asList(getUsernamePasswordCredentialsToPrincipalResolver()),
+                getAuthenticationFactory());
     }
 }
