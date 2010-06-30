@@ -19,12 +19,16 @@
 
 package org.jasig.cas.web.view;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.Collections;
 
-import org.jasig.cas.web.view.Cas10ResponseViewTests.MockWriterHttpMockHttpServletResponse;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import junit.framework.TestCase;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * 
@@ -49,6 +53,53 @@ public class Saml10FailureResponseViewTests extends TestCase {
         final String responseText = response.getWrittenValue();
         assertTrue(responseText.contains("Status"));
         assertTrue(responseText.contains(description));
+    }
+
+    protected static class MockWriterHttpMockHttpServletResponse extends
+            MockHttpServletResponse {
+
+        private StringBuilder builder = new StringBuilder();
+
+        public PrintWriter getWriter() {
+            try {
+                return new MockPrintWriter(new ByteArrayOutputStream(), this.builder);
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+        }
+
+        public String getWrittenValue() {
+            return this.builder.toString();
+        }
+    }
+
+    protected static class MockPrintWriter extends PrintWriter {
+
+        final StringBuilder builder;
+
+        public MockPrintWriter(OutputStream out, boolean autoFlush, final StringBuilder builder) {
+            super(out, autoFlush);
+            this.builder = builder;
+        }
+
+        public MockPrintWriter(OutputStream out, final StringBuilder builder) {
+            super(out);
+            this.builder = builder;
+        }
+
+        public MockPrintWriter(Writer out, boolean autoFlush, final StringBuilder builder) {
+            super(out, autoFlush);
+            this.builder = builder;
+        }
+
+        public MockPrintWriter(Writer out, final StringBuilder builder) {
+            super(out);
+            this.builder = builder;
+        }
+
+        public void print(String s) {
+            this.builder.append(s);
+        }
     }
     
 }

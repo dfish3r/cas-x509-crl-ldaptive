@@ -27,7 +27,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
+import org.jasig.cas.authentication.principal.Response;
 import org.jasig.cas.authentication.principal.WebApplicationService;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.Service;
 import org.opensaml.SAMLException;
 import org.opensaml.SAMLResponse;
 
@@ -51,8 +54,32 @@ public class Saml10FailureResponseView extends AbstractCasView {
     protected void renderMergedOutputModel(final Map model,
         final HttpServletRequest request, final HttpServletResponse response)
         throws Exception {
-        final WebApplicationService service = null;
-        // this.samlArgumentExtractor.extractService(request);
+        final WebApplicationService service = new WebApplicationService() {
+            public Response getResponse(String ticketId) {
+                return null;
+            }
+
+            public String getArtifactId() {
+                return "foo";
+            }
+
+            public String getId() {
+                return "foo";
+            }
+
+            public void setPrincipal(AttributePrincipal principal) {
+
+            }
+
+            public boolean logOutOfService(String sessionIdentifier) {
+                return true;
+            }
+
+            public boolean matches(Service service) {
+                return true;
+            }
+        };
+
         final String errorMessage = (String) model.get("description");
 
         final SAMLResponse samlResponse = new SAMLResponse(service.getArtifactId(), service.getId(), new ArrayList<Object>(), new SAMLException(errorMessage));

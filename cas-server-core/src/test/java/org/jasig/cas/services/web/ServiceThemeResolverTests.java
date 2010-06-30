@@ -21,6 +21,10 @@ package org.jasig.cas.services.web;
 
 import java.util.Arrays;
 
+import org.jasig.cas.authentication.principal.Response;
+import org.jasig.cas.authentication.principal.WebApplicationService;
+import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.services.DefaultServicesManagerImpl;
 import org.jasig.cas.services.InMemoryServiceRegistryDaoImpl;
 import org.jasig.cas.services.RegisteredServiceImpl;
@@ -29,6 +33,8 @@ import org.jasig.cas.web.support.ArgumentExtractor;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import junit.framework.TestCase;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 
@@ -42,14 +48,42 @@ public class ServiceThemeResolverTests extends TestCase {
     private ServiceThemeResolver serviceThemeResolver;
     
     private ServicesManager servicesManager;
-    /*
+
     protected void setUp() throws Exception {
         this.servicesManager = new DefaultServicesManagerImpl(new InMemoryServiceRegistryDaoImpl());
         
         this.serviceThemeResolver = new ServiceThemeResolver();
         this.serviceThemeResolver.setDefaultThemeName("test");
         this.serviceThemeResolver.setServicesManager(this.servicesManager);
-        this.serviceThemeResolver.setArgumentExtractors(Arrays.asList(new ArgumentExtractor[] {new CasArgumentExtractor()}));
+        this.serviceThemeResolver.setArgumentExtractors(Arrays.asList((ArgumentExtractor) new ArgumentExtractor() {
+            public WebApplicationService extractService(final HttpServletRequest request) {
+                return new WebApplicationService() {
+                    public Response getResponse(String ticketId) {
+                        return null;
+                    }
+
+                    public String getArtifactId() {
+                        return null;
+                    }
+
+                    public String getId() {
+                        return "myServiceId";
+                    }
+
+                    public void setPrincipal(AttributePrincipal principal) {
+
+                    }
+
+                    public boolean logOutOfService(String sessionIdentifier) {
+                        return false;
+                    }
+
+                    public boolean matches(Service service) {
+                        return false;
+                    }
+                };
+            }
+        }));
     }
     
     public void testGetServiceTheme() {
@@ -76,7 +110,7 @@ public class ServiceThemeResolverTests extends TestCase {
         final MockHttpServletRequest request = new MockHttpServletRequest();
         request.setParameter("service", "myServiceId");
         assertEquals("test", this.serviceThemeResolver.resolveThemeName(request));
-    }       */
+    }
     
     
 

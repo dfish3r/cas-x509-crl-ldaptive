@@ -129,7 +129,10 @@ public final class TestUtils {
             }
 
             public Map<String, List<Object>> getAttributes() {
-                return Collections.emptyMap();
+                final Map<String, List<Object>> values = new HashMap<String, List<Object>>();
+                values.put("testAttribute", Arrays.asList((Object) "testValue"));
+                values.put("testAttributeCollection", Arrays.asList((Object) "tac1", "tac2"));
+                return values;
             }
 
             public String getName() {
@@ -159,6 +162,15 @@ public final class TestUtils {
             public boolean matches(Service service) {
                 return name.equals(service.getId());
             }
+
+            public boolean equals(final Object o) {
+                if (o == null || !(o instanceof Service)) {
+                    return false;
+                }
+
+                final Service s = (Service) o;
+                return s.getId().equals(this.getId()); 
+            }
         };
     }
 
@@ -182,7 +194,7 @@ public final class TestUtils {
             }
 
             public String getAuthenticationMethod() {
-                return "foo";
+                return "urn:ietf:rfc:2246";
             }
         };
     }
@@ -212,7 +224,7 @@ public final class TestUtils {
             }
 
             public String getAuthenticationMethod() {
-                return "foo";
+                return "urn:ietf:rfc:2246";
             }
         };
     }
@@ -244,7 +256,7 @@ public final class TestUtils {
             }
 
             public Service getService() {
-                return null;
+                return TestUtils.getService();
             }
         };
     }

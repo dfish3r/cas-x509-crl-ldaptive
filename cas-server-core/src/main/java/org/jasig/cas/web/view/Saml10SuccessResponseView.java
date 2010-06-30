@@ -84,7 +84,7 @@ public class Saml10SuccessResponseView extends AbstractCasView {
             final Date currentDate = new Date();
             final String authenticationMethod = authentication.getAuthenticationMethod();
             final Service service = assertion.getService();
-            final SAMLResponse samlResponse = new SAMLResponse(null, service
+            final SAMLResponse samlResponse = new SAMLResponse("foo", service
                 .getId(), new ArrayList<Object>(), null);
 
             samlResponse.setIssueInstant(currentDate);
