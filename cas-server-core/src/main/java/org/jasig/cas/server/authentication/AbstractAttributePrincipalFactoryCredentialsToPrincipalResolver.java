@@ -56,7 +56,7 @@ public abstract class AbstractAttributePrincipalFactoryCredentialsToPrincipalRes
      * from {@link AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver#clazz}, otherwise returns false.
      */
     public boolean supports(final Credential credentials) {
-        return credentials != null && clazz.isAssignableFrom(credentials.getClass());
+        return credentials != null && this.clazz.isAssignableFrom(credentials.getClass());
     }
 
     public final AttributePrincipal resolve(final Credential credentials) {

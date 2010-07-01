@@ -84,19 +84,13 @@ public class JCSIFSpnegoAuthenticationHandlerTests extends TestCase {
         String myKerberosUser = "Username@DOMAIN.COM";
 
         this.authenticationHandler.setPrincipalWithDomainName(true);
-        assertEquals(TestUtils.getPrincipal(myNtlmUser), this.authenticationHandler
-                .getSimplePrincipal(myNtlmUser, true));
-        assertEquals(TestUtils.getPrincipal(myNtlmUserWithNoDomain), this.authenticationHandler
-                .getSimplePrincipal(myNtlmUserWithNoDomain, false));
-        assertEquals(TestUtils.getPrincipal(myKerberosUser), this.authenticationHandler
-                .getSimplePrincipal(myKerberosUser, false));
+        assertEquals(TestUtils.getPrincipal(myNtlmUser).getName(), this.authenticationHandler.getSimplePrincipal(myNtlmUser, true).getName());
+        assertEquals(TestUtils.getPrincipal(myNtlmUserWithNoDomain).getName(), this.authenticationHandler.getSimplePrincipal(myNtlmUserWithNoDomain, false).getName());
+        assertEquals(TestUtils.getPrincipal(myKerberosUser).getName(), this.authenticationHandler.getSimplePrincipal(myKerberosUser, false).getName());
 
         this.authenticationHandler.setPrincipalWithDomainName(false);
-        assertEquals(TestUtils.getPrincipal("Username"), this.authenticationHandler
-                .getSimplePrincipal(myNtlmUser, true));
-        assertEquals(TestUtils.getPrincipal("Username"), this.authenticationHandler
-                .getSimplePrincipal(myNtlmUserWithNoDomain, true));
-        assertEquals(TestUtils.getPrincipal("Username"), this.authenticationHandler
-                .getSimplePrincipal(myKerberosUser, false));
+        assertEquals(TestUtils.getPrincipal("Username").getName(), this.authenticationHandler.getSimplePrincipal(myNtlmUser, true).getName());
+        assertEquals(TestUtils.getPrincipal("Username").getName(), this.authenticationHandler.getSimplePrincipal(myNtlmUserWithNoDomain, true).getName());
+        assertEquals(TestUtils.getPrincipal("Username").getName(), this.authenticationHandler.getSimplePrincipal(myKerberosUser, false).getName());
     }
 }

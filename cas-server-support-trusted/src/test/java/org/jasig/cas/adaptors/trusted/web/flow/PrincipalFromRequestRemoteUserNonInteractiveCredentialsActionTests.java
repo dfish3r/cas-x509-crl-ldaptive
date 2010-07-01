@@ -19,7 +19,7 @@
 
 package org.jasig.cas.adaptors.trusted.web.flow;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * 
@@ -28,10 +28,15 @@ import junit.framework.TestCase;
  * @since 3.0.5
  *
  */
-public class PrincipalFromRequestRemoteUserNonInteractiveCredentialsActionTests
-    extends TestCase {
+public class PrincipalFromRequestRemoteUserNonInteractiveCredentialsActionTests {
 
     private PrincipalFromRequestRemoteUserNonInteractiveCredentialsAction action;
+
+    @Test
+    public void doNothing() {
+        return;
+    }
+
 
         /*    
     protected void setUp() throws Exception {

@@ -40,7 +40,7 @@
     
   <bean id="contextSource"
     class="org.springframework.ldap.core.support.LdapContextSource"
-    p:url="ldap://ldap1.rutgers.edu"
+    p:url="ldap://ldap.rutgers.edu"
     p:userDn=""
     p:password="">
     <property name="baseEnvironmentProperties">
@@ -52,7 +52,7 @@
       
   <bean id="saslMd5ContextSource"
     class="org.springframework.ldap.core.support.LdapContextSource"
-    p:url="ldap://ldap1.rutgers.edu"
+    p:url="ldap://ldap.rutgers.edu"
     p:userDn=""
     p:password="">
     <property name="authenticationStrategy">
@@ -108,9 +108,14 @@
     p:principalAttributeName="uid"
     p:searchBase="ou=people,dc=rutgers,dc=edu"
     p:contextSource-ref="contextSource">
+    <constructor-arg index="0">
+      <bean class="org.jasig.cas.server.authentication.MockAttributePrincipalFactoryImpl" />
+    </constructor-arg>
     <property name="credentialsToPrincipalResolver">
-      <bean
-        class="org.jasig.cas.server.authentication.UsernamePasswordCredentialsToPrincipalResolver">
+      <bean class="org.jasig.cas.server.authentication.UsernamePasswordCredentialsToPrincipalResolver">
+          <constructor-arg index="0">
+              <bean class="org.jasig.cas.server.authentication.MockAttributePrincipalFactoryImpl" />
+          </constructor-arg>
       </bean>
     </property>
   </bean>

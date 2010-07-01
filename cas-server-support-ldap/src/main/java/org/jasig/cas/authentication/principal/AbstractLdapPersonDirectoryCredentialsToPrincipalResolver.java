@@ -37,8 +37,7 @@ import org.springframework.ldap.core.support.LdapContextSource;
  * @since 3.2.1
  *
  */
-public abstract class AbstractLdapPersonDirectoryCredentialsToPrincipalResolver extends
-        AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver {
+public abstract class AbstractLdapPersonDirectoryCredentialsToPrincipalResolver extends AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver {
 
     /** The default maximum number of results to return. */
     private static final int DEFAULT_MAX_NUMBER_OF_RESULTS = 2;

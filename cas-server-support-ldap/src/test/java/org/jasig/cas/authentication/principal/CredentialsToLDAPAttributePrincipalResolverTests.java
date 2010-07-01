@@ -42,20 +42,21 @@ public class CredentialsToLDAPAttributePrincipalResolverTests extends AbstractJU
 
     @Autowired
     protected ResolverTestConfig resolverTestConfig;
-    
-    // XXX TEMPORARILY DISABLED TEST SO WE CAN BUILD
+
+    // TODO disabled due to cert errors
     /*
-    public void testRuIdFound() {
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials();
-        credentials.setUsername(this.resolverTestConfig.getExistsCredential());
+    @Test
+    public void ruIdFound() {
+        final DefaultUserNamePasswordCredential credentials = new DefaultUserNamePasswordCredential();
+        credentials.setUserName(this.resolverTestConfig.getExistsCredential());
         
         assertTrue(this.ldapResolver.supports(credentials));
         
-        final Principal p = this.ldapResolver.resolvePrincipal(credentials);
+        final AttributePrincipal p = this.ldapResolver.resolve(credentials);
         
         assertNotNull(p);
-        assertEquals(this.resolverTestConfig.getExistsPrincipal(), p.getId());
-    }*/
+        assertEquals(this.resolverTestConfig.getExistsPrincipal(), p.getName());
+    } */
 
     @Test
     public void testRuIdNotFound() {

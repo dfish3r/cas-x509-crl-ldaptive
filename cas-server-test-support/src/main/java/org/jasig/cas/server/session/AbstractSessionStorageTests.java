@@ -53,7 +53,9 @@ public abstract class AbstractSessionStorageTests extends TestCase {
 
     protected final AuthenticationResponse getAuthenticationResponse(final String principal) {
         final AuthenticationResponse response = mock(AuthenticationResponse.class);
-        when(response.getAuthentications()).thenReturn(new HashSet<Authentication>(Arrays.asList(getConstructedAuthentication())));
+        final HashSet<Authentication> authentications = new HashSet<Authentication>();
+        authentications.addAll(Arrays.asList(getConstructedAuthentication()));
+        when(response.getAuthentications()).thenReturn(authentications);
         when(response.getPrincipal()).thenReturn(TestUtils.getPrincipal(principal));
         when(response.getGeneralSecurityExceptions()).thenReturn(Collections.<GeneralSecurityException>emptyList());
         when(response.getAuthenticationMessages()).thenReturn(Collections.<Message>emptyList());

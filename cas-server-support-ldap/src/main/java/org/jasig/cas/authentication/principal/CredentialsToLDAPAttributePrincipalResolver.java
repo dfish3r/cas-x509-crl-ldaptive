@@ -19,10 +19,7 @@
 
 package org.jasig.cas.authentication.principal;
 
-import org.jasig.cas.server.authentication.AttributePrincipal;
-import org.jasig.cas.server.authentication.AttributePrincipalFactory;
-import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.server.authentication.CredentialToPrincipalResolver;
+import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.util.LdapUtils;
 import org.springframework.ldap.core.AttributesMapper;
 
@@ -47,6 +44,10 @@ public final class CredentialsToLDAPAttributePrincipalResolver extends AbstractL
      */
     @NotNull
     private CredentialToPrincipalResolver credentialsToPrincipalResolver;
+
+    public CredentialsToLDAPAttributePrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
+        super(attributePrincipalFactory, UserNamePasswordCredential.class);
+    }
 
     public CredentialsToLDAPAttributePrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory, final Class<?> clazz) {
         super(attributePrincipalFactory, clazz);
@@ -78,8 +79,7 @@ public final class CredentialsToLDAPAttributePrincipalResolver extends AbstractL
     }
 
     private String resolveFromLDAP(final String lookupAttributeValue) {
-        final String searchFilter = LdapUtils.getFilterWithValues(getFilter(),
-            lookupAttributeValue);
+        final String searchFilter = LdapUtils.getFilterWithValues(getFilter(), lookupAttributeValue);
 
         if (log.isDebugEnabled()) {
             log.debug("LDAP search with filter \"" + searchFilter + "\"");

@@ -35,16 +35,13 @@ import org.springframework.webflow.execution.RequestContext;
  * @version $Revision$ $Date$
  * @since 3.0.4
  */
-public final class X509CertificateCredentialsNonInteractiveAction extends
-    AbstractNonInteractiveCredentialsAction {
+public final class X509CertificateCredentialsNonInteractiveAction extends AbstractNonInteractiveCredentialsAction {
 
     private static final String CERTIFICATE_REQUEST_ATTRIBUTE = "javax.servlet.request.X509Certificate";
 
     protected Credential constructCredentialsFromRequest(
         final RequestContext context) {
-        final X509Certificate[] certificates = (X509Certificate[]) context
-            .getExternalContext().getRequestMap().get(
-                CERTIFICATE_REQUEST_ATTRIBUTE);
+        final X509Certificate[] certificates = (X509Certificate[]) context.getExternalContext().getRequestMap().get(CERTIFICATE_REQUEST_ATTRIBUTE);
 
         if (certificates == null || certificates.length == 0) {
             if (logger.isDebugEnabled()) {
