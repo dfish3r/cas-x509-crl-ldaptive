@@ -52,11 +52,13 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
 
     private final ProxyHandler proxyHandler;
 
+    private final ExpirationPolicy expirationPolicy;
+
     private CasProtocolVersion casVersion;
 
     private ValidationStatus validationStatus = ValidationStatus.NOT_VALIDATED;
 
-    public InMemoryCasProtocolAccessImpl(final Session session, final ServiceAccessRequest request, final ServiceIdentifierMatcher serviceIdentifierMatcher, final ProxyHandler proxyHandler) {
+    public InMemoryCasProtocolAccessImpl(final Session session, final ServiceAccessRequest request, final ServiceIdentifierMatcher serviceIdentifierMatcher, final ProxyHandler proxyHandler, final ExpirationPolicy expirationPolicy) {
         this.parentSession = session;
         this.renewed = request.isForceAuthentication() || session.getAccesses().size() == 1;
         this.resourceIdentifier = request.getServiceId();
@@ -64,7 +66,7 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
         this.serviceIdentifierMatcher = serviceIdentifierMatcher;
         this.post = (request instanceof CasServiceAccessRequestImpl) && ((CasServiceAccessRequestImpl) request).isPostRequest();
         this.proxyHandler = proxyHandler;
-
+        this.expirationPolicy = expirationPolicy;
     }
 
     public final String getId() {
@@ -122,5 +124,10 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
 
     protected ProxyHandler getProxyHandler() {
         return this.proxyHandler;
+    }
+
+    @Override
+    protected ExpirationPolicy getExpirationPolicy() {
+        return this.expirationPolicy;
     }
 }

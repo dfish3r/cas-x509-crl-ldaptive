@@ -40,6 +40,9 @@ public abstract class AbstractCasProtocolAccessImplFactory implements AccessFact
     @NotNull
     private ProxyHandler proxyHandler = new DefaultProxyHandlerImpl();
 
+    @NotNull
+    private ExpirationPolicy expirationPolicy = new MultiUseOrTimeToLiveExpirationPolicy(1, 10000);
+
     public final void setServiceIdentifierMatcher(final ServiceIdentifierMatcher serviceIdentifierMatcher) {
         this.serviceIdentifierMatcher = serviceIdentifierMatcher;
     }
@@ -54,5 +57,13 @@ public abstract class AbstractCasProtocolAccessImplFactory implements AccessFact
 
     protected final ProxyHandler getProxyHandler() {
         return proxyHandler;
+    }
+
+    protected final ExpirationPolicy getExpirationPolicy() {
+        return this.expirationPolicy;
+    }
+
+    public final void setExpirationPolicy(final ExpirationPolicy expirationPolicy) {
+        this.expirationPolicy = expirationPolicy;
     }
 }

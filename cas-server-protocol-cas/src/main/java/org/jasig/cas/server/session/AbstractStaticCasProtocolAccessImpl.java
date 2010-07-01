@@ -35,6 +35,8 @@ public abstract class AbstractStaticCasProtocolAccessImpl extends AbstractCasPro
 
     private static ServiceIdentifierMatcher SERVICE_IDENTIFIER_MATCHER;
 
+    private static ExpirationPolicy EXPIRATION_POLICY;
+
     protected final ServiceIdentifierMatcher getServiceIdentifierMatcher() {
         return SERVICE_IDENTIFIER_MATCHER;
     }
@@ -49,5 +51,14 @@ public abstract class AbstractStaticCasProtocolAccessImpl extends AbstractCasPro
 
     public static void setServiceIdentifierMatcher(final ServiceIdentifierMatcher serviceIdentifierMatcher) {
         SERVICE_IDENTIFIER_MATCHER = serviceIdentifierMatcher;
+    }
+
+    public static void setExpirationPolicy(final ExpirationPolicy expirationPolicy) {
+        EXPIRATION_POLICY = expirationPolicy;
+    }
+
+    @Override
+    protected final ExpirationPolicy getExpirationPolicy() {
+        return EXPIRATION_POLICY;
     }
 }

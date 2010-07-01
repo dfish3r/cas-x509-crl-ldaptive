@@ -42,7 +42,7 @@ public final class MultiUseOrTimeToLiveExpirationPolicy implements ExpirationPol
      * Creates a new MultiUseOrTimeToLiveExpirationPolicy with the maximum number of uses or the time to live (in milliseconds).
      *
      * @param maxNumberOfUses the maximum number of uses
-     * @param timeToLive time to live, in seconds.
+     * @param timeToLive time to live, in milliseconds.
      */
     public MultiUseOrTimeToLiveExpirationPolicy(final int maxNumberOfUses, final long timeToLive) {
         this.maxNumberOfUses = maxNumberOfUses;

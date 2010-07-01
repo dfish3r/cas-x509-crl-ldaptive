@@ -33,6 +33,6 @@ import org.jasig.cas.server.login.ServiceAccessRequest;
 public final class InMemoryCasProtocolAccessImplAccessFactory extends AbstractCasProtocolAccessImplFactory {
 
     public Access getAccess(final Session session, final ServiceAccessRequest serviceAccessRequest) {
-        return new InMemoryCasProtocolAccessImpl(session,  serviceAccessRequest, getServiceIdentifierMatcher(), getProxyHandler());
+        return new InMemoryCasProtocolAccessImpl(session,  serviceAccessRequest, getServiceIdentifierMatcher(), getProxyHandler(), getExpirationPolicy());
     }
 }

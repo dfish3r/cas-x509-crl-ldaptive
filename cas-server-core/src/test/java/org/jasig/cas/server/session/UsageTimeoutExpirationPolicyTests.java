@@ -35,7 +35,7 @@ public final class UsageTimeoutExpirationPolicyTests extends AbstractExpirationP
     @Test
     public void testNotSoImmediateUsage() {
         final State state = new SimpleStateImpl();
-        sleep(2);
+        sleep(1);
         assertFalse(getExpirationPolicy().isExpired(state));
     }
 

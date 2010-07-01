@@ -45,8 +45,6 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractCasProtocolAccessImpl.class);
 
-    private static final ExpirationPolicy EXPIRATION_POLICY = new MultiUseOrTimeToLiveExpirationPolicy(1, 90);
-
     private static final UniqueTicketIdGenerator ID_GENERATOR = new CasProtocolUniqueTicketIdGeneratorImpl();
 
     protected enum ValidationStatus {NOT_VALIDATED, VALIDATION_SUCCEEDED, VALIDATION_FAILED_RENEW, VALIDATION_FAILED_ID_MATCH, VALIDATION_FAILED_PROXY_ATTEMPT, ALREADY_VALIDATED, EXPIRED_TICKET};
@@ -100,7 +98,7 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
     }
 
     protected final boolean isExpired() {
-        return EXPIRATION_POLICY.isExpired(getState()) || !isValid();
+        return getExpirationPolicy().isExpired(getState()) || !isValid();
     }
 
     public final synchronized AccessResponseResult generateResponse(final AccessResponseRequest accessResponseRequest) {
@@ -243,4 +241,6 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
     protected abstract ProxyHandler getProxyHandler();
 
     protected abstract Session getParentSession();
+
+    protected abstract ExpirationPolicy getExpirationPolicy();
 }
