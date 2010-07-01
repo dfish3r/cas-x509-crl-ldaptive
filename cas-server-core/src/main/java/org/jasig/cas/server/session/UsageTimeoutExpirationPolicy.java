@@ -44,6 +44,10 @@ public final class UsageTimeoutExpirationPolicy implements ExpirationPolicy {
     }
 
     public boolean isExpired(final State state) {
-        return System.currentTimeMillis() - state.getLastUsedTime() >= this.timeToKillInMilliSeconds;
+        final long currentTime = System.currentTimeMillis();
+        final long lastTimeUsed = state.getLastUsedTime();
+        final long difference = currentTime - lastTimeUsed;
+        // return System.currentTimeMillis() - state.getLastUsedTime() >= this.timeToKillInMilliSeconds;
+        return difference >= this.timeToKillInMilliSeconds;
     }
 }

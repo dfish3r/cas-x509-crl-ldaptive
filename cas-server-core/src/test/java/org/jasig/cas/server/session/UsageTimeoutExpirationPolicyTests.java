@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 public final class UsageTimeoutExpirationPolicyTests extends AbstractExpirationPolicyTests {
 
     public UsageTimeoutExpirationPolicyTests() {
-        super(new UsageTimeoutExpirationPolicy(5));
+        super(new UsageTimeoutExpirationPolicy(50));
     }
 
     @Test
@@ -42,7 +42,7 @@ public final class UsageTimeoutExpirationPolicyTests extends AbstractExpirationP
     @Test
     public void testShouldBeExpired() {
         final State state = new SimpleStateImpl();
-        sleep(7);
+        sleep(100);
         assertTrue(getExpirationPolicy().isExpired(state));
     }
 
