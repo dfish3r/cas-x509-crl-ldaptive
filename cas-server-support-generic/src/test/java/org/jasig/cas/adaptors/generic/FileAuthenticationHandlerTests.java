@@ -67,14 +67,9 @@ public class FileAuthenticationHandlerTests extends TestCase {
         }
     }
 
-    public void testAuthenticatesUserInFileWithDefaultSeparator() {
+    public void testAuthenticatesUserInFileWithDefaultSeparator() throws GeneralSecurityException {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("scott", "rutgers");
-
-        try {
-            assertTrue(this.authenticationHandler.authenticate(c));
-        } catch (GeneralSecurityException e) {
-            fail("AuthenticationException caught but it should not have been thrown.");
-        }
+        assertTrue(this.authenticationHandler.authenticate(c));
     }
 
     public void testFailsUserNotInFileWithDefaultSeparator() {
@@ -117,17 +112,12 @@ public class FileAuthenticationHandlerTests extends TestCase {
         }
     }
 
-    public void testAuthenticatesUserInFileWithCommaSeparator() {
+    public void testAuthenticatesUserInFileWithCommaSeparator() throws GeneralSecurityException {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("scott", "rutgers");
 
         this.authenticationHandler.setFileName(new ClassPathResource("org/jasig/cas/adaptors/generic/authentication2.txt"));
         this.authenticationHandler.setSeparator(",");
-
-        try {
-            assertTrue(this.authenticationHandler.authenticate(c));
-        } catch (GeneralSecurityException e) {
-            fail("AuthenticationException caught but it should not have been thrown.");
-        }
+        assertTrue(this.authenticationHandler.authenticate(c));
     }
 
     public void testFailsUserNotInFileWithCommaSeparator() {

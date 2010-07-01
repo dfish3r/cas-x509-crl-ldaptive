@@ -61,8 +61,20 @@ public final class FileAuthenticationHandler extends AbstractUsernamePasswordAut
         try {
             bufferedReader = new BufferedReader(new InputStreamReader(this.fileName.getInputStream()));
             String line = bufferedReader.readLine();
+
             while (line != null) {
+                if (!line.contains(this.separator)) {
+                    line = bufferedReader.readLine();
+                    continue;
+                }
+
                 final String[] lineFields = line.split(this.separator);
+
+                if (lineFields.length != 2) {
+                    line = bufferedReader.readLine();
+                    continue;
+                }
+
                 final String userName = lineFields[0];
                 final String password = lineFields[1];
 
@@ -76,13 +88,14 @@ public final class FileAuthenticationHandler extends AbstractUsernamePasswordAut
                 line = bufferedReader.readLine();
             }
         } catch (final Exception e) {
+            e.printStackTrace();
             log.error(e.getMessage(), e);
         } finally {
             try {
                 if (bufferedReader != null) {
                     bufferedReader.close();
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 log.error(e.getMessage(),e);
             }
         }
