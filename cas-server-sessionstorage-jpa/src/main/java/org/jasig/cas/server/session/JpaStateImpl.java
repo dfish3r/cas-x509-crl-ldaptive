@@ -30,7 +30,7 @@ import javax.persistence.Embeddable;
  * @since 4.0.0
  */
 @Embeddable
-public final class JpaStateImpl implements State {
+public class JpaStateImpl implements State {
 
     @Column(name="session_state_usage_count", insertable = true, updatable = true, nullable = false)
     private volatile int count = 0;
@@ -44,28 +44,28 @@ public final class JpaStateImpl implements State {
     @Column(name="long_term_auth", insertable = true, updatable = true, nullable = false)
     private boolean longTermAuthentication = false;
 
-    public boolean longTermAuthenticationExists() {
+    public final boolean longTermAuthenticationExists() {
         return longTermAuthentication;
     }
 
-    public void setLongTermAuthentication(final boolean longTermAuthentication) {
+    public final void setLongTermAuthentication(final boolean longTermAuthentication) {
         this.longTermAuthentication = longTermAuthentication;
     }
 
-    public synchronized void updateState() {
+    public final synchronized void updateState() {
         this.count++;
         this.lastUsedTime = System.currentTimeMillis();
     }
 
-    public int getUsageCount() {
+    public final int getUsageCount() {
         return this.count;
     }
 
-    public long getCreationTime() {
+    public final long getCreationTime() {
         return this.creationTime;
     }
 
-    public long getLastUsedTime() {
+    public final long getLastUsedTime() {
         return this.lastUsedTime;
     }
 }

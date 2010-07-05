@@ -33,7 +33,7 @@ import java.util.Map;
  * @since 3.5
  */
 @Embeddable
-public final class JpaAttributePrincipalImpl extends AbstractAttributePrincipal {
+public class JpaAttributePrincipalImpl extends AbstractAttributePrincipal {
 
     private static IPersonAttributeDao IPERSONATTRIBUTEDAO;
 
@@ -48,11 +48,11 @@ public final class JpaAttributePrincipalImpl extends AbstractAttributePrincipal 
         this.name = name;
     }
 
-    public String getName() {
+    public final String getName() {
         return this.name;
     }
 
-    public Map<String, List<Object>> getAttributes() {
+    public final Map<String, List<Object>> getAttributes() {
         return IPERSONATTRIBUTEDAO.getPerson(this.name).getAttributes();
     }
 

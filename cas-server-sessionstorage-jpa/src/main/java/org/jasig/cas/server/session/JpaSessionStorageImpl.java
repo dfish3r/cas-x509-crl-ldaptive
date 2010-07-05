@@ -19,7 +19,6 @@
 
 package org.jasig.cas.server.session;
 
-import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.util.Cleanable;
 import org.springframework.util.Assert;
@@ -84,15 +83,12 @@ public final class JpaSessionStorageImpl extends AbstractSessionStorage implemen
         return this.entityManager.merge(session);
     }
 
-    // TODO fix this once we have accesses working.
     public Session findSessionByAccessId(final String accessId) {
-        return null;
-        /*
         try {
             return (Session) this.entityManager.createQuery("select s from session s, IN(s.casProtocolAccesses) c where c.id = :accessId").setParameter("accessId", accessId).getSingleResult();
         } catch (final Exception e) {
             return null;
-        } */
+        }
     }
 
     public Session createSession(final AuthenticationResponse authenticationResponse) {
@@ -103,6 +99,7 @@ public final class JpaSessionStorageImpl extends AbstractSessionStorage implemen
         return this.entityManager.merge(session);
     }
 
+    // TODO replace this with the query stuff
     public Set<Session> findSessionsByPrincipal(final String principalName) {
         Assert.notNull(principalName);
         final List<Session> listSessions = (List<Session>) this.entityManager.createQuery("select s from session s where s.attributePrincipal.name = :name").setParameter("name", principalName).getResultList();
@@ -130,7 +127,7 @@ public final class JpaSessionStorageImpl extends AbstractSessionStorage implemen
     }
 
     public void prune() {
-        this.entityManager.createQuery("Delete From session s where (s.state.creationTime + :timeOut) >= :currentTime or s.state.count > :maxCount").setParameter("timeOut", this.purgeTimeOut).setParameter("currentTime", System.currentTimeMillis()).setParameter("maxCount", this.purgeMaxCount).executeUpdate();
+        this.entityManager.createQuery("delete From session s where (s.state.creationTime + :timeOut) >= :currentTime or s.state.count > :maxCount").setParameter("timeOut", this.purgeTimeOut).setParameter("currentTime", System.currentTimeMillis()).setParameter("maxCount", this.purgeMaxCount).executeUpdate();
     }
 
     public void setPurgeTimeOut(final long purgeTimeOut) {

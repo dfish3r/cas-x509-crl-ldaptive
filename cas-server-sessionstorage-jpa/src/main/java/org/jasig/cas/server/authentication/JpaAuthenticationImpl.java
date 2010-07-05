@@ -39,6 +39,11 @@ import java.util.Map;
 @Embeddable()
 public class JpaAuthenticationImpl implements Authentication {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "cas_authentication_seq")
+    @SequenceGenerator(name="cas_authentication_seq",sequenceName="cas_authentication_seq",initialValue=1,allocationSize=50)
+    private long id;
+
     @Column(name = "auth_date", nullable = false, insertable = true, updatable = false)
     @Temporal(javax.persistence.TemporalType.TIME)
     private Date authenticationDate = new Date();

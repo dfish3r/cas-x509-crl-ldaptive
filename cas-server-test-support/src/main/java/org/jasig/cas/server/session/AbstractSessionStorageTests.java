@@ -25,6 +25,8 @@ import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.util.Cleanable;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.transaction.annotation.Transactional;
+
 import static org.mockito.Mockito.*;
 
 import java.security.GeneralSecurityException;
@@ -37,6 +39,7 @@ import java.util.*;
  * @version $Revision$ $Date$
  * @since 3.5
  */
+@Transactional
 public abstract class AbstractSessionStorageTests extends TestCase {
 
     private final AttributePrincipalFactory attributePrincipalFactory = getAttributePrincipalFactory();
@@ -56,7 +59,7 @@ public abstract class AbstractSessionStorageTests extends TestCase {
         final HashSet<Authentication> authentications = new HashSet<Authentication>();
         authentications.addAll(Arrays.asList(getConstructedAuthentication()));
         when(response.getAuthentications()).thenReturn(authentications);
-        when(response.getPrincipal()).thenReturn(TestUtils.getPrincipal(principal));
+        when(response.getPrincipal()).thenReturn(this.attributePrincipalFactory.getAttributePrincipal(principal));
         when(response.getGeneralSecurityExceptions()).thenReturn(Collections.<GeneralSecurityException>emptyList());
         when(response.getAuthenticationMessages()).thenReturn(Collections.<Message>emptyList());
 

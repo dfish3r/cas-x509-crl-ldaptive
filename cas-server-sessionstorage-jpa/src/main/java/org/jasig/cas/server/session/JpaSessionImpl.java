@@ -18,9 +18,13 @@
  */
 package org.jasig.cas.server.session;
 
+import org.hibernate.annotations.*;
 import org.jasig.cas.server.authentication.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,18 +37,22 @@ import java.util.UUID;
  * @version $Revision$ $Date$
  * @since 3.5
  *
- * // TODO enable access
  */
 @Entity(name="session")
 @Table(name="session")
-public final class JpaSessionImpl extends AbstractStaticSession {
+@org.hibernate.annotations.Table(appliesTo = "session",indexes = {
+        @Index(name="index_session_id", columnNames = "session_id"),
+        @Index(name="index_principal_name", columnNames = "princ_name"),
+        @Index(name="index_state_creation_time", columnNames = "session_state_creation"),
+        @Index(name="index_state_count",columnNames = "session_state_usage_count")})
+public class JpaSessionImpl extends AbstractStaticSession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "cas_session_seq")
     @SequenceGenerator(name="cas_session_seq",sequenceName="cas_session_seq",initialValue=1,allocationSize=50)
     private long id;
 
-    @Column(name="sessionId")
+    @Column(name="session_id")
     private String sessionId;
 
     @Embedded
@@ -66,8 +74,8 @@ public final class JpaSessionImpl extends AbstractStaticSession {
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,targetEntity = JpaAuthenticationImpl.class)
     private Set<Authentication> authentications = new HashSet<Authentication>();
 
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentSession", fetch = FetchType.EAGER)
-//    private Set<JpaCasProtocolAccessImpl> casProtocolAccesses = new HashSet<JpaCasProtocolAccessImpl>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentSession", fetch = FetchType.EAGER,targetEntity = JpaCasProtocolAccessImpl.class)
+    private Set<Access> casProtocolAccesses = new HashSet<Access>();
 
     public JpaSessionImpl() {
         // this is for JPA
@@ -90,78 +98,77 @@ public final class JpaSessionImpl extends AbstractStaticSession {
         }
     }
 
-    protected void updateState() {
+    protected final void updateState() {
         this.state.updateState();
     }
 
-    protected boolean executeExpirationPolicy() {
+    protected final boolean executeExpirationPolicy() {
         return getExpirationPolicy().isExpired(this.state);
     }
 
-    protected boolean isInvalid() {
+    protected final boolean isInvalid() {
         return this.invalid;
     }
 
-    protected Session getParentSession() {
+    protected final Session getParentSession() {
         return this.parentSession;
     }
 
-    protected void updateId() {
+    protected final void updateId() {
         this.sessionId = UUID.randomUUID().toString();
     }
 
-    protected void addAccess(final Access access) {
-//        if (access instanceof JpaCasProtocolAccessImpl) {
-//            this.casProtocolAccesses.add((JpaCasProtocolAccessImpl) access);
-//        }
+    protected final void addAccess(final Access access) {
+        if (access instanceof JpaCasProtocolAccessImpl) {
+            this.casProtocolAccesses.add(access);
+        }
     }
 
-    protected Set<Session> getChildSessions() {
+    protected final Set<Session> getChildSessions() {
         return this.childSessions;
     }
 
-    protected void setInvalidFlag() {
+    protected final void setInvalidFlag() {
         this.invalid = true;
     }
 
-    public String getId() {
+    public final String getId() {
         return this.sessionId;
     }
 
-    public Access getAccess(final String accessId) {
-//        for (final Access access : this.casProtocolAccesses) {
-//           if (access.getId().equals(accessId)) {
-//                return access;
-//            }
-//        }
+    public final Access getAccess(final String accessId) {
+        for (final Access access : this.casProtocolAccesses) {
+           if (access.getId().equals(accessId)) {
+                return access;
+            }
+        }
 
         return null;
     }
 
-    public Collection<Access> getAccesses() {
+    public final Collection<Access> getAccesses() {
         final Set<Access> accesses = new HashSet<Access>();
-
- //       accesses.addAll(this.casProtocolAccesses);
+        accesses.addAll(this.casProtocolAccesses);
 
         return accesses;
     }
 
     @Override
-    protected Session createDelegatedSessionInternal(final AuthenticationResponse authenticationResponse) {
+    protected final Session createDelegatedSessionInternal(final AuthenticationResponse authenticationResponse) {
         final Session session = new JpaSessionImpl(this, authenticationResponse);
         this.childSessions.add(session);
         return session;
     }
 
-    public Set<Authentication> getAuthentications() {
+    public final Set<Authentication> getAuthentications() {
         return this.authentications;
     }
 
-    public AttributePrincipal getPrincipal() {
+    public final AttributePrincipal getPrincipal() {
         return this.attributePrincipal;
     }
 
-    public void addAuthentication(final Authentication authentication) {
+    public final void addAuthentication(final Authentication authentication) {
         if (authentication.isLongTermAuthentication()) {
             this.state.setLongTermAuthentication(true);
         }

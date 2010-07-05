@@ -26,5 +26,9 @@
 
 	<persistence-unit name="CasPersistence" transaction-type="RESOURCE_LOCAL">
         <class>org.jasig.cas.server.session.JpaSessionImpl</class>
+        <class>org.jasig.cas.server.session.JpaCasProtocolAccessImpl</class>
+        <class>org.jasig.cas.server.session.JpaStateImpl</class>
+        <class>org.jasig.cas.server.authentication.JpaAuthenticationImpl</class>
+        <class>org.jasig.cas.server.authentication.JpaAttributePrincipalImpl</class>
 	</persistence-unit>
 </persistence>
