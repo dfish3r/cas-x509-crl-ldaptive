@@ -87,6 +87,8 @@
     <bean id="credentialsValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"
             p:messageInterpolator-ref="messageInterpolator" />
 
+    <bean id="accessResponseGenerator" class="org.jasig.cas.server.session.AccessResponseGenerator" />
+
     <bean id="loginRequestFactory" class="org.jasig.cas.server.login.LoginRequestFactory">
         <constructor-arg index="0" ref="ticketGrantingTicketCookieGenerator" />
         <constructor-arg index="1">

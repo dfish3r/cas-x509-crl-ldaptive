@@ -68,10 +68,22 @@
     </decision-state>
 
     <!-- This is a placeholder for now. -->
-     <action-state id="generateAccess">
-         <transition to="viewGenericLoginSuccess" />
-     </action-state>
-    
+    <action-state id="generateAccess">
+        <evaluate expression="centralAuthenticationService.access(loginRequest)" result="requestScope.serviceAccessResponse" result-type="org.jasig.cas.server.login.ServiceAccessResponse" />
+        <evaluate expression="sessionCookieCreater.createSessionCookie(loginResponse, serviceAccessResponse, externalContext)" />
+        <transition on-exception="org.jasig.cas.server.session.NotFoundSessionException" to="viewLoginForm" />
+        <transition on-exception="org.jasig.cas.server.session.AccessException" to="viewLoginForm" />
+        <transition to="returnToApplication" />
+    </action-state>
+
+    <end-state id="returnToApplication" view="casReturnToApplication">
+        <on-entry>
+            <evaluate expression="accessResponseGenerator.generateAccessResponseResult(externalContext, serviceAccessResponse)" result-type="org.jasig.cas.server.session.AccessResponseResult" result="requestScope.accessResponseResult" />
+        </on-entry>
+        <output name="loginRequest" required="true" />
+        <output name="accessResponseResult" value="requestScope.accessResponseResult" required="true" />
+    </end-state>
+
 
     <end-state id="passiveReturnToApplication" view="externalRedirect:${loginRequest.passiveAuthenticationRedirectUrl}" />
 
