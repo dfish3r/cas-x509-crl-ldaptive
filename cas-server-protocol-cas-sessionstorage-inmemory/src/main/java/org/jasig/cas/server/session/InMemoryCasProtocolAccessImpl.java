@@ -23,6 +23,7 @@ import org.jasig.cas.server.CasProtocolVersion;
 import org.jasig.cas.server.login.CasServiceAccessRequestImpl;
 import org.jasig.cas.server.login.ServiceAccessRequest;
 import org.jasig.cas.server.util.ServiceIdentifierMatcher;
+import org.jasig.cas.server.util.UniqueTicketIdGenerator;
 
 /**
  * Concrete, in-memory aware, implementation of the {@link org.jasig.cas.server.session.AbstractCasProtocolAccessImpl}.
@@ -33,8 +34,6 @@ import org.jasig.cas.server.util.ServiceIdentifierMatcher;
  *
  */
 public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAccessImpl {
-
-    private boolean valid = true;
 
     private final State state = new SimpleStateImpl();
 
@@ -56,9 +55,13 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
 
     private CasProtocolVersion casVersion;
 
+    private boolean localSessionDestroyed;
+
     private ValidationStatus validationStatus = ValidationStatus.NOT_VALIDATED;
 
-    public InMemoryCasProtocolAccessImpl(final Session session, final ServiceAccessRequest request, final ServiceIdentifierMatcher serviceIdentifierMatcher, final ProxyHandler proxyHandler, final ExpirationPolicy expirationPolicy) {
+    private final UniqueTicketIdGenerator uniqueTicketIdGenerator;
+
+    public InMemoryCasProtocolAccessImpl(final Session session, final ServiceAccessRequest request, final ServiceIdentifierMatcher serviceIdentifierMatcher, final ProxyHandler proxyHandler, final ExpirationPolicy expirationPolicy, final UniqueTicketIdGenerator uniqueTicketIdGenerator) {
         this.parentSession = session;
         this.renewed = request.isForceAuthentication() || session.getAccesses().size() == 1;
         this.resourceIdentifier = request.getServiceId();
@@ -67,6 +70,7 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
         this.post = (request instanceof CasServiceAccessRequestImpl) && ((CasServiceAccessRequestImpl) request).isPostRequest();
         this.proxyHandler = proxyHandler;
         this.expirationPolicy = expirationPolicy;
+        this.uniqueTicketIdGenerator = uniqueTicketIdGenerator;
     }
 
     public final String getId() {
@@ -75,11 +79,6 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
 
     public final String getResourceIdentifier() {
         return this.resourceIdentifier;
-    }
-
-    public final synchronized boolean invalidate() {
-        this.valid = false;
-        return false;
     }
 
     protected final void setValidationStatus(final ValidationStatus validationStatus) {
@@ -96,10 +95,6 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
 
     protected final State getState() {
         return this.state;
-    }
-
-    protected boolean isValid() {
-        return this.valid;
     }
 
     protected boolean isRenewed() {
@@ -129,5 +124,19 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
     @Override
     protected ExpirationPolicy getExpirationPolicy() {
         return this.expirationPolicy;
+    }
+
+    @Override
+    protected UniqueTicketIdGenerator getIdGenerator() {
+        return this.uniqueTicketIdGenerator;
+    }
+
+    public boolean isLocalSessionDestroyed() {
+        return this.localSessionDestroyed;
+    }
+
+    @Override
+    protected void setLocalSessionDestroyed(final boolean localSessionDestroyed) {
+        this.localSessionDestroyed = localSessionDestroyed;
     }
 }

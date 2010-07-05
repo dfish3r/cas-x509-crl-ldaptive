@@ -25,6 +25,8 @@ import org.jasig.cas.server.login.TokenServiceAccessRequest;
 import org.jasig.cas.server.util.CasProtocolUniqueTicketIdGeneratorImpl;
 import org.jasig.cas.server.util.ServiceIdentifierMatcher;
 import org.jasig.cas.server.util.UniqueTicketIdGenerator;
+import org.jasig.cas.util.HttpClient;
+import org.jasig.cas.util.SamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -44,8 +46,6 @@ import java.util.Map;
 public abstract class AbstractCasProtocolAccessImpl implements Access {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractCasProtocolAccessImpl.class);
-
-    private static final UniqueTicketIdGenerator ID_GENERATOR = new CasProtocolUniqueTicketIdGeneratorImpl();
 
     protected enum ValidationStatus {NOT_VALIDATED, VALIDATION_SUCCEEDED, VALIDATION_FAILED_RENEW, VALIDATION_FAILED_ID_MATCH, VALIDATION_FAILED_PROXY_ATTEMPT, ALREADY_VALIDATED, EXPIRED_TICKET};
 
@@ -89,8 +89,24 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
         setValidationStatus(ValidationStatus.VALIDATION_SUCCEEDED);
     }
 
-    public final boolean isLocalSessionDestroyed() {
-        return false;
+    public final boolean invalidate() {
+        if (getValidationStatus() != ValidationStatus.VALIDATION_SUCCEEDED) {
+            return false;
+        }
+
+        setValidationStatus(ValidationStatus.EXPIRED_TICKET);
+
+        LOG.debug("Sending logout request for: " + getId());
+
+        final String logoutRequest = "<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ID=\""
+            + getIdGenerator().getNewTicketId("LR")
+            + "\" Version=\"2.0\" IssueInstant=\"" + SamlUtils.getCurrentDateAndTime()
+            + "\"><saml:NameID xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">@NOT_USED@</saml:NameID><samlp:SessionIndex>"
+            + getId() + "</samlp:SessionIndex></samlp:LogoutRequest>";
+
+        setLocalSessionDestroyed(new HttpClient().sendMessageToEndPoint(getResourceIdentifier(), logoutRequest, true));
+
+        return this.isLocalSessionDestroyed();
     }
 
     public final boolean requiresStorage() {
@@ -98,7 +114,7 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
     }
 
     protected final boolean isExpired() {
-        return getExpirationPolicy().isExpired(getState()) || !isValid();
+        return getExpirationPolicy().isExpired(getState()) || getValidationStatus() == ValidationStatus.EXPIRED_TICKET; 
     }
 
     public final synchronized AccessResponseResult generateResponse(final AccessResponseRequest accessResponseRequest) {
@@ -170,9 +186,9 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
      */
     protected String createId() {
         if (getParentSession().isRoot()) {
-            return ID_GENERATOR.getNewTicketId("ST");
+            return getIdGenerator().getNewTicketId("ST");
         } else {
-            return ID_GENERATOR.getNewTicketId("PT");
+            return getIdGenerator().getNewTicketId("PT");
         }
     }
 
@@ -196,13 +212,6 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
      * @return the internal state. CANNOT be null.
      */
     protected abstract State getState();
-
-    /**
-     * Whether this item is still valid or not (different from expired).
-     *
-     * @return true if it is, false otherwise.
-     */
-    protected abstract boolean isValid();
 
     /**
      * Returns whether a service was generated from a new Authentication request or not.
@@ -243,4 +252,12 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
     protected abstract Session getParentSession();
 
     protected abstract ExpirationPolicy getExpirationPolicy();
+
+    /**
+     * Returns the UniqueTicketId Generator to use to create ids.  CANNOT be NULL.
+     * @return the id generator
+     */
+    protected abstract UniqueTicketIdGenerator getIdGenerator();
+
+    protected abstract void setLocalSessionDestroyed(boolean localSessionDestroyed);
 }

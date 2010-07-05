@@ -19,8 +19,10 @@
 
 package org.jasig.cas.server.session;
 
+import org.jasig.cas.server.util.CasProtocolUniqueTicketIdGeneratorImpl;
 import org.jasig.cas.server.util.DefaultServiceIdentifierMatcherImpl;
 import org.jasig.cas.server.util.ServiceIdentifierMatcher;
+import org.jasig.cas.server.util.UniqueTicketIdGenerator;
 
 import javax.validation.constraints.NotNull;
 
@@ -42,6 +44,9 @@ public abstract class AbstractCasProtocolAccessImplFactory implements AccessFact
 
     @NotNull
     private ExpirationPolicy expirationPolicy = new MultiUseOrTimeToLiveExpirationPolicy(1, 10000);
+
+    @NotNull
+    private UniqueTicketIdGenerator uniqueTicketIdGenerator = new CasProtocolUniqueTicketIdGeneratorImpl();
 
     public final void setServiceIdentifierMatcher(final ServiceIdentifierMatcher serviceIdentifierMatcher) {
         this.serviceIdentifierMatcher = serviceIdentifierMatcher;
@@ -65,5 +70,13 @@ public abstract class AbstractCasProtocolAccessImplFactory implements AccessFact
 
     public final void setExpirationPolicy(final ExpirationPolicy expirationPolicy) {
         this.expirationPolicy = expirationPolicy;
+    }
+
+    public final void setUniqueTicketIdGenerator(final UniqueTicketIdGenerator uniqueTicketIdGenerator) {
+        this.uniqueTicketIdGenerator = uniqueTicketIdGenerator;
+    }
+
+    protected final UniqueTicketIdGenerator getUniqueTicketIdGenerator() {
+        return this.uniqueTicketIdGenerator;
     }
 }

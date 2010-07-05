@@ -19,7 +19,9 @@
 
 package org.jasig.cas.server.session;
 
+import org.jasig.cas.server.util.CasProtocolUniqueTicketIdGeneratorImpl;
 import org.jasig.cas.server.util.ServiceIdentifierMatcher;
+import org.jasig.cas.server.util.UniqueTicketIdGenerator;
 
 /**
  * Abstract implementation that relies on static properties for implementations that persist data to another data storage and don't want to persist the
@@ -36,6 +38,8 @@ public abstract class AbstractStaticCasProtocolAccessImpl extends AbstractCasPro
     private static ServiceIdentifierMatcher SERVICE_IDENTIFIER_MATCHER;
 
     private static ExpirationPolicy EXPIRATION_POLICY;
+
+    private static UniqueTicketIdGenerator ID_GENERATOR = new CasProtocolUniqueTicketIdGeneratorImpl();
 
     protected final ServiceIdentifierMatcher getServiceIdentifierMatcher() {
         return SERVICE_IDENTIFIER_MATCHER;
@@ -55,6 +59,15 @@ public abstract class AbstractStaticCasProtocolAccessImpl extends AbstractCasPro
 
     public static void setExpirationPolicy(final ExpirationPolicy expirationPolicy) {
         EXPIRATION_POLICY = expirationPolicy;
+    }
+
+    public static void setUniqueTicketIdGenerator(final UniqueTicketIdGenerator uniqueTicketIdGenerator) {
+        ID_GENERATOR = uniqueTicketIdGenerator;
+    }
+
+    @Override
+    protected final UniqueTicketIdGenerator getIdGenerator() {
+        return ID_GENERATOR;
     }
 
     @Override
