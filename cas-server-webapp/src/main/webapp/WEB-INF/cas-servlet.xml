@@ -93,7 +93,7 @@
         <constructor-arg index="0" ref="ticketGrantingTicketCookieGenerator" />
         <constructor-arg index="1">
             <list>
-                <bean class="org.jasig.cas.server.session.TestServiceAccessRequestFactory" />
+                <bean class="org.jasig.cas.server.login.CasServiceAccessRequestImplFactory" />
             </list>
         </constructor-arg>
 
