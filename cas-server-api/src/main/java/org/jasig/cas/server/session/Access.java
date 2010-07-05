@@ -84,6 +84,14 @@ public interface Access extends Serializable {
     boolean requiresStorage();
 
     /**
+     * Whether the access was considered used or not.  For example, SAML assertions are assumed to be used immediately.
+     * <p> CAS tokens are used after validation.
+     * 
+     * @return true if used, false otherwise.
+     */
+    boolean isUsed();
+
+    /**
      * Generates the response to send back to the client.
      *
      * @param accessResponseRequest the request for a response.

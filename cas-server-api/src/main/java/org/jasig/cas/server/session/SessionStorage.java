@@ -112,18 +112,9 @@ public interface SessionStorage {
     void purge();
 
     /**
-     * Returns the number of active sessions.  Depending on when it was last purged, this may be an estimate.
+     * Returns the session storage statistics.  CANNOT be NULL.
      *
-     *
-     * @return the estimated number of active sessions or -1 if unable to determine at all.  
+     * @return the statistics for this session storage.
      */
-    int getCountOfActiveSessions();
-
-    int getCountOfInactiveSessions();
-    
-    int getCountOfUnusedAccesses();
-
-    int getCountOfUsedAccesses();
-
-
+    SessionStorageStatistics getSessionStorageStatistics();
 }

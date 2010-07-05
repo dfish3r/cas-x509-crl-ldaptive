@@ -89,6 +89,10 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
         setValidationStatus(ValidationStatus.VALIDATION_SUCCEEDED);
     }
 
+    public final boolean isUsed() {
+        return getValidationStatus() != ValidationStatus.NOT_VALIDATED;
+    }
+
     public final boolean invalidate() {
         if (getValidationStatus() != ValidationStatus.VALIDATION_SUCCEEDED) {
             return false;

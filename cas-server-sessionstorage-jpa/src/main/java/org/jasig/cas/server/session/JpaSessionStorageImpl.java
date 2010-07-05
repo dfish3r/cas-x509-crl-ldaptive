@@ -106,20 +106,9 @@ public final class JpaSessionStorageImpl extends AbstractSessionStorage implemen
         return new HashSet<Session>(listSessions);
     }
 
-    public int getCountOfActiveSessions() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public int getCountOfInactiveSessions() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public int getCountOfUnusedAccesses() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public int getCountOfUsedAccesses() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    // TODO can we generate valid statistics
+    public SessionStorageStatistics getSessionStorageStatistics() {
+        return new DefaultSessionStorageStatisticsImpl(false);
     }
 
     public void purge() {

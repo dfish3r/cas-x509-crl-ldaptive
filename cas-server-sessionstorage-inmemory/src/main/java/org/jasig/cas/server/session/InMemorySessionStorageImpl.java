@@ -80,7 +80,6 @@ public class InMemorySessionStorageImpl extends AbstractSessionStorage implement
 
     public Session updateSession(final Session session) {
         Assert.notNull(session);
-        // TODO this might change when we handle changing the session id value.
         return session;
     }
 
@@ -114,20 +113,26 @@ public class InMemorySessionStorageImpl extends AbstractSessionStorage implement
         this.accessIdToSessionIdMapping.clear();
     }
 
-    public int getCountOfActiveSessions() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public SessionStorageStatistics getSessionStorageStatistics() {
+        final DefaultSessionStorageStatisticsImpl statistics = new DefaultSessionStorageStatisticsImpl(true);
 
-    public int getCountOfInactiveSessions() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+        for (final Session session : this.sessions.values()) {
+            if (session.isValid()) {
+                statistics.incrementCountOfActiveSessions();
+            } else {
+                statistics.incrementCountOfInactiveSessions();
+            }
 
-    public int getCountOfUnusedAccesses() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+            for (final Access access : session.getAccesses()) {
+                if (access.isUsed()) {
+                    statistics.incrementCountOfUsedAccesses();
+                } else {
+                    statistics.incrementCountOfUnusedAccesses();
+                }
+            }
+        }
 
-    public int getCountOfUsedAccesses() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return statistics;
     }
 
     public void prune() {

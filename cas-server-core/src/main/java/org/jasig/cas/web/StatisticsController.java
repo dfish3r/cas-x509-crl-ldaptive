@@ -20,6 +20,7 @@
 package org.jasig.cas.web;
 
 import org.jasig.cas.server.session.SessionStorage;
+import org.jasig.cas.server.session.SessionStorageStatistics;
 import org.perf4j.log4j.GraphingStatisticsAppender;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -74,10 +75,12 @@ public final class StatisticsController extends AbstractController {
 
         final Collection<GraphingStatisticsAppender> appenders = GraphingStatisticsAppender.getAllGraphingStatisticsAppenders();
 
-        modelAndView.addObject("unexpiredTgts", this.sessionStorage.getCountOfActiveSessions());
-        modelAndView.addObject("unexpiredSts", this.sessionStorage.getCountOfUnusedAccesses());
-        modelAndView.addObject("expiredTgts", this.sessionStorage.getCountOfInactiveSessions());
-        modelAndView.addObject("expiredSts", this.sessionStorage.getCountOfUsedAccesses());
+        final SessionStorageStatistics statistics = this.sessionStorage.getSessionStorageStatistics();
+        
+        modelAndView.addObject("unexpiredTgts", statistics.getCountOfActiveSessions());
+        modelAndView.addObject("unexpiredSts", statistics.getCountOfUnusedAccesses());
+        modelAndView.addObject("expiredTgts", statistics.getCountOfInactiveSessions());
+        modelAndView.addObject("expiredSts", statistics.getCountOfUsedAccesses());
         modelAndView.addObject("pageTitle", modelAndView.getViewName());
         modelAndView.addObject("graphingStatisticAppenders", appenders);
 

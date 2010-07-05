@@ -110,20 +110,8 @@ public class MemcachedSessionStorageImpl extends AbstractSessionStorage {
         return session;
     }
 
-    public int getCountOfActiveSessions() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public int getCountOfInactiveSessions() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public int getCountOfUnusedAccesses() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public int getCountOfUsedAccesses() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    public SessionStorageStatistics getSessionStorageStatistics() {
+        return new DefaultSessionStorageStatisticsImpl(false);
     }
 
     public Session destroySession(final String sessionId) {
