@@ -28,17 +28,13 @@
     	Configuration for the default TicketRegistry which stores the tickets in-memory and cleans them out as specified intervals.
     </description>
 
-    <!-- Ticket Registry -->
-	<bean id="ticketRegistry" class="org.jasig.cas.ticket.registry.DefaultTicketRegistry" />
-
     <!--Quartz -->
     <!-- TICKET REGISTRY CLEANER -->
-    <bean id="ticketRegistryCleaner" class="org.jasig.cas.ticket.registry.support.DefaultTicketRegistryCleaner"
-        p:ticketRegistry-ref="ticketRegistry" />
+    <bean id="ticketRegistryCleaner" class="java.util.ArrayList" />
 
     <bean id="jobDetailTicketRegistryCleaner" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"
         p:targetObject-ref="ticketRegistryCleaner"
-        p:targetMethod="clean" />
+        p:targetMethod="clear" />
 
     <bean id="triggerJobDetailTicketRegistryCleaner" class="org.springframework.scheduling.quartz.SimpleTriggerBean"
         p:jobDetail-ref="jobDetailTicketRegistryCleaner"
