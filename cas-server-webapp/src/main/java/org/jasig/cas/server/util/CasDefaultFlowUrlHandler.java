@@ -44,11 +44,6 @@ public class CasDefaultFlowUrlHandler extends DefaultFlowUrlHandler {
         final StringBuffer builder = new StringBuffer();
         builder.append(request.getRequestURI());
         builder.append("?");
-
-        System.out.println("DEFAULT CAS, PARAMS: " + request.getParameter("service"));
-
-        System.out.println("DEFAULT CAS, PARAMS: " + request.getParameterMap());
-
         appendQueryParameters(builder, request.getParameterMap(), getEncodingScheme(request));
         return builder.toString();
     }
