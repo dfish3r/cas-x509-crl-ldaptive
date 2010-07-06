@@ -26,8 +26,7 @@ import org.jasig.cas.server.login.ServiceAccessRequest;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -58,6 +57,31 @@ public abstract class AbstractSessionTests {
 
     protected abstract AttributePrincipal getNewAttributePrincipal();
 
+    protected final ExpirationPolicy getExpirationPolicy() {
+        return new ExpirationPolicy() {
+            public boolean isExpired(final State state) {
+                return false;
+            }
+        };
+    }
+
+    protected final List<AccessFactory> getAccessFactories() {
+        final List<AccessFactory> accessFactories = new ArrayList<AccessFactory>();
+
+        accessFactories.add(new AccessFactory() {
+            public Access getAccess(final Session session, final ServiceAccessRequest serviceAccessRequest) {
+                final Access access = mock(Access.class);
+
+                final String serviceId = serviceAccessRequest.getServiceId();
+                when(access.getResourceIdentifier()).thenReturn(serviceId);
+                when(access.getId()).thenReturn(UUID.randomUUID().toString());
+                return access;
+            }
+        });
+
+        return accessFactories;
+    }
+
     @Before
     public final void setUp() throws Exception {
         this.authentication = getNewAuthentication();
@@ -66,63 +90,61 @@ public abstract class AbstractSessionTests {
     }
 
     @Test
-    public void notNullId() {
+    public final void notNullId() {
         assertNotNull(this.session.getId());
     }
 
     @Test
-    public void uniqueId() {
+    public final void uniqueId() {
         final Session s = getNewSession(this.authentication, this.attributePrincipal);
         assertNotSame(s.getId(), this.session.getId());
     }
 
     @Test
-    public void areAuthenticationsThere() {
+    public final void areAuthenticationsThere() {
         assertNotNull(this.session.getAuthentications());
         assertFalse(this.session.getAuthentications().isEmpty());
         assertTrue(this.session.getAuthentications().contains(this.authentication));
     }
 
     @Test
-    public void areRootAuthenticationsThere() {
+    public final void areRootAuthenticationsThere() {
         assertNotNull(this.session.getRootAuthentications());
         assertFalse(this.session.getRootAuthentications().isEmpty());
         assertTrue(this.session.getRootAuthentications().contains(this.authentication));
     }
 
     @Test
-    public void isPrincipalThere() {
+    public final void isPrincipalThere() {
         assertNotNull(this.session.getPrincipal());
         assertEquals(this.attributePrincipal, this.session.getPrincipal());
     }
 
     @Test
-    public void isRootPrincipalThere() {
+    public final void isRootPrincipalThere() {
         assertNotNull(this.session.getRootPrincipal());
         assertEquals(this.attributePrincipal, this.session.getRootPrincipal());
     }
 
     @Test
-    public void isRootSession() {
+    public final void isRootSession() {
         assertEquals(this.session, this.session.getRootSession());
     }
 
     @Test
-    public void isRoot() {
+    public final void isRoot() {
          assertTrue(this.session.isRoot());
     }
 
     @Test
-    // TODO repeat for delegated authn
-    // TODO check to see if we can grant with an expired session
-    public void validity() {
+    public final void validity() {
         assertTrue(this.session.isValid());
         this.session.invalidate();
         assertFalse(this.session.isValid());
     }
 
     @Test
-    public void hasBeenUsed() throws SessionException {
+    public final void hasBeenUsed() throws SessionException {
         assertTrue(this.session.hasNotBeenUsed());
 
         final ServiceAccessRequest serviceAccessRequest = mock(ServiceAccessRequest.class);
@@ -132,7 +154,7 @@ public abstract class AbstractSessionTests {
     }
 
     @Test
-    public void checkForAccess() throws SessionException {
+    public final void checkForAccess() throws SessionException {
         final ServiceAccessRequest serviceAccessRequest = mock(ServiceAccessRequest.class);
         when(serviceAccessRequest.getServiceId()).thenReturn("foobar");
         final Access access = this.session.grant(serviceAccessRequest);
@@ -143,17 +165,17 @@ public abstract class AbstractSessionTests {
     }
 
     @Test
-    public void proxiedAuthentication() {
+    public final void proxiedAuthentication() {
         assertTrue(this.session.getProxiedAuthentications().isEmpty());
     } 
 
     @Test
-    public void proxiedPrincipal() {
+    public final void proxiedPrincipal() {
         assertTrue(this.session.getProxiedPrincipals().isEmpty());
     }
 
     @Test
-    public void additionalAuthentication() {
+    public final void additionalAuthentication() {
         final Authentication authentication = getNewAuthentication();
         this.session.addAuthentication(authentication);
 
@@ -163,7 +185,7 @@ public abstract class AbstractSessionTests {
 
 
     @Test
-    public void delegatedSession() throws SessionException {
+    public final void delegatedSession() throws SessionException {
         final AuthenticationResponse authenticationResponse = mock(AuthenticationResponse.class);
         final Authentication authentication = getNewAuthentication();
         final Set<Authentication> authentications = new HashSet<Authentication>();
@@ -198,5 +220,18 @@ public abstract class AbstractSessionTests {
         assertFalse(session.getProxiedPrincipals().contains(this.session.getPrincipal()));
 
         assertEquals(session, this.session.findChildSessionById(session.getId()));
+
+        this.session.invalidate();
+        assertFalse(session.isValid());
+
+        final ServiceAccessRequest serviceAccessRequest = mock(ServiceAccessRequest.class);
+        when(serviceAccessRequest.getServiceId()).thenReturn("foobar");
+
+        try {
+            this.session.grant(serviceAccessRequest);
+            fail("InvalidatedSessionException expected.");
+        } catch (final InvalidatedSessionException e) {
+            return;
+        }
     }
 }

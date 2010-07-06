@@ -23,16 +23,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Constructs a new {@link InMemoryAuthenticationImpl} from the provided
- * information.
- *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class InMemoryAuthenticationImplFactory implements AuthenticationFactory {
+public final class InMemoryAuthenticationImplTests extends AbstractAuthenticationTests {
 
-    public Authentication getAuthentication(final Map<String, List<Object>> authenticationMetaData, final AuthenticationRequest authenticationRequest, final String authenticationMethod) {
-        return new InMemoryAuthenticationImpl(authenticationMetaData, authenticationRequest.isLongTermAuthenticationRequest(), authenticationMethod);
+    @Override
+    protected Authentication getAuthentication(final Map<String, List<Object>> metaData, final String authenticationMethod) {
+        return new InMemoryAuthenticationImpl(metaData, false, authenticationMethod);
     }
 }

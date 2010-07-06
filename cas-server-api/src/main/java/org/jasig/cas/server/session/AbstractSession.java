@@ -149,9 +149,9 @@ public abstract class AbstractSession implements Session {
         return this;
     }
 
-    public synchronized final Access grant(final ServiceAccessRequest serviceAccessRequest) {
+    public synchronized final Access grant(final ServiceAccessRequest serviceAccessRequest) throws InvalidatedSessionException {
         if (!isValid()) {
-            throw new IllegalStateException("Session is no longer valid.");
+            throw new InvalidatedSessionException("Session is no longer valid.");
         }
 
         updateState();

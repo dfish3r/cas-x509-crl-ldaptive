@@ -33,7 +33,7 @@ import java.util.Collections;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public class InMemorySessionStorageImplTests extends AbstractSessionStorageTests {
+public final class InMemorySessionStorageImplTests extends AbstractSessionStorageTests {
 
     @Override
     protected SessionStorage getSessionStorage() {
