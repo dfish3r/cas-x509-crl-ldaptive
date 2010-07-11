@@ -19,9 +19,6 @@
 
 package org.jasig.cas.server.authentication;
 
-import org.jasig.services.persondir.IPersonAttributeDao;
-import org.jasig.services.persondir.support.StubPersonAttributeDao;
-
 /**
  * Constructs a new {@link org.jasig.cas.server.authentication.JpaAttributePrincipalImpl} using the supplied name.
  * <p>
@@ -33,17 +30,9 @@ import org.jasig.services.persondir.support.StubPersonAttributeDao;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class JpaAttributePrincipalFactory implements AttributePrincipalFactory {
-
-    public JpaAttributePrincipalFactory() {
-        JpaAttributePrincipalImpl.setPersonAttributeDao(new StubPersonAttributeDao());
-    }
+public final class JpaAttributePrincipalFactory extends AbstractStaticAttributePrincipalImplFactory {
 
     public AttributePrincipal getAttributePrincipal(final String name) {
         return new JpaAttributePrincipalImpl(name);
-    }
-
-    public void setIPersonAttributeDao(final IPersonAttributeDao iPersonAttributeDao) {
-        JpaAttributePrincipalImpl.setPersonAttributeDao(iPersonAttributeDao);
     }
 }

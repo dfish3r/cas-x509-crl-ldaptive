@@ -20,34 +20,25 @@
 package org.jasig.cas.server.authentication;
 
 import org.jasig.services.persondir.IPersonAttributeDao;
-
-import java.util.List;
-import java.util.Map;
+import org.jasig.services.persondir.support.StubPersonAttributeDao;
 
 /**
- * A principal that's safe to store in-memory.
+ * Holds the {@link org.jasig.services.persondir.IPersonAttributeDao} as a static variable. 
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class InMemoryAttributePrincipalImpl extends AbstractAttributePrincipal {
+public abstract class AbstractStaticAttributePrincipalImpl extends AbstractAttributePrincipal {
 
-    private final String name;
-
-    private IPersonAttributeDao iPersonAttributeDao;
-
-    public InMemoryAttributePrincipalImpl(final String name, final IPersonAttributeDao iPersonAttributeDao) {
-        this.name = name;
-        this.iPersonAttributeDao = iPersonAttributeDao;
-    }
+    private static IPersonAttributeDao IPERSONATTRIBUTEDAO = new StubPersonAttributeDao();
 
     @Override
-    protected IPersonAttributeDao getPersonAttributeDao() {
-        return this.iPersonAttributeDao;
+    protected final IPersonAttributeDao getPersonAttributeDao() {
+        return IPERSONATTRIBUTEDAO;
     }
 
-    public String getName() {
-        return this.name;
+    public static void setPersonAttributeDao(final IPersonAttributeDao personAttributeDao) {
+        IPERSONATTRIBUTEDAO = personAttributeDao;
     }
 }

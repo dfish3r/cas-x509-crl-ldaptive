@@ -16,38 +16,44 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.server.authentication;
 
 import org.jasig.services.persondir.IPersonAttributeDao;
+import org.jasig.services.persondir.IPersonAttributes;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
- * A principal that's safe to store in-memory.
+ * Abstract implementation of the AttributePrincipal interface that implements some of the basic functionality.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class InMemoryAttributePrincipalImpl extends AbstractAttributePrincipal {
+public abstract class AbstractAttributePrincipal implements AttributePrincipal {
 
-    private final String name;
 
-    private IPersonAttributeDao iPersonAttributeDao;
-
-    public InMemoryAttributePrincipalImpl(final String name, final IPersonAttributeDao iPersonAttributeDao) {
-        this.name = name;
-        this.iPersonAttributeDao = iPersonAttributeDao;
+    public final List<Object> getAttributeValues(final String attribute) {
+        return getAttributes().get(attribute);
     }
 
-    @Override
-    protected IPersonAttributeDao getPersonAttributeDao() {
-        return this.iPersonAttributeDao;
+    public final Object getAttributeValue(final String attribute) {
+        final List<Object> attributes = getAttributeValues(attribute);
+
+        return attributes == null ? null : attributes.get(0);
     }
 
-    public String getName() {
-        return this.name;
+    public final Map<String, List<Object>> getAttributes() {
+        final IPersonAttributes attributes =  getPersonAttributeDao().getPerson(getName());
+
+        if (attributes == null) {
+            return Collections.emptyMap();
+        }
+
+        return attributes.getAttributes();
     }
+
+    protected abstract IPersonAttributeDao getPersonAttributeDao();
 }

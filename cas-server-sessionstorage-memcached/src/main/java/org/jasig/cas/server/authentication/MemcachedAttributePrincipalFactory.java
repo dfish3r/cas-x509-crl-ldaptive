@@ -19,11 +19,6 @@
 
 package org.jasig.cas.server.authentication;
 
-import org.jasig.services.persondir.IPersonAttributeDao;
-import org.jasig.services.persondir.support.StubPersonAttributeDao;
-
-import javax.validation.constraints.NotNull;
-
 /**
  * Constructs a new {@link org.jasig.cas.server.authentication.MemcachedAttributePrincipalImpl}.
  *
@@ -31,17 +26,9 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class MemcachedAttributePrincipalFactory implements AttributePrincipalFactory {
-
-    public MemcachedAttributePrincipalFactory() {
-        MemcachedAttributePrincipalImpl.setPersonAttributeDao(new StubPersonAttributeDao());
-    }
+public final class MemcachedAttributePrincipalFactory extends AbstractStaticAttributePrincipalImplFactory {
 
     public AttributePrincipal getAttributePrincipal(final String name) {
         return new MemcachedAttributePrincipalImpl(name);
-    }
-
-    public void setPersonAttributeDao(final IPersonAttributeDao personAttributeDao) {
-        MemcachedAttributePrincipalImpl.setPersonAttributeDao(personAttributeDao);
     }
 }

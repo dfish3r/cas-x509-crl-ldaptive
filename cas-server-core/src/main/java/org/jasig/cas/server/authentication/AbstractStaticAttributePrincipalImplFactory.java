@@ -16,33 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.jasig.cas.server.authentication;
 
-import java.util.List;
+import org.jasig.services.persondir.IPersonAttributeDao;
+import org.springframework.util.Assert;
 
 /**
- * Abstract implementation of the AttributePrincipal interface that implements some of the basic functionality.
+ * Creates a way to add the static {@link org.jasig.services.persondir.IPersonAttributeDao}.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public abstract class AbstractAttributePrincipal implements AttributePrincipal {
+public abstract class AbstractStaticAttributePrincipalImplFactory implements AttributePrincipalFactory {
 
-
-    public final List<Object> getAttributeValues(final String attribute) {
-        final List<Object> attributes = getAttributes().get(attribute);
-
-        if (attributes == null || attributes.isEmpty()) {
-            return null;
-        }
-
-        return attributes;
-    }
-
-    public final Object getAttributeValue(final String attribute) {
-        final List<Object> attributes = getAttributeValues(attribute);
-
-        return attributes == null ? null : attributes.get(0);
+    public final void setIPersonAttributeDao(final IPersonAttributeDao iPersonAttributeDao) {
+        Assert.notNull(iPersonAttributeDao);
+        AbstractStaticAttributePrincipalImpl.setPersonAttributeDao(iPersonAttributeDao);
     }
 }

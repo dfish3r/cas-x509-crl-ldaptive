@@ -19,11 +19,6 @@
 
 package org.jasig.cas.server.authentication;
 
-import org.jasig.services.persondir.IPersonAttributeDao;
-
-import java.util.List;
-import java.util.Map;
-
 /**
  * Memcached-compatible version of {@link org.jasig.cas.server.authentication.AttributePrincipal}
  *
@@ -31,9 +26,7 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
-public final class MemcachedAttributePrincipalImpl extends AbstractAttributePrincipal {
-
-    private static IPersonAttributeDao IPERSONATTRIBUTEDAO;
+public final class MemcachedAttributePrincipalImpl extends AbstractStaticAttributePrincipalImpl {
 
     private String name;
 
@@ -41,15 +34,8 @@ public final class MemcachedAttributePrincipalImpl extends AbstractAttributePrin
         this.name = name;
     }
 
-    public Map<String, List<Object>> getAttributes() {
-        return IPERSONATTRIBUTEDAO.getPerson(this.name).getAttributes();
-    }
 
     public String getName() {
         return this.name;
-    }
-
-    public static void setPersonAttributeDao(final IPersonAttributeDao personAttributeDao) {
-        IPERSONATTRIBUTEDAO = personAttributeDao;
     }
 }
