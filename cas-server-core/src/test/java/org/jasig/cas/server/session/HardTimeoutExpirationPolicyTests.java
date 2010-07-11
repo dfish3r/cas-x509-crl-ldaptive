@@ -29,14 +29,14 @@ import static org.junit.Assert.*;
 public final class HardTimeoutExpirationPolicyTests extends AbstractExpirationPolicyTests {
 
     public HardTimeoutExpirationPolicyTests() {
-        super(new HardTimeoutExpirationPolicy(5));
+        super(new HardTimeoutExpirationPolicy(100));
     }
 
     @Test
     public void testBeforeExpirationTime() {
         final State state = new SimpleStateImpl();
         state.updateState();
-        sleep(3);
+        sleep(50);
         assertFalse(getExpirationPolicy().isExpired(state));
     }
 
@@ -44,7 +44,7 @@ public final class HardTimeoutExpirationPolicyTests extends AbstractExpirationPo
     public void testAfterExpirationTime() {
         final State state = new SimpleStateImpl();
         state.updateState();
-        sleep(7);
+        sleep(150);
         assertTrue(getExpirationPolicy().isExpired(state));
     }
 }

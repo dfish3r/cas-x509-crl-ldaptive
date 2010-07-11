@@ -47,9 +47,9 @@ public abstract class AbstractStateTests {
     @Test
     public final void initialState() {
         final long currentTime = System.currentTimeMillis();
-        assertEquals(currentTime, this.state.getCreationTime());
+        assertTrue(this.state.getCreationTime() - currentTime <= 5);
         assertEquals(0, this.state.getUsageCount());
-        assertEquals(currentTime, this.state.getLastUsedTime());
+        assertTrue(this.state.getLastUsedTime() - currentTime <= 5);
         assertFalse(this.state.longTermAuthenticationExists());
     }
 
