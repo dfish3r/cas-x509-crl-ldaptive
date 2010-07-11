@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 public final class ThrottledUseAndTimeoutExpirationPolicyTests extends AbstractExpirationPolicyTests {
 
     public ThrottledUseAndTimeoutExpirationPolicyTests() {
-        super(new ThrottledUseAndTimeoutExpirationPolicy(10, 5));
+        super(new ThrottledUseAndTimeoutExpirationPolicy(100, 5));
     }
 
     @Test
@@ -42,7 +42,7 @@ public final class ThrottledUseAndTimeoutExpirationPolicyTests extends AbstractE
     @Test
     public void testItShouldBeExpired() {
         final State state = new SimpleStateImpl();
-        sleep(12);
+        sleep(120);
         assertTrue(getExpirationPolicy().isExpired(state));
     }
 
@@ -57,7 +57,7 @@ public final class ThrottledUseAndTimeoutExpirationPolicyTests extends AbstractE
     public void testNotExpiredBecauseWeWaitedLongEnough() {
         final State state = new SimpleStateImpl();
         state.updateState();
-        sleep(7);
+        sleep(50);
         assertFalse(getExpirationPolicy().isExpired(state));
     }
 }
