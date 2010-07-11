@@ -36,13 +36,23 @@ public abstract class AbstractAttributePrincipal implements AttributePrincipal {
 
 
     public final List<Object> getAttributeValues(final String attribute) {
-        return getAttributes().get(attribute);
+        final IPersonAttributes attributes = getPersonAttributeDao().getPerson(getName());
+
+        if (attributes == null) {
+            return null;
+        }
+
+        return attributes.getAttributeValues(attribute);
     }
 
     public final Object getAttributeValue(final String attribute) {
-        final List<Object> attributes = getAttributeValues(attribute);
+        final IPersonAttributes attributes = getPersonAttributeDao().getPerson(getName());
 
-        return attributes == null ? null : attributes.get(0);
+        if (attributes == null) {
+            return null;
+        }
+
+        return attributes.getAttributeValue(attribute);
     }
 
     public final Map<String, List<Object>> getAttributes() {

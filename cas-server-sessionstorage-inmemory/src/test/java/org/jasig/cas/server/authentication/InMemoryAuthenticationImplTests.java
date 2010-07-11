@@ -19,6 +19,8 @@
 
 package org.jasig.cas.server.authentication;
 
+import org.jasig.cas.TestUtils;
+
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +31,10 @@ import java.util.Map;
  */
 public final class InMemoryAuthenticationImplTests extends AbstractAuthenticationTests {
 
+    private AuthenticationFactory authenticationFactory = new InMemoryAuthenticationImplFactory();
+
     @Override
     protected Authentication getAuthentication(final Map<String, List<Object>> metaData, final String authenticationMethod) {
-        return new InMemoryAuthenticationImpl(metaData, false, authenticationMethod);
+        return this.authenticationFactory.getAuthentication(metaData, TestUtils.getAuthenticationRequest(TestUtils.getCredentialsWithSameUsernameAndPassword()), authenticationMethod);
     }
 }

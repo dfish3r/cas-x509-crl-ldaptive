@@ -40,6 +40,14 @@
 		</dependency>
 
         <dependency>
+            <groupId>org.jasig.service</groupId>
+            <artifactId>person-directory-api</artifactId>
+            <version>${person.directory.version}</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>${mockito.version}</version>
