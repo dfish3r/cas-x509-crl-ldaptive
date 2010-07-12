@@ -82,6 +82,12 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
                         <exclude>**/TestUtils.java</exclude>
                         <exclude>**/CustomBeanValidationPostProcessor.java</exclude>
                         <exclude>**/SpringAwareMessageMessageInterpolator.java</exclude>
+                        <exclude>**/AbstractAuthenticationManagerTests.java</exclude>
+                        <exclude>**/AbstractAttributePrincipalTests.java</exclude>
+                        <exclude>**/AbstractAuthenticationTests.java</exclude>
+                        <exclude>**/AbstractSessionStorageTests.java</exclude>
+                        <exclude>**/AbstractSessionTests.java</exclude>
+                        <exclude>**/AbstractStateTests.java</exclude>
                     </excludes>
                     <statementContexts>
                         <iflog>if.*\(log\.is.*\).*</iflog> <!-- NB: must match entire statement, including any semicolons. -->

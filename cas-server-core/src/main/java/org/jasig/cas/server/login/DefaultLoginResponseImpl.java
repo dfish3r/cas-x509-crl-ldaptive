@@ -51,22 +51,23 @@ public class DefaultLoginResponseImpl implements LoginResponse {
 
     private final Map<String, Object> attributes;
 
-    public DefaultLoginResponseImpl(final Session session, final AuthenticationResponse authenticationResponse) {
+    public DefaultLoginResponseImpl(final Session session, final List<GeneralSecurityException> exceptions, final List<Message> messages, final Map<String, Object> attributes) {
         this.session = session;
-        
-        if (authenticationResponse != null) {
-            this.authenticationExceptions = Collections.unmodifiableList(authenticationResponse.getGeneralSecurityExceptions());
-            this.authenticationMessages = Collections.unmodifiableList(authenticationResponse.getAuthenticationMessages());
-            this.attributes = Collections.unmodifiableMap(authenticationResponse.getAttributes());
-        } else {
-            this.authenticationExceptions = Collections.emptyList();
-            this.authenticationMessages = Collections.emptyList();
-            this.attributes = Collections.emptyMap();
-        }
+        this.authenticationExceptions = Collections.unmodifiableList(exceptions);
+        this.authenticationMessages = Collections.unmodifiableList(messages);
+        this.attributes = Collections.unmodifiableMap(attributes);
+    }
+
+    public DefaultLoginResponseImpl(final Session session, final AuthenticationResponse authenticationResponse) {
+        this(session, authenticationResponse.getGeneralSecurityExceptions(), authenticationResponse.getAuthenticationMessages(), authenticationResponse.getAttributes());
     }
 
     public DefaultLoginResponseImpl(final AuthenticationResponse authenticationResponse) {
         this(null, authenticationResponse);
+    }
+
+    public DefaultLoginResponseImpl(final List<GeneralSecurityException> exceptions) {
+        this(null, exceptions, Collections.<Message>emptyList(), Collections.<String, Object>emptyMap());
     }
 
     public final Date getDate() {

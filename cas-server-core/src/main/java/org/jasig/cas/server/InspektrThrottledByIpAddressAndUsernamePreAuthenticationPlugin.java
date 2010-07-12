@@ -17,19 +17,22 @@
  * under the License.
  */
 
-package org.jasig.cas.server.util;
+package org.jasig.cas.server;
 
-import com.github.inspektr.audit.AuditTrailManager;
 import com.github.inspektr.audit.AuditActionContext;
+import com.github.inspektr.audit.AuditTrailManager;
 import com.github.inspektr.common.web.ClientInfo;
 import com.github.inspektr.common.web.ClientInfoHolder;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
+import org.jasig.cas.server.login.LoginRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
-import java.util.Date;
-import java.util.Calendar;
+import javax.validation.constraints.NotNull;
 import java.sql.Types;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Works in conjunction with the Inspektr Library to block attempts to dictionary attack users.
@@ -42,38 +45,41 @@ import java.sql.Types;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.3.5
+ * @since 3.5
  */
-public class InspektrThrottledSubmissionByIpAddressAndUsernameHandlerInterceptorAdapter extends AbstractThrottledSubmissionHandlerInterceptorAdapter {
+public final class InspektrThrottledByIpAddressAndUsernamePreAuthenticationPlugin extends AbstractThrottlingPreAuthenticationPlugin {
 
     private static final String DEFAULT_APPLICATION_CODE = "CAS";
 
     private static final String INSPEKTR_ACTION = "THROTTLED_LOGIN_ATTEMPT";
 
+    @NotNull
     private final AuditTrailManager auditTrailManager;
 
+    @NotNull
     private final JdbcTemplate jdbcTemplate;
 
+    @NotNull
     private String applicationCode = DEFAULT_APPLICATION_CODE;
 
-    public InspektrThrottledSubmissionByIpAddressAndUsernameHandlerInterceptorAdapter(final AuditTrailManager auditTrailManager, final DataSource dataSource) {
+    public InspektrThrottledByIpAddressAndUsernamePreAuthenticationPlugin(final AuditTrailManager auditTrailManager, final DataSource dataSource) {
         this.auditTrailManager = auditTrailManager;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
-    protected final int findCount(final HttpServletRequest request, final String usernameParameter, final int failureRangeInSeconds) {
+    protected int findCount(final LoginRequest loginRequest) {
         final String SQL = "Select count(*) from COM_AUDIT_TRAIL where AUD_CLIENT_IP = ? and AUD_USER = ? AND AUD_ACTION = ? AND APPLIC_CD = ? AND AUD_DATE >= ?";
-        final String userToUse = constructUsername(request, usernameParameter);
+        final String userToUse = constructUsername(loginRequest);
         final Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, -1 * failureRangeInSeconds);
+        calendar.add(Calendar.SECOND, -1 * getFailureRangeAnSeconds());
         final Date oldestDate = calendar.getTime();
-        return this.jdbcTemplate.queryForInt(SQL, new Object[] {request.getRemoteAddr(), userToUse, INSPEKTR_ACTION, this.applicationCode, oldestDate}, new int[] {Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.TIMESTAMP});
+        return this.jdbcTemplate.queryForInt(SQL, new Object[] {loginRequest.getRemoteIpAddress(), userToUse, INSPEKTR_ACTION, this.applicationCode, oldestDate}, new int[] {Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.TIMESTAMP});
     }
 
     @Override
-    protected final void updateCount(final HttpServletRequest request, final String usernameParameter) {
-        final String userToUse = constructUsername(request, usernameParameter);
+    protected void updateCount(final LoginRequest loginRequest) {
+        final String userToUse = constructUsername(loginRequest);
         final ClientInfo clientInfo = ClientInfoHolder.getClientInfo();
         final AuditActionContext context = new AuditActionContext(userToUse, userToUse, INSPEKTR_ACTION, this.applicationCode, new Date(), clientInfo.getClientIpAddress(), clientInfo.getServerIpAddress());
         this.auditTrailManager.record(context);
@@ -83,8 +89,14 @@ public class InspektrThrottledSubmissionByIpAddressAndUsernameHandlerInterceptor
         this.applicationCode = applicationCode;
     }
 
-    protected String constructUsername(HttpServletRequest request, String usernameParameter) {
-        final String username = request.getParameter(usernameParameter);
-        return "[username: " + (username != null ? username : "") + "]";
+    protected String constructUsername(final LoginRequest loginRequest) {
+        for (final Credential c : loginRequest.getCredentials()) {
+            if (c instanceof UserNamePasswordCredential) {
+                final UserNamePasswordCredential upc = (UserNamePasswordCredential) c;
+                return "[username: " + upc.getUserName().toLowerCase() + "]";
+            }
+        }
+
+        return "[username: ]";
     }
 }

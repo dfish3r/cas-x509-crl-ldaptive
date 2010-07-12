@@ -17,9 +17,9 @@
  * under the License.
  */
 
-package org.jasig.cas.server.util;
+package org.jasig.cas.server;
 
-import javax.servlet.http.HttpServletRequest;
+import org.jasig.cas.server.login.LoginRequest;
 
 /**
  * Throttles access attempts for failed logins by IP Address.  This stores the attempts in memory.  This is not good for a
@@ -27,12 +27,12 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.3.5
+ * @since 3.5
  */
-public final class InMemoryThrottledSubmissionByIpAddressHandlerInterceptorAdapter extends AbstractInMemoryThrottledSubmissionHandlerInterceptorAdapter {
+public final class InMemoryThrottledByIpAddressPreAuthenticationPlugin extends AbstractInMemoryThrottlingPreAuthenticationPlugin {
 
     @Override
-    protected String constructKey(final HttpServletRequest request, final String usernameParameter) {
-        return request.getRemoteAddr();
+    protected String constructKey(final LoginRequest loginRequest) {
+        return loginRequest.getRemoteIpAddress();
     }
 }

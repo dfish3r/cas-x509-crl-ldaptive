@@ -18,10 +18,13 @@
  */
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.authentication.DefaultAuthenticationResponseImpl;
+import org.jasig.cas.server.authentication.Message;
 import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.Session;
 import org.junit.Test;
 
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -40,7 +43,7 @@ public final class DefaultServiceAccessResponseImplTests {
         final Access access = mock(Access.class);
         final Session session = mock(Session.class);
         when(session.getId()).thenReturn(CONST_SESSION_ID);
-        final DefaultServiceAccessResponseImpl response = new DefaultServiceAccessResponseImpl(access, Collections.<Access>emptyList(), session, null);
+        final DefaultServiceAccessResponseImpl response = new DefaultServiceAccessResponseImpl(access, Collections.<Access>emptyList(), session, new DefaultAuthenticationResponseImpl(Collections.<GeneralSecurityException>emptyList(), Collections.<Message>emptyList()));
 
         assertNotNull(response.getAccess());
         assertNotNull(response.getLoggedOutAccesses());
@@ -55,7 +58,7 @@ public final class DefaultServiceAccessResponseImplTests {
     @Test
     public void secondConstructor() {
         final Access access = mock(Access.class);
-        final DefaultServiceAccessResponseImpl response = new DefaultServiceAccessResponseImpl(access, Collections.<Access>emptyList(), null);
+        final DefaultServiceAccessResponseImpl response = new DefaultServiceAccessResponseImpl(access, Collections.<Access>emptyList(), new DefaultAuthenticationResponseImpl(Collections.<GeneralSecurityException>emptyList(), Collections.<Message>emptyList()));
 
         assertNotNull(response.getAccess());
         assertNotNull(response.getLoggedOutAccesses());

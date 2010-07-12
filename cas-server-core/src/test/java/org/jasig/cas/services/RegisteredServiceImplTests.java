@@ -19,7 +19,8 @@
 
 package org.jasig.cas.services;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,11 +32,12 @@ import java.util.List;
  * @since 3.1
  *
  */
-public class RegisteredServiceImplTests extends TestCase {
+public class RegisteredServiceImplTests {
 
     private RegisteredServiceImpl r = new RegisteredServiceImpl();
-    
-    public void testSettersAndGetters() {
+
+    @Test(expected=IllegalArgumentException.class)
+    public void settersAndGetters() {
         final long ID = 1000;
         final String DESCRIPTION = "test";
         final String SERVICEID = "serviceId";
@@ -74,10 +76,10 @@ public class RegisteredServiceImplTests extends TestCase {
         assertTrue(this.r.equals(this.r));
         
         this.r.setAllowedAttributes(null);
-        assertNotNull(this.r.getAllowedAttributes());
     }
-    
-    public void testEquals() {
+
+    @Test
+    public void equals() {
         assertTrue(new RegisteredServiceImpl().equals(new RegisteredServiceImpl()));
         assertFalse(new RegisteredServiceImpl().equals(null));
         assertFalse(new RegisteredServiceImpl().equals(new Object()));

@@ -95,7 +95,7 @@ public class RegisteredServiceImpl
     }
 
     public List<String> getAllowedAttributes() {
-        return this.allowedAttributes != null ? this.allowedAttributes : new ArrayList<String>();
+        return this.allowedAttributes;
     }
 
     public long getId() {

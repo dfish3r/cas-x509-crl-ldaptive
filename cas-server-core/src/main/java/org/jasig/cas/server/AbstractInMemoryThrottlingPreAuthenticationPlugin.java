@@ -17,7 +17,9 @@
  * under the License.
  */
 
-package org.jasig.cas.server.util;
+package org.jasig.cas.server;
+
+import org.jasig.cas.server.login.LoginRequest;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -25,41 +27,39 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
- * Implementation of a HandlerInterceptorAdapter that keeps track of a mapping
+ * Implementation of a PreAuthenticationPlugin and AuthenticationResponsePlugin that keeps track of a mapping
  * of IP Addresses to number of failures to authenticate.
  * <p>
  * Note, this class relies on an external method for decrementing the counts (i.e. a Quartz Job) and runs independent of the
  * threshold of the parent.
 
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0.5
  */
-public abstract class AbstractInMemoryThrottledSubmissionHandlerInterceptorAdapter extends AbstractThrottledSubmissionHandlerInterceptorAdapter {
+public abstract class AbstractInMemoryThrottlingPreAuthenticationPlugin extends AbstractThrottlingPreAuthenticationPlugin {
 
     private final ConcurrentMap<String, AtomicInteger> ipMap = new ConcurrentHashMap<String, AtomicInteger>();
 
     @Override
-    protected final int findCount(final HttpServletRequest request, final String usernameParameter, final int failureRangeInSeconds) {
-        final AtomicInteger existingValue = this.ipMap.get(constructKey(request, usernameParameter));
+    protected final int findCount(final LoginRequest loginRequest) {
+        final AtomicInteger existingValue = this.ipMap.get(constructKey(loginRequest));
         return existingValue == null ? 0 : existingValue.get();
     }
 
     @Override
-    protected final void updateCount(final HttpServletRequest request, final String usernameParameter) {
+    protected final void updateCount(final LoginRequest loginRequest) {
         final AtomicInteger newAtomicInteger = new AtomicInteger(1);
-        final AtomicInteger oldAtomicInteger = this.ipMap.putIfAbsent(constructKey(request, usernameParameter), newAtomicInteger);
+        final AtomicInteger oldAtomicInteger = this.ipMap.putIfAbsent(constructKey(loginRequest), newAtomicInteger);
 
         if (oldAtomicInteger != null) {
             oldAtomicInteger.incrementAndGet();
         }
     }
 
-    protected abstract String constructKey(HttpServletRequest request, String usernameParameter);
+    protected abstract String constructKey(LoginRequest loginRequest);
 
     /**
      * This class relies on an external configuration to clean it up. It ignores the threshold data in the parent class.
@@ -73,7 +73,9 @@ public abstract class AbstractInMemoryThrottledSubmissionHandlerInterceptorAdapt
             final AtomicInteger integer = this.ipMap.get(key);
             final int  newValue = integer.decrementAndGet();
 
-            log.trace("Decrementing count for key [" + key + "]; starting count [" + integer + "]; ending count [" + newValue + "]");
+            if (log.isTraceEnabled()) {
+                log.trace("Decrementing count for key [" + key + "]; starting count [" + integer + "]; ending count [" + newValue + "]");
+            }
 
             if (newValue == 0) {
                 iter.remove();

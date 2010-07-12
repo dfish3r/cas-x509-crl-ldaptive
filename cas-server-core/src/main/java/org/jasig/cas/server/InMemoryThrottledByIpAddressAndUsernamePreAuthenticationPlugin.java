@@ -17,9 +17,11 @@
  * under the License.
  */
 
-package org.jasig.cas.server.util;
+package org.jasig.cas.server;
 
-import javax.servlet.http.HttpServletRequest;
+import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.UserNamePasswordCredential;
+import org.jasig.cas.server.login.LoginRequest;
 
 /**
  * Attempts to throttle by both IP Address and username.  Protects against instances where there is a NAT, such as
@@ -27,18 +29,19 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.3.5
+ * @since 3.5
  */
-public final class InMemoryThrottledSubmissionByIpAddressAndUsernameHandlerInterceptorAdapter extends AbstractInMemoryThrottledSubmissionHandlerInterceptorAdapter {
+public final class InMemoryThrottledByIpAddressAndUsernamePreAuthenticationPlugin extends AbstractInMemoryThrottlingPreAuthenticationPlugin {
 
     @Override
-    protected String constructKey(final HttpServletRequest request, final String usernameParameter) {
-        final String username = request.getParameter(usernameParameter);
-
-        if (username == null) {
-            return request.getRemoteAddr();
+    protected String constructKey(final LoginRequest loginRequest) {
+        for (final Credential c : loginRequest.getCredentials()) {
+            if (c instanceof UserNamePasswordCredential) {
+                final UserNamePasswordCredential upc = (UserNamePasswordCredential) c;
+                return loginRequest.getRemoteIpAddress() + ";" + upc.getUserName().toLowerCase();
+            }
         }
 
-        return request.getRemoteAddr() + ";" + username.toLowerCase();
+        return loginRequest.getRemoteIpAddress();
     }
 }
