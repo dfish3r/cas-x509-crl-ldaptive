@@ -607,6 +607,8 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
         <module>cas-server-test-support</module>
         <module>cas-server-protocol-cas</module>
         <module>cas-server-protocol-cas-sessionstorage-inmemory</module>
+        <module>cas-server-sessionstorage-infinispan</module>
+        <module>cas-server-protocol-cas-sessionstorage-infinispan</module>
     </modules>
 
 	<reporting>
@@ -660,5 +662,6 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
         <commons.lang.version>2.4</commons.lang.version>
         <inspektr.version>1.0.0.GA</inspektr.version>
         <mockito.version>1.8.5</mockito.version>
+        <jboss.infinispan.version>4.1.0.ALPHA1</jboss.infinispan.version>
 	</properties>
 </project>
