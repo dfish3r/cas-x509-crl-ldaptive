@@ -64,7 +64,7 @@
             <form action="${accessResponseResult.url}" method="POST" name="postForm">
                 <c:forEach items="${accessResponseResult.parameters}" var="entry">
                     <c:forEach items="${entry.value}" var="value">
-                        <input type="hidden" name="${entry.key}" value="${value}" />
+                        <input type="hidden" name="${entry.key}" value="${fn:escapeXml(value)}" />
                     </c:forEach>
                 </c:forEach>
             </form>
