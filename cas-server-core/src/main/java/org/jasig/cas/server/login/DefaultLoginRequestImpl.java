@@ -101,4 +101,35 @@ public class DefaultLoginRequestImpl implements LoginRequest {
     public final Access getOriginalAccess() {
         return this.access;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final DefaultLoginRequestImpl that = (DefaultLoginRequestImpl) o;
+
+        if (forceAuthentication != that.forceAuthentication) return false;
+        if (longTermLoginRequest != that.longTermLoginRequest) return false;
+        if (passiveAuthentication != that.passiveAuthentication) return false;
+        if (access != null ? !access.equals(that.access) : that.access != null) return false;
+        if (credentials != null ? !credentials.equals(that.credentials) : that.credentials != null) return false;
+        if (remoteIpAddress != null ? !remoteIpAddress.equals(that.remoteIpAddress) : that.remoteIpAddress != null)
+            return false;
+        if (sessionId != null ? !sessionId.equals(that.sessionId) : that.sessionId != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = credentials != null ? credentials.hashCode() : 0;
+        result = 31 * result + (forceAuthentication ? 1 : 0);
+        result = 31 * result + (remoteIpAddress != null ? remoteIpAddress.hashCode() : 0);
+        result = 31 * result + (sessionId != null ? sessionId.hashCode() : 0);
+        result = 31 * result + (passiveAuthentication ? 1 : 0);
+        result = 31 * result + (longTermLoginRequest ? 1 : 0);
+        result = 31 * result + (access != null ? access.hashCode() : 0);
+        return result;
+    }
 }

@@ -81,6 +81,7 @@ public final class TestUtils {
 
     public static UserNamePasswordCredential getCredentialsWithDifferentUsernameAndPassword(
         final String username, final String password) {
+
         return new UserNamePasswordCredential() {
             public String getUserName() {
                 return username;
@@ -88,6 +89,28 @@ public final class TestUtils {
 
             public String getPassword() {
                 return password;
+            }
+
+            @Override
+            public boolean equals(final Object obj) {
+                if (obj == null) {
+                    return false;
+                }
+
+                if (!(obj instanceof UserNamePasswordCredential)) {
+                    return false;
+                }
+
+                final UserNamePasswordCredential c = (UserNamePasswordCredential) obj;
+
+                return getUserName().equals(c.getUserName()) && getPassword().equals(c.getPassword());
+            }
+
+            @Override
+            public int hashCode() {
+                int result = username != null ? username.hashCode() : 0;
+                result = 31 * result + (password != null ? password.hashCode() : 0);
+                return result;
             }
         };
     }

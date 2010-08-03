@@ -48,4 +48,24 @@ public class DefaultUserNamePasswordCredential implements UserNamePasswordCreden
     public final String getPassword() {
         return password;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserNamePasswordCredential)) return false;
+
+        final UserNamePasswordCredential that = (DefaultUserNamePasswordCredential) o;
+
+        if (password != null ? !password.equals(that.getPassword()) : that.getPassword() != null) return false;
+        if (userName != null ? !userName.equals(that.getUserName()) : that.getUserName() != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userName != null ? userName.hashCode() : 0;
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        return result;
+    }
 }
