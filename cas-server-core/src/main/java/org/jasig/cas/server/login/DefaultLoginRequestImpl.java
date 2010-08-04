@@ -103,11 +103,11 @@ public class DefaultLoginRequestImpl implements LoginRequest {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof DefaultLoginRequestImpl)) return false;
 
-        final DefaultLoginRequestImpl that = (DefaultLoginRequestImpl) o;
+        DefaultLoginRequestImpl that = (DefaultLoginRequestImpl) o;
 
         if (forceAuthentication != that.forceAuthentication) return false;
         if (longTermLoginRequest != that.longTermLoginRequest) return false;

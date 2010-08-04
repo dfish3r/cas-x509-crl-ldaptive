@@ -35,15 +35,28 @@ import java.util.Map;
 public final class CasServiceAccessRequestImplFactory implements ServiceAccessRequestFactory {
 
     public ServiceAccessRequest getServiceAccessRequest(final String sessionId, final String remoteIpAddress, final Map parameters) {
-        final String serviceId = (String) parameters.get("service");
-        final boolean gateway = StringUtils.hasText((String) parameters.get("gateway"));
-        final boolean renew = StringUtils.hasText((String) parameters.get("renew"));
-        final boolean post = "POST".equals(parameters.get("method"));
+        final String serviceId = getValue(parameters.get("service"));
+        final boolean gateway = StringUtils.hasText(getValue(parameters.get("gateway")));
+        final boolean renew = StringUtils.hasText((getValue(parameters.get("renew"))));
+        final boolean post = "POST".equals(getValue(parameters.get("method")));
 
         if (!StringUtils.hasText(serviceId)) {
             return null;
         }
 
         return new CasServiceAccessRequestImpl(sessionId, remoteIpAddress, renew, gateway, serviceId, post);
+    }
+
+    protected String getValue(Object o) {
+        if (o == null) {
+            return null;
+        }
+        
+        if (o instanceof String[]) {
+            final String[] s = (String[]) o;
+            return s[0];
+        }
+
+        return o.toString();
     }
 }

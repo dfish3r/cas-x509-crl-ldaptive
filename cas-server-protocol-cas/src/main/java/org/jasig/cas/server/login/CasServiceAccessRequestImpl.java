@@ -49,4 +49,26 @@ public final class CasServiceAccessRequestImpl extends DefaultLoginRequestImpl i
     public boolean isPostRequest() {
         return this.postRequest;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CasServiceAccessRequestImpl)) return false;
+        if (!super.equals(o)) return false;
+
+        CasServiceAccessRequestImpl that = (CasServiceAccessRequestImpl) o;
+
+        if (postRequest != that.postRequest) return false;
+        if (serviceId != null ? !serviceId.equals(that.serviceId) : that.serviceId != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (serviceId != null ? serviceId.hashCode() : 0);
+        result = 31 * result + (postRequest ? 1 : 0);
+        return result;
+    }
 }

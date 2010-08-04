@@ -4,19 +4,18 @@ import org.jasig.cas.TestUtils;
 import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;
-import org.jasig.cas.server.login.DefaultLoginRequestImpl;
-import org.jasig.cas.server.login.LoginRequest;
-import org.jasig.cas.server.login.LoginResponse;
-import org.jasig.cas.server.login.ServiceAccessRequestFactory;
+import org.jasig.cas.server.login.*;
+import org.jasig.cas.server.session.Access;
+import org.jasig.cas.server.session.AccessException;
 import org.jasig.cas.server.session.Session;
+import org.jasig.cas.server.session.SessionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
@@ -37,11 +36,14 @@ public final class CasProtocolRestfulControllerTests {
 
     private CentralAuthenticationService centralAuthenticationService;
 
+    final CasServiceAccessRequestImpl accessRequest = new CasServiceAccessRequestImpl("TGT", "128.0.0.1", false, false, "service", false);
+
     @Before
     public void setUp() throws Exception {
-        final ServiceAccessRequestFactory serviceAccessRequestFactory = mock(ServiceAccessRequestFactory.class);
+        final ServiceAccessRequestFactory serviceAccessRequestFactory = new CasServiceAccessRequestImplFactory();
+
         this.centralAuthenticationService = mock(CentralAuthenticationService.class);
-        this.casProtocolRestfulController = new CasProtocolRestfulController(centralAuthenticationService, serviceAccessRequestFactory);
+        this.casProtocolRestfulController = new CasProtocolRestfulController(this.centralAuthenticationService, serviceAccessRequestFactory);
     }
 
     @Test
@@ -91,6 +93,44 @@ public final class CasProtocolRestfulControllerTests {
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
     }
 
+    @Test
+    public void obtainServiceTicketWithValidSession() throws Exception {
+        final ServiceAccessResponse serviceResponse = mock(ServiceAccessResponse.class);
 
+        final Access access = mock(Access.class);
+        when(access.getId()).thenReturn("ST");
+        when(serviceResponse.getAccess()).thenReturn(access);
+        
+        when(centralAuthenticationService.grantAccess(accessRequest)).thenReturn(serviceResponse);
 
+        final MockHttpServletRequest request = new MockHttpServletRequest("POST", "/v1/tickets/TGT");
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        request.setRemoteAddr("128.0.0.1");
+        request.addParameter("service", "service");
+
+        this.casProtocolRestfulController.obtainServiceTicket(request, response, response.getWriter(), "TGT");
+
+        final String content = response.getContentAsString();
+
+        assertNotNull(content);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        assertTrue(content.contains("ST"));
+    }
+
+    @Test
+    public void failToObtainServiceTicketBecauseOfInvalidSession() {
+
+    }
+
+    @Test
+    public void failToObtainServiceTicketMissingParameter() throws Exception {
+        final MockHttpServletRequest request = new MockHttpServletRequest("POST", "/v1/tickets/TGT");
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        request.setRemoteAddr("128.0.0.1");
+
+        this.casProtocolRestfulController.obtainServiceTicket(request, response, response.getWriter(), "TGT");
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
+    }
 }

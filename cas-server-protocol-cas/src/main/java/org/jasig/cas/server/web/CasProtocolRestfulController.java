@@ -97,6 +97,7 @@ public class CasProtocolRestfulController {
     public final void obtainServiceTicket(final HttpServletRequest request, final HttpServletResponse response, final Writer writer, @PathVariable final String ticket) throws IOException {
         final ServiceAccessRequest serviceAccessRequest = this.serviceAccessRequestFactory.getServiceAccessRequest(ticket, request.getRemoteAddr(), request.getParameterMap());
 
+        System.out.println(request.getParameter("service").toString());
         try {
             final ServiceAccessResponse serviceAccessResponse = this.centralAuthenticationService.grantAccess(serviceAccessRequest);
             final String serviceTicketId = serviceAccessResponse.getAccess().getId();
