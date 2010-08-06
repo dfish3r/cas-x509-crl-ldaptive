@@ -49,7 +49,7 @@ public class DefaultLoginRequestImpl implements LoginRequest {
 
     private final String remoteIpAddress;
 
-    private final String sessionId;
+    private String sessionId;
 
     private final boolean passiveAuthentication;
 
@@ -84,6 +84,10 @@ public class DefaultLoginRequestImpl implements LoginRequest {
 
     public final String getSessionId() {
         return this.sessionId;
+    }
+
+    public void setSessionId(final String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public final boolean isPassiveAuthentication() {

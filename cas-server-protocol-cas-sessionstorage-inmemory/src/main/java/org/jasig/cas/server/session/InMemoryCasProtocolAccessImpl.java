@@ -65,12 +65,12 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
         this.parentSession = session;
         this.renewed = request.isForceAuthentication() || session.getAccesses().size() == 1;
         this.resourceIdentifier = request.getServiceId();
-        this.id = createId();
         this.serviceIdentifierMatcher = serviceIdentifierMatcher;
         this.post = (request instanceof CasServiceAccessRequestImpl) && ((CasServiceAccessRequestImpl) request).isPostRequest();
         this.proxyHandler = proxyHandler;
         this.expirationPolicy = expirationPolicy;
         this.uniqueTicketIdGenerator = uniqueTicketIdGenerator;
+        this.id = createId();
     }
 
     public final String getId() {

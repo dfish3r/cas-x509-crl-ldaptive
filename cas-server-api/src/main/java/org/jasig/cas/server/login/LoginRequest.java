@@ -75,6 +75,13 @@ public interface LoginRequest extends Serializable {
     String getSessionId();
 
     /**
+     * Allows you to provide a session identifier.
+     *
+     * @param sessionId the session id if provided later.
+     */
+    void setSessionId(String sessionId);
+
+    /**
      * Determines whether the user should be prompted for credentials or not.  In CAS terminology, this is "gateway"
      *
      * @return true if they should not be prompted, false otherwise.

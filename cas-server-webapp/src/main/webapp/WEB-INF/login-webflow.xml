@@ -27,9 +27,9 @@
     <on-start>
         <evaluate expression="loginRequestFactory.createLoginRequest(flowRequestContext)" result="flowScope.create" result-type="java.lang.String" />
     </on-start>
-    
+
     <decision-state id="multipleDecisions">
-        <if test="(loginRequest.sessionId eq null || loginRequest.sessionId.length() eq 0) and create eq 'error'" then="viewLoginForm" />
+        <if test="(loginRequest.sessionId eq null || loginRequest.session.id.length() eq 0) and create eq 'error'" then="viewLoginForm" />
 
         <!-- if you have non-interactive credentials then you may wish to have them checked even for a passive authentication -->
         <if test="(loginRequest.sessionId eq null || loginRequest.sessionId.length() eq 0) and create eq 'success' and loginRequest.passiveAuthentication" then="passiveReturnToApplication" />
@@ -58,18 +58,18 @@
             <evaluate expression="loginRequest.credentials.add(credentials)" />
             <evaluate expression="centralAuthenticationService.login(loginRequest)" result="requestScope.loginResponse" result-type="org.jasig.cas.server.login.LoginResponse" />
             <evaluate expression="sessionCookieCreater.createSessionCookie(loginResponse, null, externalContext)" />
-            <evaluate expression="loginRequest.setSessionId(loginResponse.sessionId)" />
+            <evaluate expression="loginRequest.setSessionId(loginResponse.session.id)" />
         </transition>
 	</view-state>
 
     <decision-state id="determineIfSessionCreated">
-        <if test="loginResponse.sessionId eq null || loginResponse.sessionId.length() eq 0" then="viewLoginForm" />
+        <if test="loginResponse.session.id eq null || loginResponse.session.id.length() eq 0" then="viewLoginForm" />
         <if test="create eq 'success'" then="generateAccess" else="viewGenericLoginSuccess" />
     </decision-state>
 
     <!-- This is a placeholder for now. -->
     <action-state id="generateAccess">
-        <evaluate expression="centralAuthenticationService.access(loginRequest)" result="requestScope.serviceAccessResponse" result-type="org.jasig.cas.server.login.ServiceAccessResponse" />
+        <evaluate expression="centralAuthenticationService.grantAccess(loginRequest)" result="requestScope.serviceAccessResponse" result-type="org.jasig.cas.server.login.ServiceAccessResponse" />
         <evaluate expression="sessionCookieCreater.createSessionCookie(loginResponse, serviceAccessResponse, externalContext)" />
         <transition on-exception="org.jasig.cas.server.session.NotFoundSessionException" to="viewLoginForm" />
         <transition on-exception="org.jasig.cas.server.session.AccessException" to="viewLoginForm" />
