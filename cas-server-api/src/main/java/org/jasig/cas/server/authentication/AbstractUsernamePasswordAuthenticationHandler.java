@@ -49,6 +49,11 @@ public abstract class AbstractUsernamePasswordAuthenticationHandler extends Abst
     private boolean supportSubClasses = true;
 
     /**
+     * Boolean
+     */
+    private boolean typeMustMatchName = false;
+
+    /**
      * PasswordEncoder to be used by subclasses to encode passwords for
      * comparing against a resource.
      */
@@ -125,11 +130,19 @@ public abstract class AbstractUsernamePasswordAuthenticationHandler extends Abst
         this.principalNameTransformer = principalNameTransformer;
     }
 
+    public final void setTypeMustMatchName(final boolean typeMustMatchName) {
+        this.typeMustMatchName = typeMustMatchName;
+    }
+
     /**
      * @return true if the credentials are not null and the credentials class is
      * equal to the class defined in classToSupport.
      */
     public final boolean supports(final Credential credentials) {
+        if (this.typeMustMatchName) {
+            return (credentials instanceof TypedUsernamePasswordCredential) && (this.getName().equals(((TypedUsernamePasswordCredential) credentials).getType()));
+        }
+        
         return credentials != null
             && (this.classToSupport.equals(credentials.getClass()) || (this.classToSupport
                 .isAssignableFrom(credentials.getClass()))
