@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="org.jasig.cas.server.CasVersion" %>
 <%--
 
@@ -26,7 +27,7 @@
                         <p>Copyright &copy; 2005 - 2010 Jasig, Inc. All rights reserved.</p>
                         <p>Powered by <a href="http://www.jasig.org/cas">Jasig Central Authentication Service <%=CasVersion.getVersion()%></a></p>
                     </div>
-                    <a href="http://www.jasig.org" title="go to Jasig home page"><img id="logo" src="images/ja-sig-logo.gif" width="118" height="31" alt="JA-SIG" title="go to Jasig home page" /></a>
+                    <a href="http://www.jasig.org" title="go to Jasig home page"><img id="logo" src="<c:url value="/images/ja-sig-logo.gif" />" width="118" height="31" alt="JA-SIG" title="go to Jasig home page" /></a>
                 </div>
             </div>
         </div>

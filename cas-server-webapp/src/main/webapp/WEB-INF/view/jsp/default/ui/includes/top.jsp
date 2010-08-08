@@ -38,11 +38,13 @@
                 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
                 <link type="text/css" rel="stylesheet" media="screen" href="<c:url value="/css/fss-framework-1.1.2.css" />" />
                 <link type="text/css" rel="stylesheet" href="<c:url value="/css/fss-mobile-${requestScope['browserType']}-layout.css" />" />
-                <link type="text/css" rel="stylesheet" href="${mobileCss}" />
+                <link type="text/css" rel="stylesheet" href="<c:url value="${mobileCss}" />" />
            </c:when>
            <c:otherwise>
-                <link type="text/css" rel="stylesheet" href="<spring:theme code="standard.custom.css.file" />" />
-                <script type="text/javascript" src="js/common_rosters.js"></script>
+                <spring:theme code="standard.custom.css.file" var="customCss" />
+
+                <link type="text/css" rel="stylesheet" href="<c:url value="${customCss}" />" />
+                <script type="text/javascript" src="<c:url value="/js/common_rosters.js" />"></script>
            </c:otherwise>
         </c:choose>
 	    <link rel="icon" href="<c:url value="/favicon.ico" />" type="image/x-icon" />
