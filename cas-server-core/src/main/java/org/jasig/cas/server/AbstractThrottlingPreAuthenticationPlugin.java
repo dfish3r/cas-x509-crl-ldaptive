@@ -20,6 +20,7 @@
 package org.jasig.cas.server;
 
 import org.jasig.cas.server.authentication.AuthenticationResponse;
+import org.jasig.cas.server.authentication.DefaultAuthenticationResponseImpl;
 import org.jasig.cas.server.login.DefaultLoginResponseImpl;
 import org.jasig.cas.server.login.LoginRequest;
 import org.jasig.cas.server.login.LoginResponse;
@@ -75,7 +76,7 @@ public abstract class AbstractThrottlingPreAuthenticationPlugin implements PreAu
             updateCount(loginRequest);
             log.warn("*** Possible Hacking Attempt from [" + loginRequest.getRemoteIpAddress() + "].  More than " + this.failureThreshold + " failed login attempts within " + this.failureRangeInSeconds + " seconds.");
             // TODO add message text here
-            return new DefaultLoginResponseImpl(Arrays.asList((GeneralSecurityException) new AccountLockedException()));
+            return new DefaultLoginResponseImpl(new DefaultAuthenticationResponseImpl(Arrays.asList((GeneralSecurityException) new AccountLockedException())));
         }
 
         return null;

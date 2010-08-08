@@ -40,6 +40,10 @@ public final class DefaultAuthenticationResponseImpl implements AuthenticationRe
 
     private final AttributePrincipal attributePrincipal;
 
+    public DefaultAuthenticationResponseImpl(final List<GeneralSecurityException> authenticationExceptions) {
+        this(authenticationExceptions, Collections.<Message>emptyList());
+    }
+
     public DefaultAuthenticationResponseImpl(final List<GeneralSecurityException> authenticationExceptions, final List<Message> authenticationMessages) {
         this(null, null, authenticationExceptions, authenticationMessages);
     }
