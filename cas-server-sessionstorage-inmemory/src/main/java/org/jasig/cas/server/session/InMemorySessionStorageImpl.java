@@ -41,12 +41,12 @@ public class InMemorySessionStorageImpl extends AbstractSessionStorage implement
     private Map<String,String> accessIdToSessionIdMapping = new ConcurrentHashMap<String,String>();
 
     @Autowired(required=true)
-    public InMemorySessionStorageImpl(final List<AccessFactory> accessFactories) {
-        super(accessFactories);
+    public InMemorySessionStorageImpl(final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
+        super(accessFactories, servicesManager);
     }
 
     public Session createSession(final AuthenticationResponse authenticationResponse) {
-        final Session session = new InMemorySessionImpl(getExpirationPolicy(), getAccessFactories(), authenticationResponse.getAuthentications(), authenticationResponse.getPrincipal());
+        final Session session = new InMemorySessionImpl(getExpirationPolicy(), getAccessFactories(), authenticationResponse.getAuthentications(), authenticationResponse.getPrincipal(), getServicesManager());
         this.sessions.put(session.getId(), session);
         return session;
     }

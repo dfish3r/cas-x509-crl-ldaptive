@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.services;
+package org.jasig.cas.server.session;
 
 import java.util.Collection;
 
@@ -50,12 +50,12 @@ public interface ServicesManager {
 
     /**
      * Find a RegisteredService by matching with the supplied service.
-     * 
-     * @param service the service to match with.
+     *
+     * @param access the service to match with.
      * @return the RegisteredService that matches the supplied service.
      */
-    RegisteredService findServiceBy(Service service);
-    
+    RegisteredService findServiceBy(Access access);
+
     /**
      * Find a RegisteredService by matching with the supplied id.
      * 
@@ -77,5 +77,5 @@ public interface ServicesManager {
      * @param service the service to check.
      * @return true if it exists, false otherwise.
      */
-    boolean matchesExistingService(Service service);
+    boolean matchesExistingService(Access service);
 }

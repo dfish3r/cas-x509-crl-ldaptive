@@ -58,16 +58,19 @@ public final class InMemorySessionImpl extends AbstractSession {
 
     private final AttributePrincipal attributePrincipal;
 
-    public InMemorySessionImpl(final ExpirationPolicy expirationPolicy, final List<AccessFactory> accessFactories, final Set<Authentication> authentications, final AttributePrincipal attributePrincipal) {
-        this(null, expirationPolicy, accessFactories, authentications, attributePrincipal);
+    private final ServicesManager servicesManager;
+
+    public InMemorySessionImpl(final ExpirationPolicy expirationPolicy, final List<AccessFactory> accessFactories, final Set<Authentication> authentications, final AttributePrincipal attributePrincipal, final ServicesManager servicesManager) {
+        this(null, expirationPolicy, accessFactories, authentications, attributePrincipal, servicesManager);
     }
 
-    public InMemorySessionImpl(final Session parentSession, final ExpirationPolicy expirationPolicy, final List<AccessFactory> accessFactories, final Set<Authentication> authentications, final AttributePrincipal attributePrincipal) {
+    public InMemorySessionImpl(final Session parentSession, final ExpirationPolicy expirationPolicy, final List<AccessFactory> accessFactories, final Set<Authentication> authentications, final AttributePrincipal attributePrincipal, final ServicesManager servicesManager) {
         this.parentSession = parentSession;
         this.expirationPolicy = expirationPolicy;
         this.accessFactories = accessFactories;
         this.authentications = authentications;
         this.attributePrincipal = attributePrincipal;
+        this.servicesManager = servicesManager;
         updateId();
     }
 
@@ -103,6 +106,11 @@ public final class InMemorySessionImpl extends AbstractSession {
         this.id = UUID.randomUUID().toString();
     }
 
+    @Override
+    protected ServicesManager getServicesManager() {
+        return this.servicesManager;
+    }
+
     public String getId() {
         return this.id;
     }
@@ -132,7 +140,7 @@ public final class InMemorySessionImpl extends AbstractSession {
     }
 
     protected Session createDelegatedSessionInternal(final AuthenticationResponse authenticationResponse) {
-        final Session session = new InMemorySessionImpl(this, this.expirationPolicy, this.accessFactories, authenticationResponse.getAuthentications(), authenticationResponse.getPrincipal());
+        final Session session = new InMemorySessionImpl(this, this.expirationPolicy, this.accessFactories, authenticationResponse.getAuthentications(), authenticationResponse.getPrincipal(), getServicesManager());
         this.childSessions.add(session);
         return session;
     }

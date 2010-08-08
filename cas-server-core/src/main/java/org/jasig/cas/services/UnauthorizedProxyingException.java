@@ -19,6 +19,8 @@
 
 package org.jasig.cas.services;
 
+import org.jasig.cas.server.session.UnauthorizedServiceException;
+
 /**
  * Exception thrown when a service attempts to proxy when it is not allowed to.
  * 

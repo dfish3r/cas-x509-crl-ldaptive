@@ -27,6 +27,10 @@ import org.jasig.cas.server.authentication.Service;
 
 import junit.framework.TestCase;
 import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.session.Access;
+import org.jasig.cas.server.session.RegisteredService;
+
+import static org.mockito.Mockito.*;
 
 /**
  * 
@@ -87,15 +91,18 @@ public class DefaultServicesManagerImplTests extends TestCase {
         r.setId(1000);
         r.setName("test");
         r.setServiceId("test");
-        
-        final Service service = new SimpleService("test");
-        final Service service2 = new SimpleService("fdfa");
-        
+
+        final Access access = mock(Access.class);
+        when(access.getResourceIdentifier()).thenReturn("test");
+
+        final Access access2 = mock(Access.class);
+        when(access2.getResourceIdentifier()).thenReturn("fdfa");
+
         this.defaultServicesManagerImpl.save(r);
         
-        assertTrue(this.defaultServicesManagerImpl.matchesExistingService(service));
-        assertEquals(r, this.defaultServicesManagerImpl.findServiceBy(service));
-        assertNull(this.defaultServicesManagerImpl.findServiceBy(service2));
+        assertTrue(this.defaultServicesManagerImpl.matchesExistingService(access));
+        assertEquals(r, this.defaultServicesManagerImpl.findServiceBy(access));
+        assertNull(this.defaultServicesManagerImpl.findServiceBy(access2));
     }
     
     public void testAllService() {

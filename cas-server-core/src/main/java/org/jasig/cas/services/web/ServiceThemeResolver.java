@@ -20,8 +20,8 @@
 package org.jasig.cas.services.web;
 
 import org.jasig.cas.server.authentication.Service;
-import org.jasig.cas.services.RegisteredService;
-import org.jasig.cas.services.ServicesManager;
+import org.jasig.cas.server.session.RegisteredService;
+import org.jasig.cas.server.session.ServicesManager;
 import org.jasig.cas.web.support.ArgumentExtractor;
 import org.jasig.cas.web.support.WebUtils;
 import org.springframework.util.StringUtils;
@@ -57,6 +57,8 @@ public final class ServiceThemeResolver extends AbstractThemeResolver {
             return getDefaultThemeName();
         }
 
+        // TODO disabled for now.
+        /*
         final Service service = WebUtils.getService(this.argumentExtractors, request);
 
         final RegisteredService rService = this.servicesManager.findServiceBy(service);
@@ -73,6 +75,8 @@ public final class ServiceThemeResolver extends AbstractThemeResolver {
         }
 
         return service != null && rService != null && StringUtils.hasText(rService.getTheme()) ? rService.getTheme() : getDefaultThemeName();
+        */
+        return getDefaultThemeName();
     }
 
     public void setThemeName(final HttpServletRequest request, final HttpServletResponse response, final String themeName) {

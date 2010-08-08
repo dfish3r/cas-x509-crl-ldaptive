@@ -24,11 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jasig.cas.server.session.RegisteredService;
+import org.jasig.cas.server.session.ServicesManager;
 import org.jasig.cas.services.DefaultServicesManagerImpl;
 import org.jasig.cas.services.InMemoryServiceRegistryDaoImpl;
-import org.jasig.cas.services.RegisteredService;
 import org.jasig.cas.services.RegisteredServiceImpl;
-import org.jasig.cas.services.ServicesManager;
 import org.jasig.cas.services.web.support.RegisteredServiceValidator;
 import org.jasig.services.persondir.support.StubPersonAttributeDao;
 import org.springframework.mock.web.MockHttpServletRequest;

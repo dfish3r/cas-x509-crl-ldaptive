@@ -37,7 +37,7 @@ public final class InMemorySessionStorageImplTests extends AbstractSessionStorag
 
     @Override
     protected SessionStorage getSessionStorage() {
-        return new InMemorySessionStorageImpl(Collections.<AccessFactory>emptyList());
+        return new InMemorySessionStorageImpl(Collections.<AccessFactory>emptyList(), null);
     }
 
     @Override

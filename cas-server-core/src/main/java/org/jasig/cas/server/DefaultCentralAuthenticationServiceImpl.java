@@ -26,10 +26,10 @@ import org.jasig.cas.server.logout.DefaultLogoutResponseImpl;
 import org.jasig.cas.server.logout.LogoutRequest;
 import org.jasig.cas.server.logout.LogoutResponse;
 import org.jasig.cas.server.session.*;
-import org.jasig.cas.services.RegisteredService;
-import org.jasig.cas.services.ServicesManager;
+import org.jasig.cas.server.session.ServicesManager;
+import org.jasig.cas.server.session.RegisteredService;
 import org.jasig.cas.services.UnauthorizedProxyingException;
-import org.jasig.cas.services.UnauthorizedServiceException;
+import org.jasig.cas.server.session.UnauthorizedServiceException;
 import org.jasig.cas.server.session.Assertion;
 import org.perf4j.aop.Profiled;
 import org.slf4j.Logger;
@@ -178,26 +178,12 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         final Session session = this.sessionStorage.findSessionBySessionId(serviceAccessRequest.getSessionId());
 
         if (session == null) {
-            throw new NotFoundSessionException(String.format("Session [%s] cound not be found.", serviceAccessRequest.getSessionId()));
+            throw new NotFoundSessionException(String.format("Session [%s] could not be found.", serviceAccessRequest.getSessionId()));
         }
 
         if (!session.isValid()) {
             throw new InvalidatedSessionException(String.format("Session [%s] is no longer valid.", session.getId()));
         }
-
-        /*
-        TODO we need to re-enable service checks
-        final RegisteredService registeredService = this.servicesManager.findServiceBy(service);
-
-        if (registeredService == null || !registeredService.isEnabled()) {
-            log.warn("ServiceManagement: Unauthorized Service Access. Service [" + service.getId() + "] not found in Service Registry.");
-            throw new UnauthorizedServiceException();
-        }
-
-        if (!registeredService.isSsoEnabled() && credentials == null && !session.hasNotBeenUsed()) {
-            log.warn("ServiceManagement: Service Not Allowed to use SSO.  Service [" + service.getId() + "]");
-            throw new UnauthorizedSsoServiceException();
-        } */
 
         final Session sessionToWorkWith;
         final List<Access> remainingAccesses = new ArrayList<Access>();
@@ -262,26 +248,8 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
             throw new IllegalStateException();
         }
 
-        final RegisteredService registeredService = this.servicesManager.findServiceBy(new Service() {
-            public void setPrincipal(AttributePrincipal principal) {
-            }
-
-            public boolean logOutOfService(String sessionIdentifier) {
-                return false;
-            }
-
-            public boolean matches(Service service) {
-                return true;
-            }
-
-            public String getId() {
-                return access.getResourceIdentifier();
-            }
-
-            public Map<String, Object> getAttributes() {
-                return Collections.emptyMap();
-            }
-        });
+        // TODO this should probably be moved into the Session logic
+        final RegisteredService registeredService = this.servicesManager.findServiceBy(access);
 
         if (registeredService == null || !registeredService.isEnabled()
             || !registeredService.isAllowedToProxy()) {
@@ -318,7 +286,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
             throw new IllegalStateException();
         }
         final Access access = session.getAccess(serviceTicketId);
-        final RegisteredService registeredService = this.servicesManager.findServiceBy(service);
+        final RegisteredService registeredService = this.servicesManager.findServiceBy(access);
 
         if (registeredService == null || !registeredService.isEnabled()) {
             log.warn("ServiceManagement: Service does not exist is not enabled, and thus not allowed to validate tickets.   Service: [" + service.getId() + "]");

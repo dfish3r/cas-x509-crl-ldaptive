@@ -23,13 +23,15 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jasig.cas.server.authentication.Service;
+import org.jasig.cas.server.session.Access;
+import org.jasig.cas.server.session.RegisteredService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 /**
- * Default implementation of the {@link ServicesManager} interface. If there are
+ * Default implementation of the {@link org.jasig.cas.server.session.ServicesManager} interface. If there are
  * no services registered with the server, it considers the ServicecsManager
  * disabled and will not prevent any service from using CAS.
  * 
@@ -91,7 +93,7 @@ public final class DefaultServicesManagerImpl implements ReloadableServicesManag
      * <p>
      * This preserves default CAS behavior.
      */
-    public RegisteredService findServiceBy(final Service service) {
+    public RegisteredService findServiceBy(final Access service) {
         final Collection<RegisteredService> c = convertToTreeSet();
         
         if (c.isEmpty()) {
@@ -125,7 +127,7 @@ public final class DefaultServicesManagerImpl implements ReloadableServicesManag
         return Collections.unmodifiableCollection(this.services.values());
     }
 
-    public boolean matchesExistingService(final Service service) {
+    public boolean matchesExistingService(final Access service) {
         return findServiceBy(service) != null;
     }
 

@@ -28,7 +28,7 @@ import org.jasig.cas.authentication.principal.WebApplicationService;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.DefaultUrlCredentialImpl;
 import org.jasig.cas.server.session.Assertion;
-import org.jasig.cas.services.UnauthorizedServiceException;
+import org.jasig.cas.server.session.UnauthorizedServiceException;
 import org.jasig.cas.ticket.proxy.ProxyHandler;
 import org.jasig.cas.validation.ValidationSpecification;
 import org.jasig.cas.validation.Cas20ProtocolValidationSpecification;

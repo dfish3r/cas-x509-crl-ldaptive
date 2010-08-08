@@ -22,6 +22,7 @@ package org.jasig.cas.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jasig.cas.server.session.RegisteredService;
 import org.jasig.cas.util.DefaultLongNumericGenerator;
 import org.jasig.cas.server.util.LongNumericGenerator;
 

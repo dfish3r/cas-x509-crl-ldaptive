@@ -19,9 +19,9 @@
 
 package org.jasig.cas.services.web.support;
 
-import org.jasig.cas.services.RegisteredService;
+import org.jasig.cas.server.session.RegisteredService;
+import org.jasig.cas.server.session.ServicesManager;
 import org.jasig.cas.services.RegisteredServiceImpl;
-import org.jasig.cas.services.ServicesManager;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 

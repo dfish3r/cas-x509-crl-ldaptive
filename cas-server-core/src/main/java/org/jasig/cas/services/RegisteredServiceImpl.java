@@ -34,6 +34,8 @@ import javax.persistence.GenerationType;
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.IndexColumn;
 import org.jasig.cas.server.authentication.Service;
+import org.jasig.cas.server.session.Access;
+import org.jasig.cas.server.session.RegisteredService;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
@@ -130,8 +132,8 @@ public class RegisteredServiceImpl
         return this.ssoEnabled;
     }
 
-    public boolean matches(final Service service) {
-        return service != null && PATH_MATCHER.match(this.serviceId.toLowerCase(), service.getId().toLowerCase());
+    public boolean matches(final Access access) {
+        return access != null && PATH_MATCHER.match(this.serviceId.toLowerCase(), access.getResourceIdentifier().toLowerCase());
     }
 
     @Override

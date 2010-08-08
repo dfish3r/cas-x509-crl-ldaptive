@@ -34,6 +34,8 @@ public abstract class AbstractStaticSession extends AbstractSession {
 
     private static List<AccessFactory> ACCESS_FACTORIES;
 
+    private static ServicesManager SERVICES_MANAGER;
+
     public static void setExpirationPolicy(final ExpirationPolicy expirationPolicy) {
         EXPIRATION_POLICY = expirationPolicy;
     }
@@ -42,11 +44,19 @@ public abstract class AbstractStaticSession extends AbstractSession {
         ACCESS_FACTORIES = accessFactories;
     }
 
+    public static void setServicesManager(final ServicesManager servicesManager) {
+        SERVICES_MANAGER = servicesManager;
+    }
+
     protected final List<AccessFactory> getAccessFactories() {
         return ACCESS_FACTORIES;
     }
 
     protected final ExpirationPolicy getExpirationPolicy() {
         return EXPIRATION_POLICY;
+    }
+
+    protected final ServicesManager getServicesManager() {
+        return SERVICES_MANAGER;
     }
 }

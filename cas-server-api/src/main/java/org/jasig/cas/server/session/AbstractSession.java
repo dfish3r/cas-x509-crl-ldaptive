@@ -22,6 +22,8 @@ import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.login.ServiceAccessRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,6 +39,8 @@ import java.util.Set;
  * @since 3.5
  */
 public abstract class AbstractSession implements Session {
+
+    protected final static Logger log = LoggerFactory.getLogger(AbstractSession.class);
 
     /**
      * Retrieve the expiration policy, which defines whether this session is still valid or not.
@@ -105,6 +109,13 @@ public abstract class AbstractSession implements Session {
      */
     protected abstract Session createDelegatedSessionInternal(final AuthenticationResponse authenticationResponse);
 
+    /**
+     * Returns an instance of the ServicesManager tool.  CANNOT be NULL.
+     *
+     * @return the services manager tool.
+     */
+    protected abstract ServicesManager getServicesManager();
+
     public synchronized final Set<Access> invalidate() {
         final Set<Access> accesses = new HashSet<Access>();
         accesses.addAll(getAccesses());
@@ -160,6 +171,18 @@ public abstract class AbstractSession implements Session {
             final Access access = accessFactory.getAccess(this, serviceAccessRequest);
 
             if (access != null) {
+                final RegisteredService registeredService = getServicesManager().findServiceBy(access);
+
+                if (registeredService == null || !registeredService.isEnabled()) {
+                    log.warn("ServiceManagement: Unauthorized Service Access. Service [" + access.getResourceIdentifier() + "] not found in Service Registry.");
+                    throw new UnauthorizedServiceException();
+                }
+
+                if (!registeredService.isSsoEnabled() && serviceAccessRequest.getCredentials().isEmpty() && !this.hasNotBeenUsed()) {
+                    log.warn("ServiceManagement: Service Not Allowed to use SSO.  Service [" + access.getResourceIdentifier() + "]");
+                    throw new UnauthorizedSsoServiceException();
+                }
+
                 addAccess(access);
                 // TODO re-enable later when we want to change session ids
                 // updateId();

@@ -44,8 +44,12 @@ public abstract class AbstractSessionStorage implements SessionStorage {
     @NotNull
     private ExpirationPolicy expirationPolicy = new MultiUseOrTimeToLiveExpirationPolicy(21600);
 
-    protected AbstractSessionStorage(final List<AccessFactory> accessFactories) {
+    @NotNull
+    private ServicesManager servicesManager;
+
+    protected AbstractSessionStorage(final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
         this.accessFactories = accessFactories;
+        this.servicesManager = servicesManager;
     }
 
     public final void setExpirationPolicy(final ExpirationPolicy expirationPolicy) {
@@ -58,5 +62,9 @@ public abstract class AbstractSessionStorage implements SessionStorage {
 
     protected final List<AccessFactory> getAccessFactories() {
         return this.accessFactories;
+    }
+
+    protected final ServicesManager getServicesManager() {
+        return this.servicesManager;
     }
 }

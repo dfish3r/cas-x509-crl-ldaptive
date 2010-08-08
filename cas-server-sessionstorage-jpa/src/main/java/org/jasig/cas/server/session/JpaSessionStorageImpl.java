@@ -57,8 +57,11 @@ public final class JpaSessionStorageImpl extends AbstractSessionStorage implemen
     @Min(1)
     private int purgeMaxCount = Integer.MAX_VALUE;
 
-    public JpaSessionStorageImpl(final List<AccessFactory> accessFactories) {
-        super(accessFactories);
+    public JpaSessionStorageImpl(final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
+        super(accessFactories, servicesManager);
+        JpaSessionImpl.setAccessFactories(getAccessFactories());
+        JpaSessionImpl.setServicesManager(servicesManager);
+
     }
 
     public Session destroySession(final String sessionId) {
@@ -92,9 +95,7 @@ public final class JpaSessionStorageImpl extends AbstractSessionStorage implemen
     }
 
     public Session createSession(final AuthenticationResponse authenticationResponse) {
-        JpaSessionImpl.setAccessFactories(getAccessFactories());
         JpaSessionImpl.setExpirationPolicy(getExpirationPolicy());
-
         final Session session = new JpaSessionImpl(authenticationResponse);
         return this.entityManager.merge(session);
     }

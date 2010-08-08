@@ -17,38 +17,46 @@
  * under the License.
  */
 
-package org.jasig.cas.services;
+package org.jasig.cas.server.session;
 
 /**
- * Exception thrown when a service attempts to use SSO when it should not be
- * allowed to.
+ * Exception that is thrown when an Unauthorized Service attempts to use CAS.
  * 
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.1
+ * @since 3.0
  */
-public class UnauthorizedSsoServiceException extends
-    UnauthorizedServiceException {
+public class UnauthorizedServiceException extends RuntimeException {
 
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
-    private static final long serialVersionUID = 8909291297815558561L;
-
+    /** The Unique ID for serialization. */
+    private static final long serialVersionUID = 3905807495715960369L;
+    
     /** The code description. */
-    private static final String CODE = "service.not.authorized.sso";
+    private static final String CODE = "service.not.authorized";
 
-    public UnauthorizedSsoServiceException() {
+    public UnauthorizedServiceException() {
         this(CODE);
     }
-
-    public UnauthorizedSsoServiceException(final String message,
+    
+    
+    /**
+     * Constructs an UnauthorizedServiceException with a custom message and the
+     * root cause of this exception.
+     * 
+     * @param message an explanatory message.
+     * @param cause the root cause of the exception.
+     */
+    public UnauthorizedServiceException(final String message,
         final Throwable cause) {
         super(message, cause);
     }
 
-    public UnauthorizedSsoServiceException(final String message) {
+    /**
+     * Constructs an exception with a custom message.
+     * 
+     * @param message an explanatory message.
+     */
+    public UnauthorizedServiceException(final String message) {
         super(message);
     }
-
 }

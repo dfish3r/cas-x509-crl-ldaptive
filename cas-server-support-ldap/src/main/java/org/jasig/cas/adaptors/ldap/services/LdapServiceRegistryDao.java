@@ -19,7 +19,7 @@
 
 package org.jasig.cas.adaptors.ldap.services;
 
-import org.jasig.cas.services.RegisteredService;
+import org.jasig.cas.server.session.RegisteredService;
 import org.jasig.cas.services.RegisteredServiceImpl;
 import org.jasig.cas.services.ServiceRegistryDao;
 import org.slf4j.Logger;

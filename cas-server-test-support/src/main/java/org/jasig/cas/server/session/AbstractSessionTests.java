@@ -46,12 +46,41 @@ public abstract class AbstractSessionTests {
 
     private AttributePrincipal attributePrincipal;
 
+    private ServicesManager servicesManager = new ServicesManager() {
+        public void save(RegisteredService registeredService) {
+            // nothing to do
+        }
+
+        public RegisteredService delete(long id) {
+            return null;
+        }
+
+        public RegisteredService findServiceBy(Access access) {
+            return findServiceBy(1L);
+        }
+
+        public RegisteredService findServiceBy(long id) {
+            final RegisteredService r = mock(RegisteredService.class);
+            when(r.isSsoEnabled()).thenReturn(true);
+            when(r.isEnabled()).thenReturn(true);
+            return r;
+        }
+
+        public Collection<RegisteredService> getAllServices() {
+            return null;
+        }
+
+        public boolean matchesExistingService(Access service) {
+            return true;
+        }
+    };
+
     /**
      * Returns a new Session.
      *
      * @return a new session.  CANNOT be NULL.
      */
-    protected abstract Session getNewSession(Authentication authentication, AttributePrincipal attributePrincipal);
+    protected abstract Session getNewSession(Authentication authentication, AttributePrincipal attributePrincipal, ServicesManager servicesManager);
 
     protected abstract Authentication getNewAuthentication();
 
@@ -86,7 +115,7 @@ public abstract class AbstractSessionTests {
     public final void setUp() throws Exception {
         this.authentication = getNewAuthentication();
         this.attributePrincipal = getNewAttributePrincipal();
-        this.session = getNewSession(this.authentication, this.attributePrincipal);
+        this.session = getNewSession(this.authentication, this.attributePrincipal, this.servicesManager);
     }
 
     @Test
@@ -96,7 +125,7 @@ public abstract class AbstractSessionTests {
 
     @Test
     public final void uniqueId() {
-        final Session s = getNewSession(this.authentication, this.attributePrincipal);
+        final Session s = getNewSession(this.authentication, this.attributePrincipal, this.servicesManager);
         assertNotSame(s.getId(), this.session.getId());
     }
 

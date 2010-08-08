@@ -23,9 +23,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.jasig.cas.server.authentication.Service;
-import org.jasig.cas.services.RegisteredService;
+import org.jasig.cas.server.session.Access;
+import org.jasig.cas.server.session.RegisteredService;
+import org.jasig.cas.server.session.ServicesManager;
 import org.jasig.cas.services.RegisteredServiceImpl;
-import org.jasig.cas.services.ServicesManager;
 import org.springframework.validation.BindException;
 
 import junit.framework.TestCase;
@@ -112,7 +113,7 @@ public class RegisteredServiceValidatorTests extends TestCase {
             return null;
         }
 
-        public RegisteredService findServiceBy(Service service) {
+        public RegisteredService findServiceBy(Access service) {
             return null;
         }
 
@@ -130,7 +131,7 @@ public class RegisteredServiceValidatorTests extends TestCase {
             return list;
         }
 
-        public boolean matchesExistingService(final Service service) {
+        public boolean matchesExistingService(final Access service) {
             return this.returnValue;
         }
 

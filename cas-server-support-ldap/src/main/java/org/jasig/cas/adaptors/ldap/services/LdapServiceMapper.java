@@ -19,7 +19,7 @@
 
 package org.jasig.cas.adaptors.ldap.services;
 
-import org.jasig.cas.services.RegisteredService;
+import org.jasig.cas.server.session.RegisteredService;
 import org.springframework.ldap.core.simple.AbstractParameterizedContextMapper;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.DirContextAdapter;

@@ -19,6 +19,8 @@
 
 package org.jasig.cas.services;
 
+import org.jasig.cas.server.session.ServicesManager;
+
 /**
  * Interface to allow for ServicesManagers to attempt to reload their list of
  * services.

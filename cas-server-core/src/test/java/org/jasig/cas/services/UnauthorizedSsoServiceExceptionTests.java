@@ -20,6 +20,7 @@
 package org.jasig.cas.services;
 
 import junit.framework.TestCase;
+import org.jasig.cas.server.session.UnauthorizedSsoServiceException;
 
 
 public class UnauthorizedSsoServiceExceptionTests extends TestCase {

@@ -21,6 +21,7 @@ package org.jasig.cas.services;
 
 import java.util.List;
 
+import org.jasig.cas.server.session.RegisteredService;
 import org.springframework.orm.jpa.support.JpaDaoSupport;
 
 /**

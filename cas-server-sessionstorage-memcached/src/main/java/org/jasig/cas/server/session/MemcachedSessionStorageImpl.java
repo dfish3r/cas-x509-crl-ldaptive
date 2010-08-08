@@ -57,13 +57,15 @@ public class MemcachedSessionStorageImpl extends AbstractSessionStorage {
     @Min(0)
     private final int sessionTimeOut;
 
-    public MemcachedSessionStorageImpl(final List<InetSocketAddress> servers, final List<AccessFactory> accessFactories,  final int sessionTimeOut) throws IOException {
-        this(servers, accessFactories, sessionTimeOut, TimeUnit.SECONDS);
+    public MemcachedSessionStorageImpl(final List<InetSocketAddress> servers, final List<AccessFactory> accessFactories, final ServicesManager servicesManager, final int sessionTimeOut) throws IOException {
+        this(servers, accessFactories, servicesManager, sessionTimeOut, TimeUnit.SECONDS);
     }
 
-    public MemcachedSessionStorageImpl(final List<InetSocketAddress> servers, final List<AccessFactory> accessFactories, final int sessionTimeOut, final TimeUnit timeUnit) throws IOException {
-        super(accessFactories);
+    public MemcachedSessionStorageImpl(final List<InetSocketAddress> servers, final List<AccessFactory> accessFactories, final ServicesManager servicesManager, final int sessionTimeOut, final TimeUnit timeUnit) throws IOException {
+        super(accessFactories, servicesManager);
         this.memcachedClient = new MemcachedClient(new DefaultConnectionFactory(), servers);
+        AbstractStaticSession.setAccessFactories(getAccessFactories());
+        AbstractStaticSession.setServicesManager(servicesManager);
 
         switch (timeUnit) {
             case SECONDS:
@@ -100,7 +102,6 @@ public class MemcachedSessionStorageImpl extends AbstractSessionStorage {
 
     public Session createSession(AuthenticationResponse authenticationResponse) {
         // TODO we need a better way to set this.
-        AbstractStaticSession.setAccessFactories(getAccessFactories());
         AbstractStaticSession.setExpirationPolicy(getExpirationPolicy());
         final Session session = new MemcachedSessionImpl(authenticationResponse);
 

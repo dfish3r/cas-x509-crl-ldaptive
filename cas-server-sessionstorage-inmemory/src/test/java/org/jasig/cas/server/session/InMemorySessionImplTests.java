@@ -42,8 +42,8 @@ public final class InMemorySessionImplTests extends AbstractSessionTests {
     private InMemoryAttributePrincipalFactoryImpl attributePrincipalFactory = new InMemoryAttributePrincipalFactoryImpl();
 
     @Override
-    protected Session getNewSession(final Authentication authentication, final AttributePrincipal attributePrincipal) {
-        return new InMemorySessionImpl(getExpirationPolicy(), getAccessFactories(), new HashSet<Authentication>(Arrays.asList(authentication)), attributePrincipal);
+    protected Session getNewSession(final Authentication authentication, final AttributePrincipal attributePrincipal, final ServicesManager servicesManager) {
+        return new InMemorySessionImpl(getExpirationPolicy(), getAccessFactories(), new HashSet<Authentication>(Arrays.asList(authentication)), attributePrincipal, servicesManager);
     }
 
     @Override

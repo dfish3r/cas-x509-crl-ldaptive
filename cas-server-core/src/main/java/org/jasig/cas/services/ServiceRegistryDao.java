@@ -19,6 +19,8 @@
 
 package org.jasig.cas.services;
 
+import org.jasig.cas.server.session.RegisteredService;
+
 import java.util.List;
 
 /**

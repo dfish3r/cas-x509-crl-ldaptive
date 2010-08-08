@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.services;
+package org.jasig.cas.server.session;
 
 import java.io.Serializable;
 import java.util.List;
@@ -120,10 +120,10 @@ public interface RegisteredService extends Cloneable, Serializable {
      * Returns whether the service matches the registered service.
      * <p>Note, as of 3.1.2, matches are case insensitive.
      * 
-     * @param service the service to match.
+     * @param access the service to match.
      * @return true if they match, false otherwise.
      */
-    boolean matches(final Service service);
+    boolean matches(final Access access);
     
     Object clone() throws CloneNotSupportedException;
 }
