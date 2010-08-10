@@ -19,7 +19,6 @@
 package org.jasig.cas.server;
 
 import com.github.inspektr.audit.annotation.Audit;
-import org.jasig.cas.authentication.principal.*;
 import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.login.*;
 import org.jasig.cas.server.logout.DefaultLogoutResponseImpl;
@@ -28,9 +27,7 @@ import org.jasig.cas.server.logout.LogoutResponse;
 import org.jasig.cas.server.session.*;
 import org.jasig.cas.server.session.ServicesManager;
 import org.jasig.cas.server.session.RegisteredService;
-import org.jasig.cas.services.UnauthorizedProxyingException;
-import org.jasig.cas.server.session.UnauthorizedServiceException;
-import org.jasig.cas.server.session.Assertion;
+import org.jasig.cas.server.session.UnauthorizedProxyingException;
 import org.perf4j.aop.Profiled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
-import java.io.Writer;
 import java.util.*;
 
 /**
@@ -85,14 +81,6 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
 
     @NotNull
     private final SessionStorage sessionStorage;
-
-    /** Implementation of Service Manager */
-    @NotNull
-    private ServicesManager servicesManager;
-
-    /** Encoder to generate PseudoIds. */
-    @NotNull
-    private PersistentIdGenerator persistentIdGenerator = new ShibbolethCompatiblePersistentIdGenerator();
 
     @NotNull
     private List<PreAuthenticationPlugin> preAuthenticationPlugins = new ArrayList<PreAuthenticationPlugin>();
@@ -168,6 +156,26 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         }
 
         return new DefaultLogoutResponseImpl(destroyedSessions);
+    }
+
+    @Audit(action="VALIDATE_ACCESS",actionResolverName="VALIDATE_ACCESS_RESOLVER",resourceResolverName="VALIDATE_ACCESS_RESOURCE_RESOLVER")
+    @Profiled(tag="VALIDATE_ACCESS",logFailuresSeparately = false)
+    public Access validate(final TokenServiceAccessRequest tokenServiceAccessRequest) {
+        Assert.notNull(tokenServiceAccessRequest, "tokenServiceAccessRequest cannot be null");
+
+        final Session session = this.sessionStorage.findSessionByAccessId(tokenServiceAccessRequest.getToken());
+
+        if (session == null) {
+            return null;
+        }
+
+        final Access access = session.getAccess(tokenServiceAccessRequest.getToken());
+
+        if (access == null) {
+            return null;
+        }
+        access.validate(tokenServiceAccessRequest);
+        return access;
     }
 
     @Audit(action="ACCESS",actionResolverName="GRANT_ACCESS_RESOLVER",resourceResolverName="GRANT_ACCESS_RESOURCE_RESOLVER")
@@ -248,17 +256,8 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
             throw new IllegalStateException();
         }
 
-        // TODO this should probably be moved into the Session logic
-        final RegisteredService registeredService = this.servicesManager.findServiceBy(access);
-
-        if (registeredService == null || !registeredService.isEnabled()
-            || !registeredService.isAllowedToProxy()) {
-            log.warn("ServiceManagement: Service Attempted to Proxy, but is not allowed.  Service: [" + access.getResourceIdentifier() + "]");
-            throw new UnauthorizedProxyingException();
-        }
-
         try {
-            final Session delegatedSession = session.createDelegatedSession(authenticationResponse);
+            final Session delegatedSession = session.createDelegatedSession(access, authenticationResponse);
             // TODO not sure if this will work
             this.sessionStorage.updateSession(session);
             return this.sessionStorage.updateSession(delegatedSession).getId();
@@ -266,185 +265,6 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         } catch (final InvalidatedSessionException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    /**
-     * @throws IllegalArgumentException if the ServiceTicketId or the Service
-     * are null.
-     */
-    @Audit(action="SERVICE_TICKET_VALIDATE",actionResolverName="VALIDATE_SERVICE_TICKET_RESOLVER",resourceResolverName="VALIDATE_SERVICE_TICKET_RESOURCE_RESOLVER")
-    @Profiled(tag="VALIDATE_SERVICE_TICKET",logFailuresSeparately = false)
-    @Transactional(readOnly = false)
-    public Assertion validateServiceTicket(final String serviceTicketId, final Service service) {
-        Assert.notNull(serviceTicketId, "serviceTicketId cannot be null");
-        Assert.notNull(service, "service cannot be null");
-
-        final Session session = this.sessionStorage.findSessionByAccessId(serviceTicketId);
-
-        if (session == null) {
-            log.info("ServiceTicket [" + serviceTicketId + "] does not exist.");
-            throw new IllegalStateException();
-        }
-        final Access access = session.getAccess(serviceTicketId);
-        final RegisteredService registeredService = this.servicesManager.findServiceBy(access);
-
-        if (registeredService == null || !registeredService.isEnabled()) {
-            log.warn("ServiceManagement: Service does not exist is not enabled, and thus not allowed to validate tickets.   Service: [" + service.getId() + "]");
-            throw new UnauthorizedServiceException("Service not allowed to validate tickets.");
-        }
-
-        access.validate(new TokenServiceAccessRequest() {
-            public String getToken() {
-                return serviceTicketId;
-            }
-
-            public String getServiceId() {
-                return service.getId();
-            }
-
-            public String getPassiveAuthenticationRedirectUrl() {
-                return service.getId();
-            }
-
-            public List<Credential> getCredentials() {
-                return null;
-            }
-
-            public Date getDate() {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public boolean isForceAuthentication() {
-                return false;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public String getRemoteIpAddress() {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public String getSessionId() {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public void setSessionId(String sessionId) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public boolean isPassiveAuthentication() {
-                return false;
-            }
-
-            public boolean isLongTermLoginRequest() {
-                return false;
-            }
-
-            public Access getOriginalAccess() {
-                return null;
-            }
-        });
-
-        final AccessResponseResult accessResponseResult = access.generateResponse(new AccessResponseRequest() {
-            public Writer getWriter() {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public String getProxySessionId() {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public Credential getProxiedCredential() {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-        });
-
-        // TODO BROKEN FOR THE MOMENT
-        return null;
-
-        /*
-        try {
-            synchronized (access) {
-                if (serviceTicket.isExpired()) {
-                    log.info("ServiceTicket [" + serviceTicketId + "] has expired.");
-                    throw new InvalidTicketException();
-                }
-
-                if (!serviceTicket.isValidFor(service)) {
-                    log.error("ServiceTicket [" + serviceTicketId + "] with service [" + serviceTicket.getService().getId() + " does not match supplied service [" + service + "]");
-                    throw new TicketValidationException(serviceTicket.getService());
-                }
-            }
-
-            final Authentication authentication = session.getRootAuthentication();
-            final AttributePrincipal principal = authentication.getPrincipal();
-            final String principalId = registeredService.isAnonymousAccess() ? this.persistentIdGenerator.generate(principal, access.getResourceIdentifier()) : principal.getName();
-                
-            final Authentication authToUse;
-            
-            if (!registeredService.isIgnoreAttributes()) {
-                final Map<String, Object> attributes = new HashMap<String, Object>();
-    
-                for (final String attribute : registeredService.getAllowedAttributes()) {
-                    final Object value = principal.getAttributes().get(attribute);
-    
-                    if (value != null) {
-                        attributes.put(attribute, value);
-                    }
-                }
-
-                final AttributePrincipal modifiedPrincipal = new AttributePrincipal() {
-
-                    public List<Object> getAttributeValues(String attribute) {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
-                    }
-
-                    public Object getAttributeValue(String attribute) {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
-                    }
-
-                    public Map<String, List<Object>> getAttributes() {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
-                    }
-
-                    public String getName() {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
-                    }
-                };
-
-                final Authentication authentication =
-                final MutableAuthentication mutableAuthentication = new MutableAuthentication(
-                    modifiedPrincipal, authentication.getAuthenticatedDate());
-                mutableAuthentication.getAttributes().putAll(
-                    authentication.getAttributes());
-                mutableAuthentication.getAuthenticatedDate().setTime(
-                    authentication.getAuthenticatedDate().getTime());
-                authToUse = mutableAuthentication;
-            } else {
-                authToUse = authentication;
-            }
-            
-
-            final List<Authentication> authentications = new ArrayList<Authentication>();
-
-            for (int i = 0; i < authenticationChainSize - 1; i++) {
-                authentications.add(session.getProxiedAuthentications().get(i));
-            }
-            authentications.add(authToUse);
-
-            return new ImmutableAssertionImpl(authentications, serviceTicket.getService(), serviceTicket.isFromNewLogin());
-        } finally {
-            if (serviceTicket.isExpired()) {
-                this.serviceTicketRegistry.deleteTicket(serviceTicketId);
-            }
-        }
-        */
-    }
-
-    public void setServicesManager(final ServicesManager servicesManager) {
-        this.servicesManager = servicesManager;
-    }
-
-    public void setPersistentIdGenerator(final PersistentIdGenerator persistentIdGenerator) {
-        this.persistentIdGenerator = persistentIdGenerator;
     }
 
     public void setPreAuthenticationPlugins(final List<PreAuthenticationPlugin> preAuthenticationPlugins) {

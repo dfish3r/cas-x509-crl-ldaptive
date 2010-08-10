@@ -120,6 +120,10 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
 					<excludes>
 						<exclude>**/Abstract*.java</exclude>
 					</excludes>
+                    <parallel>classes</parallel>
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
+                    <threadCount>80</threadCount>
+                    <perCoreThreadCount>true</perCoreThreadCount>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -608,6 +612,7 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
         <module>cas-server-protocol-cas-sessionstorage-inmemory</module>
         <module>cas-server-sessionstorage-infinispan</module>
         <module>cas-server-protocol-cas-sessionstorage-infinispan</module>
+        <module>cas-server-protocol-saml2</module>
     </modules>
 
 	<reporting>

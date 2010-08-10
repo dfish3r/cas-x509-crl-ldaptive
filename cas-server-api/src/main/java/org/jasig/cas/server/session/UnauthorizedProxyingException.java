@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.services;
+package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.session.UnauthorizedServiceException;
 

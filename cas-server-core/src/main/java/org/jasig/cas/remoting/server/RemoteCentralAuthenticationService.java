@@ -22,12 +22,10 @@ package org.jasig.cas.remoting.server;
 import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.server.login.LoginRequest;
-import org.jasig.cas.server.login.LoginResponse;
-import org.jasig.cas.server.login.ServiceAccessRequest;
-import org.jasig.cas.server.login.ServiceAccessResponse;
+import org.jasig.cas.server.login.*;
 import org.jasig.cas.server.logout.LogoutRequest;
 import org.jasig.cas.server.logout.LogoutResponse;
+import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.AccessException;
 import org.jasig.cas.server.session.Assertion;
 import org.jasig.cas.server.session.SessionException;
@@ -79,9 +77,8 @@ public final class RemoteCentralAuthenticationService implements CentralAuthenti
         return this.centralAuthenticationService.grantAccess(serviceAccessRequest);
     }
 
-
-    public Assertion validateServiceTicket(final String serviceTicketId, final Service service) {
-        return this.centralAuthenticationService.validateServiceTicket(serviceTicketId, service);
+    public Access validate(final TokenServiceAccessRequest tokenServiceAccessRequest) {
+        return this.centralAuthenticationService.validate(tokenServiceAccessRequest);
     }
 
      /**

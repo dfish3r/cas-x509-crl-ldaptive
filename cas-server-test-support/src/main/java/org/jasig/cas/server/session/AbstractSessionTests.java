@@ -224,7 +224,9 @@ public abstract class AbstractSessionTests {
         when(authenticationResponse.getAuthentications()).thenReturn(authentications);
         when(authenticationResponse.succeeded()).thenReturn(true);
 
-        final Session session = this.session.createDelegatedSession(authenticationResponse);
+        final Access access = mock(Access.class);
+
+        final Session session = this.session.createDelegatedSession(access, authenticationResponse);
 
         assertFalse(session.isRoot());
         assertEquals(this.session, session.getRootSession());

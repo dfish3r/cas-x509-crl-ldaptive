@@ -20,12 +20,10 @@ package org.jasig.cas.server;
 
 import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.server.login.LoginRequest;
-import org.jasig.cas.server.login.LoginResponse;
-import org.jasig.cas.server.login.ServiceAccessRequest;
-import org.jasig.cas.server.login.ServiceAccessResponse;
+import org.jasig.cas.server.login.*;
 import org.jasig.cas.server.logout.LogoutRequest;
 import org.jasig.cas.server.logout.LogoutResponse;
+import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.AccessException;
 import org.jasig.cas.server.session.Assertion;
 import org.jasig.cas.server.session.SessionException;
@@ -87,13 +85,13 @@ public interface CentralAuthenticationService {
     ServiceAccessResponse grantAccess(ServiceAccessRequest serviceAccessRequest) throws SessionException, AccessException;
 
     /**
-     * Validate a ServiceTicket for a particular Service.
-     * 
-     * @param serviceTicketId Proof of prior authentication.
-     * @param service Service wishing to validate a prior authentication.
-     * @return ServiceTicket if valid for the service
+     * Validate requests that cannot be self-validating (i.e. CAS tickets)
+     *
+     * @param tokenServiceAccessRequest the request to validate
+     * @return the response from the validation request.
      */
-    Assertion validateServiceTicket(final String serviceTicketId, final Service service);
+
+    Access validate(TokenServiceAccessRequest tokenServiceAccessRequest);
 
     /**
      * Delegate a TicketGrantingTicket to a Service for proxying authentication

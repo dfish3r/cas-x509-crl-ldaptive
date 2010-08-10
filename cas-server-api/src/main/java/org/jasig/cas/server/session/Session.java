@@ -167,11 +167,12 @@ public interface Session extends Serializable {
      * Associates a child session with this session.  A child session is generally one that depends on some aspect of
      * another session (generally the original session was used to authenticate to create the child one).
      *
+     * @param access the access that's requesting the delegated session.
      * @param authenticationResponse the response from authenticating.
      * @throws InvalidatedSessionException when a session is invalidated but you try to use it.
      * @return the newly created child session.
      */
-    Session createDelegatedSession(AuthenticationResponse authenticationResponse) throws InvalidatedSessionException;
+    Session createDelegatedSession(Access access, AuthenticationResponse authenticationResponse) throws InvalidatedSessionException;
 
     /**
      * Locates a child session *if* you know its original identifier.

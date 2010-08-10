@@ -138,7 +138,8 @@ public class ServiceValidateController extends AbstractController {
                             serviceCredentials);
             }
 
-            final Assertion assertion = this.centralAuthenticationService.validateServiceTicket(serviceTicketId, service);
+            final Assertion assertion = null;
+            // this.centralAuthenticationService.validateServiceTicket(serviceTicketId, service);
 
             final ValidationSpecification validationSpecification = this.getCommandClass();
             final ServletRequestDataBinder binder = new ServletRequestDataBinder(validationSpecification, "validationSpecification");

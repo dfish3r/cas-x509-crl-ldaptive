@@ -86,7 +86,7 @@ public class DefaultLoginRequestImpl implements LoginRequest {
         return this.sessionId;
     }
 
-    public void setSessionId(final String sessionId) {
+    public final void setSessionId(final String sessionId) {
         this.sessionId = sessionId;
     }
 

@@ -135,7 +135,7 @@
 	 -->
 
     <sec:user-service id="userDetailsService">
-        <sec:user name="battags" password="notused" authorities="ROLE_ADMIN"/>
+        <sec:user name="battags" password="notused" authorities="ROLE_DUH"/>
     </sec:user-service>
 
 	<bean
