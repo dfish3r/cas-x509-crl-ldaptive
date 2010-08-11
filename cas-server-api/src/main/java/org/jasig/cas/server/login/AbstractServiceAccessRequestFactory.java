@@ -17,24 +17,29 @@
  * under the License.
  */
 
-package org.jasig.cas.server.authentication;
+package org.jasig.cas.server.login;
 
 /**
- * Default implementation of {@link org.jasig.cas.server.authentication.TypedUsernamePasswordCredential}.
- *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 1.0.0
+ * User: scottbattaglia
+ * Date: Aug 10, 2010
+ * Time: 10:13:44 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class DefaultTypedUsernamePasswordCredential extends DefaultUserNamePasswordCredential implements TypedUsernamePasswordCredential {
+public abstract class AbstractServiceAccessRequestFactory implements ServiceAccessRequestFactory {
 
-    private String type;
+    protected final String getValue(Object o) {
+        if (o == null) {
+            return null;
+        }
 
-    public final String getType() {
-        return this.type;
-    }
+        if (o instanceof String[]) {
+            final String[] s = (String[]) o;
+            return s[0];
+        }
 
-    public final void setType(final String type) {
-        this.type = type;
+        return o.toString();
     }
 }

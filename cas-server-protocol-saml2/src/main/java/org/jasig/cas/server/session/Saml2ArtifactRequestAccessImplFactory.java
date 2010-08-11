@@ -17,24 +17,25 @@
  * under the License.
  */
 
-package org.jasig.cas.server.authentication;
+package org.jasig.cas.server.session;
+
+import org.jasig.cas.server.login.Saml2ArtifactRequestAccessRequestImpl;
+import org.jasig.cas.server.login.ServiceAccessRequest;
 
 /**
- * Default implementation of {@link org.jasig.cas.server.authentication.TypedUsernamePasswordCredential}.
- *
+ * Constructs a SAML2 Artifact Request/Response.
+ * 
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public class DefaultTypedUsernamePasswordCredential extends DefaultUserNamePasswordCredential implements TypedUsernamePasswordCredential {
+public final class Saml2ArtifactRequestAccessImplFactory implements AccessFactory {
 
-    private String type;
-
-    public final String getType() {
-        return this.type;
-    }
-
-    public final void setType(final String type) {
-        this.type = type;
+    public Access getAccess(final Session session, final ServiceAccessRequest serviceAccessRequest) {
+        if (!(serviceAccessRequest instanceof Saml2ArtifactRequestAccessRequestImpl)) {
+            return null;
+        }
+        
+        return new Saml2ArtifactRequestAccessImpl(session, (Saml2ArtifactRequestAccessRequestImpl) serviceAccessRequest);
     }
 }

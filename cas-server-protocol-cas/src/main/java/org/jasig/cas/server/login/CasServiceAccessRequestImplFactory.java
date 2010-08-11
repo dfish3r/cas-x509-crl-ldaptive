@@ -32,7 +32,7 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class CasServiceAccessRequestImplFactory implements ServiceAccessRequestFactory {
+public final class CasServiceAccessRequestImplFactory extends  AbstractServiceAccessRequestFactory {
 
     public ServiceAccessRequest getServiceAccessRequest(final String sessionId, final String remoteIpAddress, final Map parameters) {
         final String serviceId = getValue(parameters.get("service"));
@@ -45,18 +45,5 @@ public final class CasServiceAccessRequestImplFactory implements ServiceAccessRe
         }
 
         return new CasServiceAccessRequestImpl(sessionId, remoteIpAddress, renew, gateway, serviceId, post);
-    }
-
-    protected String getValue(Object o) {
-        if (o == null) {
-            return null;
-        }
-        
-        if (o instanceof String[]) {
-            final String[] s = (String[]) o;
-            return s[0];
-        }
-
-        return o.toString();
     }
 }

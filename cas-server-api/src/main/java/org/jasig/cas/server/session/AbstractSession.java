@@ -183,7 +183,9 @@ public abstract class AbstractSession implements Session {
                     throw new UnauthorizedSsoServiceException();
                 }
 
-                addAccess(access);
+                if (access.requiresStorage()) {
+                    addAccess(access);
+                }
                 // TODO re-enable later when we want to change session ids
                 // updateId();
                 return access;
