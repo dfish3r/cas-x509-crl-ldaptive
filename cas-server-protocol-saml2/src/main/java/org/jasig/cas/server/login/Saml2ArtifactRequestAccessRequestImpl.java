@@ -49,14 +49,14 @@ public final class Saml2ArtifactRequestAccessRequestImpl extends DefaultLoginReq
 
     private final PrivateKey privateKey;
 
-    public Saml2ArtifactRequestAccessRequestImpl(String sessionId, String remoteIpAddress, boolean forceAuthentication, boolean passiveAuthentication, Access access, final String serviceId, final String requestId, final String alternateUserName, final String relayState) {
+    public Saml2ArtifactRequestAccessRequestImpl(String sessionId, String remoteIpAddress, boolean forceAuthentication, boolean passiveAuthentication, Access access, final String serviceId, final String requestId, final String alternateUserName, final String relayState, final PrivateKey privateKey, final PublicKey publicKey) {
         super(sessionId, remoteIpAddress, forceAuthentication, passiveAuthentication, access);
         this.serviceId = serviceId;
         this.requestId = requestId;
         this.alternateUserName = alternateUserName;
         this.relayState = relayState;
-        this.privateKey = null;
-        this.publicKey = null;
+        this.privateKey = privateKey;
+        this.publicKey = publicKey;
     }
 
     public String getRequestId() {

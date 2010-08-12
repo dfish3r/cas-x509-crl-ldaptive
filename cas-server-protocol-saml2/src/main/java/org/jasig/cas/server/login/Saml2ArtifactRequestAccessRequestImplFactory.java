@@ -21,13 +21,16 @@ package org.jasig.cas.server.login;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.jasig.cas.server.util.PublicPrivateKeyStore;
 import org.jasig.cas.util.SamlUtils;
 import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
 
+import javax.validation.constraints.NotNull;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -46,7 +49,18 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
 
     private static final String CONSTANT_RELAY_STATE = "RelayState";
 
+    @NotNull
+    private final PublicPrivateKeyStore publicPrivateKeyStore;
+
+    @NotNull
+    private final Map<String, String> applicationToKeyAlias;
+
     private String alternateUserName;
+
+    public Saml2ArtifactRequestAccessRequestImplFactory(final PublicPrivateKeyStore publicPrivateKeyStore, final Map<String, String> applicationToKeyAlias) {
+        this.publicPrivateKeyStore = publicPrivateKeyStore;
+        this.applicationToKeyAlias = applicationToKeyAlias;
+    }
 
     public ServiceAccessRequest getServiceAccessRequest(final String sessionId, final String remoteIpAddress, final Map parameters) {
         final String samlRequest = decodeAuthnRequestXML(getValue(parameters.get(CONSTANT_PARAMETER_SERVICE)));
@@ -62,10 +76,31 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
         }
 
         final String assertionConsumerServiceUrl = document.getRootElement().getAttributeValue("AssertionConsumerServiceURL");
+        final String providerName = document.getRootElement().getAttributeValue("ProviderName");
+        final String issuer = document.getRootElement().getAttributeValue("Issuer");
         final String requestId = document.getRootElement().getAttributeValue("ID");
         final String relayState = getValue(parameters.get(CONSTANT_RELAY_STATE));
 
-        return new Saml2ArtifactRequestAccessRequestImpl(sessionId, remoteIpAddress, false, false, null, assertionConsumerServiceUrl, requestId, this.alternateUserName, relayState);
+        final String alias;
+
+        if (this.applicationToKeyAlias.containsKey(providerName)) {
+            alias = this.applicationToKeyAlias.get(providerName);
+        } else {
+            alias = this.applicationToKeyAlias.get(issuer);
+        }
+
+        if (alias == null) {
+            return null;
+        }
+
+        final PrivateKey privateKey = this.publicPrivateKeyStore.getPrivateKey(alias);
+        final PublicKey publicKey = this.publicPrivateKeyStore.getPublicKey(alias);
+
+        if (privateKey == null || publicKey == null) {
+            return null;
+        }
+
+        return new Saml2ArtifactRequestAccessRequestImpl(sessionId, remoteIpAddress, false, false, null, assertionConsumerServiceUrl, requestId, this.alternateUserName, relayState, privateKey, publicKey);
     }
 
     /**

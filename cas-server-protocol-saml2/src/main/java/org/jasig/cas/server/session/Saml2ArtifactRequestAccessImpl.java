@@ -149,89 +149,66 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
         return new DefaultAccessResponseResultImpl(AccessResponseResult.Operation.POST, parameters, this.impl.getServiceId(), null);
     }
 
-    public String signSamlResponse(final String samlResponse,
-        final PrivateKey privateKey, final PublicKey publicKey) {
+    public String signSamlResponse(final String samlResponse, final PrivateKey privateKey, final PublicKey publicKey) {
         final Document doc = SamlUtils.constructDocumentFromXmlString(samlResponse);
 
         if (doc != null) {
-            final Element signedElement = signSamlElement(doc.getRootElement(),
-                privateKey, publicKey);
+            final Element signedElement = signSamlElement(doc.getRootElement(), privateKey, publicKey);
             doc.setRootElement((Element) signedElement.detach());
             return new XMLOutputter().outputString(doc);
         }
         throw new RuntimeException("Error signing SAML Response: Null document");
     }
 
-    private static Element signSamlElement(Element element, PrivateKey privKey,
-        PublicKey pubKey) {
+    private static Element signSamlElement(final Element element, final PrivateKey privKey, final PublicKey pubKey) {
         try {
-            final String providerName = System.getProperty("jsr105Provider",
-                JSR_105_PROVIDER);
-            final XMLSignatureFactory sigFactory = XMLSignatureFactory
-                .getInstance("DOM", (Provider) Class.forName(providerName)
-                    .newInstance());
+            final String providerName = System.getProperty("jsr105Provider", JSR_105_PROVIDER);
+            final XMLSignatureFactory sigFactory = XMLSignatureFactory.getInstance("DOM", (Provider) Class.forName(providerName).newInstance());
 
-            final List envelopedTransform = Collections
-                .singletonList(sigFactory.newTransform(Transform.ENVELOPED,
-                    (TransformParameterSpec) null));
+            final List envelopedTransform = Collections.singletonList(sigFactory.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null));
 
             final Reference ref = sigFactory.newReference("", sigFactory
                 .newDigestMethod(DigestMethod.SHA1, null), envelopedTransform,
                 null, null);
 
             // Create the SignatureMethod based on the type of key
-            SignatureMethod signatureMethod;
+            final SignatureMethod signatureMethod;
             if (pubKey instanceof DSAPublicKey) {
-                signatureMethod = sigFactory.newSignatureMethod(
-                    SignatureMethod.DSA_SHA1, null);
+                signatureMethod = sigFactory.newSignatureMethod(SignatureMethod.DSA_SHA1, null);
             } else if (pubKey instanceof RSAPublicKey) {
-                signatureMethod = sigFactory.newSignatureMethod(
-                    SignatureMethod.RSA_SHA1, null);
+                signatureMethod = sigFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
             } else {
-                throw new RuntimeException(
-                    "Error signing SAML element: Unsupported type of key");
+                throw new RuntimeException("Error signing SAML element: Unsupported type of key");
             }
 
-            final CanonicalizationMethod canonicalizationMethod = sigFactory
-                .newCanonicalizationMethod(
-                    CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS,
-                    (C14NMethodParameterSpec) null);
+            final CanonicalizationMethod canonicalizationMethod = sigFactory.newCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, (C14NMethodParameterSpec) null);
 
             // Create the SignedInfo
-            final SignedInfo signedInfo = sigFactory.newSignedInfo(
-                canonicalizationMethod, signatureMethod, Collections
-                    .singletonList(ref));
+            final SignedInfo signedInfo = sigFactory.newSignedInfo(canonicalizationMethod, signatureMethod, Collections.singletonList(ref));
 
             // Create a KeyValue containing the DSA or RSA PublicKey
-            final KeyInfoFactory keyInfoFactory = sigFactory
-                .getKeyInfoFactory();
+            final KeyInfoFactory keyInfoFactory = sigFactory.getKeyInfoFactory();
             final KeyValue keyValuePair = keyInfoFactory.newKeyValue(pubKey);
 
             // Create a KeyInfo and add the KeyValue to it
-            final KeyInfo keyInfo = keyInfoFactory.newKeyInfo(Collections
-                .singletonList(keyValuePair));
-            // Convert the JDOM document to w3c (Java XML signature API requires
-            // w3c
-            // representation)
-            org.w3c.dom.Element w3cElement = toDom(element);
+            final KeyInfo keyInfo = keyInfoFactory.newKeyInfo(Collections.singletonList(keyValuePair));
+            // Convert the JDOM document to w3c (Java XML signature API requires W3C representation)
+            final org.w3c.dom.Element w3cElement = toDom(element);
 
             // Create a DOMSignContext and specify the DSA/RSA PrivateKey and
             // location of the resulting XMLSignature's parent element
-            DOMSignContext dsc = new DOMSignContext(privKey, w3cElement);
+            final DOMSignContext dsc = new DOMSignContext(privKey, w3cElement);
 
-            org.w3c.dom.Node xmlSigInsertionPoint = getXmlSignatureInsertLocation(w3cElement);
+            final org.w3c.dom.Node xmlSigInsertionPoint = getXmlSignatureInsertLocation(w3cElement);
             dsc.setNextSibling(xmlSigInsertionPoint);
 
             // Marshal, generate (and sign) the enveloped signature
-            XMLSignature signature = sigFactory.newXMLSignature(signedInfo,
-                keyInfo);
+            final XMLSignature signature = sigFactory.newXMLSignature(signedInfo, keyInfo);
             signature.sign(dsc);
 
             return toJdom(w3cElement);
-
         } catch (final Exception e) {
-            throw new RuntimeException("Error signing SAML element: "
-                + e.getMessage(), e);
+            throw new RuntimeException("Error signing SAML element: " + e.getMessage(), e);
         }
     }
 
@@ -245,11 +222,9 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
             final StringWriter elemStrWriter = new StringWriter();
             xmlOutputter.output(doc, elemStrWriter);
             final byte[] xmlBytes = elemStrWriter.toString().getBytes();
-            final DocumentBuilderFactory dbf = DocumentBuilderFactory
-                .newInstance();
+            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
-            return dbf.newDocumentBuilder().parse(
-                new ByteArrayInputStream(xmlBytes));
+            return dbf.newDocumentBuilder().parse(new ByteArrayInputStream(xmlBytes));
         } catch (final Exception e) {
             return null;
         }
@@ -257,13 +232,11 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
 
     private static Node getXmlSignatureInsertLocation(org.w3c.dom.Element elem) {
         org.w3c.dom.Node insertLocation = null;
-        org.w3c.dom.NodeList nodeList = elem.getElementsByTagNameNS(
-            SAML_PROTOCOL_NS_URI_V20, "Extensions");
+        org.w3c.dom.NodeList nodeList = elem.getElementsByTagNameNS(SAML_PROTOCOL_NS_URI_V20, "Extensions");
         if (nodeList.getLength() != 0) {
             insertLocation = nodeList.item(nodeList.getLength() - 1);
         } else {
-            nodeList = elem.getElementsByTagNameNS(SAML_PROTOCOL_NS_URI_V20,
-                "Status");
+            nodeList = elem.getElementsByTagNameNS(SAML_PROTOCOL_NS_URI_V20, "Status");
             insertLocation = nodeList.item(nodeList.getLength() - 1);
         }
         return insertLocation;
