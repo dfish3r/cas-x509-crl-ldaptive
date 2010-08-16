@@ -167,9 +167,7 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
 
             final List envelopedTransform = Collections.singletonList(sigFactory.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null));
 
-            final Reference ref = sigFactory.newReference("", sigFactory
-                .newDigestMethod(DigestMethod.SHA1, null), envelopedTransform,
-                null, null);
+            final Reference ref = sigFactory.newReference("", sigFactory.newDigestMethod(DigestMethod.SHA1, null), envelopedTransform, null, null);
 
             // Create the SignatureMethod based on the type of key
             final SignatureMethod signatureMethod;

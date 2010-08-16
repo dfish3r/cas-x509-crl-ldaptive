@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.DigestMethod;
@@ -65,6 +66,8 @@ import org.w3c.dom.Node;
  */
 public final class SamlUtils {
 
+    private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
+
 
     private SamlUtils() {
         // nothing to do
@@ -75,11 +78,21 @@ public final class SamlUtils {
     }
 
     public static String getFormattedDateAndTime(final Date date) {
-        final DateFormat dateFormat = new SimpleDateFormat(
-            "yyyy-MM-dd'T'HH:mm:ss'Z'");
-        // Google Does not set this.
-        // dateFormat.setTimeZone(UTC_TIME_ZONE);
+        return getFormattedDateAndTime(date, null);
+    }
+
+    public static String getFormattedDateAndTime(final Date date, final TimeZone timeZone) {
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        if (timeZone != null) {
+            dateFormat.setTimeZone(timeZone);
+        }
         return dateFormat.format(date);
+
+    }
+
+    public static String getFormattedDateAndTimeInUtc(final Date date) {
+        return getFormattedDateAndTime(date, UTC);
+
     }
 
     public static Document constructDocumentFromXmlString(String xmlString) {
