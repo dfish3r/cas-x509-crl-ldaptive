@@ -19,7 +19,10 @@
 
 package org.jasig.cas.authentication.principal;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +30,6 @@ import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.util.UniqueTicketIdGenerator;
 import org.jasig.cas.util.HttpClient;
-import org.jasig.cas.util.SamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,7 +155,7 @@ public abstract class AbstractWebApplicationService implements WebApplicationSer
 
         final String logoutRequest = "<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ID=\""
             + GENERATOR.getNewTicketId("LR")
-            + "\" Version=\"2.0\" IssueInstant=\"" + SamlUtils.getCurrentDateAndTime()
+            + "\" Version=\"2.0\" IssueInstant=\"" + getCurrentDateAndTime()
             + "\"><saml:NameID xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">@NOT_USED@</saml:NameID><samlp:SessionIndex>"
             + sessionIdentifier + "</samlp:SessionIndex></samlp:LogoutRequest>";
         
@@ -164,5 +166,10 @@ public abstract class AbstractWebApplicationService implements WebApplicationSer
         }
         
         return false;
+    }
+
+    protected String getCurrentDateAndTime() {
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        return dateFormat.format(new Date());
     }
 }

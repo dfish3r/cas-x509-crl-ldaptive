@@ -21,7 +21,7 @@ package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.login.Saml2ArtifactRequestAccessRequestImpl;
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
-import org.jasig.cas.util.SamlUtils;
+import org.jasig.cas.server.util.SamlUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.DOMBuilder;

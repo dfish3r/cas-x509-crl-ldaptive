@@ -63,6 +63,7 @@ public abstract class AbstractSessionTests {
             final RegisteredService r = mock(RegisteredService.class);
             when(r.isSsoEnabled()).thenReturn(true);
             when(r.isEnabled()).thenReturn(true);
+            when(r.isAllowedToProxy()).thenReturn(true);
             return r;
         }
 
@@ -104,6 +105,7 @@ public abstract class AbstractSessionTests {
                 final String serviceId = serviceAccessRequest.getServiceId();
                 when(access.getResourceIdentifier()).thenReturn(serviceId);
                 when(access.getId()).thenReturn(UUID.randomUUID().toString());
+                when(access.requiresStorage()).thenReturn(true);
                 return access;
             }
         });
@@ -187,6 +189,7 @@ public abstract class AbstractSessionTests {
         final ServiceAccessRequest serviceAccessRequest = mock(ServiceAccessRequest.class);
         when(serviceAccessRequest.getServiceId()).thenReturn("foobar");
         final Access access = this.session.grant(serviceAccessRequest);
+
 
         assertFalse(this.session.getAccesses().isEmpty());
         assertTrue(this.session.getAccesses().contains(access));

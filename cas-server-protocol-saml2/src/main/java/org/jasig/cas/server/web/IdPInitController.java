@@ -21,7 +21,7 @@ package org.jasig.cas.server.web;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.text.StrSubstitutor;
-import org.jasig.cas.util.SamlUtils;
+import org.jasig.cas.server.util.SamlUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;

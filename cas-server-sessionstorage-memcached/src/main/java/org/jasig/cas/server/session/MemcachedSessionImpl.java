@@ -59,7 +59,12 @@ public final class MemcachedSessionImpl extends AbstractStaticSession implements
     public MemcachedSessionImpl(final AuthenticationResponse authenticationResponse) {
         this(null, authenticationResponse);
     }
-    
+
+    @Override
+    protected State getState() {
+        return this.state;
+    }
+
     protected MemcachedSessionImpl(final Session parentSession, final AuthenticationResponse authenticationResponse) {
         this.attributePrincipal = authenticationResponse.getPrincipal();
         this.parentSession = parentSession;

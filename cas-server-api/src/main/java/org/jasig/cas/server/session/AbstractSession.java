@@ -102,6 +102,13 @@ public abstract class AbstractSession implements Session {
     protected abstract void updateState();
 
     /**
+     * Returns the internal state.
+     *
+     * @return the state.
+     */
+    protected abstract State getState();
+
+    /**
      * Executes after the default actions must happen when createDelegatedSession is called.
      *
      * @param authenticationResponse the authentication response
@@ -243,6 +250,6 @@ public abstract class AbstractSession implements Session {
     }
 
     public final boolean hasNotBeenUsed() {
-        return getAccesses().isEmpty();
+        return getState().getUsageCount() == 0;
     }
 }

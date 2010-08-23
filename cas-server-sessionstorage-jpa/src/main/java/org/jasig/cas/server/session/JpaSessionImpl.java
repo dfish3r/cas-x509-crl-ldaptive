@@ -98,6 +98,11 @@ public class JpaSessionImpl extends AbstractStaticSession {
         }
     }
 
+    @Override
+    protected final State getState() {
+        return this.state;
+    }
+
     protected final void updateState() {
         this.state.updateState();
     }

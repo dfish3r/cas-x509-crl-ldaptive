@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.util;
+package org.jasig.cas.server.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;

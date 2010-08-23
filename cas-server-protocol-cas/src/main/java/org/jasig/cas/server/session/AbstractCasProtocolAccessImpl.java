@@ -22,19 +22,16 @@ package org.jasig.cas.server.session;
 import org.jasig.cas.server.CasProtocolVersion;
 import org.jasig.cas.server.login.CasTokenServiceAccessRequestImpl;
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
-import org.jasig.cas.server.util.CasProtocolUniqueTicketIdGeneratorImpl;
 import org.jasig.cas.server.util.ServiceIdentifierMatcher;
 import org.jasig.cas.server.util.UniqueTicketIdGenerator;
 import org.jasig.cas.util.HttpClient;
-import org.jasig.cas.util.SamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Implements the CAS protocol, but leaves the data storage to the specific implementations (i.e. In Memory, Database, etc.)
@@ -104,13 +101,18 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
 
         final String logoutRequest = "<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ID=\""
             + getIdGenerator().getNewTicketId("LR")
-            + "\" Version=\"2.0\" IssueInstant=\"" + SamlUtils.getCurrentDateAndTime()
+            + "\" Version=\"2.0\" IssueInstant=\"" + getCurrentDateAndTime()
             + "\"><saml:NameID xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">@NOT_USED@</saml:NameID><samlp:SessionIndex>"
             + getId() + "</samlp:SessionIndex></samlp:LogoutRequest>";
 
         setLocalSessionDestroyed(new HttpClient().sendMessageToEndPoint(getResourceIdentifier(), logoutRequest, true));
 
         return this.isLocalSessionDestroyed();
+    }
+
+    protected final String getCurrentDateAndTime() {
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        return dateFormat.format(new Date());
     }
 
     public final boolean requiresStorage() {

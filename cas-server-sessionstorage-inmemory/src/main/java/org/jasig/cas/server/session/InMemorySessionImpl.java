@@ -107,6 +107,11 @@ public final class InMemorySessionImpl extends AbstractSession {
     }
 
     @Override
+    protected State getState() {
+        return this.state;
+    }
+
+    @Override
     protected ServicesManager getServicesManager() {
         return this.servicesManager;
     }

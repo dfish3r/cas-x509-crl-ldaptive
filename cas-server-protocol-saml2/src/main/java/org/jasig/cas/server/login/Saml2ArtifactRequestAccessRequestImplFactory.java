@@ -22,8 +22,12 @@ package org.jasig.cas.server.login;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.jasig.cas.server.util.PublicPrivateKeyStore;
-import org.jasig.cas.util.SamlUtils;
+import org.jasig.cas.server.util.SamlUtils;
 import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.Namespace;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.io.ByteArrayInputStream;
@@ -31,6 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -45,9 +50,13 @@ import java.util.zip.InflaterInputStream;
  */
 public final class Saml2ArtifactRequestAccessRequestImplFactory extends AbstractServiceAccessRequestFactory {
 
+    private static final Logger logger = LoggerFactory.getLogger(Saml2ArtifactRequestAccessRequestImplFactory.class);
+
     private static final String CONSTANT_PARAMETER_SERVICE = "SAMLRequest";
 
     private static final String CONSTANT_RELAY_STATE = "RelayState";
+
+    private static final Namespace CONST_SAML_NAMESPACE = Namespace.getNamespace("saml", "urn:oasis:names:tc:SAML:2.0:assertion");
 
     @NotNull
     private final PublicPrivateKeyStore publicPrivateKeyStore;
@@ -72,12 +81,17 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
         final Document document = SamlUtils.constructDocumentFromXmlString(samlRequest);
 
         if (document == null) {
+            logger.debug("No XML Document for SAML Request.");
             return null;
         }
 
         final String assertionConsumerServiceUrl = document.getRootElement().getAttributeValue("AssertionConsumerServiceURL");
         final String providerName = document.getRootElement().getAttributeValue("ProviderName");
-        final String issuer = document.getRootElement().getAttributeValue("Issuer");
+
+        final Element elementIssuer = document.getRootElement().getChild("Issuer");
+
+        final String issuer = document.getRootElement().getChildText("Issuer", CONST_SAML_NAMESPACE);
+
         final String requestId = document.getRootElement().getAttributeValue("ID");
         final String relayState = getValue(parameters.get(CONSTANT_RELAY_STATE));
 
@@ -90,6 +104,7 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
         }
 
         if (alias == null) {
+            logger.debug("No Alias found for SAML request.");
             return null;
         }
 
@@ -97,6 +112,7 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
         final PublicKey publicKey = this.publicPrivateKeyStore.getPublicKey(alias);
 
         if (privateKey == null || publicKey == null) {
+            logger.debug("No Private or Public Keys for SAML request.");
             return null;
         }
 
@@ -115,8 +131,7 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
         this.alternateUserName = alternateUserName;
     }
 
-    private static String decodeAuthnRequestXML(
-        final String encodedRequestXmlString) {
+    private static String decodeAuthnRequestXML(final String encodedRequestXmlString) {
         if (encodedRequestXmlString == null) {
             return null;
         }
@@ -124,7 +139,7 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
         final byte[] decodedBytes = base64Decode(encodedRequestXmlString);
 
         if (decodedBytes == null) {
-            return null;
+            return encodedRequestXmlString;
         }
 
         final String inflated = inflate(decodedBytes);
@@ -150,7 +165,8 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
             }
             return new String(baos.toByteArray());
         } catch (final Exception e) {
-            return null;
+            logger.info("Not zlibed item, returning original value.");
+            return new String(bytes);
         } finally {
             try {
                 iis.close();
