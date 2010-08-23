@@ -114,6 +114,5 @@ public final class Saml2ArtifactRequestAccessRequestImplFactoryTests {
         assertEquals("uTKS-R0fqjku862q9nY4T6WXVMY", impl.getRequestId());
         assertEquals(CONST_PUBLIC_KEY_YAMMER, impl.getPublicKey());
         assertEquals(CONST_PRIVATE_KEY_YAMMER, impl.getPrivateKey());
-
     }
 }
