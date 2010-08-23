@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jasig.cas.server.util.PublicPrivateKeyStore;
 import org.jasig.cas.server.util.SamlUtils;
 import org.jdom.Document;
-import org.jdom.Element;
 import org.jdom.Namespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -64,11 +63,18 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
     @NotNull
     private final Map<String, String> applicationToKeyAlias;
 
+    @NotNull
+    private Map<String, String> issuerToAssertionConsumerUrl = new HashMap<String, String>();
+
     private String alternateUserName;
 
     public Saml2ArtifactRequestAccessRequestImplFactory(final PublicPrivateKeyStore publicPrivateKeyStore, final Map<String, String> applicationToKeyAlias) {
         this.publicPrivateKeyStore = publicPrivateKeyStore;
         this.applicationToKeyAlias = applicationToKeyAlias;
+    }
+
+    public void setIssuerToAssertionConsumerUrl(final Map<String, String> issuerToAssertionConsumerUrl) {
+        this.issuerToAssertionConsumerUrl = issuerToAssertionConsumerUrl;
     }
 
     public ServiceAccessRequest getServiceAccessRequest(final String sessionId, final String remoteIpAddress, final Map parameters) {
@@ -85,13 +91,19 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
             return null;
         }
 
-        final String assertionConsumerServiceUrl = document.getRootElement().getAttributeValue("AssertionConsumerServiceURL");
-        final String providerName = document.getRootElement().getAttributeValue("ProviderName");
-
-        final Element elementIssuer = document.getRootElement().getChild("Issuer");
-
         final String issuer = document.getRootElement().getChildText("Issuer", CONST_SAML_NAMESPACE);
+        final String assertionConsumerServiceUrlFromXml = document.getRootElement().getAttributeValue("AssertionConsumerServiceURL");
+        final String assertionConsumerServiceUrl;
 
+        if (assertionConsumerServiceUrlFromXml != null) {
+            assertionConsumerServiceUrl = assertionConsumerServiceUrlFromXml;
+        } else if (issuer != null) {
+            assertionConsumerServiceUrl = this.issuerToAssertionConsumerUrl.get(issuer);
+        } else {
+            assertionConsumerServiceUrl = null;
+        }
+
+        final String providerName = document.getRootElement().getAttributeValue("ProviderName");
         final String requestId = document.getRootElement().getAttributeValue("ID");
         final String relayState = getValue(parameters.get(CONSTANT_RELAY_STATE));
 
