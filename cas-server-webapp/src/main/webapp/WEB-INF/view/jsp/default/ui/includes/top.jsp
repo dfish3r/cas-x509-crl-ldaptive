@@ -31,28 +31,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 	<head>
 	    <title>CAS &#8211; Central Authentication Service</title>
-        <c:choose>
-           <c:when test="${not empty requestScope['isMobile'] and not empty mobileCss}">
-                <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-                <meta name="apple-mobile-web-app-capable" content="yes" />
-                <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-                <link type="text/css" rel="stylesheet" media="screen" href="<c:url value="/css/fss-framework-1.1.2.css" />" />
-                <link type="text/css" rel="stylesheet" href="<c:url value="/css/fss-mobile-${requestScope['browserType']}-layout.css" />" />
-                <link type="text/css" rel="stylesheet" href="<c:url value="${mobileCss}" />" />
-           </c:when>
-           <c:otherwise>
-                <spring:theme code="standard.custom.css.file" var="customCss" />
-
-                <link type="text/css" rel="stylesheet" href="<c:url value="${customCss}" />" />
-                <script type="text/javascript" src="<c:url value="/js/common_rosters.js" />"></script>
-           </c:otherwise>
-        </c:choose>
-	    <link rel="icon" href="<c:url value="/favicon.ico" />" type="image/x-icon" />
+        <link rel="stylesheet" type="text/css" href="<c:url value="/css/fluid/fss-layout.css" />" />
+        <link rel="stylesheet" type="text/css" href="<c:url value="/css/cas.css" />" />
+        <link rel="stylesheet" type="text/css" href="<c:url value="/css/menubutton.css" />" />
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <link rel="icon" href="<c:url value="/favicon.ico" />" type="image/x-icon" />
+        <script type="text/javascript" src="<c:url value="/js/jquery.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/js/jquery.ui.core.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/js/jquery.keyboard-a11y.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/js/Fluid.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/js/cas.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/js/menubutton.js" />"></script>
 	</head>
-	<body id="cas" onload="init();" class="fl-theme-iphone">
-    <div class="flc-screenNavigator-view-container">
-        <div class="fl-screenNavigator-view">
-            <div id="header" class="flc-screenNavigator-navbar fl-navbar fl-table">
-                <h1 id="app-name" class="fl-table-cell">Central Authentication Service (CAS)</h1>
-            </div>		
-            <div id="content" class="fl-screenNavigator-scroll-container">
+	<body id="cas" class="fl-theme-iphone">
+        <div class="flc-screenNavigator-view-container">
+            <div class="fl-screenNavigator-view">
+                <div id="header" class="flc-screenNavigator-navbar fl-navbar fl-table">
+                    <div class="logo">
+                        <span>CAS Logo</span>
+                    </div>
+                    <h1 id="app-name" class="fl-table-cell"><span>Central Authentication System</span></h1>
+                    <h2 id="app-name-description" class="fl-table-cell"><span>Providing single secure sign-on for your on-line applications</span></h2>
+                </div>
+                <div id="content" class="fl-container-flex fl-col-mixed">

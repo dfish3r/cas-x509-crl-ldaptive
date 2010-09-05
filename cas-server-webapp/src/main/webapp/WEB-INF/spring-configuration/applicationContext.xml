@@ -78,8 +78,7 @@
           p:salt="casrocks"/>
 
     <!-- CentralAuthenticationService -->
-    <bean id="centralAuthenticationService" class="org.jasig.cas.server.DefaultCentralAuthenticationServiceImpl"
-        p:servicesManager-ref="servicesManager">
+    <bean id="centralAuthenticationService" class="org.jasig.cas.server.DefaultCentralAuthenticationServiceImpl">
         <constructor-arg index="0" ref="authenticationManager" />
         <constructor-arg index="1" ref="sessionStorage" />
     </bean>

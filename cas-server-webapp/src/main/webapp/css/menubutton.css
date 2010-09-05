@@ -1,0 +1,59 @@
+/**
+ * :focus
+ * OVERRIDE: overrides the :focus implemenation inherited 
+ * from fl-theme-mist.
+ ---------------------------------------------------*/
+ .menubutton :focus, .menubutton .selectable{outline: 1px dotted #000;}
+
+/**
+ * .menubutton
+ * OVERRIDE: overrides the fl-widget implemenation inherited 
+ * from fl-theme-mist.
+ ---------------------------------------------------*/
+ .menubutton {font-size:12px; background: transparent; border: none; padding: 0em; -webkit-border-radius: 0px; -moz-border-radius: 0px; border-radius: 0px; position: relative;}
+ .menubutton .widget-titlebar {border: 1px solid #808080; padding: .44em; background: #D8D8D8 url("../images/menubutton-bkd.png") top left repeat-x;
+    background-image: -moz-linear-gradient(100% 0% 270deg,#FFFFFF,#D8D8D8); background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,from(#FFFFFF),to(#D8D8D8));
+    box-shadow: 1px 1px 3px #dddddd; -moz-box-shadow: 1px 1px 3px #dddddd; -webkit-box-shadow: 1px 1px 3px #dddddd; -webkit-border-radius: 3px; 
+    -moz-border-radius: 3px; border-radius: 3px; cursor: pointer;}
+ .menubutton .widget-titlebar a,  .menubutton .widget-titlebar a:hover{
+    color:#000; text-decoration:none; background: transparent url("../images/menubutton-arrow.gif") right 50% no-repeat; padding-right:1.25em; white-space:nowrap; display:inline-block;}
+
+/**
+ * .widget-listmenu
+ * OVERRIDE: overrides the .fl-listmenu implemenation inherited 
+ * from fl-theme-mist.
+ ---------------------------------------------------*/
+ .menubutton .fl-widget-titlebar a {color:#005070;}
+ .menubutton .fl-widget-titlebar a span {padding:0 7px 0 7px; font-weight:bold; text-transform:uppercase; color:#000;}
+ .menubutton .widget-content {position: absolute; display: none; margin-top: 0px; -moz-box-shadow: 0px 0px 5px #B2B2B2; -webkit-box-shadow: 0px 0px 5px #B2B2B2; box-shadow: 0px 0px 5px #B2B2B2;}
+ .menubutton .widget-listmenu {border: 1px solid #7D98B8; border-top:none; border-bottom-width: 1px; background-color: #FFF; -moz-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px;}
+ .menubutton .widget-listmenu li{overflow: visible;}
+ .menubutton .widget-listmenu li, .fl-listmenu li a {background-color: transparent; border: none; font-weight: normal;}
+ .menubutton .widget-listmenu a {padding: 5px 10px; color: #000; zoom: normal; outline: none; overflow: visible;}
+ .menubutton .widget-listmenu a span {display:inline-block;}
+ .menubutton .widget-listmenu a:hover {background: #BFDAFF; color: #000 !important;}
+
+/**
+ * .menubutton-hover.menubutton-focus
+ * Hover/focus state for menubutton.
+ ---------------------------------------------------*/
+ .menubutton-hover .widget-titlebar,
+ .menubutton-focus .widget-titlebar{
+    border: 1px solid #7D98B8; background: #E8F2FF url("../images/menubutton-hover-bkd.png") top left repeat-x;
+    background-image: -moz-linear-gradient(100% 0% 270deg,#E8F2FF,#BFDAFF); background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,from(#E8F2FF),to(#BFDAFF));}
+
+/**
+ * .menubutton-active
+ * Selected state for menubutton.
+ ---------------------------------------------------*/
+ .menubutton-active .widget-titlebar{
+    background: #E8F2FF url("../images/menubutton-select-bkd.png") top left repeat-x; border:1px solid #296BB8;
+    background-image: -moz-linear-gradient(100% 0% 270deg,#BAD8FF,#E8F2FF); background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,from(#BAD8FF),to(#E8F2FF));}
+
+/**
+ * .menuitem-selected
+ * Selected state for menuitem.
+ ---------------------------------------------------*/
+ .menubutton .widget-listmenu .menuitem-selected {outline: none; background: #BFDAFF;}
+ .menubutton .widget-listmenu .menuitem-selected span {outline:1px dotted #000;}
+ .menubutton .widget-listmenu .menuitem-selected:hover span {outline:1px dotted #000;}

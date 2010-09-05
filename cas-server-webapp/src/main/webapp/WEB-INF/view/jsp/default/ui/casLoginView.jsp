@@ -1,3 +1,9 @@
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--
 
     Licensed to Jasig under one or more contributor license
@@ -21,100 +27,110 @@
 
 <%@ page contentType="text/html; charset=UTF-8" %>
 <jsp:directive.include file="includes/top.jsp" />
-			<form:form method="post" id="fm1" cssClass="fm-v clearfix" commandName="${commandName}" htmlEscape="true">
-			    <form:errors path="*" cssClass="errors" id="status" element="div" />
-                <div class="box fl-panel" id="login">
-                <!-- <spring:message code="screen.welcome.welcome" /> -->
-                    <h2><spring:message code="screen.welcome.instructions" /></h2>
-                    <div class="row fl-controls-left">
-                        <label for="username" class="fl-label"><spring:message code="screen.welcome.label.netid" /></label>
-						<c:if test="${not empty sessionScope.openIdLocalId}">
-						<strong>${sessionScope.openIdLocalId}</strong>
-						<input type="hidden" id="userName" name="userName" value="${sessionScope.openIdLocalId}" />
-						</c:if>
+<form:form id="fm1" cssClass="fl-col-fixed-300 fl-force-left" method="post" commandName="${commandName}" htmlEscape="true">
+    <form:errors path="*" cssClass="errors" id="status" element="div" />
+    <div class="box fl-panel" id="login">
+        <!-- Congratulations on bringing CAS online!  The default authentication handler authenticates where usernames equal passwords: go ahead, try it out.  -->
+        <h2>Enter your NetID and Password</h2>
+        <div class="row fl-controls-left">
+            <label for="userName" class="fl-label">
+                <span class="accesskey">U</span>sername:
+            </label>
+            <form:input cssClass="required" cssErrorClass="error" id="userName" size="30" tabindex="1" accesskey="u" path="userName" autocomplete="false" htmlEscape="true" />
+        </div>
+        <div class="row fl-controls-left">
+            <label for="password" class="fl-label">
+                <span class="accesskey">P</span>assword:
+            </label>
+            <form:password cssClass="required" cssErrorClass="error" id="password" size="30" tabindex="2" path="password"  accesskey="p" htmlEscape="true" autocomplete="false" />
+        </div>
+        <div class="row check">
+            <input id="warn" name="warn" value="true" tabindex="3" accesskey="w" type="checkbox">
+            <label for="warn">
+                <span class="accesskey">W</span>arn me before logging me into other sites.
+            </label>
+        </div>
+        <div class="row btn-row">
+            <input type="hidden" name="lt" value="${flowExecutionKey}" />
+            <input type="hidden" name="_eventId" value="submit" />
 
-						<c:if test="${empty sessionScope.openIdLocalId}">
-						<spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
-						<form:input cssClass="required" cssErrorClass="error" id="userName" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="userName" autocomplete="false" htmlEscape="true" />
-						</c:if>
-                    </div>
-                    <div class="row fl-controls-left">
-                        <label for="password" class="fl-label"><spring:message code="screen.welcome.label.password" /></label>
-						<%--
-						NOTE: Certain browsers will offer the option of caching passwords for a user.  There is a non-standard attribute,
-						"autocomplete" that when set to "off" will tell certain browsers not to prompt to cache credentials.  For more
-						information, see the following web page:
-						http://www.geocities.com/technofundo/tech/web/ie_autocomplete.html
-						--%>
-						<spring:message code="screen.welcome.label.password.accesskey" var="passwordAccessKey" />
-						<form:password cssClass="required" cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
-                    </div>
-                    <div class="row check">
-                        <input id="warn" name="warn" value="true" tabindex="3" accesskey="<spring:message code="screen.welcome.label.warn.accesskey" />" type="checkbox" />
-                        <label for="warn"><spring:message code="screen.welcome.label.warn" /></label>
-                    </div>
-                    <div class="row btn-row">
-						<input type="hidden" name="lt" value="${flowExecutionKey}" />
-						<input type="hidden" name="_eventId" value="submit" />
+            <input class="btn-submit" name="submit" accesskey="l" value="Sign In" tabindex="4" type="submit"><input class="btn-reset" name="reset" accesskey="c" value="CLEAR" tabindex="5" type="reset">
+        </div>
+        <div class="row help-links">
+            <ul>
+                <li>
+                    <a href="#"><span>Forgot Password</span></a>
+                </li>
+                <li>
+                    <a href="#"><span>Create Account</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</form:form>
+<div id="sidebar" class="fl-col-flex">
+    <p class="fl-panel fl-note fl-bevel-white fl-font-size-80">
+        For security reasons, please Log Out and Exit your web browser when you are done accessing services that require authentication!
+    </p>
+    <div id="list-languages" class="fl-widget menubutton" role="menu">
+        <%
+            final String queryString = request.getQueryString() == null ? "" : request.getQueryString().replaceAll("&locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]|^locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]", "");
+            final java.util.Map<String,String> languages = new java.util.HashMap<String,String>();
+            
+           languages.put("en", "English");
+           languages.put("es", "Spanish");
+           languages.put("fr", "French");
+           languages.put("ru", "Russian");
+           languages.put("nl", "Nederlands");
+           languages.put("sv", "Svenskt");
+           languages.put("it", "Italiano");
+           languages.put("ur", "Urdu");
+           languages.put("zh_CN", "Chinese (Simplified)");
+           languages.put("de", "Deutsch");
+           languages.put("ja", "Japanese");
+           languages.put("hr", "Croatian");
+           languages.put("cs", "Czech");
+           languages.put("sl", "Slovenian");
+           languages.put("pl", "Polish");
+           languages.put("ca", "Catalan");
 
-                        <input class="btn-submit" name="submit" accesskey="l" value="<spring:message code="screen.welcome.button.login" />" tabindex="4" type="submit" />
-                        <input class="btn-reset" name="reset" accesskey="c" value="<spring:message code="screen.welcome.button.clear" />" tabindex="5" type="reset" />
-                    </div>
-                </div>
-            </form:form>
+            request.setAttribute("languages", languages);
+        %>
+        <c:set var="query" value="<%=queryString%>" />
+        <c:set var="xquery" value="${fn:escapeXml(query)}" />
+        <c:set var="currentLanguage" value="${param['locale']}"  />
+        <c:set var="loginUrl" value="login?${xquery}${not empty xquery ? '&' : ''}locale=" />
 
-            <div id="sidebar">
-                <p class="fl-panel fl-note fl-bevel-white fl-font-size-80"><spring:message code="screen.welcome.security" /></p>
-                <div id="list-languages" class="fl-panel">
-                <%final String queryString = request.getQueryString() == null ? "" : request.getQueryString().replaceAll("&locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]|^locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]", "");%>
-					<c:set var='query' value='<%=queryString%>' />
-                  <h3>Languages:</h3>
-                  <c:choose>
-                     <c:when test="${not empty requestScope['isMobile'] and not empty mobileCss}">
-                        <form method="get" action="login?${query}">
-                           <select name="locale">
-                               <option value="en">English</option>
-                               <option value="es">Spanish</option>
-                               <option value="fr">French</option>
-                               <option value="ru">Russian</option>
-                               <option value="nl">Nederlands</option>
-                               <option value="sv">Svenskt</option>
-                               <option value="it">Italiano</option>
-                               <option value="ur">Urdu</option>
-                               <option value="zh_CN">Chinese (Simplified)</option>
-                               <option value="de">Deutsch</option>
-                               <option value="ja">Japanese</option>
-                               <option value="hr">Croatian</option>
-                               <option value="cs">Czech</option>
-                               <option value="sl">Slovenian</option>
-                               <option value="pl">Polish</option>
-                               <option value="ca">Catalan</option>
-                           </select>
-                           <input type="submit" value="Switch">
-                        </form>
-                     </c:when>
-                     <c:otherwise>
-                        <c:set var="loginUrl" value="login?${query}${not empty query ? '&' : ''}locale=" />
-						<ul
-							><li class="first"><a href="login?${query}${not empty query ? '&' : ''}locale=en">English</a></li
-							><li><a href="${loginUrl}es">Spanish</a></li
-							><li><a href="${loginUrl}fr">French</a></li
-							><li><a href="${loginUrl}ru">Russian</a></li
-							><li><a href="${loginUrl}nl">Nederlands</a></li
-							><li><a href="${loginUrl}sv">Svenskt</a></li
-							><li><a href="${loginUrl}it">Italiano</a></li
-							><li><a href="${loginUrl}ur">Urdu</a></li
-							><li><a href="${loginUrl}zh_CN">Chinese (Simplified)</a></li
-							><li><a href="${loginUrl}de">Deutsch</a></li
-							><li><a href="${loginUrl}ja">Japanese</a></li
-							><li><a href="${loginUrl}hr">Croatian</a></li
-							><li><a href="${loginUrl}cs">Czech</a></li
-							><li><a href="${loginUrl}sl">Slovenian</a></li
-							><li><a href="${loginUrl}pl">Polish</a></li
-                            ><li><a href="${loginUrl}ca">Catalan</a></li
-						></ul>
-                     </c:otherwise>
-                   </c:choose>
-                </div>
-            </div>
+        <div class="fl-widget-titlebar widget-titlebar">
+            <a title="" href="javascript:;" role="menuitem" tabindex="0"><h3>Languages:</h3> <span id="current_language"><c:out value="${languages[currentLanguage]}" default="English" /> </span></a>
+        </div>
+        <div class="fl-widget-content widget-content">
+            <ul class="fl-listmenu widget-listmenu" role="presentation">
+                <c:forEach items="${languages}" var="language">
+                    <li role="presentation">
+                        <c:choose>
+                            <c:when test="${language.key eq currentLanguage}">
+                                <a href="${loginUrl}${language.key}" title="English" tabindex="0" role="menuitem" class="menuitem-selected"><span>${language.value}</span></a>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="${loginUrl}${language.key}" title="English" tabindex="0" role="menuitem" class="menuitem-"><span>${language.value}</span></a>
+                            </c:otherwise>
+                        </c:choose>
+                    </li>
+                 </c:forEach>
+            </ul>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            up.menubutton("#list-languages", {
+                configs: {
+                    settings: {
+                        padding: 8
+                    }
+                }
+            });
+        });
+    </script>
+</div>
 <jsp:directive.include file="includes/bottom.jsp" />
