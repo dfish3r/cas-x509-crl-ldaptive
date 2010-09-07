@@ -21,7 +21,9 @@ package org.jasig.cas.server.login;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.jasig.cas.server.util.DateParser;
 import org.jasig.cas.server.util.PublicPrivateKeyStore;
+import org.jasig.cas.server.util.SamlCompliantThreadLocalDateFormatDateParser;
 import org.jasig.cas.server.util.SamlUtils;
 import org.jdom.Document;
 import org.jdom.Namespace;
@@ -64,13 +66,17 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
     private final Map<String, String> applicationToKeyAlias;
 
     @NotNull
+    private final DateParser dateParser;
+
+    @NotNull
     private Map<String, String> issuerToAssertionConsumerUrl = new HashMap<String, String>();
 
     private String alternateUserName;
 
-    public Saml2ArtifactRequestAccessRequestImplFactory(final PublicPrivateKeyStore publicPrivateKeyStore, final Map<String, String> applicationToKeyAlias) {
+    public Saml2ArtifactRequestAccessRequestImplFactory(final PublicPrivateKeyStore publicPrivateKeyStore, final Map<String, String> applicationToKeyAlias, final SamlCompliantThreadLocalDateFormatDateParser dateParser) {
         this.publicPrivateKeyStore = publicPrivateKeyStore;
         this.applicationToKeyAlias = applicationToKeyAlias;
+        this.dateParser = dateParser;
     }
 
     public void setIssuerToAssertionConsumerUrl(final Map<String, String> issuerToAssertionConsumerUrl) {

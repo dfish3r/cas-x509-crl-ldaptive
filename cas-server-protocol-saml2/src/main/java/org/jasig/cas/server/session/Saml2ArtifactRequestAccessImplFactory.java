@@ -21,6 +21,10 @@ package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.login.Saml2ArtifactRequestAccessRequestImpl;
 import org.jasig.cas.server.login.ServiceAccessRequest;
+import org.jasig.cas.server.util.DateParser;
+import org.jasig.cas.server.util.SamlCompliantThreadLocalDateFormatDateParser;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Constructs a SAML2 Artifact Request/Response.
@@ -31,11 +35,27 @@ import org.jasig.cas.server.login.ServiceAccessRequest;
  */
 public final class Saml2ArtifactRequestAccessImplFactory implements AccessFactory {
 
+    @NotNull
+    private final String issuer;
+
+    @NotNull
+    private final DateParser dateParser;
+
+    /**
+     * Public constructor that takes the required issuer name (which most SPs will configure on their end to check
+     *
+     * @param issuer the name of the issuer.  CANNOT be NULL.
+     */
+    public Saml2ArtifactRequestAccessImplFactory(final String issuer, final SamlCompliantThreadLocalDateFormatDateParser parser) {
+        this.issuer = issuer;
+        this.dateParser = parser;
+    }
+
     public Access getAccess(final Session session, final ServiceAccessRequest serviceAccessRequest) {
         if (!(serviceAccessRequest instanceof Saml2ArtifactRequestAccessRequestImpl)) {
             return null;
         }
         
-        return new Saml2ArtifactRequestAccessImpl(session, (Saml2ArtifactRequestAccessRequestImpl) serviceAccessRequest);
+        return new Saml2ArtifactRequestAccessImpl(session, (Saml2ArtifactRequestAccessRequestImpl) serviceAccessRequest, this.issuer, this.dateParser);
     }
 }

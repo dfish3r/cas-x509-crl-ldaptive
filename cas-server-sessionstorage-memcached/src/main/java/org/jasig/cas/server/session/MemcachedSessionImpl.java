@@ -24,10 +24,7 @@ import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.server.authentication.AuthenticationResponse;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -54,7 +51,7 @@ public final class MemcachedSessionImpl extends AbstractStaticSession implements
 
     private final Set<Session> childSessions = new HashSet<Session>();
 
-    private final Set<Authentication> authentications = new HashSet<Authentication>();
+    private final SortedSet<Authentication> authentications = new TreeSet<Authentication>();
 
     public MemcachedSessionImpl(final AuthenticationResponse authenticationResponse) {
         this(null, authenticationResponse);
@@ -130,7 +127,7 @@ public final class MemcachedSessionImpl extends AbstractStaticSession implements
         return session;
     }
 
-    public Set<Authentication> getAuthentications() {
+    public SortedSet<Authentication> getAuthentications() {
         return this.authentications;
     }
 

@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * A session is the transient item stored within the CAS server to represent a short-lived authentication.  From this,
@@ -52,7 +53,7 @@ public interface Session extends Serializable {
      *
      * @return the authentication associated with this session explicitly.
      */
-    Set<Authentication> getAuthentications();
+    SortedSet<Authentication> getAuthentications();
 
     /**
      * Returns the principal associated with this session.  The Authentications for this session are all for this particular

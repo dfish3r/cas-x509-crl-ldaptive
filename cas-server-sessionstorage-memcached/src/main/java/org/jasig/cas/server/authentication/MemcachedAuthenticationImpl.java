@@ -19,6 +19,8 @@
 
 package org.jasig.cas.server.authentication;
 
+import org.jasig.cas.server.session.AbstractAuthenticationImpl;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -33,7 +35,7 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class MemcachedAuthenticationImpl implements Authentication, Serializable {
+public final class MemcachedAuthenticationImpl extends AbstractAuthenticationImpl {
 
     private final Date date = new Date();
 

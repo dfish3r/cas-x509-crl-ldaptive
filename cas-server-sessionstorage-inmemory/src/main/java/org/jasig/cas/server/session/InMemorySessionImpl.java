@@ -50,7 +50,7 @@ public final class InMemorySessionImpl extends AbstractSession {
 
     private final List<AccessFactory> accessFactories;
 
-    private Set<Authentication> authentications;
+    private SortedSet<Authentication> authentications;
 
     private final State state = new SimpleStateImpl();
 
@@ -68,13 +68,13 @@ public final class InMemorySessionImpl extends AbstractSession {
         this.parentSession = parentSession;
         this.expirationPolicy = expirationPolicy;
         this.accessFactories = accessFactories;
-        this.authentications = authentications;
+        this.authentications = new TreeSet<Authentication>(authentications);
         this.attributePrincipal = attributePrincipal;
         this.servicesManager = servicesManager;
         updateId();
     }
 
-     public Set<Authentication> getAuthentications() {
+     public SortedSet<Authentication> getAuthentications() {
         return this.authentications;
     }
 

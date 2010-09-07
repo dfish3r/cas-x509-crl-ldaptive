@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.*;
 
 import org.jasig.cas.server.authentication.*;
+import org.jasig.cas.server.session.AbstractAuthenticationImpl;
 import org.jasig.cas.server.session.Assertion;
 import static org.mockito.Mockito.*;
 
@@ -199,7 +200,7 @@ public final class TestUtils {
 
     public static Authentication getAuthentication() {
 
-        return new Authentication() {
+        return new AbstractAuthenticationImpl() {
 
             private final Date date = new Date();
 
@@ -225,7 +226,7 @@ public final class TestUtils {
     public static Authentication getAuthentication(final String name) {
         final AttributePrincipal attributePrincipal = getPrincipal(name);
 
-        return new Authentication() {
+        return new AbstractAuthenticationImpl() {
 
             private final Date date = new Date();
 

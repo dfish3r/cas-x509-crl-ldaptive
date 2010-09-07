@@ -25,10 +25,7 @@ import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * JPA-backed implementation of the {@link org.jasig.cas.server.session.Session}.
@@ -72,7 +69,8 @@ public class JpaSessionImpl extends AbstractStaticSession {
     private JpaAttributePrincipalImpl attributePrincipal;
 
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,targetEntity = JpaAuthenticationImpl.class)
-    private Set<Authentication> authentications = new HashSet<Authentication>();
+    @Sort(type=SortType.NATURAL)
+    private SortedSet<Authentication> authentications = new TreeSet<Authentication>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentSession", fetch = FetchType.EAGER,targetEntity = JpaCasProtocolAccessImpl.class)
     private Set<Access> casProtocolAccesses = new HashSet<Access>();
@@ -165,7 +163,7 @@ public class JpaSessionImpl extends AbstractStaticSession {
         return session;
     }
 
-    public final Set<Authentication> getAuthentications() {
+    public final SortedSet<Authentication> getAuthentications() {
         return this.authentications;
     }
 

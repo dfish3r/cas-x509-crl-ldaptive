@@ -19,6 +19,7 @@
 
 package org.jasig.cas.server.authentication;
 
+import org.jasig.cas.server.session.AbstractAuthenticationImpl;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -37,7 +38,7 @@ import java.util.Map;
  */
 @Entity(name = "authentication")
 @Embeddable()
-public class JpaAuthenticationImpl implements Authentication {
+public class JpaAuthenticationImpl extends AbstractAuthenticationImpl {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "cas_authentication_seq")

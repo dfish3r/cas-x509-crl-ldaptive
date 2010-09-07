@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import org.jasig.cas.TestUtils;
 import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Authentication;
+import org.jasig.cas.server.session.AbstractAuthenticationImpl;
 import org.jasig.cas.server.session.Assertion;
 import org.opensaml.SAMLAuthenticationStatement;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -67,7 +68,7 @@ public class Saml10SuccessResponseViewTests extends TestCase {
         }
     };
 
-    private Authentication authentication = new Authentication() {
+    private Authentication authentication = new AbstractAuthenticationImpl() {
 
         private final Date date = new Date();
 

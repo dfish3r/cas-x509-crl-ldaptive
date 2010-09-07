@@ -66,33 +66,8 @@ import org.w3c.dom.Node;
  */
 public final class SamlUtils {
 
-    private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
-
-
     private SamlUtils() {
         // nothing to do
-    }
-
-    public static String getCurrentDateAndTime() {
-        return getFormattedDateAndTime(new Date());
-    }
-
-    public static String getFormattedDateAndTime(final Date date) {
-        return getFormattedDateAndTime(date, null);
-    }
-
-    public static String getFormattedDateAndTime(final Date date, final TimeZone timeZone) {
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        if (timeZone != null) {
-            dateFormat.setTimeZone(timeZone);
-        }
-        return dateFormat.format(date);
-
-    }
-
-    public static String getFormattedDateAndTimeInUtc(final Date date) {
-        return getFormattedDateAndTime(date, UTC);
-
     }
 
     public static Document constructDocumentFromXmlString(String xmlString) {

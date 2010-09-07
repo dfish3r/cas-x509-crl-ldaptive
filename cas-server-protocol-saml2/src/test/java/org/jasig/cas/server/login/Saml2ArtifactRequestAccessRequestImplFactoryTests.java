@@ -2,6 +2,7 @@ package org.jasig.cas.server.login;
 
 import org.apache.commons.codec.binary.Base64;
 import org.jasig.cas.server.util.PublicPrivateKeyStore;
+import org.jasig.cas.server.util.SamlCompliantThreadLocalDateFormatDateParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -60,7 +61,7 @@ public final class Saml2ArtifactRequestAccessRequestImplFactoryTests {
         when(keyStore.getPublicKey("yammerAlias")).thenReturn(CONST_PUBLIC_KEY_YAMMER);
         when(keyStore.getPrivateKey("yammerAlias")).thenReturn(CONST_PRIVATE_KEY_YAMMER);
 
-        this.factory = new Saml2ArtifactRequestAccessRequestImplFactory(keyStore, values);
+        this.factory = new Saml2ArtifactRequestAccessRequestImplFactory(keyStore, values, new SamlCompliantThreadLocalDateFormatDateParser());
         final Map<String,String> v = new HashMap<String,String>();
         v.put("yammer.com", "http://www.yammer.com/SAMLEndpoint");
         this.factory.setIssuerToAssertionConsumerUrl(v);

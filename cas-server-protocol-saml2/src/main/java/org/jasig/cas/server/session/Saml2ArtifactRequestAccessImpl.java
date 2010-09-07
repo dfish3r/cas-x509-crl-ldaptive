@@ -19,8 +19,10 @@
 
 package org.jasig.cas.server.session;
 
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.jasig.cas.server.login.Saml2ArtifactRequestAccessRequestImpl;
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
+import org.jasig.cas.server.util.DateParser;
 import org.jasig.cas.server.util.SamlUtils;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -56,32 +58,33 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
 
     private static final String SAML_PROTOCOL_NS_URI_V20 = "urn:oasis:names:tc:SAML:2.0:protocol";
 
-    private static final String TEMPLATE_SAML_RESPONSE = "<samlp:Response ID=\"<RESPONSE_ID>\" IssueInstant=\"<ISSUE_INSTANT>\" Version=\"2.0\""
+    private static final String TEMPLATE_SAML_RESPONSE = ""
+        + "<samlp:Response ID=\"${responseId}\" IssueInstant=\"${issueInstant}\" Version=\"2.0\""
         + " xmlns=\"urn:oasis:names:tc:SAML:2.0:assertion\""
         + " xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\""
         + " xmlns:xenc=\"http://www.w3.org/2001/04/xmlenc#\">"
         + "<samlp:Status>"
         + "<samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\" />"
         + "</samlp:Status>"
-        + "<Assertion ID=\"<ASSERTION_ID>\""
-        + " IssueInstant=\"2003-04-17T00:46:02Z\" Version=\"2.0\""
+        + "<Assertion ID=\"${assertionId}\""
+        + " IssueInstant=\"${assertionIssueInstant}\" Version=\"2.0\""
         + " xmlns=\"urn:oasis:names:tc:SAML:2.0:assertion\">"
-        + "<Issuer>https://www.opensaml.org/IDP</Issuer>"
+        + "<Issuer>${issuer}</Issuer>"
         + "<Subject>"
         + "<NameID Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress\">"
-        + "<USERNAME_STRING>"
+        + "${userName}"
         + "</NameID>"
         + "<SubjectConfirmation Method=\"urn:oasis:names:tc:SAML:2.0:cm:bearer\">"
-        + "<SubjectConfirmationData Recipient=\"<ACS_URL>\" NotOnOrAfter=\"<NOT_ON_OR_AFTER>\" InResponseTo=\"<REQUEST_ID>\" />"
+        + "<SubjectConfirmationData Recipient=\"${acsUrl}\" NotOnOrAfter=\"${notOnOrAfter}\" InResponseTo=\"${requestId}\" />"
         + "</SubjectConfirmation>"
         + "</Subject>"
-        + "<Conditions NotBefore=\"2003-04-17T00:46:02Z\""
-        + " NotOnOrAfter=\"<NOT_ON_OR_AFTER>\">"
+        + "<Conditions NotBefore=\"${conditionsNotBefore}\""
+        + " NotOnOrAfter=\"${conditionsNotAfter}\">"
         + "<AudienceRestriction>"
-        + "<Audience><ACS_URL></Audience>"
+        + "<Audience>${acsUrl}</Audience>"
         + "</AudienceRestriction>"
         + "</Conditions>"
-        + "<AuthnStatement AuthnInstant=\"<AUTHN_INSTANT>\">"
+        + "<AuthnStatement AuthnInstant=\"${authenticationInstant}\">"
         + "<AuthnContext>"
         + "<AuthnContextClassRef>"
         + "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
@@ -100,9 +103,15 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
 
     private final Session session;
 
-    public Saml2ArtifactRequestAccessImpl(final Session session, final Saml2ArtifactRequestAccessRequestImpl impl) {
+    private final String issuer;
+
+    private final DateParser dateParser;
+
+    public Saml2ArtifactRequestAccessImpl(final Session session, final Saml2ArtifactRequestAccessRequestImpl impl, final String issuer, final DateParser dateParser) {
         this.impl = impl;
         this.session = session;
+        this.issuer = issuer;
+        this.dateParser = dateParser;
     } 
 
     public String getId() {
@@ -228,7 +237,7 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
         }
     }
 
-    private static Node getXmlSignatureInsertLocation(org.w3c.dom.Element elem) {
+    private static Node getXmlSignatureInsertLocation(final org.w3c.dom.Element elem) {
         org.w3c.dom.Node insertLocation = null;
         org.w3c.dom.NodeList nodeList = elem.getElementsByTagNameNS(SAML_PROTOCOL_NS_URI_V20, "Extensions");
         if (nodeList.getLength() != 0) {
@@ -261,8 +270,6 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
       }
 
     private String constructSamlResponse() {
-        String samlResponse = TEMPLATE_SAML_RESPONSE;
-
         final Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         c.add(Calendar.YEAR, 1);
@@ -281,15 +288,23 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
             }
         }
 
-        samlResponse = samlResponse.replace("<USERNAME_STRING>", userId);
-        samlResponse = samlResponse.replace("<RESPONSE_ID>", createID());
-        samlResponse = samlResponse.replace("<ISSUE_INSTANT>", SamlUtils.getCurrentDateAndTime());
-        samlResponse = samlResponse.replace("<AUTHN_INSTANT>", SamlUtils.getCurrentDateAndTime());
-        samlResponse = samlResponse.replaceAll("<NOT_ON_OR_AFTER>", SamlUtils.getFormattedDateAndTime(c.getTime()));
-        samlResponse = samlResponse.replace("<ASSERTION_ID>", createID());
-        samlResponse = samlResponse.replaceAll("<ACS_URL>", getId());
-        samlResponse = samlResponse.replace("<REQUEST_ID>", this.impl.getRequestId());
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        final String currentDateAndTime = this.dateParser.format(new Date());
+        final String endTime = this.dateParser.format(c.getTime());
+        parameters.put("responseId", createID());
+        parameters.put("issueInstant", currentDateAndTime);
+        parameters.put("assertionId", createID());
+        parameters.put("assertionIssueInstant", currentDateAndTime);
+        parameters.put("issuer", this.issuer);
+        parameters.put("userName", userId);
+        parameters.put("acsUrl", getId());
+        parameters.put("notOnOrAfter", endTime);
+        parameters.put("requestId", this.impl.getRequestId());
+        parameters.put("conditionsNotBefore", currentDateAndTime);
+        parameters.put("conditionsNotAfter", endTime);
+        parameters.put("authenticationInstant", this.dateParser.format(this.session.getAuthentications().last().getAuthenticationDate()));
 
-        return samlResponse;
+        final StrSubstitutor subs = new StrSubstitutor(parameters);
+        return subs.replace(TEMPLATE_SAML_RESPONSE);
     }
 }

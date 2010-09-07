@@ -19,6 +19,7 @@
 
 package org.jasig.cas.server.authentication;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public interface Authentication {
+public interface Authentication extends Comparable<Authentication>, Serializable {
 
     /**
      * The date at which the authentication occurred.
