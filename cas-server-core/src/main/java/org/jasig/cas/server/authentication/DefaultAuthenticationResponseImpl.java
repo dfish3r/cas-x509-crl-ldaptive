@@ -32,7 +32,7 @@ public final class DefaultAuthenticationResponseImpl implements AuthenticationRe
 
     private final Set<Authentication> authentication;
 
-    private final List<GeneralSecurityException> authenticationExceptions;
+    private final Map<Credential, List<GeneralSecurityException>> authenticationExceptions;
 
     private final List<Message> authenticationMessages;
 
@@ -40,19 +40,19 @@ public final class DefaultAuthenticationResponseImpl implements AuthenticationRe
 
     private final AttributePrincipal attributePrincipal;
 
-    public DefaultAuthenticationResponseImpl(final List<GeneralSecurityException> authenticationExceptions) {
+    public DefaultAuthenticationResponseImpl(final Map<Credential, List<GeneralSecurityException>> authenticationExceptions) {
         this(authenticationExceptions, Collections.<Message>emptyList());
     }
 
-    public DefaultAuthenticationResponseImpl(final List<GeneralSecurityException> authenticationExceptions, final List<Message> authenticationMessages) {
+    public DefaultAuthenticationResponseImpl(final Map<Credential, List<GeneralSecurityException>> authenticationExceptions, final List<Message> authenticationMessages) {
         this(null, null, authenticationExceptions, authenticationMessages);
     }
 
-    public DefaultAuthenticationResponseImpl(final Set<Authentication> authentication, final AttributePrincipal attributePrincipal, final List<GeneralSecurityException> authenticationExceptions, final List<Message> authenticationMessages) {
+    public DefaultAuthenticationResponseImpl(final Set<Authentication> authentication, final AttributePrincipal attributePrincipal, final Map<Credential, List<GeneralSecurityException>> authenticationExceptions, final List<Message> authenticationMessages) {
         this.authentication = authentication;
         this.attributePrincipal = attributePrincipal;
         this.succeeded = this.authentication != null;
-        this.authenticationExceptions = Collections.unmodifiableList(authenticationExceptions);
+        this.authenticationExceptions = Collections.unmodifiableMap(authenticationExceptions);
         this.authenticationMessages = Collections.unmodifiableList(authenticationMessages);
     }
 
@@ -68,7 +68,7 @@ public final class DefaultAuthenticationResponseImpl implements AuthenticationRe
         return this.attributePrincipal;
     }
 
-    public List<GeneralSecurityException> getGeneralSecurityExceptions() {
+    public Map<Credential, List<GeneralSecurityException>> getGeneralSecurityExceptions() {
         return this.authenticationExceptions;
     }
 

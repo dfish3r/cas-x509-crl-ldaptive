@@ -74,7 +74,7 @@ public abstract class AbstractAuthenticationManager implements AuthenticationMan
         final List<Credential> credentials = new ArrayList<Credential>();
         final Set<Authentication> authentications = new HashSet<Authentication>();
         final List<AttributePrincipal> principals = new ArrayList<AttributePrincipal>();
-        final List<GeneralSecurityException> exceptions = new ArrayList<GeneralSecurityException>();
+        final Map<Credential, List<GeneralSecurityException>> exceptions = new HashMap<Credential, List<GeneralSecurityException>>();
         final List<Message> messages = new ArrayList<Message>();
 
         obtainAuthenticationsAndPrincipals(authenticationRequest, authentications, principals, exceptions, messages);
@@ -93,7 +93,7 @@ public abstract class AbstractAuthenticationManager implements AuthenticationMan
         return new DefaultAuthenticationResponseImpl(authentications, principal, exceptions, messages);
     }
 
-    protected abstract void obtainAuthenticationsAndPrincipals(AuthenticationRequest authenticationRequest, Collection<Authentication> authentications, Collection<AttributePrincipal> principals, final Collection<GeneralSecurityException> exceptions, Collection<Message> messages);
+    protected abstract void obtainAuthenticationsAndPrincipals(AuthenticationRequest authenticationRequest, Collection<Authentication> authentications, Collection<AttributePrincipal> principals, final Map<Credential, List<GeneralSecurityException>> exceptions, Collection<Message> messages);
 
 
     protected final Map<String, List<Object>> obtainAttributesFor(final AuthenticationRequest request, final Credential credential) {

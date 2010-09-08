@@ -20,6 +20,7 @@
 package org.jasig.cas.server;
 
 import org.jasig.cas.server.authentication.AuthenticationResponse;
+import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.DefaultAuthenticationResponseImpl;
 import org.jasig.cas.server.login.DefaultLoginResponseImpl;
 import org.jasig.cas.server.login.LoginRequest;
@@ -31,6 +32,9 @@ import javax.security.auth.login.AccountLockedException;
 import javax.validation.constraints.Min;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract functionality for handling throttling the user.
@@ -76,7 +80,9 @@ public abstract class AbstractThrottlingPreAuthenticationPlugin implements PreAu
             updateCount(loginRequest);
             log.warn("*** Possible Hacking Attempt from [" + loginRequest.getRemoteIpAddress() + "].  More than " + this.failureThreshold + " failed login attempts within " + this.failureRangeInSeconds + " seconds.");
             // TODO add message text here
-            return new DefaultLoginResponseImpl(new DefaultAuthenticationResponseImpl(Arrays.asList((GeneralSecurityException) new AccountLockedException())));
+            final Map<Credential, List<GeneralSecurityException>> exceptions = new HashMap<Credential, List<GeneralSecurityException>>();
+            exceptions.put(loginRequest.getCredentials().get(0), Arrays.asList((GeneralSecurityException) new AccountLockedException()));
+            return new DefaultLoginResponseImpl(new DefaultAuthenticationResponseImpl(exceptions));
         }
 
         return null;

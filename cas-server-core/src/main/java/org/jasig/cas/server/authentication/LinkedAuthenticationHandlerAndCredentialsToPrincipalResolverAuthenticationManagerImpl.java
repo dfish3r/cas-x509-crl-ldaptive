@@ -22,6 +22,7 @@ package org.jasig.cas.server.authentication;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -45,10 +46,11 @@ public final class LinkedAuthenticationHandlerAndCredentialsToPrincipalResolverA
     }
 
     @Override
-    protected void obtainAuthenticationsAndPrincipals(final AuthenticationRequest authenticationRequest, final Collection<Authentication> authentications, final Collection<AttributePrincipal> principals, final Collection<GeneralSecurityException> exceptions, final Collection<Message> messages) {
+    protected void obtainAuthenticationsAndPrincipals(final AuthenticationRequest authenticationRequest, final Collection<Authentication> authentications, final Collection<AttributePrincipal> principals, final Map<Credential, List<GeneralSecurityException>> exceptionMap, final Collection<Message> messages) {
         final List<Credential> credentials = authenticationRequest.getCredentials();
 
         for (final Credential credential : credentials) {
+            final List<GeneralSecurityException> exceptions = new ArrayList<GeneralSecurityException>();
             for (final Map.Entry<AuthenticationHandler,CredentialToPrincipalResolver> entry : linkedHandlers.entrySet()) {
                 final AuthenticationHandler handler = entry.getKey();
                 final CredentialToPrincipalResolver resolver = entry.getValue();
@@ -69,6 +71,10 @@ public final class LinkedAuthenticationHandlerAndCredentialsToPrincipalResolverA
                     } catch (final GeneralSecurityException e) {
                         exceptions.add(e);
                     }
+                }
+
+                if (!exceptions.isEmpty()) {
+                    exceptionMap.put(credential, exceptions);
                 }
             }
         }

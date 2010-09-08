@@ -50,7 +50,7 @@ public final class InMemorySessionImplTests extends AbstractSessionTests {
     protected Authentication getNewAuthentication() {
         final AuthenticationRequest authenticationRequest = mock(AuthenticationRequest.class);
         when(authenticationRequest.isLongTermAuthenticationRequest()).thenReturn(false);
-        return this.authenticationFactory.getAuthentication(Collections.<String, List<Object>>emptyMap(), authenticationRequest, "foobar");
+        return this.authenticationFactory.getAuthentication(Collections.<String, List<Object>>emptyMap(), authenticationRequest, Double.toString(Math.random()));
     }
 
     @Override

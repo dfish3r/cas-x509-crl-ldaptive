@@ -18,8 +18,7 @@
  */
 package org.jasig.cas.server.login;
 
-import org.jasig.cas.server.authentication.AuthenticationResponse;
-import org.jasig.cas.server.authentication.Message;
+import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.session.Session;
 import org.junit.Test;
 
@@ -43,7 +42,9 @@ public final class DefaultLoginResponseImplTests {
         final AuthenticationResponse mockedAuthenticationResponse = mock(AuthenticationResponse.class);
         final Message message = mock(Message.class);
         when(mockedAuthenticationResponse.getAuthenticationMessages()).thenReturn(Arrays.asList(message));
-        when(mockedAuthenticationResponse.getGeneralSecurityExceptions()).thenReturn(Arrays.asList(new GeneralSecurityException()));
+        final Map<Credential, List<GeneralSecurityException>> exceptions = new HashMap<Credential, List<GeneralSecurityException>>();
+        exceptions.put(new DefaultUserNamePasswordCredential(), Arrays.asList(new GeneralSecurityException()));
+        when(mockedAuthenticationResponse.getGeneralSecurityExceptions()).thenReturn(exceptions);
 
         final Session session = mock(Session.class);
         when(session.getId()).thenReturn(CONST_SESSION_ID);
@@ -63,7 +64,10 @@ public final class DefaultLoginResponseImplTests {
     public void secondConstructor() {
         final AuthenticationResponse mockedAuthenticationResponse = mock(AuthenticationResponse.class);
         when(mockedAuthenticationResponse.getAuthenticationMessages()).thenReturn(Collections.<Message>emptyList());
-        when(mockedAuthenticationResponse.getGeneralSecurityExceptions()).thenReturn(Arrays.asList(new GeneralSecurityException()));
+        final Map<Credential, List<GeneralSecurityException>> exceptions = new HashMap<Credential, List<GeneralSecurityException>>();
+        exceptions.put(new DefaultUserNamePasswordCredential(), Arrays.asList(new GeneralSecurityException()));
+
+        when(mockedAuthenticationResponse.getGeneralSecurityExceptions()).thenReturn(exceptions);
 
         final DefaultLoginResponseImpl login = new DefaultLoginResponseImpl(mockedAuthenticationResponse);
 

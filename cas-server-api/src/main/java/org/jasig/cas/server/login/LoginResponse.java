@@ -18,6 +18,7 @@
  */
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.Message;
 import org.jasig.cas.server.session.Session;
 
@@ -55,12 +56,12 @@ public interface LoginResponse extends Serializable {
     Session getSession();
 
     /**
-     * Returns the list of problems, if there were any, with this login request.
+     * Returns the map of problems, if there were any, with this login request.
      *
      * This list can be empty but NOT null.
-     * @return the list of authentication exceptions.
+     * @return the map of authentication exceptions.
      */
-    List<GeneralSecurityException> getGeneralSecurityExceptions();
+    Map<Credential, List<GeneralSecurityException>> getGeneralSecurityExceptions();
 
     /**
      * A list of warnings, as Message objects, that were accompanied with this request.

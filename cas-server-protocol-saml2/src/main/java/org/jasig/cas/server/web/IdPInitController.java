@@ -21,6 +21,7 @@ package org.jasig.cas.server.web;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.text.StrSubstitutor;
+import org.jasig.cas.server.util.SamlCompliantThreadLocalDateFormatDateParser;
 import org.jasig.cas.server.util.SamlUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -54,14 +55,18 @@ public class IdPInitController {
             "</samlp:AuthnRequest>";
 
     @NotNull
-    final Map<String, String> issuerToAssertionConsumerUrlMapping;
+    private final Map<String, String> issuerToAssertionConsumerUrlMapping;
 
     @NotNull
-    final Map<String, String> issuerToProviderNameMapping;
+    private final Map<String, String> issuerToProviderNameMapping;
 
-    public IdPInitController(final Map<String, String> issuerToAssertionConsumerUrlMapping, final Map<String, String> issuerToProviderNameMapping) {
+    @NotNull
+    private final SamlCompliantThreadLocalDateFormatDateParser dateParser;
+
+    public IdPInitController(final Map<String, String> issuerToAssertionConsumerUrlMapping, final Map<String, String> issuerToProviderNameMapping, final SamlCompliantThreadLocalDateFormatDateParser dateParser) {
         this.issuerToAssertionConsumerUrlMapping = issuerToAssertionConsumerUrlMapping;
         this.issuerToProviderNameMapping = issuerToProviderNameMapping;
+        this.dateParser = dateParser;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/idp/saml2/request/issuer/{issuer}")
@@ -75,7 +80,7 @@ public class IdPInitController {
         final Map<String, String> subs = new HashMap<String, String>();
 
         subs.put("generatedId", UUID.randomUUID().toString());
-        subs.put("issueInstant", SamlUtils.getFormattedDateAndTimeInUtc(new Date()));
+        subs.put("issueInstant", this.dateParser.format(new Date()));
         subs.put("providerName", providerName);
         subs.put("assertionConsumerUrl", assertionConsumerUrl);
 

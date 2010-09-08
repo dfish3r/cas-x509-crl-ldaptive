@@ -85,8 +85,10 @@ public final class DefaultAuthenticationManagerImpl extends AbstractAuthenticati
     }
 
     @Override
-    protected void obtainAuthenticationsAndPrincipals(final AuthenticationRequest authenticationRequest, final Collection<Authentication> authentications, final Collection<AttributePrincipal> principals, final Collection<GeneralSecurityException> exceptions, final Collection<Message> messages) {
+    protected void obtainAuthenticationsAndPrincipals(final AuthenticationRequest authenticationRequest, final Collection<Authentication> authentications, final Collection<AttributePrincipal> principals, final Map<Credential, List<GeneralSecurityException>> exceptionMap, final Collection<Message> messages) {
+
         for (final Credential credential : authenticationRequest.getCredentials()) {
+            final List<GeneralSecurityException> exceptions = new ArrayList<GeneralSecurityException>();
             for (final AuthenticationHandler handler : this.authenticationHandlers) {
                 if (!handler.supports(credential)) {
                     continue;
@@ -113,7 +115,9 @@ public final class DefaultAuthenticationManagerImpl extends AbstractAuthenticati
                 }
             }
 
-
+            if (!exceptions.isEmpty()) {
+                exceptionMap.put(credential, exceptions);
+            }
         }
     }
 

@@ -19,6 +19,7 @@
 package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.authentication.AuthenticationResponse;
+import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.Message;
 import org.jasig.cas.server.session.Session;
 
@@ -45,7 +46,7 @@ public class DefaultLoginResponseImpl implements LoginResponse {
 
     private final Session session;
 
-    private final List<GeneralSecurityException> authenticationExceptions;
+    private final Map<Credential, List<GeneralSecurityException>> authenticationExceptions;
 
     private final List<Message> authenticationMessages;
 
@@ -55,11 +56,11 @@ public class DefaultLoginResponseImpl implements LoginResponse {
         this.session = session;
 
         if (authenticationResponse == null) {
-            this.authenticationExceptions = Collections.emptyList();
+            this.authenticationExceptions = Collections.emptyMap();
             this.authenticationMessages = Collections.emptyList();
             this.attributes = Collections.emptyMap();
         } else {
-            this.authenticationExceptions = Collections.unmodifiableList(authenticationResponse.getGeneralSecurityExceptions());
+            this.authenticationExceptions = Collections.unmodifiableMap(authenticationResponse.getGeneralSecurityExceptions());
             this.authenticationMessages = Collections.unmodifiableList(authenticationResponse.getAuthenticationMessages());
             this.attributes = Collections.unmodifiableMap(authenticationResponse.getAttributes());
         }
@@ -77,7 +78,7 @@ public class DefaultLoginResponseImpl implements LoginResponse {
         return this.session;
     }
 
-    public final List<GeneralSecurityException> getGeneralSecurityExceptions() {
+    public final Map<Credential, List<GeneralSecurityException>> getGeneralSecurityExceptions() {
         return this.authenticationExceptions;
     }
 

@@ -18,6 +18,7 @@
  */
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.DefaultAuthenticationResponseImpl;
 import org.jasig.cas.server.authentication.Message;
 import org.jasig.cas.server.session.Access;
@@ -26,6 +27,8 @@ import org.junit.Test;
 
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.List;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -43,7 +46,7 @@ public final class DefaultServiceAccessResponseImplTests {
         final Access access = mock(Access.class);
         final Session session = mock(Session.class);
         when(session.getId()).thenReturn(CONST_SESSION_ID);
-        final DefaultServiceAccessResponseImpl response = new DefaultServiceAccessResponseImpl(access, Collections.<Access>emptyList(), session, new DefaultAuthenticationResponseImpl(Collections.<GeneralSecurityException>emptyList(), Collections.<Message>emptyList()));
+        final DefaultServiceAccessResponseImpl response = new DefaultServiceAccessResponseImpl(access, Collections.<Access>emptyList(), session, new DefaultAuthenticationResponseImpl(Collections.<Credential, List<GeneralSecurityException>>emptyMap(), Collections.<Message>emptyList()));
 
         assertNotNull(response.getAccess());
         assertNotNull(response.getLoggedOutAccesses());
@@ -58,7 +61,7 @@ public final class DefaultServiceAccessResponseImplTests {
     @Test
     public void secondConstructor() {
         final Access access = mock(Access.class);
-        final DefaultServiceAccessResponseImpl response = new DefaultServiceAccessResponseImpl(access, Collections.<Access>emptyList(), new DefaultAuthenticationResponseImpl(Collections.<GeneralSecurityException>emptyList(), Collections.<Message>emptyList()));
+        final DefaultServiceAccessResponseImpl response = new DefaultServiceAccessResponseImpl(access, Collections.<Access>emptyList(), new DefaultAuthenticationResponseImpl(Collections.<org.jasig.cas.server.authentication.Credential, java.util.List<java.security.GeneralSecurityException>>emptyMap(), Collections.<Message>emptyList()));
 
         assertNotNull(response.getAccess());
         assertNotNull(response.getLoggedOutAccesses());

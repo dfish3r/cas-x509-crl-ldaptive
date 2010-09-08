@@ -60,7 +60,7 @@ public abstract class AbstractSessionStorageTests extends TestCase {
         authentications.addAll(Arrays.asList(getConstructedAuthentication()));
         when(response.getAuthentications()).thenReturn(authentications);
         when(response.getPrincipal()).thenReturn(this.attributePrincipalFactory.getAttributePrincipal(principal));
-        when(response.getGeneralSecurityExceptions()).thenReturn(Collections.<GeneralSecurityException>emptyList());
+        when(response.getGeneralSecurityExceptions()).thenReturn(Collections.<Credential, List<GeneralSecurityException>>emptyMap());
         when(response.getAuthenticationMessages()).thenReturn(Collections.<Message>emptyList());
 
         return response;

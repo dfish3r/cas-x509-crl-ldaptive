@@ -58,15 +58,15 @@ public interface AuthenticationResponse {
     AttributePrincipal getPrincipal();
 
     /**
-     * Contains the list of GeneralSecurityExceptions that may have occurred during the course of the Authentication.
+     * Contains the map of GeneralSecurityExceptions that may have occurred during the course of the Authentication.
      * <p>
      * This makes no assumptions about whether authentication succeeded or failed based on these exceptions, so one should
      * ALWAYS check succeeded.
      * <p>
-     * This list can be empty but CANNOT be null.
-     * @return the list of authentication exceptions.  CANNOT be null.
+     * This map can be empty but CANNOT be null.
+     * @return the map of authentication exceptions.  CANNOT be null.
      */
-    List<GeneralSecurityException> getGeneralSecurityExceptions();
+    Map<Credential, List<GeneralSecurityException>> getGeneralSecurityExceptions();
 
     /**
      * Retrieve the list of Authentication messages, which may be things like "Your password expires in 2 days.".

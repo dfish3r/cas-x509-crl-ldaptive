@@ -47,8 +47,10 @@ public final class DirectMappingAuthenticationManagerImpl extends AbstractAuthen
     }
 
     @Override
-    protected void obtainAuthenticationsAndPrincipals(final AuthenticationRequest authenticationRequest, final Collection<Authentication> authentications, final Collection<AttributePrincipal> principals, final Collection<GeneralSecurityException> exceptions, final Collection<Message> messages) {
+    protected void obtainAuthenticationsAndPrincipals(final AuthenticationRequest authenticationRequest, final Collection<Authentication> authentications, final Collection<AttributePrincipal> principals, final Map<Credential, List<GeneralSecurityException>> exceptionMap, final Collection<Message> messages) {
         for (final Credential credential : authenticationRequest.getCredentials()) {
+            final List<GeneralSecurityException> exceptions = new ArrayList<GeneralSecurityException>();
+
             final DirectAuthenticationHandlerMappingHolder holder = this.credentialsMapping.get(credential.getClass());
 
             if (holder == null) {
@@ -72,6 +74,10 @@ public final class DirectMappingAuthenticationManagerImpl extends AbstractAuthen
                 }
             } catch (final GeneralSecurityException e) {
                 exceptions.add(e);
+            }
+
+            if (!exceptions.isEmpty()) {
+                exceptionMap.put(credential, exceptions);
             }
         }
     }
