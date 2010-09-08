@@ -19,6 +19,9 @@
 
 package org.jasig.cas.server.login;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Scott Battaglia
  * @version $Revision$ $Date$
@@ -29,6 +32,8 @@ package org.jasig.cas.server.login;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractServiceAccessRequestFactory implements ServiceAccessRequestFactory {
+
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final String getValue(Object o) {
         if (o == null) {

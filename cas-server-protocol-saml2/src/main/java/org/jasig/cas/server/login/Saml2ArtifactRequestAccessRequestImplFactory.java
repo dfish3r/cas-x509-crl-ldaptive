@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.DataFormatException;
@@ -50,8 +51,6 @@ import java.util.zip.InflaterInputStream;
  * @since 3.5
  */
 public final class Saml2ArtifactRequestAccessRequestImplFactory extends AbstractServiceAccessRequestFactory {
-
-    private static final Logger logger = LoggerFactory.getLogger(Saml2ArtifactRequestAccessRequestImplFactory.class);
 
     private static final String CONSTANT_PARAMETER_SERVICE = "SAMLRequest";
 
@@ -73,6 +72,8 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
 
     private String alternateUserName;
 
+    private int threshhold = 10* 60 * 1000; // 10 minutes in milliseconds
+
     public Saml2ArtifactRequestAccessRequestImplFactory(final PublicPrivateKeyStore publicPrivateKeyStore, final Map<String, String> applicationToKeyAlias, final SamlCompliantThreadLocalDateFormatDateParser dateParser) {
         this.publicPrivateKeyStore = publicPrivateKeyStore;
         this.applicationToKeyAlias = applicationToKeyAlias;
@@ -81,6 +82,10 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
 
     public void setIssuerToAssertionConsumerUrl(final Map<String, String> issuerToAssertionConsumerUrl) {
         this.issuerToAssertionConsumerUrl = issuerToAssertionConsumerUrl;
+    }
+
+    public void setThreshhold(final int threshhold) {
+        this.threshhold = threshhold;
     }
 
     public ServiceAccessRequest getServiceAccessRequest(final String sessionId, final String remoteIpAddress, final Map parameters) {
@@ -99,6 +104,11 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
 
         final String issuer = document.getRootElement().getChildText("Issuer", CONST_SAML_NAMESPACE);
         final String assertionConsumerServiceUrlFromXml = document.getRootElement().getAttributeValue("AssertionConsumerServiceURL");
+        final Date issueInstant = this.dateParser.parse(document.getRootElement().getAttributeValue("IssueInstant"));
+
+        if (!isWithinValidDateRange(issueInstant)) {
+            logger.debug("Issue instant is not within the range required.");
+        }
         final String assertionConsumerServiceUrl;
 
         if (assertionConsumerServiceUrlFromXml != null) {
@@ -149,7 +159,18 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
         this.alternateUserName = alternateUserName;
     }
 
-    private static String decodeAuthnRequestXML(final String encodedRequestXmlString) {
+    private boolean isWithinValidDateRange(final Date date) {
+        final long now = new Date().getTime();
+
+        final long beforeThreshhold = now - threshhold;
+        final long afterThreshhold = now + threshhold;
+
+        final long issueInstant = date.getTime();
+
+        return beforeThreshhold <= issueInstant && issueInstant <= afterThreshhold;
+    }
+
+    private String decodeAuthnRequestXML(final String encodedRequestXmlString) {
         if (encodedRequestXmlString == null) {
             return null;
         }
@@ -169,7 +190,7 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
         return zlibDeflate(decodedBytes);
     }
 
-    private static String zlibDeflate(final byte[] bytes) {
+    private String zlibDeflate(final byte[] bytes) {
         final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final InflaterInputStream iis = new InflaterInputStream(bais);
@@ -229,6 +250,4 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
             throw new RuntimeException("Cannot find encoding: UTF-8", e);
         }
     }
-
-
 }
