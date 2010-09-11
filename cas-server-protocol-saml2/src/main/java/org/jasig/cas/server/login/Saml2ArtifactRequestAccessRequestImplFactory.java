@@ -84,6 +84,14 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
         this.issuerToAssertionConsumerUrl = issuerToAssertionConsumerUrl;
     }
 
+    /**
+     * Determines the amount of time, +/- from the current time, we'll consider a request valid for. If it comes in before currentTime - threshhold or
+     * after currentTime + threshhold, its not considered valid.
+     * <p>
+     * The default is ten minutes.
+     *
+     * @param threshhold the thresshold in milliseconds.
+     */
     public void setThreshhold(final int threshhold) {
         this.threshhold = threshhold;
     }
