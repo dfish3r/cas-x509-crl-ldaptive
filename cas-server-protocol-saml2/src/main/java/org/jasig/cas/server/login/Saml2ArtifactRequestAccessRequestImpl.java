@@ -19,38 +19,72 @@
 
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.session.Access;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Represents a SAML2 request.  At the moment, this has been tested with:
  * <ul>
  * <li>Google Apps</li>
  * <li>Salesforce.com</li>
+ * <li>Yammer.com</li>
  * </ul>
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class Saml2ArtifactRequestAccessRequestImpl extends DefaultLoginRequestImpl implements ServiceAccessRequest {
+@XmlRootElement(name="AuthnRequest", namespace = "samlp")
+public final class Saml2ArtifactRequestAccessRequestImpl implements ServiceAccessRequest {
 
-    private final String serviceId;
+    @XmlAttribute(name="AssertionConsumerServiceURL")
+    private String serviceId;
 
-    private final String requestId;
+    @XmlAttribute(name="ID")
+    private String requestId;
 
-    private final String alternateUserName;
+    @XmlAttribute(name="IssueInstant")
+    private Date issueInstant;
 
-    private final String relayState;
+    @XmlAttribute(name="ProviderName")
+    private String providerName;
 
-    private final PublicKey publicKey;
+    @XmlElement(name="Issuer")
+    private String issuer;
 
-    private final PrivateKey privateKey;
+    @XmlAttribute(name="ProtocolBinding")
+    private String protocolBinding;
 
-    public Saml2ArtifactRequestAccessRequestImpl(String sessionId, String remoteIpAddress, boolean forceAuthentication, boolean passiveAuthentication, Access access, final String serviceId, final String requestId, final String alternateUserName, final String relayState, final PrivateKey privateKey, final PublicKey publicKey) {
-        super(sessionId, remoteIpAddress, forceAuthentication, passiveAuthentication, access);
+    private String alternateUserName;
+
+    private String relayState;
+
+    private PublicKey publicKey;
+
+    private PrivateKey privateKey;
+
+    private String remoteIpAddress;
+
+    private String sessionId;
+
+    private List<Credential> credentials = new ArrayList<Credential>();
+
+    public Saml2ArtifactRequestAccessRequestImpl() {
+        // nothing to do
+    }
+
+    public Saml2ArtifactRequestAccessRequestImpl(final String sessionId, final String remoteIpAddress, final String serviceId, final String requestId, final String alternateUserName, final String relayState, final PrivateKey privateKey, final PublicKey publicKey) {
+        this.sessionId = sessionId;
+        this.remoteIpAddress = remoteIpAddress;
         this.serviceId = serviceId;
         this.requestId = requestId;
         this.alternateUserName = alternateUserName;
@@ -58,6 +92,7 @@ public final class Saml2ArtifactRequestAccessRequestImpl extends DefaultLoginReq
         this.privateKey = privateKey;
         this.publicKey = publicKey;
     }
+
 
     public String getRequestId() {
         return this.requestId;
@@ -85,5 +120,97 @@ public final class Saml2ArtifactRequestAccessRequestImpl extends DefaultLoginReq
 
     public String getPassiveAuthenticationRedirectUrl() {
         return this.serviceId;
+    }
+
+    public List<Credential> getCredentials() {
+        return this.credentials;
+    }
+
+    public Date getDate() {
+        return this.issueInstant;
+    }
+
+    public boolean isForceAuthentication() {
+        return false;
+    }
+
+    public String getRemoteIpAddress() {
+        return this.remoteIpAddress;
+    }
+
+    public String getSessionId() {
+        return this.sessionId;
+    }
+
+    public void setSessionId(final String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public boolean isPassiveAuthentication() {
+        return false;
+    }
+
+    public boolean isLongTermLoginRequest() {
+        return false;
+    }
+
+    public Access getOriginalAccess() {
+        return null;
+    }
+
+    public void setRelayState(final String relayState) {
+        this.relayState = relayState;
+    }
+
+    public String getIssuer() {
+        return this.issuer;
+    }
+
+    public void setServiceId(final String serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    public String getProviderName() {
+        return this.providerName;
+    }
+
+    public void setAlternateUserName(final String alternateUserName) {
+        this.alternateUserName = alternateUserName;
+    }
+
+    public void setRemoteIpAddress(final String remoteIpAddress) {
+        this.remoteIpAddress = remoteIpAddress;
+    }
+
+    public void setPublicKey(final PublicKey publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public void setPrivateKey(final PrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    public void setIssueInstant(final Date issueInstant) {
+        this.issueInstant = issueInstant;
+    }
+
+    public void setProviderName(final String providerName) {
+        this.providerName = providerName;
+    }
+
+    public void setIssuer(final String issuer) {
+        this.issuer = issuer;
+    }
+
+    public void setRequestId(final String requestId) {
+        this.requestId = requestId;
+    }
+
+    public void setProtocolBinding(final String protocolBinding) {
+        this.protocolBinding = protocolBinding;
+    }
+
+    public String getProtocolBinding() {
+        return this.protocolBinding;
     }
 }

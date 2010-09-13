@@ -21,18 +21,25 @@ package org.jasig.cas.server.login;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.jasig.cas.server.util.DateParser;
 import org.jasig.cas.server.util.PublicPrivateKeyStore;
-import org.jasig.cas.server.util.SamlCompliantThreadLocalDateFormatDateParser;
 import org.jasig.cas.server.util.SamlUtils;
-import org.jdom.Document;
-import org.jdom.Namespace;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.crypto.dsig.XMLSignature;
+import javax.xml.crypto.dsig.XMLSignatureFactory;
+import javax.xml.crypto.dsig.dom.DOMValidateContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -56,28 +63,25 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
 
     private static final String CONSTANT_RELAY_STATE = "RelayState";
 
-    private static final Namespace CONST_SAML_NAMESPACE = Namespace.getNamespace("saml", "urn:oasis:names:tc:SAML:2.0:assertion");
-
     @NotNull
     private final PublicPrivateKeyStore publicPrivateKeyStore;
 
     @NotNull
     private final Map<String, String> applicationToKeyAlias;
 
-    @NotNull
-    private final DateParser dateParser;
+    private final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
     @NotNull
     private Map<String, String> issuerToAssertionConsumerUrl = new HashMap<String, String>();
+
 
     private String alternateUserName;
 
     private int threshhold = 10* 60 * 1000; // 10 minutes in milliseconds
 
-    public Saml2ArtifactRequestAccessRequestImplFactory(final PublicPrivateKeyStore publicPrivateKeyStore, final Map<String, String> applicationToKeyAlias, final SamlCompliantThreadLocalDateFormatDateParser dateParser) {
+    public Saml2ArtifactRequestAccessRequestImplFactory(final PublicPrivateKeyStore publicPrivateKeyStore, final Map<String, String> applicationToKeyAlias) {
         this.publicPrivateKeyStore = publicPrivateKeyStore;
         this.applicationToKeyAlias = applicationToKeyAlias;
-        this.dateParser = dateParser;
     }
 
     public void setIssuerToAssertionConsumerUrl(final Map<String, String> issuerToAssertionConsumerUrl) {
@@ -90,7 +94,7 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
      * <p>
      * The default is ten minutes.
      *
-     * @param threshhold the thresshold in milliseconds.
+     * @param threshhold the thresh hold in milliseconds.
      */
     public void setThreshhold(final int threshhold) {
         this.threshhold = threshhold;
@@ -103,56 +107,79 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
             return null;
         }
 
-        final Document document = SamlUtils.constructDocumentFromXmlString(samlRequest);
+        try {
+            final Document document = SamlUtils.constructDocumentFromXmlString(samlRequest);
 
-        if (document == null) {
-            logger.debug("No XML Document for SAML Request.");
+            if (document == null) {
+                return null;
+            }
+
+            final Element documentElement = document.getDocumentElement();
+            final JAXBContext jaxbContext = JAXBContext.newInstance(Saml2ArtifactRequestAccessRequestImpl.class);
+            final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            final Saml2ArtifactRequestAccessRequestImpl impl = (Saml2ArtifactRequestAccessRequestImpl) unmarshaller.unmarshal(documentElement);
+
+            if (!isWithinValidDateRange(impl.getDate())) {
+                logger.debug("Issue instant is not within the range required.");
+            }
+
+            final String relayState = getValue(parameters.get(CONSTANT_RELAY_STATE));
+            impl.setRelayState(relayState);
+
+            final String issuer = impl.getIssuer();
+            if (impl.getServiceId() == null && issuer != null) {
+                impl.setServiceId(this.issuerToAssertionConsumerUrl.get(issuer));
+            }
+
+            final String alias;
+            final String providerName = impl.getProviderName();
+
+            if (this.applicationToKeyAlias.containsKey(providerName)) {
+                alias = this.applicationToKeyAlias.get(providerName);
+            } else {
+                alias = this.applicationToKeyAlias.get(issuer);
+            }
+
+            if (alias == null) {
+                logger.debug("No Alias found for SAML request.");
+                return null;
+            }
+
+            final PrivateKey privateKey = this.publicPrivateKeyStore.getPrivateKey(alias);
+            final PublicKey publicKey = this.publicPrivateKeyStore.getPublicKey(alias);
+
+            if (privateKey == null || publicKey == null) {
+                logger.debug("No Private or Public Keys for SAML request.");
+                return null;
+            }
+
+            // validate the context if we can
+            final NodeList nl = document.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
+
+            if (nl.getLength() > 0) {
+                final XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
+                final DOMValidateContext context = new DOMValidateContext(publicKey, nl.item(0));
+                final XMLSignature signature = fac.unmarshalXMLSignature(context);
+
+                if (!signature.validate(context)) {
+                    logger.warn("XML did not pass the digital signature validation process.");
+                    return null;
+                }
+            } else {
+                logger.debug("No signature found for element.");
+            }
+
+
+            impl.setAlternateUserName(this.alternateUserName);
+            impl.setRemoteIpAddress(remoteIpAddress);
+            impl.setPrivateKey(privateKey);
+            impl.setPublicKey(publicKey);
+
+            return impl;
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
             return null;
         }
-
-        final String issuer = document.getRootElement().getChildText("Issuer", CONST_SAML_NAMESPACE);
-        final String assertionConsumerServiceUrlFromXml = document.getRootElement().getAttributeValue("AssertionConsumerServiceURL");
-        final Date issueInstant = this.dateParser.parse(document.getRootElement().getAttributeValue("IssueInstant"));
-
-        if (!isWithinValidDateRange(issueInstant)) {
-            logger.debug("Issue instant is not within the range required.");
-        }
-        final String assertionConsumerServiceUrl;
-
-        if (assertionConsumerServiceUrlFromXml != null) {
-            assertionConsumerServiceUrl = assertionConsumerServiceUrlFromXml;
-        } else if (issuer != null) {
-            assertionConsumerServiceUrl = this.issuerToAssertionConsumerUrl.get(issuer);
-        } else {
-            assertionConsumerServiceUrl = null;
-        }
-
-        final String providerName = document.getRootElement().getAttributeValue("ProviderName");
-        final String requestId = document.getRootElement().getAttributeValue("ID");
-        final String relayState = getValue(parameters.get(CONSTANT_RELAY_STATE));
-
-        final String alias;
-
-        if (this.applicationToKeyAlias.containsKey(providerName)) {
-            alias = this.applicationToKeyAlias.get(providerName);
-        } else {
-            alias = this.applicationToKeyAlias.get(issuer);
-        }
-
-        if (alias == null) {
-            logger.debug("No Alias found for SAML request.");
-            return null;
-        }
-
-        final PrivateKey privateKey = this.publicPrivateKeyStore.getPrivateKey(alias);
-        final PublicKey publicKey = this.publicPrivateKeyStore.getPublicKey(alias);
-
-        if (privateKey == null || publicKey == null) {
-            logger.debug("No Private or Public Keys for SAML request.");
-            return null;
-        }
-
-        return new Saml2ArtifactRequestAccessRequestImpl(sessionId, remoteIpAddress, false, false, null, assertionConsumerServiceUrl, requestId, this.alternateUserName, relayState, privateKey, publicKey);
     }
 
     /**

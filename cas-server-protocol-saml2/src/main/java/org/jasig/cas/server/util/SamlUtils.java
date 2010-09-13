@@ -19,43 +19,21 @@
 
 package org.jasig.cas.server.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
-import java.security.PrivateKey;
-import java.security.Provider;
-import java.security.PublicKey;
-import java.security.interfaces.DSAPublicKey;
-import java.security.interfaces.RSAPublicKey;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.DigestMethod;
-import javax.xml.crypto.dsig.Reference;
-import javax.xml.crypto.dsig.SignatureMethod;
-import javax.xml.crypto.dsig.SignedInfo;
-import javax.xml.crypto.dsig.Transform;
-import javax.xml.crypto.dsig.XMLSignature;
-import javax.xml.crypto.dsig.XMLSignatureFactory;
-import javax.xml.crypto.dsig.dom.DOMSignContext;
-import javax.xml.crypto.dsig.keyinfo.KeyInfo;
-import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
-import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
-import javax.xml.crypto.dsig.spec.TransformParameterSpec;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.DOMBuilder;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-import org.w3c.dom.Node;
 
 /**
  * Utilities adopted from the Google sample code.
@@ -66,17 +44,57 @@ import org.w3c.dom.Node;
  */
 public final class SamlUtils {
 
+    private static final DocumentBuilderFactory DOCUMENT_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
+
+    private static final Logger logger = LoggerFactory.getLogger(SamlUtils.class);
+
     private SamlUtils() {
         // nothing to do
     }
 
-    public static Document constructDocumentFromXmlString(String xmlString) {
+    /**
+     * Constructs a new W3C Document object from the provided XML string.  If it can't construct one, it will return null.
+     *
+     * @param xmlString the string to parse.
+     * @return the object, or null if it could not be constructed.
+     */
+    public static Document constructDocumentFromXmlString(final String xmlString) {
         try {
-            final SAXBuilder builder = new SAXBuilder();
-            return builder
-                .build(new ByteArrayInputStream(xmlString.getBytes()));
+            final DocumentBuilder documentBuilder = DOCUMENT_BUILDER_FACTORY.newDocumentBuilder();
+            return documentBuilder.parse(new ByteArrayInputStream(xmlString.getBytes()));
         } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
             return null;
+        }
+    }
+
+    public static String createStringFromDocument(final Document document) {
+        try {
+            final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            final Transformer trans = transformerFactory.newTransformer();
+            trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            trans.setOutputProperty(OutputKeys.INDENT, "yes");
+
+            //create string from xml tree
+            final StringWriter sw = new StringWriter();
+            final StreamResult result = new StreamResult(sw);
+            final DOMSource source = new DOMSource(document);
+            trans.transform(source, result);
+            return sw.toString();
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String createStringFromJaxBClass(final Class clazz, final Object o) {
+        try {
+            final JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+            final Marshaller marshaller = jaxbContext.createMarshaller();
+            final StringWriter writer = new StringWriter();
+            marshaller.marshal(o, writer);
+            return writer.toString();
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

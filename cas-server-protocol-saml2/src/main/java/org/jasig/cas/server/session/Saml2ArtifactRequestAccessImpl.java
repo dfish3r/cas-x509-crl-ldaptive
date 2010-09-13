@@ -24,10 +24,8 @@ import org.jasig.cas.server.login.Saml2ArtifactRequestAccessRequestImpl;
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
 import org.jasig.cas.server.util.DateParser;
 import org.jasig.cas.server.util.SamlUtils;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.DOMBuilder;
-import org.jdom.output.XMLOutputter;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import javax.xml.crypto.dsig.*;
@@ -37,11 +35,7 @@ import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
 import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
-import java.io.StringWriter;
 import java.security.PrivateKey;
-import java.security.Provider;
 import java.security.PublicKey;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.RSAPublicKey;
@@ -158,21 +152,20 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
         return new DefaultAccessResponseResultImpl(AccessResponseResult.Operation.POST, parameters, this.impl.getServiceId(), null);
     }
 
-    public String signSamlResponse(final String samlResponse, final PrivateKey privateKey, final PublicKey publicKey) {
+    protected String signSamlResponse(final String samlResponse, final PrivateKey privateKey, final PublicKey publicKey) {
         final Document doc = SamlUtils.constructDocumentFromXmlString(samlResponse);
 
         if (doc != null) {
-            final Element signedElement = signSamlElement(doc.getRootElement(), privateKey, publicKey);
-            doc.setRootElement((Element) signedElement.detach());
-            return new XMLOutputter().outputString(doc);
+            final Element signedElement = signSamlElement(doc.getDocumentElement(), privateKey, publicKey);
+//            doc.setRootElement((Element) signedElement.detach());
+            return SamlUtils.createStringFromDocument(doc);
         }
         throw new RuntimeException("Error signing SAML Response: Null document");
     }
 
     private static Element signSamlElement(final Element element, final PrivateKey privKey, final PublicKey pubKey) {
         try {
-            final String providerName = System.getProperty("jsr105Provider", JSR_105_PROVIDER);
-            final XMLSignatureFactory sigFactory = XMLSignatureFactory.getInstance("DOM", (Provider) Class.forName(providerName).newInstance());
+            final XMLSignatureFactory sigFactory = XMLSignatureFactory.getInstance("DOM");
 
             final List envelopedTransform = Collections.singletonList(sigFactory.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null));
 
@@ -200,44 +193,25 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
             // Create a KeyInfo and add the KeyValue to it
             final KeyInfo keyInfo = keyInfoFactory.newKeyInfo(Collections.singletonList(keyValuePair));
             // Convert the JDOM document to w3c (Java XML signature API requires W3C representation)
-            final org.w3c.dom.Element w3cElement = toDom(element);
 
             // Create a DOMSignContext and specify the DSA/RSA PrivateKey and
             // location of the resulting XMLSignature's parent element
-            final DOMSignContext dsc = new DOMSignContext(privKey, w3cElement);
+            final DOMSignContext dsc = new DOMSignContext(privKey, element);
 
-            final org.w3c.dom.Node xmlSigInsertionPoint = getXmlSignatureInsertLocation(w3cElement);
+            final Node xmlSigInsertionPoint = getXmlSignatureInsertLocation(element);
             dsc.setNextSibling(xmlSigInsertionPoint);
 
             // Marshal, generate (and sign) the enveloped signature
             final XMLSignature signature = sigFactory.newXMLSignature(signedInfo, keyInfo);
             signature.sign(dsc);
 
-            return toJdom(w3cElement);
+            return element;
         } catch (final Exception e) {
             throw new RuntimeException("Error signing SAML element: " + e.getMessage(), e);
         }
     }
 
-    private static org.w3c.dom.Element toDom(final Element element) {
-        return toDom(element.getDocument()).getDocumentElement();
-    }
-
-    private static org.w3c.dom.Document toDom(final Document doc) {
-        try {
-            final XMLOutputter xmlOutputter = new XMLOutputter();
-            final StringWriter elemStrWriter = new StringWriter();
-            xmlOutputter.output(doc, elemStrWriter);
-            final byte[] xmlBytes = elemStrWriter.toString().getBytes();
-            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            return dbf.newDocumentBuilder().parse(new ByteArrayInputStream(xmlBytes));
-        } catch (final Exception e) {
-            return null;
-        }
-    }
-
-    private static Node getXmlSignatureInsertLocation(final org.w3c.dom.Element elem) {
+    private static Node getXmlSignatureInsertLocation(final Element elem) {
         org.w3c.dom.Node insertLocation = null;
         org.w3c.dom.NodeList nodeList = elem.getElementsByTagNameNS(SAML_PROTOCOL_NS_URI_V20, "Extensions");
         if (nodeList.getLength() != 0) {
@@ -247,10 +221,6 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
             insertLocation = nodeList.item(nodeList.getLength() - 1);
         }
         return insertLocation;
-    }
-
-    private static Element toJdom(final org.w3c.dom.Element e) {
-        return new DOMBuilder().build(e);
     }
 
     private static String createID() {
@@ -280,7 +250,7 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
             userId = this.session.getPrincipal().getName();
         } else {
 
-            final Object attributeValue = this.session.getPrincipal().getAttributeValue(this.impl.getAlternateUserName());;
+            final Object attributeValue = this.session.getPrincipal().getAttributeValue(this.impl.getAlternateUserName());
             if (attributeValue == null) {
                 userId = this.session.getPrincipal().getName();
             } else {

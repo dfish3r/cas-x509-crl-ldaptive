@@ -45,6 +45,7 @@ public final class Saml2ArtifactRequestAccessImplFactory implements AccessFactor
      * Public constructor that takes the required issuer name (which most SPs will configure on their end to check
      *
      * @param issuer the name of the issuer.  CANNOT be NULL.
+     * @param parser the SAML compliant date parser to use.
      */
     public Saml2ArtifactRequestAccessImplFactory(final String issuer, final SamlCompliantThreadLocalDateFormatDateParser parser) {
         this.issuer = issuer;
