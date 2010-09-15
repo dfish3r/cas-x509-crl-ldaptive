@@ -13,8 +13,13 @@ import javax.validation.constraints.NotNull;
  */
 public abstract class AbstractSaml1ProtocolAccessImplFactory implements AccessFactory {
 
+    private static final String DEFAULT_ENCODING = "UTF-8";
+
     @NotNull
     private final UniqueTicketIdGenerator uniqueTicketIdGenerator;
+
+    @NotNull
+    private String encoding = DEFAULT_ENCODING;
 
     protected AbstractSaml1ProtocolAccessImplFactory(final UniqueTicketIdGenerator uniqueTicketIdGenerator) {
         this.uniqueTicketIdGenerator = uniqueTicketIdGenerator;
@@ -23,4 +28,14 @@ public abstract class AbstractSaml1ProtocolAccessImplFactory implements AccessFa
     protected UniqueTicketIdGenerator getUniqueTicketIdGenerator() {
         return this.uniqueTicketIdGenerator;
     }
+
+    public final void setEncoding(final String encoding) {
+        this.encoding = encoding;
+    }
+
+    protected final String getEncoding() {
+        return this.encoding;
+    }
+
+
 }

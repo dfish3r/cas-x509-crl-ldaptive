@@ -59,4 +59,11 @@ public interface AccessResponseResult {
      * @return the view.  CANNOT be NULL if the Operation is VIEW.
      */
     String getViewName();
+
+    /**
+     * Sets the content-type to be sent to the client.
+     *
+     * @return the content type.  Can be null.
+     */
+    String getContentType();
 }

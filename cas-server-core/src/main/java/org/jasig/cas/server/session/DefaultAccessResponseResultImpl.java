@@ -33,7 +33,7 @@ import java.io.UnsupportedEncodingException;
  */
 public final class DefaultAccessResponseResultImpl implements AccessResponseResult {
 
-    public static final AccessResponseResult NONE = new DefaultAccessResponseResultImpl(AccessResponseResult.Operation.NONE, new HashMap<String, List<String>>(), null, null);
+    public static final AccessResponseResult NONE = new DefaultAccessResponseResultImpl(AccessResponseResult.Operation.NONE, new HashMap<String, List<String>>(), null, null, null);
 
     private final Operation operation;
 
@@ -43,11 +43,18 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
 
     private final String viewName;
 
-    public DefaultAccessResponseResultImpl(final AccessResponseResult.Operation operation, final Map<String, List<String>> params, final String url, final String viewName) {
+    private final String contentType;
+
+    public DefaultAccessResponseResultImpl(final AccessResponseResult.Operation operation, final Map<String, List<String>> params, final String url, final String viewName, final String contentType) {
         this.operation = operation;
         this.url =  url;
         this.parameters = Collections.unmodifiableMap(params);
         this.viewName = viewName;
+        this.contentType = contentType;
+    }
+
+    public DefaultAccessResponseResultImpl(final String contentType) {
+        this(Operation.NONE, Collections.<String, List<String>>emptyMap(), null, null, contentType);
     }
 
     public Operation getOperationToPerform() {
@@ -90,6 +97,10 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
 
     public String getViewName() {
         return this.viewName;
+    }
+
+    public String getContentType() {
+        return this.contentType;
     }
 
     private String parseEntriesForItem(final String key, final List<String> values) {
