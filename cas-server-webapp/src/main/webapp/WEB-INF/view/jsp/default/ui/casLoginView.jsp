@@ -92,7 +92,7 @@
            languages.put("cs", "Czech");
            languages.put("sl", "Slovenian");
            languages.put("pl", "Polish");
-           languages.put("ca", "Catalan");
+           languages.put("ca_ES", "Catalan");
 
             request.setAttribute("languages", languages);
         %>
