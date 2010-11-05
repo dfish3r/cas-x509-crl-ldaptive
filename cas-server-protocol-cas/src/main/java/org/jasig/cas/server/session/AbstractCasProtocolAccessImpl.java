@@ -176,7 +176,7 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
             parameters.put("ticket", Arrays.asList(getId()));
 
             final AccessResponseResult.Operation operation = this.isPostRequest() ? AccessResponseResult.Operation.POST : AccessResponseResult.Operation.REDIRECT;
-            return new DefaultAccessResponseResultImpl(operation, parameters, getResourceIdentifier(), null);
+            return new DefaultAccessResponseResultImpl(operation, parameters, getResourceIdentifier(), null, null);
         } else {
             final Map<String, Object> root = new HashMap<String, Object>();
             root.put("ticket", getId());

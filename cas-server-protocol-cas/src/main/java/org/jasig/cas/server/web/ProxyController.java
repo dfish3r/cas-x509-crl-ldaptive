@@ -26,6 +26,7 @@ import org.jasig.cas.server.login.ServiceAccessResponse;
 import org.jasig.cas.server.session.AccessException;
 import org.jasig.cas.server.session.DefaultAccessResponseRequestImpl;
 import org.jasig.cas.server.session.SessionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
@@ -46,9 +46,10 @@ import java.util.Map;
  */
 @Controller
 public final class ProxyController {
+    @Autowired
+    private CentralAuthenticationService centralAuthenticationService;
 
-    @NotNull
-    private final CentralAuthenticationService centralAuthenticationService;
+    public ProxyController() { /* For Spring component-scan */ }
 
     public ProxyController(final CentralAuthenticationService centralAuthenticationService) {
         this.centralAuthenticationService = centralAuthenticationService;
