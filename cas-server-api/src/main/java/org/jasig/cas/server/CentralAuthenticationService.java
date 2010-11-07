@@ -18,14 +18,12 @@
  */
 package org.jasig.cas.server;
 
-import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.login.*;
 import org.jasig.cas.server.logout.LogoutRequest;
 import org.jasig.cas.server.logout.LogoutResponse;
 import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.AccessException;
-import org.jasig.cas.server.session.Assertion;
 import org.jasig.cas.server.session.SessionException;
 
 /**

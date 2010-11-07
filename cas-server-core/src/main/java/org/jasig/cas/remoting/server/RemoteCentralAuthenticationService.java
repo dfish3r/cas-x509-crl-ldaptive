@@ -27,7 +27,6 @@ import org.jasig.cas.server.logout.LogoutRequest;
 import org.jasig.cas.server.logout.LogoutResponse;
 import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.AccessException;
-import org.jasig.cas.server.session.Assertion;
 import org.jasig.cas.server.session.SessionException;
 
 import javax.validation.*;

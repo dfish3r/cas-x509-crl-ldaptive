@@ -33,13 +33,13 @@ import org.jasig.cas.server.session.DefaultAccessResponseRequestImpl;
 import org.jasig.cas.server.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Writer;
@@ -55,13 +55,12 @@ import java.util.Map;
  */
 @Controller
 public final class ValidationController {
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
-    @Autowired
-    private CentralAuthenticationService centralAuthenticationService;
+    private final CentralAuthenticationService centralAuthenticationService;
 
-    public ValidationController() { /* For Spring component-scan */ }
-
+    @Inject
     public ValidationController(final CentralAuthenticationService centralAuthenticationService) {
         this.centralAuthenticationService = centralAuthenticationService;
     }
@@ -83,19 +82,19 @@ public final class ValidationController {
 
     protected final void validateRequest(final boolean renew, final String service, final String ticket, final CasProtocolVersion casVersion, final HttpServletRequest request, final Writer writer) {
         if (!StringUtils.hasText(ticket) || !StringUtils.hasText(service)) {
-            this.logger.debug("Invalid request");
+            logger.debug("Invalid request");
             writeErrorResponse("INVALID_REQUEST", "service and ticket are required parameters.", casVersion, writer);
             return;
         }
 
         try {
-            final CasTokenServiceAccessRequestImpl casTokenServiceAccessRequest = new CasTokenServiceAccessRequestImpl(casVersion, ticket, service, renew, false);
+            final CasTokenServiceAccessRequestImpl casTokenServiceAccessRequest = new CasTokenServiceAccessRequestImpl(casVersion, ticket, service, request.getRemoteAddr(), renew, false);
             final Access access = null;
             // TODO re-enable this.centralAuthenticationService.validate(casTokenServiceAccessRequest);
             final Credential proxyCredential = createProxyCredential(request);
 
             if (access != null) {
-	            this.logger.debug("Successfully validated {}", ticket);
+	            logger.debug("Successfully validated {}", ticket);
                 final Session proxySession;
 
                 if (proxyCredential != null) {
@@ -110,11 +109,11 @@ public final class ValidationController {
                 final AccessResponseRequest accessResponseRequest = new DefaultAccessResponseRequestImpl(writer, proxySession != null ? proxySession.getId() : null, proxyCredential);
                 access.generateResponse(accessResponseRequest);
             } else {
-	            this.logger.debug("Invalid ticket {}", ticket);
+	            logger.debug("Invalid ticket {}", ticket);
                 writeErrorResponse("INVALID_TICKET", "Ticket '" + ticket + "' not recognized.", casVersion, writer);
             }
         } catch (final Exception e) {
-            this.logger.error("Ticket validation error", e);
+            logger.error("Ticket validation error", e);
             writeErrorResponse("INTERNAL_ERROR", e.getMessage(), casVersion, writer);
         }
     }

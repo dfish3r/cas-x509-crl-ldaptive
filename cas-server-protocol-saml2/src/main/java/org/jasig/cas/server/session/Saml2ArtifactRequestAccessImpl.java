@@ -149,7 +149,7 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
         parameters.put("SAMLResponse", Arrays.asList(signedResponse));
         parameters.put("RelayState", Arrays.asList(this.impl.getRelayState()));
 
-        return new DefaultAccessResponseResultImpl(AccessResponseResult.Operation.POST, parameters, this.impl.getServiceId(), null);
+        return new DefaultAccessResponseResultImpl(AccessResponseResult.Operation.POST, parameters, this.impl.getServiceId(), null, null);
     }
 
     protected String signSamlResponse(final String samlResponse, final PrivateKey privateKey, final PublicKey publicKey) {

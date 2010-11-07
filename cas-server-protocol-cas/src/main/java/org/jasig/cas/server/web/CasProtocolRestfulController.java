@@ -30,13 +30,13 @@ import org.jasig.cas.server.session.NotFoundSessionException;
 import org.jasig.cas.server.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -56,14 +56,11 @@ public class CasProtocolRestfulController {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private CentralAuthenticationService centralAuthenticationService;
+    private final CentralAuthenticationService centralAuthenticationService;
 
-    @Autowired
-    private ServiceAccessRequestFactory serviceAccessRequestFactory;
+    private final ServiceAccessRequestFactory serviceAccessRequestFactory;
 
-    public CasProtocolRestfulController() { /* For Spring component-scan */ }
-
+    @Inject
     public CasProtocolRestfulController(final CentralAuthenticationService centralAuthenticationService, final ServiceAccessRequestFactory serviceAccessRequestFactory) {
         this.centralAuthenticationService = centralAuthenticationService;
         this.serviceAccessRequestFactory = serviceAccessRequestFactory;

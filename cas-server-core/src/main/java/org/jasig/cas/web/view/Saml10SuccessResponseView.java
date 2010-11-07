@@ -20,24 +20,11 @@
 package org.jasig.cas.web.view;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
-import org.jasig.cas.server.authentication.Service;
-import org.jasig.cas.server.authentication.Authentication;
-import org.jasig.cas.server.session.Assertion;
-import org.opensaml.SAMLAssertion;
-import org.opensaml.SAMLAttribute;
-import org.opensaml.SAMLAttributeStatement;
-import org.opensaml.SAMLAudienceRestrictionCondition;
-import org.opensaml.SAMLAuthenticationStatement;
-import org.opensaml.SAMLException;
-import org.opensaml.SAMLNameIdentifier;
-import org.opensaml.SAMLResponse;
-import org.opensaml.SAMLSubject;
 
 /**
  * Implementation of a view to return a SAML response and assertion, based on
@@ -55,7 +42,7 @@ import org.opensaml.SAMLSubject;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public class Saml10SuccessResponseView extends AbstractCasView {
+public class Saml10SuccessResponseView {
 
     /** Namespace for custom attributes. */
     private static final String NAMESPACE = "http://www.ja-sig.org/products/cas/";
@@ -72,11 +59,10 @@ public class Saml10SuccessResponseView extends AbstractCasView {
     @NotNull
     private String encoding = DEFAULT_ENCODING;
 
-    @Override
     protected void renderMergedOutputModel(final Map model,
         final HttpServletRequest request, final HttpServletResponse response)
         throws Exception {
-
+/**
         try {
             final Assertion assertion = getAssertionFrom(model);
             final Authentication authentication = assertion
@@ -150,9 +136,9 @@ public class Saml10SuccessResponseView extends AbstractCasView {
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
             throw e;
-        }
+        }    **/
     }
-
+     /**
     protected SAMLSubject getSamlSubject(final Assertion assertion)
         throws SAMLException {
         final SAMLSubject samlSubject = new SAMLSubject();
@@ -163,7 +149,7 @@ public class Saml10SuccessResponseView extends AbstractCasView {
         samlSubject.setNameIdentifier(samlNameIdentifier);
 
         return samlSubject;
-    }
+    }   **/
 
     public void setIssueLength(final long issueLength) {
         this.issueLength = issueLength;

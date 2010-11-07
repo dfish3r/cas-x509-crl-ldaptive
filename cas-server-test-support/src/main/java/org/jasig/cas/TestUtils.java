@@ -25,7 +25,6 @@ import java.util.*;
 
 import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.session.AbstractAuthenticationImpl;
-import org.jasig.cas.server.session.Assertion;
 import static org.mockito.Mockito.*;
 
 /**
@@ -249,38 +248,6 @@ public final class TestUtils {
 
             public String getAuthenticationMethod() {
                 return "urn:ietf:rfc:2246";
-            }
-        };
-    }
-
-    public static Assertion getAssertion(final boolean fromNewLogin) {
-        return getAssertion(fromNewLogin, CONST_NO_PRINCIPALS);
-    }
-
-    public static Assertion getAssertion(final boolean fromNewLogin,
-        final String[] extraPrincipals) {
-        final List<Authentication> list = new ArrayList<Authentication>();
-        list.add(TestUtils.getAuthentication());
-
-        for (final String extraPrincipal : extraPrincipals) {
-            list.add(TestUtils.getAuthentication(extraPrincipal));
-        }
-
-        return new Assertion() {
-            public List<Authentication> getChainedAuthentications() {
-                return list;
-            }
-
-            public AttributePrincipal getPrincipal() {
-                return TestUtils.getPrincipal();
-            }
-
-            public boolean isFromNewLogin() {
-                return fromNewLogin;
-            }
-
-            public Service getService() {
-                return TestUtils.getService();
             }
         };
     }

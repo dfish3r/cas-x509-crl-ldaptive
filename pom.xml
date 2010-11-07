@@ -277,6 +277,14 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
             <version>${slf4j.version}</version>
             <scope>compile</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>${javax.inject.version}</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
 	</dependencies>
 
 	<repositories>
@@ -669,5 +677,6 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
         <inspektr.version>1.0.0.GA</inspektr.version>
         <mockito.version>1.8.5</mockito.version>
         <jboss.infinispan.version>4.1.0.ALPHA1</jboss.infinispan.version>
+        <javax.inject.version>1</javax.inject.version>
 	</properties>
 </project>

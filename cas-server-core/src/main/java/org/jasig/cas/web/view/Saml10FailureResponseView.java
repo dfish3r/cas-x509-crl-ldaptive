@@ -42,7 +42,7 @@ import org.opensaml.SAMLResponse;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public class Saml10FailureResponseView extends AbstractCasView {
+public class Saml10FailureResponseView {
 
     private static final String DEFAULT_ENCODING = "UTF-8";
 
