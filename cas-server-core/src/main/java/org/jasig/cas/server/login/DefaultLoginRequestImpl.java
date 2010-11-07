@@ -58,8 +58,12 @@ public class DefaultLoginRequestImpl implements LoginRequest {
     private final Access access;
 
     public DefaultLoginRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final boolean passiveAuthentication, final Access access) {
-        Assert.notNull(remoteIpAddress, "remoteIpAddress cannot be null");        
-        this.sessionId = sessionId;
+        Assert.notNull(remoteIpAddress, "remoteIpAddress cannot be null");
+        if (sessionId == null || sessionId.isEmpty()) {
+            this.sessionId = null;
+        } else {
+            this.sessionId = sessionId;
+        }
         this.forceAuthentication = forceAuthentication;
         this.remoteIpAddress = remoteIpAddress;
         this.passiveAuthentication = passiveAuthentication;
@@ -92,6 +96,10 @@ public class DefaultLoginRequestImpl implements LoginRequest {
 
     public final boolean isPassiveAuthentication() {
         return this.passiveAuthentication;
+    }
+
+    public final boolean isAccessRequest() {
+        return this instanceof ServiceAccessRequest;
     }
 
     public final void setLongTermLoginRequest(final boolean longTermLoginRequest) {

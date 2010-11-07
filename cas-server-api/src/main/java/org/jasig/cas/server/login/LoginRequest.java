@@ -61,6 +61,13 @@ public interface LoginRequest extends Serializable {
     boolean isForceAuthentication();
 
     /**
+     * Returns whether this is an expected ServiceAccessRequest.  Saves from having to do casting.
+     *
+     * @return true if it is, false otherwise.
+     */
+    boolean isAccessRequest();
+
+    /**
      * Returns the remote IP address of the user.
      *
      * @return the remote IP address of the user.  CANNOT be null.
@@ -80,13 +87,6 @@ public interface LoginRequest extends Serializable {
      * @param sessionId the session id if provided later.
      */
     void setSessionId(String sessionId);
-
-    /**
-     * Determines whether the user should be prompted for credentials or not.  In CAS terminology, this is "gateway"
-     *
-     * @return true if they should not be prompted, false otherwise.
-     */
-    boolean isPassiveAuthentication();
 
     /**
      * Determines whether the request is for a long term session or not.

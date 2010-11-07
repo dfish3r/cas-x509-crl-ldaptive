@@ -93,6 +93,9 @@ public final class Saml2ArtifactRequestAccessRequestImpl implements ServiceAcces
         this.publicKey = publicKey;
     }
 
+    public boolean isAccessRequest() {
+        return true;
+    }
 
     public String getRequestId() {
         return this.requestId;

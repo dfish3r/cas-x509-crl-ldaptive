@@ -8,7 +8,7 @@
     <groupId>org.jasig.cas</groupId>
     <artifactId>cas-server-webapp</artifactId>
     <packaging>war</packaging>
-    <name>JA-SIG CAS Web Application</name>
+    <name>Jasig CAS Web Application</name>
     <dependencies>
         <dependency>
             <groupId>commons-dbcp</groupId>
@@ -20,7 +20,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.5.0-CR-2</version>
         </dependency>
 
         <dependency>
@@ -44,6 +43,11 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
         </dependency>
 
         <dependency>
@@ -93,13 +97,6 @@
             <artifactId>standard</artifactId>
             <version>1.1.2</version>
             <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>ognl</groupId>
-            <artifactId>ognl</artifactId>
-            <version>2.7.3</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>

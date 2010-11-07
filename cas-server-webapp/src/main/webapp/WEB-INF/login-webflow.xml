@@ -25,18 +25,18 @@
                           http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
 
     <on-start>
-        <evaluate expression="loginRequestFactory.createLoginRequest(flowRequestContext)" result="flowScope.create" result-type="java.lang.String" />
+        <evaluate expression="loginRequestFactory.createLoginRequest(flowRequestContext)" result="flowScope.loginRequest" result-type="org.jasig.cas.server.login.LoginRequest" />
     </on-start>
 
     <decision-state id="multipleDecisions">
-        <if test="(loginRequest.sessionId eq null || loginRequest.session.id.length() eq 0) and create eq 'error'" then="viewLoginForm" />
+        <if test="loginRequest.sessionId eq null and not loginRequest.accessRequest" then="viewLoginForm" />
 
         <!-- if you have non-interactive credentials then you may wish to have them checked even for a passive authentication -->
-        <if test="(loginRequest.sessionId eq null || loginRequest.sessionId.length() eq 0) and create eq 'success' and loginRequest.passiveAuthentication" then="passiveReturnToApplication" />
-        <if test="(loginRequest.sessionId eq null || loginRequest.sessionId.length() eq 0) and create eq 'success' and not loginRequest.passiveAuthentication" then="viewLoginForm" />
+        <if test="loginRequest.sessionId eq null and loginRequest.accessRequest and loginRequest.passiveAuthentication" then="passiveReturnToApplication" />
+        <if test="loginRequest.sessionId eq null and loginRequest.accessRequest and not loginRequest.passiveAuthentication" then="viewLoginForm" />
 
         <!-- at this point there should be no empty session ids -->
-        <if test="create eq 'error'" then="viewGenericLoginSuccess" />
+        <if test="not loginRequest.accessRequest" then="viewGenericLoginSuccess" />
 
         <!-- at this point there should be a service -->
         <if test="loginRequest.forceAuthentication" then="viewLoginForm" else="generateAccess" />
@@ -63,8 +63,8 @@
 	</view-state>
 
     <decision-state id="determineIfSessionCreated">
-        <if test="loginResponse.session.id eq null || loginResponse.session.id.length() eq 0" then="viewLoginForm" />
-        <if test="create eq 'success'" then="generateAccess" else="viewGenericLoginSuccess" />
+        <if test="loginResponse.session?.id eq null" then="viewLoginForm" />
+        <if test="loginRequest.accessRequest" then="generateAccess" else="viewGenericLoginSuccess" />
     </decision-state>
 
     <!-- This is a placeholder for now. -->

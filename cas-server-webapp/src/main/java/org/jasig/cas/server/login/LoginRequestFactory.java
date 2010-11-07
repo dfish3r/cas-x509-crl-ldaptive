@@ -58,7 +58,7 @@ public final class LoginRequestFactory {
         this.serviceAccessRequestFactories = serviceAccessRequestFactories;
     }
 
-	public String createLoginRequest(final RequestContext context) throws Exception {
+	public LoginRequest createLoginRequest(final RequestContext context) throws Exception {
         final String remoteIpAddress = ClientInfoHolder.getClientInfo().getClientIpAddress();
 		final String sessionIdentifier = WebUtils.getCookieValue(this.cookieGenerator, context.getExternalContext());
 		final Map parameters = context.getRequestParameters().asMap();
@@ -67,13 +67,10 @@ public final class LoginRequestFactory {
             final LoginRequest loginRequest = serviceAccessRequestFactory.getServiceAccessRequest(sessionIdentifier, remoteIpAddress, parameters);
 
             if (loginRequest != null) {
-                context.getFlowScope().put("loginRequest", loginRequest);
-                return "success";
+                return loginRequest;
             }
         }
 
-        context.getFlowScope().put("loginRequest", new DefaultLoginRequestImpl(sessionIdentifier, remoteIpAddress, false, false,null));
-        return "error";
+        return new DefaultLoginRequestImpl(sessionIdentifier, remoteIpAddress, false, false,null);
 	}
-    
 }

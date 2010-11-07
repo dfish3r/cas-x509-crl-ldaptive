@@ -10,8 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
     <name>Jasig CAS - JPA Session Storage Support</name>
     <description>Supports storing objects in a database.</description>
-
-
     <artifactId>cas-server-sessionstorage-jpa</artifactId>
 
     <dependencies>
@@ -81,16 +79,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>jboss</id>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <url>http://repository.jboss.org/maven2/</url>
-        </repository>
-    </repositories>
-
-
 </project>

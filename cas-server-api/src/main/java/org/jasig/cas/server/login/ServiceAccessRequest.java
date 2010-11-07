@@ -41,4 +41,11 @@ public interface ServiceAccessRequest extends LoginRequest {
      * passiveAuthentication must also be set to false in that instance.
      */
     String getPassiveAuthenticationRedirectUrl();
+
+    /**
+     * Determines whether the user should be prompted for credentials or not.  In CAS terminology, this is "gateway"
+     *
+     * @return true if they should not be prompted, false otherwise.
+     */
+    boolean isPassiveAuthentication();
 }
