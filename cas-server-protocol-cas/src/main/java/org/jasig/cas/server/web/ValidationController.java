@@ -88,7 +88,7 @@ public final class ValidationController {
         }
 
         try {
-            final CasTokenServiceAccessRequestImpl casTokenServiceAccessRequest = new CasTokenServiceAccessRequestImpl(casVersion, ticket, service, request.getRemoteAddr(), renew, false);
+            final CasTokenServiceAccessRequestImpl casTokenServiceAccessRequest = new CasTokenServiceAccessRequestImpl(casVersion, ticket, service, request.getRemoteAddr(), renew);
             final Access access = null;
             // TODO re-enable this.centralAuthenticationService.validate(casTokenServiceAccessRequest);
             final Credential proxyCredential = createProxyCredential(request);
@@ -98,7 +98,7 @@ public final class ValidationController {
                 final Session proxySession;
 
                 if (proxyCredential != null) {
-                    final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, request.getRemoteAddr(), false, false, access);
+                    final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, request.getRemoteAddr(), false, access);
                     loginRequest.getCredentials().add(proxyCredential);
                     final LoginResponse loginResponse = this.centralAuthenticationService.login(loginRequest);
                     proxySession = loginResponse.getSession();

@@ -32,8 +32,8 @@ public final class CasTokenServiceAccessRequestImpl extends DefaultTokenServiceA
 
     private final CasProtocolVersion casVersion;
 
-    public CasTokenServiceAccessRequestImpl(final CasProtocolVersion casVersion, final String token, final String serviceId, final String remoteIpAddress, final boolean renew, final boolean gateway) {
-        super(null, remoteIpAddress, renew, token, serviceId, gateway);
+    public CasTokenServiceAccessRequestImpl(final CasProtocolVersion casVersion, final String token, final String serviceId, final String remoteIpAddress, final boolean renew) {
+        super(null, remoteIpAddress, renew, token, serviceId);
         this.casVersion = casVersion;
     }
 

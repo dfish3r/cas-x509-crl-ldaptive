@@ -9,7 +9,7 @@ package org.jasig.cas.server.login;
  */
 public final class Saml1TokenServiceAccessRequestImpl extends DefaultTokenServiceAccessRequestImpl {
 
-    public Saml1TokenServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final String token, final String serviceId, final boolean passiveAuthentication) {
-        super(sessionId, remoteIpAddress, forceAuthentication, token, serviceId, passiveAuthentication);
+    public Saml1TokenServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final String token, final String serviceId) {
+        super(sessionId, remoteIpAddress, forceAuthentication, token, serviceId);
     }
 }

@@ -32,10 +32,13 @@ public final class CasServiceAccessRequestImpl extends DefaultLoginRequestImpl i
 
     private final boolean postRequest;
 
+    private boolean passiveAuthentication;
+
     public CasServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final boolean passiveAuthentication, final String serviceId, final boolean postRequest) {
-        super(sessionId, remoteIpAddress, forceAuthentication, passiveAuthentication, null);
+        super(sessionId, remoteIpAddress, forceAuthentication, null);
         this.serviceId = serviceId;
         this.postRequest = postRequest;
+        this.passiveAuthentication = passiveAuthentication;
     }
 
     public String getServiceId() {
@@ -43,11 +46,15 @@ public final class CasServiceAccessRequestImpl extends DefaultLoginRequestImpl i
     }
 
     public String getPassiveAuthenticationRedirectUrl() {
-        return this.serviceId;
+        return this.passiveAuthentication ? this.serviceId : null;
     }
 
     public boolean isPostRequest() {
         return this.postRequest;
+    }
+
+    public boolean isPassiveAuthentication() {
+        return this.passiveAuthentication;
     }
 
     @Override

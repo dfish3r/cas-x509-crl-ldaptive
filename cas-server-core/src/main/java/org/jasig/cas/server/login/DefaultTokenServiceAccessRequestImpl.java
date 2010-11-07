@@ -34,8 +34,8 @@ public class DefaultTokenServiceAccessRequestImpl extends DefaultLoginRequestImp
 
     private final String serviceId;
 
-    public DefaultTokenServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final String token, final String serviceId, final boolean passiveAuthentication) {
-        super(sessionId, remoteIpAddress, forceAuthentication, passiveAuthentication,null);
+    public DefaultTokenServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final String token, final String serviceId) {
+        super(sessionId, remoteIpAddress, forceAuthentication ,null);
         Assert.notNull(token, "token cannot be null");
         this.serviceId = serviceId;
         this.token = token;
@@ -45,12 +45,16 @@ public class DefaultTokenServiceAccessRequestImpl extends DefaultLoginRequestImp
         return this.token;
     }
 
+    public boolean isPassiveAuthentication() {
+        return false;
+    }
+
     public final String getServiceId() {
         return this.serviceId;
     }
 
     public final String getPassiveAuthenticationRedirectUrl() {
-        return this.serviceId;
+        return null;
     }
 
     public final String toString() {
