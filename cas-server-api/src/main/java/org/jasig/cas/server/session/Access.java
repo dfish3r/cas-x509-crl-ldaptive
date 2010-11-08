@@ -41,6 +41,13 @@ public interface Access extends Serializable {
     String getId();
 
     /**
+     * Returns the session associated with the Access.
+     *
+     * @return the session.  CANNOT BE NULL.
+     */
+    Session getSession();
+
+    /**
      * The identifier for this resource, i.e. the URL.
      *
      * @return the identifier for the resource.  CANNOT be null.

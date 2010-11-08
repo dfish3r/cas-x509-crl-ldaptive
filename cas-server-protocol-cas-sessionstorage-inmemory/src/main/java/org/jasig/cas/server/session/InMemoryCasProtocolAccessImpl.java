@@ -73,6 +73,10 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
         this.id = createId();
     }
 
+    public final Session getSession() {
+        return this.parentSession;
+    }
+
     public final String getId() {
         return this.id;
     }

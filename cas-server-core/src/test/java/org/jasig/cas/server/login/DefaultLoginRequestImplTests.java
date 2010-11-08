@@ -37,10 +37,8 @@ public final class DefaultLoginRequestImplTests {
 
     private static final boolean CONST_FORCE_AUTHENTICATION = true;
 
-    private static final boolean CONST_PASSIVE_AUTHENTICATION = true;
-
     public DefaultLoginRequestImplTests() {
-            this.impl = new DefaultLoginRequestImpl(CONST_SESSION_ID, CONST_REMOTE_IP_ADDRESS, CONST_FORCE_AUTHENTICATION, CONST_PASSIVE_AUTHENTICATION, null);
+            this.impl = new DefaultLoginRequestImpl(CONST_SESSION_ID, CONST_REMOTE_IP_ADDRESS, CONST_FORCE_AUTHENTICATION, null);
     }
 
     @Test
@@ -48,7 +46,6 @@ public final class DefaultLoginRequestImplTests {
         assertEquals(CONST_SESSION_ID, this.impl.getSessionId());
         assertEquals(CONST_REMOTE_IP_ADDRESS, this.impl.getRemoteIpAddress());
         assertEquals(CONST_FORCE_AUTHENTICATION, this.impl.isForceAuthentication());
-        assertEquals(CONST_PASSIVE_AUTHENTICATION, this.impl.isPassiveAuthentication());
         assertNull(this.impl.getOriginalAccess());
     }
 }

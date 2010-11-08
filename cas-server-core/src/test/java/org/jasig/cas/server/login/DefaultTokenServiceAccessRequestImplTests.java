@@ -40,10 +40,10 @@ public final class DefaultTokenServiceAccessRequestImplTests {
 
     private static final String CONST_SERVICE_ID = "http://www.my.service.com";
 
-    private static final boolean CONST_PASSIVE_AUTHENTICATION = true;
+    private static final boolean CONST_PASSIVE_AUTHENTICATION = false;
 
     public DefaultTokenServiceAccessRequestImplTests() {
-            this.impl = new DefaultTokenServiceAccessRequestImpl(CONST_SESSION_ID, CONST_REMOTE_IP_ADDRESS, CONST_FORCE_AUTHENTICATION, CONST_TOKEN, CONST_SERVICE_ID, CONST_PASSIVE_AUTHENTICATION);
+            this.impl = new DefaultTokenServiceAccessRequestImpl(CONST_SESSION_ID, CONST_REMOTE_IP_ADDRESS, CONST_FORCE_AUTHENTICATION, CONST_TOKEN, CONST_SERVICE_ID);
     }
 
     @Test

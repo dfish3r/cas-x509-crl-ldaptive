@@ -106,7 +106,11 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
         this.session = session;
         this.issuer = issuer;
         this.dateParser = dateParser;
-    } 
+    }
+
+    public Session getSession() {
+        return this.session;
+    }
 
     public String getId() {
         return this.impl.getRequestId();

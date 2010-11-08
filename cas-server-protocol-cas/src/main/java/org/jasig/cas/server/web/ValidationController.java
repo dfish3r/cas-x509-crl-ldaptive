@@ -19,6 +19,7 @@
 
 package org.jasig.cas.server.web;
 
+import com.sun.tools.internal.xjc.model.Model;
 import org.jasig.cas.server.CasProtocolVersion;
 import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.authentication.Credential;
@@ -27,10 +28,7 @@ import org.jasig.cas.server.login.CasTokenServiceAccessRequestImpl;
 import org.jasig.cas.server.login.DefaultLoginRequestImpl;
 import org.jasig.cas.server.login.LoginRequest;
 import org.jasig.cas.server.login.LoginResponse;
-import org.jasig.cas.server.session.Access;
-import org.jasig.cas.server.session.AccessResponseRequest;
-import org.jasig.cas.server.session.DefaultAccessResponseRequestImpl;
-import org.jasig.cas.server.session.Session;
+import org.jasig.cas.server.session.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -38,6 +36,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -66,37 +65,36 @@ public final class ValidationController {
     }
 
     @RequestMapping(method=RequestMethod.GET, value="/validate")
-    public final void validateCas10Request(@RequestParam(value="renew",required=false, defaultValue = "false") final boolean renew, @RequestParam(value="service",required=true) final String service, @RequestParam(value="ticket",required=true) final String ticket, final HttpServletRequest request, final Writer writer) throws IOException {
-            validateRequest(renew, service, ticket, CasProtocolVersion.CAS1, request, writer);
+    public final ModelAndView validateCas10Request(@RequestParam(value="renew",required=false, defaultValue = "false") final boolean renew, @RequestParam(value="service",required=true) final String service, @RequestParam(value="ticket",required=true) final String ticket, final HttpServletRequest request, final Writer writer) throws IOException {
+        return validateRequest(renew, service, ticket, CasProtocolVersion.CAS1, request, writer);
     }
 
     @RequestMapping(method=RequestMethod.GET, value="/serviceValidate")
-    public final void validateCas20Request(@RequestParam(value="renew",required=false,defaultValue = "false") final boolean renew, @RequestParam(value="service",required=true) final String service, @RequestParam(value="ticket",required=true) final String ticket, @RequestParam(value="pgtUrl",required=false) final String pgtUrl, final HttpServletRequest request, final Writer writer) {
-        validateRequest(renew, service, ticket, CasProtocolVersion.CAS2, request, writer);
+    public final ModelAndView validateCas20Request(@RequestParam(value="renew",required=false,defaultValue = "false") final boolean renew, @RequestParam(value="service",required=true) final String service, @RequestParam(value="ticket",required=true) final String ticket, @RequestParam(value="pgtUrl",required=false) final String pgtUrl, final HttpServletRequest request, final Writer writer) {
+        return validateRequest(renew, service, ticket, CasProtocolVersion.CAS2, request, writer);
     }
 
     @RequestMapping(method= RequestMethod.GET, value="/proxyValidate")
-    public final void validateCasProxyTicketRequest(@RequestParam(value="renew",required=false,defaultValue = "false") final boolean renew, @RequestParam(value="service",required=true) final String service, @RequestParam(value="ticket",required=true) final String ticket, @RequestParam(value="pgtUrl",required=false) final String pgtUrl, final HttpServletRequest request, final Writer writer) {
-        validateRequest(renew, service, ticket, CasProtocolVersion.CAS2_WITH_PROXYING, request, writer);
+    public final ModelAndView validateCasProxyTicketRequest(@RequestParam(value="renew",required=false,defaultValue = "false") final boolean renew, @RequestParam(value="service",required=true) final String service, @RequestParam(value="ticket",required=true) final String ticket, @RequestParam(value="pgtUrl",required=false) final String pgtUrl, final HttpServletRequest request, final Writer writer) {
+        return validateRequest(renew, service, ticket, CasProtocolVersion.CAS2_WITH_PROXYING, request, writer);
     }
 
-    protected final void validateRequest(final boolean renew, final String service, final String ticket, final CasProtocolVersion casVersion, final HttpServletRequest request, final Writer writer) {
+    protected final ModelAndView validateRequest(final boolean renew, final String service, final String ticket, final CasProtocolVersion casVersion, final HttpServletRequest request, final Writer writer) {
+
         if (!StringUtils.hasText(ticket) || !StringUtils.hasText(service)) {
             logger.debug("Invalid request");
             writeErrorResponse("INVALID_REQUEST", "service and ticket are required parameters.", casVersion, writer);
-            return;
+            return null;
         }
 
         try {
             final CasTokenServiceAccessRequestImpl casTokenServiceAccessRequest = new CasTokenServiceAccessRequestImpl(casVersion, ticket, service, request.getRemoteAddr(), renew);
-            final Access access = null;
-            // TODO re-enable this.centralAuthenticationService.validate(casTokenServiceAccessRequest);
-            final Credential proxyCredential = createProxyCredential(request);
+            final Access access = this.centralAuthenticationService.validate(casTokenServiceAccessRequest);
 
             if (access != null) {
-	            logger.debug("Successfully validated {}", ticket);
+	            logger.debug(String.format("Successfully validated: %s", ticket));
                 final Session proxySession;
-
+                final Credential proxyCredential = createProxyCredential(request);
                 if (proxyCredential != null) {
                     final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, request.getRemoteAddr(), false, access);
                     loginRequest.getCredentials().add(proxyCredential);
@@ -107,7 +105,12 @@ public final class ValidationController {
                 }
 // TODO revisit this
                 final AccessResponseRequest accessResponseRequest = new DefaultAccessResponseRequestImpl(writer, proxySession != null ? proxySession.getId() : null, proxyCredential);
-                access.generateResponse(accessResponseRequest);
+                final AccessResponseResult accessResponseResult = access.generateResponse(accessResponseRequest);
+
+                if (!AccessResponseResult.Operation.VIEW.equals(accessResponseResult.getOperationToPerform())) {
+                    final ModelAndView modelAndView = new ModelAndView();
+                    return modelAndView;
+                }
             } else {
 	            logger.debug("Invalid ticket {}", ticket);
                 writeErrorResponse("INVALID_TICKET", "Ticket '" + ticket + "' not recognized.", casVersion, writer);
@@ -116,6 +119,8 @@ public final class ValidationController {
             logger.error("Ticket validation error", e);
             writeErrorResponse("INTERNAL_ERROR", e.getMessage(), casVersion, writer);
         }
+
+        return null;
     }
 
     protected Credential createProxyCredential(final HttpServletRequest request) {

@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cas-server-protocol-saml1</artifactId>
-    <name>Jaig CAS - SAML1 Support</name>
+    <name>Jasig CAS - SAML1 Support</name>
 
 
     <dependencies>

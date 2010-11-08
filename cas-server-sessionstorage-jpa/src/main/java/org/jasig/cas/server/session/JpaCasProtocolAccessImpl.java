@@ -83,6 +83,10 @@ public class JpaCasProtocolAccessImpl extends AbstractStaticCasProtocolAccessImp
         this.postRequest = (request instanceof CasServiceAccessRequestImpl) && ((CasServiceAccessRequestImpl) request).isPostRequest();
     }
 
+    public Session getSession() {
+        return this.parentSession;
+    }
+
     protected final ValidationStatus getValidationStatus() {
         return this.validationStatus;
     }
