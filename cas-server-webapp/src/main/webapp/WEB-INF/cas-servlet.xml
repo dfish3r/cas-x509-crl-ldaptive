@@ -40,7 +40,7 @@
         p:flowUrlHandler-ref="flowUrlHandler" />
 
     <bean class="org.springframework.web.servlet.theme.FixedThemeResolver" id="themeResolver"
-            p:defaultThemeName="default"/>
+            p:defaultThemeName="cas-theme-default"/>
 
     <bean id="flowUrlHandler" class="org.jasig.cas.server.util.CasDefaultFlowUrlHandler" />
 
