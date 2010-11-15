@@ -661,5 +661,6 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
         <mockito.version>1.8.5</mockito.version>
         <jboss.infinispan.version>4.1.0.ALPHA1</jboss.infinispan.version>
         <javax.inject.version>1</javax.inject.version>
+        <commons.io.version>2.0</commons.io.version>
 	</properties>
 </project>
