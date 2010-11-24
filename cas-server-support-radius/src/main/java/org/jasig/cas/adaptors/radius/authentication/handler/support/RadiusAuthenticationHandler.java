@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.jasig.cas.adaptors.radius.authentication.handler.support;
 
 import java.security.GeneralSecurityException;

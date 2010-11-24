@@ -18,6 +18,7 @@
     under the License.
 
 --%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page session="true" %>
 <%@ page pageEncoding="UTF-8" %>
@@ -38,8 +39,8 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="icon" href="<c:url value="/favicon.ico" />" type="image/x-icon" />
-        <script type="text/javascript" src="<c:url value="/js/jquery.js" />"></script>
-        <script type="text/javascript" src="<c:url value="/js/jquery.ui.core.js" />"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>
         <script type="text/javascript" src="<c:url value="/js/jquery.keyboard-a11y.js" />"></script>
         <script type="text/javascript" src="<c:url value="/js/Fluid.js" />"></script>
         <script type="text/javascript" src="<c:url value="/js/cas.js" />"></script>

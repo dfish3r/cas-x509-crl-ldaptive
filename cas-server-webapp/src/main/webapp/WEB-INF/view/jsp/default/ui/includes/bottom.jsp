@@ -1,5 +1,3 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="org.jasig.cas.server.CasVersion" %>
 <%--
 
     Licensed to Jasig under one or more contributor license
@@ -20,6 +18,9 @@
     under the License.
 
 --%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="org.jasig.cas.server.CasVersion" %>
                 </div>
                 <div id="footer">
                     <div>

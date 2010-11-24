@@ -2,7 +2,7 @@
 	<parent>
 		<groupId>org.jasig.parent</groupId>
 		<artifactId>jasig-parent</artifactId>
-		<version>19</version>
+		<version>30</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jasig.cas</groupId>
@@ -179,6 +179,22 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
                 <version>2.0</version>
                 <configuration>
                     <mavenExecutorId>forked-path</mavenExecutorId>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <aggregate>true</aggregate>
+                    <excludes>
+                        <exclude>**/NOTICE</exclude>
+                        <exclude>README</exclude>
+                        <exclude>LICENSE</exclude>
+                        <exclude>**/fluid/fluid.*.css</exclude>
+                        <exclude>**/js/Fluid.js</exclude>
+                        <exclude>**/js/jquery.keyboard-a11y.js</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
 		</plugins>

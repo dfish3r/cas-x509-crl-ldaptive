@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.session.Access;

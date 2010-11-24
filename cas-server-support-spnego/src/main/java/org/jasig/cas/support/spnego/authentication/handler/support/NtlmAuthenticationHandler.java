@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.jasig.cas.support.spnego.authentication.handler.support;
 
 import jcifs.Config;

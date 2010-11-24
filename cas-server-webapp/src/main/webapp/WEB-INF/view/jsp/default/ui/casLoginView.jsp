@@ -1,9 +1,3 @@
-<%@ page import="java.util.Map" %>
-<%@ page import="java.util.HashMap" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--
 
     Licensed to Jasig under one or more contributor license
@@ -25,6 +19,12 @@
 
 --%>
 
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <jsp:directive.include file="includes/top.jsp" />
 <form:form id="fm1" cssClass="fl-col-fixed-300 fl-force-left" method="post" commandName="${commandName}" htmlEscape="true">

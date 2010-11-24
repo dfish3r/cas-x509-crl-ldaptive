@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.jasig.cas.adaptors.x509.authentication.principal;
 
 import org.jasig.cas.server.authentication.AttributePrincipalFactory;
