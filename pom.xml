@@ -14,19 +14,24 @@
 	<url>http://www.jasig.org/cas/</url>
 	<inceptionYear>2004</inceptionYear>
 
-	<licenses>
-		<license>
-			<name>JA-SIG License for Use</name>
-			<url>http://www.jasig.org/cas/license</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
 
     <scm>
-        <connection>scm:svn:https://www.ja-sig.org/svn/cas3/trunk</connection>
-        <developerConnection>scm:svn:https://www.ja-sig.org/svn/cas3/trunk</developerConnection>
-        <url>https://www.ja-sig.org/svn/cas3/trunk</url>
+        <connection>scm:svn:https://source.jasig.org/cas3/trunk</connection>
+        <developerConnection>scm:svn:https://source.jasig.org/cas3/trunk</developerConnection>
+        <url>https://source.jasig.org/cas3/trunk</url>
     </scm>
+
+    <distributionManagement>
+        <site>
+            <id>developer.jasig</id>
+            <url>${jasig-site-dist-base}/cas/${project.version}</url>
+        </site>
+    </distributionManagement>
+
+    <issueManagement>
+        <url>${jasig-issues-base}/CAS</url>
+        <system>${jasig-issues-system}</system>
+    </issueManagement>
     
 	<build>
 		<testResources>
@@ -200,36 +205,6 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
 		</plugins>
 	</build>
 
-     <profiles>
-    <profile>
-      <id>release-sign-artifacts</id>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.0</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -304,12 +279,6 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
 	</dependencies>
 
 	<repositories>
-		<repository>
-			<id>jasig-repository</id>
-			<name>JA-SIG Maven2 Repository</name>
-			<url>http://developer.ja-sig.org/maven2</url>
-		</repository>
-
         <repository>
             <id>jboss</id>
             <name>JBoss Repository</name>
@@ -655,27 +624,27 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
 	<properties>
 		<issues.projectKey>CAS</issues.projectKey>
 		<scm.path>/cas3</scm.path>
-        <spring.webflow.version>2.1.0.RELEASE</spring.webflow.version>
+        <spring.webflow.version>2.1.1.RELEASE</spring.webflow.version>
         <spring.version>3.0.5.RELEASE</spring.version>
-        <spring.security.version>3.0.4.RELEASE</spring.security.version>
+        <spring.security.version>3.0.5.RELEASE</spring.security.version>
         <clover.version>3.0.2</clover.version>
-        <aspectj.version>1.6.7</aspectj.version>
+        <aspectj.version>1.6.9</aspectj.version>
         <javax.validation.version>1.0.0.GA</javax.validation.version>
-        <perf4j.version>0.9.12</perf4j.version>
+        <perf4j.version>0.9.14</perf4j.version>
         <commons.jexl.version>1.1</commons.jexl.version>
-        <hibernate.validator.version>4.0.2.GA</hibernate.validator.version>
+        <hibernate.validator.version>4.1.0.Final</hibernate.validator.version>
         <hibernate.version>3.6.0.Final</hibernate.version>
-        <slf4j.version>1.5.8</slf4j.version>
+        <slf4j.version>1.6.1</slf4j.version>
         <person.directory.version>1.5.0-RC6</person.directory.version>
         <servlet.api.version>2.5</servlet.api.version>
         <jpa.version>2.0-cr-1</jpa.version>
         <commons.codec.version>1.4</commons.codec.version>
         <log4j.version>1.2.15</log4j.version>
-        <junit.version>4.8.1</junit.version>
-        <commons.lang.version>2.4</commons.lang.version>
+        <junit.version>4.8.2</junit.version>
+        <commons.lang.version>2.5</commons.lang.version>
         <inspektr.version>1.0.0.GA</inspektr.version>
         <mockito.version>1.8.5</mockito.version>
-        <jboss.infinispan.version>4.1.0.ALPHA1</jboss.infinispan.version>
+        <jboss.infinispan.version>4.1.0.FINAL</jboss.infinispan.version>
         <javax.inject.version>1</javax.inject.version>
         <commons.io.version>2.0</commons.io.version>
 	</properties>

@@ -20,7 +20,7 @@
 package org.jasig.cas.server.util;
 
 import org.jasig.cas.util.DefaultRandomStringGenerator;
-import org.opensaml.artifact.SAMLArtifactType0001;
+import org.opensaml.saml1.binding.artifact.SAML1ArtifactType0001;
 
 import java.security.MessageDigest;
 
@@ -53,6 +53,6 @@ public final class Saml1UniqueTicketIdGeneratorImpl implements UniqueTicketIdGen
      * We ignore prefixes for SAML compliance.
      */
     public String getNewTicketId(final String prefix) {
-        return new SAMLArtifactType0001(this.sourceIdDigest, this.randomStringGenerator.getNewStringAsBytes()).encode();
+        return new SAML1ArtifactType0001(this.sourceIdDigest, this.randomStringGenerator.getNewStringAsBytes()).base64Encode();
     }
 }

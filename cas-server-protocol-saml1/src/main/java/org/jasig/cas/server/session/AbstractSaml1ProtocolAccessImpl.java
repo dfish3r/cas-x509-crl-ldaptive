@@ -22,13 +22,22 @@ package org.jasig.cas.server.session;
 import org.jasig.cas.server.login.Saml1TokenServiceAccessRequestImpl;
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
 import org.jasig.cas.server.util.ServiceIdentifierMatcher;
-import org.opensaml.SAMLException;
-import org.opensaml.SAMLResponse;
+import org.opensaml.Configuration;
+import org.opensaml.common.SAMLObjectBuilder;
+import org.opensaml.saml1.core.*;
+import org.opensaml.xml.XMLObjectBuilderFactory;
+import org.opensaml.xml.io.Marshaller;
+import org.opensaml.xml.io.MarshallerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
+import org.w3c.dom.Element;
 
-import java.io.IOException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
 
@@ -119,12 +128,43 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
 
     protected final AccessResponseResult constructErrorResponse(final Writer writer, final String errorMessage) {
         try {
-            final SAMLResponse samlResponse = new SAMLResponse(getId(), getResourceIdentifier(), new ArrayList<Object>(), new SAMLException(errorMessage));
-            samlResponse.setIssueInstant(new Date());
+            final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
+            final SAMLObjectBuilder<Response> responseBuilder = (SAMLObjectBuilder<Response>) builderFactory.getBuilder(Response.DEFAULT_ELEMENT_NAME);
+            final SAMLObjectBuilder<Status> statusBuilder = (SAMLObjectBuilder<Status>) builderFactory.getBuilder(Status.DEFAULT_ELEMENT_NAME);
+            final SAMLObjectBuilder<StatusCode> statusCodeBuilder = (SAMLObjectBuilder<StatusCode>) builderFactory.getBuilder(StatusCode.DEFAULT_ELEMENT_NAME);
+            final SAMLObjectBuilder<StatusDetail> statusDetailBuilder = (SAMLObjectBuilder<StatusDetail>) builderFactory.getBuilder(StatusDetail.DEFAULT_ELEMENT_NAME);
+            final SAMLObjectBuilder<StatusMessage> statusMessageBuilder = (SAMLObjectBuilder<StatusMessage>) builderFactory.getBuilder(StatusMessage.DEFAULT_ELEMENT_NAME);
+
+            final Response response = responseBuilder.buildObject();
+            final Status status = statusBuilder.buildObject();
+            final StatusCode statusCode = statusCodeBuilder.buildObject();
+            final StatusDetail statusDetail = statusDetailBuilder.buildObject();
+            final StatusMessage statusMessage = statusMessageBuilder.buildObject();
+
+            statusCode.setValue(StatusCode.REQUEST_DENIED);
+
+            statusMessage.setMessage(errorMessage);
+
+            status.setStatusCode(statusCode);
+            status.setStatusDetail(statusDetail);
+            status.setStatusMessage(statusMessage);
+
+            response.setStatus(status);
+
+            final MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
+            final Marshaller marshaller  = marshallerFactory.getMarshaller(response);
+            final Element e = marshaller.marshall(response);
+
+            final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            final Transformer transformer = transformerFactory.newTransformer();
+            final DOMSource source = new DOMSource(e);
+            final StringWriter sw = new StringWriter();
+            final StreamResult streamResult = new StreamResult(sw);
+            transformer.transform(source, streamResult);
 
             writer.write("<?xml version=\"1.0\" encoding=\"" + getEncoding() + "\"?>");
             writer.write("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body>");
-            writer.write(samlResponse.toString());
+            writer.write(sw.toString());
             writer.write("</SOAP-ENV:Body></SOAP-ENV:Envelope>");
         } catch (final Exception e) {
             logger.error(e.getMessage(), e);

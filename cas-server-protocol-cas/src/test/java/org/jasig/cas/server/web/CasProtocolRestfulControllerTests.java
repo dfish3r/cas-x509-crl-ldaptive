@@ -67,7 +67,7 @@ public final class CasProtocolRestfulControllerTests {
 
     @Test
     public void obtainTicketGrantingTicketWithProperCredentials() throws Exception {
-        final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, "128.0.0.1", false, false, null);
+        final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, "128.0.0.1", false, null);
         loginRequest.getCredentials().add(this.ok);
         final LoginResponse loginResponse = mock(LoginResponse.class);
         final Session session = mock(Session.class);
@@ -91,7 +91,7 @@ public final class CasProtocolRestfulControllerTests {
 
     @Test
     public void obtainTicketGrantingTicketWithoutProperCredentials() throws Exception {
-        final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, "128.0.0.1", false, false, null);
+        final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, "128.0.0.1", false, null);
         loginRequest.getCredentials().add(this.bad);
         final LoginResponse loginResponse = mock(LoginResponse.class);
         when(loginResponse.getSession()).thenReturn(null);

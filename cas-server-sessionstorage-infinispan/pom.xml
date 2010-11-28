@@ -29,14 +29,4 @@
             <version>${jboss.infinispan.version}</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>jboss</id>
-            <name>JBoss Repository</name>
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>false</enabled></snapshots>
-            <url>http://repository.jboss.org/maven2/</url>
-        </repository>
-    </repositories>
 </project>

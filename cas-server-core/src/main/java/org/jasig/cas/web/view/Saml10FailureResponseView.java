@@ -31,8 +31,6 @@ import org.jasig.cas.authentication.principal.Response;
 import org.jasig.cas.authentication.principal.WebApplicationService;
 import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Service;
-import org.opensaml.SAMLException;
-import org.opensaml.SAMLResponse;
 
 /**
  * Represents a failed attempt at validating a ticket, responding via a SAML
@@ -81,14 +79,14 @@ public class Saml10FailureResponseView {
         };
 
         final String errorMessage = (String) model.get("description");
-
+           /*
         final SAMLResponse samlResponse = new SAMLResponse(service.getArtifactId(), service.getId(), new ArrayList<Object>(), new SAMLException(errorMessage));
         samlResponse.setIssueInstant(new Date());
-
+             */
         response.setContentType("text/xml; charset=" + this.encoding);
         response.getWriter().print("<?xml version=\"1.0\" encoding=\"" + this.encoding + "\"?>");
         response.getWriter().print("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body>");
-        response.getWriter().print(samlResponse.toString());
+//        response.getWriter().print(samlResponse.toString());
         response.getWriter().print("</SOAP-ENV:Body></SOAP-ENV:Envelope>");
     }
 

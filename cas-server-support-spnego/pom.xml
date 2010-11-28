@@ -43,4 +43,14 @@
         </dependency>
 
 	</dependencies>
+
+    <repositories>
+        <repository>
+            <id>jasig-3rd-party</id>
+            <name>Jasig 3rd Party Repository</name>
+            <url>http://developer.jasig.org/repo/content/repositories/3rd-party</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+    </repositories>
 </project>
