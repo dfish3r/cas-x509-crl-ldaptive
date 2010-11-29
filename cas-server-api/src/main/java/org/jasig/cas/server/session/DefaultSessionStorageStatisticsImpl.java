@@ -28,6 +28,8 @@ package org.jasig.cas.server.session;
  */
 public final class DefaultSessionStorageStatisticsImpl implements SessionStorageStatistics {
 
+    public static final SessionStorageStatistics INVALID_STATISTICS = new DefaultSessionStorageStatisticsImpl(false);
+
     private final boolean validStatistics;
 
     private int countOfActiveSessions;
