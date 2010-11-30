@@ -1,3 +1,22 @@
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.jasig.cas.server.session;
 
 import org.infinispan.Cache;
@@ -19,13 +38,13 @@ import java.util.*;
 // TODO attach to eviction thread to
 public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
 
-    private final Cache<String,Session> cache;
+    private final Cache<String,InfinispanSessionImpl> cache;
 
     private final Cache<String,String> cacheMappings;
 
     private final Cache<String, List<String>> principalMappings;
 
-    public InfinispanSessionStorageImpl(final Cache<String,Session> cache, final Cache<String,String> cacheMappings, final Cache<String,List<String>> principalMappings, final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
+    public InfinispanSessionStorageImpl(final Cache<String,InfinispanSessionImpl> cache, final Cache<String,String> cacheMappings, final Cache<String,List<String>> principalMappings, final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
         super(accessFactories, servicesManager);
         this.cache = cache;
         this.cacheMappings = cacheMappings;
@@ -33,7 +52,22 @@ public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
     }
 
     public Session createSession(final AuthenticationResponse authenticationResponse) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        final InfinispanSessionImpl session = new InfinispanSessionImpl(authenticationResponse.getAuthentications(), authenticationResponse.getPrincipal());
+        this.cache.put(session.getId(), session);
+        this.cacheMappings.put(session.getId(), session.getId());
+
+        final List<String> sessions = new ArrayList<String>();
+
+        final List<String> existingSessions = this.principalMappings.get(session.getPrincipal().getName());
+
+        if (existingSessions != null) {
+            sessions.addAll(existingSessions);
+        }
+
+        sessions.add(session.getId());
+        this.principalMappings.put(session.getPrincipal().getName(), sessions);
+
+        return session;
     }
 
     public Session destroySession(final String sessionId) {
@@ -72,8 +106,14 @@ public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
             return null;
         }
 
-        // TODO we need to re-attach due to serialization
-        return this.cache.get(actualSession);
+        final InfinispanSessionImpl session = this.cache.get(actualSession);
+
+        if (session == null) {
+            return null;
+        }
+
+        session.reinitializeSessions();
+        return session;
     }
 
     public Session updateSession(final Session session) {
@@ -94,10 +134,16 @@ public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
             return null;
         }
 
-        // TODO we'll need to re-attach sessions properly
-        final Session session = this.cache.get(actualSession);
+        final InfinispanSessionImpl session = this.cache.get(actualSession);
+
+        if (session == null) {
+            return null;
+        }
+
+        session.reinitializeSessions();
 
         if (actualSession.equals(session.getId())) {
+
             return session;
         }
 

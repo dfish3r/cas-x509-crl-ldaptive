@@ -17,25 +17,25 @@
  * under the License.
  */
 
-package org.jasig.cas.server.util;
-
-import org.infinispan.Cache;
+package org.jasig.cas.server.authentication;
 
 /**
- * Simple {@link org.springframework.beans.factory.FactoryBean} that just creates caches blindly from the provided
- * configuration file.
+ * Implementation of the {@link java.text.AttributedCharacterIterator.Attribute} interface that
+ * works with JBoss Infinispan.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class BasicInfinispanCacheFactoryBean extends AbstractEmbeddedCacheManagerFactoryBean {
+public class InfinispanAttributePrincipalImpl extends AbstractStaticAttributePrincipalImpl {
 
-    public Cache getObject() throws Exception {
-        return getCacheManager().getCache();
+    private final String name;
+
+    public InfinispanAttributePrincipalImpl(final String name) {
+        this.name = name;
     }
 
-    public boolean isSingleton() {
-        return false;
+    public String getName() {
+        return this.name;
     }
 }
