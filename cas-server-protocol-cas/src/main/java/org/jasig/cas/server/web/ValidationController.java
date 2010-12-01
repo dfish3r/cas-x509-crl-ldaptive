@@ -19,7 +19,6 @@
 
 package org.jasig.cas.server.web;
 
-import com.sun.tools.internal.xjc.model.Model;
 import org.jasig.cas.server.CasProtocolVersion;
 import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.authentication.Credential;
