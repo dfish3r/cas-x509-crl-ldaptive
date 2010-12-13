@@ -34,5 +34,13 @@
             <type>jar</type>
             <version>${jboss.infinispan.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-test-support</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

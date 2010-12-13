@@ -21,19 +21,21 @@ package org.jasig.cas.server.authentication;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Returns instances of the {@link org.jasig.cas.server.authentication.InfinispanAttributePrincipalImpl}.
+ * Infinispan version of the {@link AuthenticationFactory} that supports the JBoss Infinispan.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  */
 @Singleton
-@Named(value = "attributePrincipalFactory")
-public final class InfinispanAttributePrincipalFactoryImpl extends AbstractStaticAttributePrincipalImplFactory {
+@Named(value = "authenticationFactory")
+public final class InfinispanAuthenticationFactoryImpl implements AuthenticationFactory {
 
-    public AttributePrincipal getAttributePrincipal(String name) {
-        return new InfinispanAttributePrincipalImpl(name);
+    public Authentication getAuthentication(final Map<String, List<Object>> authenticationMetaData, final AuthenticationRequest authenticationRequest, final String authenticationType) {
+        return new InfinispanAuthenticationImpl(authenticationMetaData, authenticationRequest.isLongTermAuthenticationRequest(), authenticationType);
     }
 }

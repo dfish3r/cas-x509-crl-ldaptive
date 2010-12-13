@@ -140,8 +140,10 @@ public final class TestUtils {
         return getPrincipal(CONST_USERNAME);
     }
 
-    public static AttributePrincipal getPrincipal(final String name) {
+    public static AttributePrincipal getPrincipal(final String pName) {
         return new AttributePrincipal() {
+
+            final String name = pName;
 
             public List<Object> getAttributeValues(final String attribute) {
                 return null;

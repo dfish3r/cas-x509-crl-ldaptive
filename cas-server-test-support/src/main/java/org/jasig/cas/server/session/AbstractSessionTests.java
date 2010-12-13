@@ -46,6 +46,12 @@ public abstract class AbstractSessionTests {
 
     private AttributePrincipal attributePrincipal;
 
+    private final Random random = new Random();
+
+    protected String getAuthenticationMethod() {
+        return Integer.toString(random.nextInt());
+    }
+
     private ServicesManager servicesManager = new ServicesManager() {
         public void save(RegisteredService registeredService) {
             // nothing to do
@@ -209,9 +215,6 @@ public abstract class AbstractSessionTests {
     @Test
     public final void additionalAuthentication() {
         final Authentication authentication = getNewAuthentication();
-        // TODO take these out later
-        System.out.println("this:" + this.authentication.getAuthenticationMethod());
-        System.out.println("local:" + authentication.getAuthenticationMethod());
         this.session.addAuthentication(authentication);
 
         assertEquals(2, this.session.getAuthentications().size());
@@ -248,8 +251,8 @@ public abstract class AbstractSessionTests {
 
         assertNotNull(session.getProxiedAuthentications());
         assertFalse(session.getProxiedAuthentications().isEmpty());
-        // XXX assertTrue(session.getProxiedAuthentications().contains(session.getAuthentications()));
-        assertFalse(session.getProxiedAuthentications().contains(this.session.getAuthentications()));
+        assertTrue(session.getProxiedAuthentications().contains(session.getAuthentications()));
+        // TODO why was this swapped with the one above? assertFalse(session.getProxiedAuthentications().contains(this.session.getAuthentications()));
 
         assertNotNull(session.getProxiedPrincipals());
         assertFalse(session.getProxiedPrincipals().isEmpty());

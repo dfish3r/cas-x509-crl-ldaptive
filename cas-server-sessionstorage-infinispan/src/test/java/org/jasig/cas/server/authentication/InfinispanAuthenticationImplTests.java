@@ -19,21 +19,22 @@
 
 package org.jasig.cas.server.authentication;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.jasig.cas.TestUtils;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * Returns instances of the {@link org.jasig.cas.server.authentication.InfinispanAttributePrincipalImpl}.
- *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
- * @since 3.5
+ * @version $Revision: 21046 $ $Date: 2010-07-11 00:27:06 -0400 (Sun, 11 Jul 2010) $
+ * @since 4.0.0
  */
-@Singleton
-@Named(value = "attributePrincipalFactory")
-public final class InfinispanAttributePrincipalFactoryImpl extends AbstractStaticAttributePrincipalImplFactory {
+public class InfinispanAuthenticationImplTests extends AbstractAuthenticationTests {
 
-    public AttributePrincipal getAttributePrincipal(String name) {
-        return new InfinispanAttributePrincipalImpl(name);
+    private InfinispanAuthenticationFactoryImpl impl = new InfinispanAuthenticationFactoryImpl();
+
+    @Override
+    protected Authentication getAuthentication(final Map<String, List<Object>> metaData, final String authenticationMethod) {
+        return impl.getAuthentication(metaData, TestUtils.getAuthenticationRequest(TestUtils.getCredentialsWithSameUsernameAndPassword()), authenticationMethod);
     }
 }

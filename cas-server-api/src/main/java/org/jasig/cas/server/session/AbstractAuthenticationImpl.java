@@ -31,6 +31,12 @@ import org.jasig.cas.server.authentication.Authentication;
 public abstract class AbstractAuthenticationImpl implements Authentication {
 
     public int compareTo(final Authentication o) {
-        return this.getAuthenticationDate().compareTo(o.getAuthenticationDate());
+        final int dateComparison = this.getAuthenticationDate().compareTo(o.getAuthenticationDate());
+
+        if (dateComparison != 0) {
+            return dateComparison;
+        }
+
+        return this.getAuthenticationMethod().compareTo(o.getAuthenticationMethod());
     }
 }

@@ -26,31 +26,36 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * Tests for the {@link org.jasig.cas.server.session.InMemorySessionImpl}.
+ * Tests for the {@link org.jasig.cas.server.session.InfinispanSessionImpl}.
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
+ * @version $Revision: 21608 $ $Date: 2010-09-07 23:25:57 -0400 (Tue, 07 Sep 2010) $
  * @since 3.5
  */
-public final class InMemorySessionImplTests extends AbstractSessionTests {
+public final class InfinispanSessionImplTests extends AbstractSessionTests {
 
-    private InMemoryAuthenticationImplFactory authenticationFactory = new InMemoryAuthenticationImplFactory();
+    private final InfinispanAuthenticationFactoryImpl authenticationFactory = new InfinispanAuthenticationFactoryImpl();
 
-    private InMemoryAttributePrincipalFactoryImpl attributePrincipalFactory = new InMemoryAttributePrincipalFactoryImpl();
+    private final InfinispanAttributePrincipalFactoryImpl attributePrincipalFactory = new InfinispanAttributePrincipalFactoryImpl();
 
     @Override
     protected Session getNewSession(final Authentication authentication, final AttributePrincipal attributePrincipal, final ServicesManager servicesManager) {
-        return new InMemorySessionImpl(getExpirationPolicy(), getAccessFactories(), new HashSet<Authentication>(Arrays.asList(authentication)), attributePrincipal, servicesManager);
+        InfinispanSessionImpl.setExpirationPolicy(getExpirationPolicy());
+        InfinispanSessionImpl.setAccessFactories(getAccessFactories());
+        InfinispanSessionImpl.setServicesManager(servicesManager);
+
+        return new InfinispanSessionImpl(new HashSet<Authentication>(Arrays.asList(authentication)), attributePrincipal);
     }
 
     @Override
     protected Authentication getNewAuthentication() {
         final AuthenticationRequest authenticationRequest = mock(AuthenticationRequest.class);
         when(authenticationRequest.isLongTermAuthenticationRequest()).thenReturn(false);
-        return this.authenticationFactory.getAuthentication(Collections.<String, List<Object>>emptyMap(), authenticationRequest, getAuthenticationMethod());
+        return this.authenticationFactory.getAuthentication(Collections.<String, List<Object>>emptyMap(), authenticationRequest, Double.toString(Math.random()));
     }
 
     @Override
