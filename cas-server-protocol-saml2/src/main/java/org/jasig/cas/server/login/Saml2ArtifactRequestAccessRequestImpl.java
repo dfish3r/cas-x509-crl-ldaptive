@@ -78,11 +78,15 @@ public final class Saml2ArtifactRequestAccessRequestImpl implements ServiceAcces
 
     private List<Credential> credentials = new ArrayList<Credential>();
 
+    private boolean forceAuthentication;
+
+    private boolean passiveAuthentication;
+
     public Saml2ArtifactRequestAccessRequestImpl() {
         // nothing to do
     }
 
-    public Saml2ArtifactRequestAccessRequestImpl(final String sessionId, final String remoteIpAddress, final String serviceId, final String requestId, final String alternateUserName, final String relayState, final PrivateKey privateKey, final PublicKey publicKey) {
+    public Saml2ArtifactRequestAccessRequestImpl(final String sessionId, final String remoteIpAddress, final String serviceId, final String requestId, final String alternateUserName, final String relayState, final PrivateKey privateKey, final PublicKey publicKey, final boolean forceAuthentication) {
         this.sessionId = sessionId;
         this.remoteIpAddress = remoteIpAddress;
         this.serviceId = serviceId;
@@ -91,6 +95,7 @@ public final class Saml2ArtifactRequestAccessRequestImpl implements ServiceAcces
         this.relayState = relayState;
         this.privateKey = privateKey;
         this.publicKey = publicKey;
+        this.forceAuthentication = forceAuthentication;
     }
 
     public boolean isAccessRequest() {
@@ -134,7 +139,7 @@ public final class Saml2ArtifactRequestAccessRequestImpl implements ServiceAcces
     }
 
     public boolean isForceAuthentication() {
-        return false;
+        return this.forceAuthentication;
     }
 
     public String getRemoteIpAddress() {
@@ -150,7 +155,7 @@ public final class Saml2ArtifactRequestAccessRequestImpl implements ServiceAcces
     }
 
     public boolean isPassiveAuthentication() {
-        return false;
+        return this.passiveAuthentication;
     }
 
     public boolean isLongTermLoginRequest() {
@@ -215,5 +220,13 @@ public final class Saml2ArtifactRequestAccessRequestImpl implements ServiceAcces
 
     public String getProtocolBinding() {
         return this.protocolBinding;
+    }
+
+    public void setForceAuthentication(final boolean forceAuthentication) {
+        this.forceAuthentication = forceAuthentication;
+    }
+
+    public void setPassiveAuthentication(final boolean passiveAuthentication) {
+        this.passiveAuthentication = passiveAuthentication;
     }
 }

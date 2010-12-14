@@ -38,13 +38,13 @@ import java.util.*;
 // TODO attach to eviction thread to
 public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
 
-    private final Cache<String,InfinispanSessionImpl> cache;
+    private final Cache<String,SerializableSessionImpl> cache;
 
     private final Cache<String,String> cacheMappings;
 
     private final Cache<String, List<String>> principalMappings;
 
-    public InfinispanSessionStorageImpl(final Cache<String,InfinispanSessionImpl> cache, final Cache<String,String> cacheMappings, final Cache<String,List<String>> principalMappings, final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
+    public InfinispanSessionStorageImpl(final Cache<String,SerializableSessionImpl> cache, final Cache<String,String> cacheMappings, final Cache<String,List<String>> principalMappings, final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
         super(accessFactories, servicesManager);
         this.cache = cache;
         this.cacheMappings = cacheMappings;
@@ -52,7 +52,7 @@ public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
     }
 
     public Session createSession(final AuthenticationResponse authenticationResponse) {
-        final InfinispanSessionImpl session = new InfinispanSessionImpl(authenticationResponse.getAuthentications(), authenticationResponse.getPrincipal());
+        final SerializableSessionImpl session = new SerializableSessionImpl(authenticationResponse);
         this.cache.put(session.getId(), session);
         this.cacheMappings.put(session.getId(), session.getId());
 
@@ -106,7 +106,7 @@ public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
             return null;
         }
 
-        final InfinispanSessionImpl session = this.cache.get(actualSession);
+        final SerializableSessionImpl session = this.cache.get(actualSession);
 
         if (session == null) {
             return null;
@@ -134,7 +134,7 @@ public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
             return null;
         }
 
-        final InfinispanSessionImpl session = this.cache.get(actualSession);
+        final SerializableSessionImpl session = this.cache.get(actualSession);
 
         if (session == null) {
             return null;
@@ -173,6 +173,8 @@ public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
 
     public void purge() {
         this.cache.clear();
+        this.cacheMappings.clear();
+        this.principalMappings.clear();
     }
 
     public SessionStorageStatistics getSessionStorageStatistics() {

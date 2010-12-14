@@ -33,21 +33,16 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jasig.service</groupId>
-            <artifactId>person-directory-api</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jasig.service</groupId>
-            <artifactId>person-directory-impl</artifactId>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-sessionstorage-serialization-support</artifactId>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>spy</groupId>
             <artifactId>memcached</artifactId>
-            <version>2.4rc1</version>
+            <version>2.5</version>
             <scope>compile</scope>
             <type>jar</type>
         </dependency>

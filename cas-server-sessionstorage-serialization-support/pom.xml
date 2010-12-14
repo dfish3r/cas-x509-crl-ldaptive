@@ -8,24 +8,22 @@
         <version>4.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>cas-server-sessionstorage-infinispan</artifactId>
-    <name>Jasig CAS - JBoss Infinispan Session Storage Support</name>
-    <description>Supports storing objects using Infinispan.</description>
+
+    <artifactId>cas-server-sessionstorage-serialization-support</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.jasig.cas</groupId>
-            <artifactId>cas-server-sessionstorage-serialization-support</artifactId>
+            <artifactId>cas-server-api</artifactId>
             <version>${project.version}</version>
+            <type>jar</type>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-core</artifactId>
-            <scope>compile</scope>
-            <type>jar</type>
-            <version>${jboss.infinispan.version}</version>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -36,4 +34,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
 </project>

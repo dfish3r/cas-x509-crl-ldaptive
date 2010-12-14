@@ -60,7 +60,8 @@ public final class Saml2ArtifactRequestAccessRequestImplTests {
     @Test
     public void testGetters() {
 
-        final Saml2ArtifactRequestAccessRequestImpl impl = new Saml2ArtifactRequestAccessRequestImpl(CONST_SESSION_ID, CONST_REMOTE_IP_ADDRESS, CONST_SERVICE_ID, CONST_REQUST_ID, CONST_ALTERNATE_USERNAME, CONST_RELAY_STATE, CONST_PRIVATE_KEY, CONST_PUBLIC_KEY);
+        final Saml2ArtifactRequestAccessRequestImpl impl = new Saml2ArtifactRequestAccessRequestImpl(CONST_SESSION_ID, CONST_REMOTE_IP_ADDRESS, CONST_SERVICE_ID, CONST_REQUST_ID, CONST_ALTERNATE_USERNAME, CONST_RELAY_STATE, CONST_PRIVATE_KEY, CONST_PUBLIC_KEY, CONST_FORCE_AUTHENTICATION);
+        impl.setPassiveAuthentication(CONST_PASSIVE_AUTHENTICATION);
 
         assertEquals(CONST_SESSION_ID, impl.getSessionId());
         assertEquals(CONST_REMOTE_IP_ADDRESS, impl.getRemoteIpAddress());

@@ -103,7 +103,7 @@ public class MemcachedSessionStorageImpl extends AbstractSessionStorage {
     public Session createSession(AuthenticationResponse authenticationResponse) {
         // TODO we need a better way to set this.
         AbstractStaticSession.setExpirationPolicy(getExpirationPolicy());
-        final Session session = new MemcachedSessionImpl(authenticationResponse);
+        final Session session = new SerializableSessionImpl(authenticationResponse);
 
         this.memcachedClient.add(ROOT_SESSION_PREFIX + session.getId(), this.sessionTimeOut, session.getId());
         handleSynchronousRequest(this.memcachedClient.set(session.getId(), this.sessionTimeOut, session));

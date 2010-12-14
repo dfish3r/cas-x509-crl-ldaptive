@@ -72,7 +72,7 @@ public class IdPInitController {
         final String providerName = this.issuerToProviderNameMapping.get(issuer);
         final String protocolBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
 
-        Assert.notNull(assertionConsumerUrl,String.format("No mapping exists for [%s] in assertion consumer url"));
+        Assert.notNull(assertionConsumerUrl,String.format("No mapping exists for [%s] in assertion consumer url", assertionConsumerUrl));
         Assert.notNull(providerName, String.format("No mapping exists for [%s] in provider name", issuer));
 
         final Saml2ArtifactRequestAccessRequestImpl impl = new Saml2ArtifactRequestAccessRequestImpl();

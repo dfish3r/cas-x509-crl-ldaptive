@@ -24,8 +24,8 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.jasig.cas.server.authentication.AuthenticationFactory;
-import org.jasig.cas.server.authentication.InfinispanAttributePrincipalFactoryImpl;
-import org.jasig.cas.server.authentication.InfinispanAuthenticationFactoryImpl;
+import org.jasig.cas.server.authentication.SerializableAttributePrincipalFactoryImpl;
+import org.jasig.cas.server.authentication.SerializableAuthenticationFactoryImpl;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +43,7 @@ public final class InfinispanSessionStorageImplTests extends AbstractSessionStor
 
        @Override
     protected SessionStorage getSessionStorage() {
-           final Cache<String,InfinispanSessionImpl> cache = ecm.getCache("cache");
+           final Cache<String,SerializableSessionImpl> cache = ecm.getCache("cache");
            final Cache<String,String> cacheMappings = ecm.getCache("cacheMappings");
            final Cache<String,List<String>> principalMappings = ecm.getCache("principalMappings");
 
@@ -52,11 +52,11 @@ public final class InfinispanSessionStorageImplTests extends AbstractSessionStor
 
     @Override
     protected AuthenticationFactory getAuthenticationFactory() {
-        return new InfinispanAuthenticationFactoryImpl();
+        return new SerializableAuthenticationFactoryImpl();
     }
 
     @Override
     protected AttributePrincipalFactory getAttributePrincipalFactory() {
-        return new InfinispanAttributePrincipalFactoryImpl();
+        return new SerializableAttributePrincipalFactoryImpl();
     }
 }
