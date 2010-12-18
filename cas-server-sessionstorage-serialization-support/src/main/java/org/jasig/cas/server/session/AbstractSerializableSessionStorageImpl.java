@@ -47,7 +47,13 @@ public abstract class AbstractSerializableSessionStorageImpl extends AbstractSes
 
     private void reinitialize(final Session session) {
         if (session != null) {
-            ((SerializableSessionImpl) session).reinitializeSessions();
+            final SerializableSessionImpl s = (SerializableSessionImpl) session;
+
+            if (s.isRoot()) {
+                s.reinitializeSessions();
+            } else {
+                ((SerializableSessionImpl) s.getRootSession()).reinitializeSessions();
+            }
         }
     }
 

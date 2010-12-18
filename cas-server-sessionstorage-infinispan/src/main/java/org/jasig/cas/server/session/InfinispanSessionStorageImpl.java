@@ -113,8 +113,6 @@ public final class InfinispanSessionStorageImpl extends AbstractSerializableSess
             return null;
         }
 
-        session.reinitializeSessions();
-
         if (actualSession.equals(session.getId())) {
 
             return session;

@@ -592,6 +592,7 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
         <module>cas-server-protocol-saml2</module>
         <module>cas-server-protocol-saml1</module>
         <module>cas-server-sessionstorage-serialization-support</module>
+        <module>cas-server-sessionstorage-ehcache</module>
     </modules>
 
 	<reporting>
