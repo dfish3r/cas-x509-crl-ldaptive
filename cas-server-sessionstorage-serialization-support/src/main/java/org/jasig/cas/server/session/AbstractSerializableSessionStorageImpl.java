@@ -33,11 +33,17 @@ public abstract class AbstractSerializableSessionStorageImpl extends AbstractSes
 
     protected AbstractSerializableSessionStorageImpl(final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
         super(accessFactories, servicesManager);
+        AbstractStaticSession.setAccessFactories(getAccessFactories());
+        AbstractStaticSession.setServicesManager(servicesManager);
     }
 
     protected abstract Set<Session> findSessionsByPrincipalInternal(String principalName);
 
     protected abstract Session findSessionByAccessIdInternal(String accessId);
+
+    protected abstract Session findSessionBySessionIdInternal(String sessionId);
+
+    protected abstract Session destroySessionInternal(String sessionId);
 
     private void reinitialize(final Session session) {
         if (session != null) {
@@ -61,11 +67,16 @@ public abstract class AbstractSerializableSessionStorageImpl extends AbstractSes
         return session;
     }
 
-    public Session findSessionBySessionId(String sessionId) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public final Session findSessionBySessionId(final String sessionId) {
+        final Session session = findSessionBySessionIdInternal(sessionId);
+        reinitialize(session);
+
+        return session;
     }
 
-    public Session destroySession(String sessionId) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public final Session destroySession(final String sessionId) {
+        final Session session = destroySessionInternal(sessionId);
+        reinitialize(session);
+        return session;
     }
 }

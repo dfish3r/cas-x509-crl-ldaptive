@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Implementation of the {@link org.jasig.cas.server.session.Session} interface for use with Memcached.
+ * Implementation of the {@link org.jasig.cas.server.session.Session} interface for use with Memcached, Infinispan, etc.
  *
  * @author Scott Battaglia
  * @version $Revision: 21600 $ $Date: 2010-09-07 00:01:04 -0400 (Tue, 07 Sep 2010) $
@@ -36,7 +36,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class SerializableSessionImpl extends AbstractStaticSession implements Serializable {
 
-    private Session parentSession;
+    /**
+     * Marked as transient since we reconstruct everything with {@link #reinitializeSessions()}.
+     */
+    private transient Session parentSession;
 
     private String id;
 

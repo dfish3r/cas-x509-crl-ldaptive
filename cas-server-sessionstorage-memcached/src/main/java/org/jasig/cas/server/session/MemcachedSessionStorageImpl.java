@@ -21,9 +21,7 @@ package org.jasig.cas.server.session;
 
 import net.spy.memcached.DefaultConnectionFactory;
 import net.spy.memcached.MemcachedClient;
-import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.server.authentication.AuthenticationResponse;
-import org.jasig.cas.server.login.LoginRequest;
 import org.springframework.util.Assert;
 
 import javax.annotation.PreDestroy;
@@ -43,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public class MemcachedSessionStorageImpl extends AbstractSessionStorage {
+public class MemcachedSessionStorageImpl extends AbstractSerializableSessionStorageImpl {
 
     private static final String ACCESS_PREFIX = "ACCESSID::";
 
@@ -64,8 +62,6 @@ public class MemcachedSessionStorageImpl extends AbstractSessionStorage {
     public MemcachedSessionStorageImpl(final List<InetSocketAddress> servers, final List<AccessFactory> accessFactories, final ServicesManager servicesManager, final int sessionTimeOut, final TimeUnit timeUnit) throws IOException {
         super(accessFactories, servicesManager);
         this.memcachedClient = new MemcachedClient(new DefaultConnectionFactory(), servers);
-        AbstractStaticSession.setAccessFactories(getAccessFactories());
-        AbstractStaticSession.setServicesManager(servicesManager);
 
         switch (timeUnit) {
             case SECONDS:
@@ -100,8 +96,7 @@ public class MemcachedSessionStorageImpl extends AbstractSessionStorage {
 	    }
 	}
 
-    public Session createSession(AuthenticationResponse authenticationResponse) {
-        // TODO we need a better way to set this.
+    public Session createSession(final AuthenticationResponse authenticationResponse) {
         AbstractStaticSession.setExpirationPolicy(getExpirationPolicy());
         final Session session = new SerializableSessionImpl(authenticationResponse);
 
@@ -115,7 +110,82 @@ public class MemcachedSessionStorageImpl extends AbstractSessionStorage {
         return new DefaultSessionStorageStatisticsImpl(false);
     }
 
-    public Session destroySession(final String sessionId) {
+    @Override
+    protected Set<Session> findSessionsByPrincipalInternal(String principalName) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    protected Session findSessionByAccessIdInternal(final String accessId) {
+        Assert.notNull(accessId);
+        final String sessionId = (String) this.memcachedClient.get(ACCESS_PREFIX + accessId);
+
+        if (sessionId == null) {
+            return null;
+        }
+
+        final String rootSessionId = (String) this.memcachedClient.get(ROOT_SESSION_PREFIX + sessionId);
+
+        if (rootSessionId == null) {
+            return null;
+        }
+
+        final Session rootSession = (Session) this.memcachedClient.get(rootSessionId);
+
+        if (rootSession == null) {
+            return null;
+        }
+
+        if (rootSession.getId().equals(sessionId)) {
+            if (rootSession.isValid()) {
+                return rootSession;
+            }
+
+            return null;
+        }
+
+        final Session session= rootSession.findChildSessionById(sessionId);
+
+        if (session == null || !session.isValid()) {
+            return null;
+        }
+
+        return session;
+    }
+
+    @Override
+    protected Session findSessionBySessionIdInternal(final String sessionId) {
+        final String rootSessionId = (String) this.memcachedClient.get(ROOT_SESSION_PREFIX + sessionId);
+
+        if (rootSessionId == null) {
+            return null;
+        }
+
+        final Session rootSession = (Session) this.memcachedClient.get(rootSessionId);
+
+        if (rootSession == null) {
+            return null;
+        }
+
+        if (rootSession.getId().equals(sessionId)) {
+            if (rootSession.isValid()) {
+                return rootSession;
+            }
+
+            return null;
+        }
+
+        final Session session = rootSession.findChildSessionById(sessionId);
+
+        if (session != null && session.isValid()) {
+            return session;
+        }
+
+        return null;
+    }
+
+    @Override
+    protected Session destroySessionInternal(final String sessionId) {
         // retrieve the root session id
         final String rootSessionId = (String) this.memcachedClient.get(ROOT_SESSION_PREFIX + sessionId);
 
@@ -152,36 +222,6 @@ public class MemcachedSessionStorageImpl extends AbstractSessionStorage {
         return session;
     }
 
-    public Session findSessionBySessionId(final String sessionId) {
-        final String rootSessionId = (String) this.memcachedClient.get(ROOT_SESSION_PREFIX + sessionId);
-
-        if (rootSessionId == null) {
-            return null;
-        }
-
-        final Session rootSession = (Session) this.memcachedClient.get(rootSessionId);
-
-        if (rootSession == null) {
-            return null;
-        }
-
-        if (rootSession.getId().equals(sessionId)) {
-            if (rootSession.isValid()) {
-                return rootSession;
-            }
-
-            return null;
-        }
-
-        final Session session = rootSession.findChildSessionById(sessionId);
-
-        if (session != null && session.isValid()) {
-            return session;
-        }
-
-        return null;
-    }
-
     public Session updateSession(final Session session) {
         for (final Access access : session.getAccesses()) {
             this.memcachedClient.set(ACCESS_PREFIX + access.getId(), this.sessionTimeOut, session.getId());
@@ -193,47 +233,6 @@ public class MemcachedSessionStorageImpl extends AbstractSessionStorage {
         return session;
     }
 
-    public Session findSessionByAccessId(final String accessId) {
-        Assert.notNull(accessId);
-        final String sessionId = (String) this.memcachedClient.get(ACCESS_PREFIX + accessId);
-
-        if (sessionId == null) {
-            return null;
-        }
-
-        final String rootSessionId = (String) this.memcachedClient.get(ROOT_SESSION_PREFIX + sessionId);
-
-        if (rootSessionId == null) {
-            return null;
-        }
-
-        final Session rootSession = (Session) this.memcachedClient.get(rootSessionId);
-
-        if (rootSession == null) {
-            return null;
-        }
-
-        if (rootSession.getId().equals(sessionId)) {
-            if (rootSession.isValid()) {
-                return rootSession;
-            }
-            
-            return null;
-        }
-
-        final Session session= rootSession.findChildSessionById(sessionId);
-
-        if (session == null || !session.isValid()) {
-            return null;
-        }
-
-        return session;
-    }
-
-    public Set<Session> findSessionsByPrincipal(final String principalName) {
-
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
 
     public void purge() {
         handleSynchronousRequest(this.memcachedClient.flush());

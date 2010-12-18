@@ -46,7 +46,23 @@
           p:generateDdl="false"
           p:showSql="false"/>
 
-    <bean class="org.jasig.cas.server.session.JpaSessionStorageImpl">
+    <bean class="org.jasig.cas.server.session.SimpleCleanupJpaSessionStorageImpl" id="simpleBased">
+        <constructor-arg index="0">
+            <list />
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean class="org.jasig.cas.services.DefaultServicesManagerImpl">
+                <constructor-arg index="0">
+                    <bean class="org.jasig.cas.services.InMemoryServiceRegistryDaoImpl" />
+                </constructor-arg>
+                <constructor-arg index="1">
+                    <list />
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean class="org.jasig.cas.server.session.ExpirationBasedCleanupJpaSessionStorageImpl" id="expirationBasedCleanupJpaSessionStorage">
         <constructor-arg index="0">
             <list />
         </constructor-arg>

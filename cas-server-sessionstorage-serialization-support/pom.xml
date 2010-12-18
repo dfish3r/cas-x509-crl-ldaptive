@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cas-server-sessionstorage-serialization-support</artifactId>
+    <name>Jasig CAS - Generic Session Storage Serialization Support</name>
 
     <dependencies>
         <dependency>

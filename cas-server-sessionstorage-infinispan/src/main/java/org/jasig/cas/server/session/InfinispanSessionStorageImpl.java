@@ -36,7 +36,7 @@ import java.util.*;
  */
 
 // TODO attach to eviction thread to
-public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
+public final class InfinispanSessionStorageImpl extends AbstractSerializableSessionStorageImpl {
 
     private final Cache<String,SerializableSessionImpl> cache;
 
@@ -70,57 +70,30 @@ public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
         return session;
     }
 
-    public Session destroySession(final String sessionId) {
-        Assert.notNull(sessionId, "sessionId cannot be null.");
-        // find the session
-        final Session session = findSessionBySessionId(sessionId);
+    @Override
+    protected Set<Session> findSessionsByPrincipalInternal(final String principalName) {
+        Assert.notNull(principalName, "principalName cannot be null.");
+        final List<String> sessionStrings = this.principalMappings.get(principalName);
 
-        if (session == null) {
-            return null;
+        if (sessionStrings == null || sessionStrings.isEmpty()) {
+            return Collections.emptySet();
         }
 
-        // remove its mappings
-        this.cacheMappings.remove(sessionId);
+        final Set<Session> sessions = new HashSet<Session>();
 
-        if (session.isRoot()) {
-            final List<String> sessions = this.principalMappings.get(session.getPrincipal().getName());
+        for (final String id : sessionStrings) {
+            final Session session = this.cache.get(id);
 
-            // remove any listing in the principal map
-            if (sessions != null) {
-                sessions.remove(sessionId);
-                this.principalMappings.put(session.getPrincipal().getName(), sessions);
+            if (session != null) {
+                sessions.add(session);
             }
-
-            // remove it
-            this.cache.remove(sessionId);
         }
 
-        return session;
+        return sessions;
     }
 
-    public Session findSessionBySessionId(final String sessionId) {
-        Assert.notNull(sessionId, "sessionId cannot be null.");
-        final String actualSession = this.cacheMappings.get(sessionId);
-
-        if (actualSession == null) {
-            return null;
-        }
-
-        final SerializableSessionImpl session = this.cache.get(actualSession);
-
-        if (session == null) {
-            return null;
-        }
-
-        session.reinitializeSessions();
-        return session;
-    }
-
-    public Session updateSession(final Session session) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Session findSessionByAccessId(final String accessId) {
+    @Override
+    protected Session findSessionByAccessIdInternal(final String accessId) {
         Assert.notNull(accessId, "accessId cannot be null.");
         final String lowestLevelSession = this.cacheMappings.get(accessId);
 
@@ -150,25 +123,49 @@ public final class InfinispanSessionStorageImpl extends AbstractSessionStorage {
         return session.findChildSessionById(lowestLevelSession);
     }
 
-    public Set<Session> findSessionsByPrincipal(final String principalName) {
-        Assert.notNull(principalName, "principalName cannot be null.");
-        final List<String> sessionStrings = this.principalMappings.get(principalName);
+    @Override
+    protected Session findSessionBySessionIdInternal(final String sessionId) {
+        Assert.notNull(sessionId, "sessionId cannot be null.");
+        final String actualSession = this.cacheMappings.get(sessionId);
 
-        if (sessionStrings == null || sessionStrings.isEmpty()) {
-            return Collections.emptySet();
+        if (actualSession == null) {
+            return null;
         }
 
-        final Set<Session> sessions = new HashSet<Session>();
+        return this.cache.get(actualSession);
+    }
 
-        for (final String id : sessionStrings) {
-            final Session session = this.cache.get(id);
+    @Override
+    protected Session destroySessionInternal(final String sessionId) {
+        Assert.notNull(sessionId, "sessionId cannot be null.");
+        // find the session
+        final Session session = findSessionBySessionIdInternal(sessionId);
 
-            if (session != null) {
-                sessions.add(session);
+        if (session == null) {
+            return null;
+        }
+
+        // remove its mappings
+        this.cacheMappings.remove(sessionId);
+
+        if (session.isRoot()) {
+            final List<String> sessions = this.principalMappings.get(session.getPrincipal().getName());
+
+            // remove any listing in the principal map
+            if (sessions != null) {
+                sessions.remove(sessionId);
+                this.principalMappings.put(session.getPrincipal().getName(), sessions);
             }
+
+            // remove it
+            this.cache.remove(sessionId);
         }
 
-        return sessions;
+        return session;
+   }
+
+    public Session updateSession(final Session session) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void purge() {

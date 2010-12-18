@@ -37,24 +37,24 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Tests for the {@link org.jasig.cas.server.session.JpaSessionStorageImpl}.
+ * Tests for the {@link AbstractJpaSessionStorageImpl}.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.5
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations= {"classpath:applicationContext.xml"})
+@ContextConfiguration(locations= {"classpath:simpleApplicationContext.xml"})
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 @TransactionConfiguration
 @Transactional()
-public final class JpaSessionStorageImplTests extends AbstractSessionStorageTests implements ApplicationContextAware {
+public final class SimpleCleanupJpaSessionStorageImplTests extends AbstractSessionStorageTests implements ApplicationContextAware {
 
 
     protected ApplicationContext applicationContext;
 
     @Autowired(required=true)
-    private JpaSessionStorageImpl sessionStorage;
+    private SimpleCleanupJpaSessionStorageImpl sessionStorage;
 
     @Override
     protected SessionStorage getSessionStorage() {
