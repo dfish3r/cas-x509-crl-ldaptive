@@ -9,7 +9,7 @@
 	<artifactId>cas-server</artifactId>
 	<packaging>pom</packaging>
 	<name>Jasig Central Authentication Service</name>
-    <description>Parent POM for Jasig CAS Project</description>
+    	<description>Parent POM for Jasig CAS Project</description>
 	<version>4.0-SNAPSHOT</version>
 	<url>http://www.jasig.org/cas/</url>
 	<inceptionYear>2004</inceptionYear>
