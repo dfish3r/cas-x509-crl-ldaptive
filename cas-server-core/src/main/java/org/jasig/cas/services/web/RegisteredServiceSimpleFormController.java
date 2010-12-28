@@ -23,15 +23,19 @@ package org.jasig.cas.services.web;
 import org.jasig.cas.server.session.RegisteredService;
 import org.jasig.cas.server.session.ServicesManager;
 import org.jasig.cas.services.RegisteredServiceImpl;
+import org.jasig.cas.services.web.support.RegisteredServiceValidator;
 import org.jasig.services.persondir.IPersonAttributeDao;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -45,6 +49,8 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.1
  */
+@Controller
+@RequestMapping(value = {"/services/edit.html", "/services/add.html"})
 public final class RegisteredServiceSimpleFormController extends SimpleFormController {
 
     /** Instance of ServiceRegistryManager */
@@ -55,11 +61,14 @@ public final class RegisteredServiceSimpleFormController extends SimpleFormContr
     @NotNull
     private final IPersonAttributeDao personAttributeDao;
 
-    public RegisteredServiceSimpleFormController(
-        final ServicesManager servicesManager,
-        final IPersonAttributeDao attributeRepository) {
+    @Inject
+    public RegisteredServiceSimpleFormController(final ServicesManager servicesManager, final IPersonAttributeDao attributeRepository) {
         this.servicesManager = servicesManager;
         this.personAttributeDao = attributeRepository;
+        setCommandName("registeredService");
+        setSuccessView("addServiceView");
+        setFormView("addServiceView");
+        setValidator(new RegisteredServiceValidator());
     }
 
     /**

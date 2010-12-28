@@ -26,17 +26,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-	<bean id="proxyValidateController" class="org.jasig.cas.web.ServiceValidateController"
-		p:centralAuthenticationService-ref="centralAuthenticationService"
-		p:proxyHandler-ref="proxy20Handler"
-		p:argumentExtractor-ref="casArgumentExtractor" />
-
-	<bean id="serviceValidateController" class="org.jasig.cas.web.ServiceValidateController"
-		p:validationSpecificationClass="org.jasig.cas.validation.Cas20WithoutProxyingValidationSpecification"
-		p:centralAuthenticationService-ref="centralAuthenticationService"
-		p:proxyHandler-ref="proxy20Handler"
-		p:argumentExtractor-ref="casArgumentExtractor" />
-
 	<bean id="samlValidateController" class="org.jasig.cas.web.ServiceValidateController"
 		p:validationSpecificationClass="org.jasig.cas.validation.Cas20WithoutProxyingValidationSpecification"
 		p:centralAuthenticationService-ref="centralAuthenticationService"
@@ -46,39 +35,10 @@
 		p:failureView="casSamlServiceFailureView" />
 
 
-
-    <bean id="viewStatisticsController" class="org.jasig.cas.web.StatisticsController"
-        p:casTicketSuffix="${host.name}">
-        <constructor-arg index="0" ref="ticketRegistry" />
-    </bean>
-	
-	<bean id="addRegisteredServiceSimpleFormController" class="org.jasig.cas.services.web.RegisteredServiceSimpleFormController"
-		p:formView="addServiceView"
-		p:successView="addServiceView"
-		p:commandName="registeredService"
-		p:validator-ref="registeredServiceValidator"
-		p:sessionForm="true">
-		<constructor-arg index="0" ref="servicesManager" />
-		<constructor-arg index="1" ref="attributeRepository" />
-	</bean>
-
-	<bean id="editRegisteredServiceSimpleFormController" class="org.jasig.cas.services.web.RegisteredServiceSimpleFormController"
-		p:formView="editServiceView"
-		p:successView="editServiceView"
-		p:commandName="registeredService"
-		p:validator-ref="registeredServiceValidator"
-		p:sessionForm="false">
-		<constructor-arg index="0" ref="servicesManager" />
-		<constructor-arg index="1" ref="attributeRepository" />
-	</bean>
-
 	<bean id="registeredServiceValidator" class="org.jasig.cas.services.web.support.RegisteredServiceValidator"
 		p:servicesManager-ref="servicesManager" />
 
-	<bean id="manageRegisteredServicesMultiActionController" class="org.jasig.cas.services.web.ManageRegisteredServicesMultiActionController">
-		<constructor-arg index="0" ref="servicesManager" />
-        <constructor-arg index="1" value="${cas.securityContext.serviceProperties.service}" />
-	</bean>
+
 
     <bean id="passThroughController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" /> 
 
@@ -86,11 +46,6 @@
 		id="openIdProviderController"
 		class="org.jasig.cas.web.OpenIdProviderController"
 		p:loginUrl="${cas.securityContext.casProcessingFilterEntryPoint.loginUrl}" />
-
-	<bean
-		id="serviceLogoutViewController"
-		class="org.springframework.web.servlet.mvc.ParameterizableViewController"
-		p:viewName="serviceLogoutView" />
 
 	<bean
 		id="handlerMappingC"
@@ -103,29 +58,6 @@
 					samlValidateController
 				</prop>
 
-				<prop
-					key="/services/add.html">
-					addRegisteredServiceSimpleFormController
-				</prop>
-
-				<prop
-					key="/services/edit.html">
-					editRegisteredServiceSimpleFormController
-				</prop>
-
-				<prop
-					key="/services/loggedOut.html">
-					serviceLogoutViewController
-				</prop>
-
-                <prop key="/services/viewStatistics.html">
-                    viewStatisticsController
-                </prop>
-
-				<prop
-					key="/services/*">
-					manageRegisteredServicesMultiActionController
-				</prop>
 				<prop
 					key="/openid/*">openIdProviderController</prop>
                 <prop
@@ -158,14 +90,6 @@
         p:suffix=".jsp"
         p:order="1"/>
 
-	<bean id="errorHandlerResolver" class="org.jasig.cas.web.NoSuchFlowExecutionExceptionResolver" />
-
     <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
-
-    <bean id="proxy10Handler" class="org.jasig.cas.ticket.proxy.support.Cas10ProxyHandler"/>
-
-    <bean id="proxy20Handler" class="org.jasig.cas.ticket.proxy.support.Cas20ProxyHandler"
-          p:httpClient-ref="httpClient"
-          p:uniqueTicketIdGenerator-ref="proxy20TicketUniqueIdGenerator"/>
 
 </beans>

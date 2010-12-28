@@ -83,4 +83,11 @@
             <bean class="org.jasig.cas.server.util.SpringAwareMessageMessageInterpolator" />
         </property>
     </bean>
+
+	<bean id="manageRegisteredServicesMultiActionController" class="org.jasig.cas.services.web.ManageRegisteredServicesMultiActionController">
+		<constructor-arg index="0" ref="servicesManager" />
+        <constructor-arg index="1" value="${cas.securityContext.serviceProperties.service}" />
+	</bean>
+
+    <mvc:view-controller path="/services/loggedOut.html" view-name="serviceLogoutView" />
 </beans>

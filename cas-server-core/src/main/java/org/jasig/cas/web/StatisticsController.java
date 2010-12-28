@@ -22,9 +22,16 @@ package org.jasig.cas.web;
 import org.jasig.cas.server.session.SessionStorage;
 import org.jasig.cas.server.session.SessionStorageStatistics;
 import org.perf4j.log4j.GraphingStatisticsAppender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.EmbeddedValueResolverAware;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringValueResolver;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -34,7 +41,10 @@ import java.util.*;
  * @version $Revision$ $Date$
  * @since 3.3.5
  */
-public final class StatisticsController extends AbstractController {
+@Controller
+public final class StatisticsController implements EmbeddedValueResolverAware {
+
+    private final Logger logger  = LoggerFactory.getLogger(getClass());
 
     private static final int NUMBER_OF_MILLISECONDS_IN_A_DAY = 86400000;
 
@@ -50,16 +60,18 @@ public final class StatisticsController extends AbstractController {
 
     private String casTicketSuffix;
 
+    @Inject
     public StatisticsController(final SessionStorage sessionStorage) {
         this.sessionStorage = sessionStorage;
     }
 
-    public void setCasTicketSuffix(final String casTicketSuffix) {
-        this.casTicketSuffix = casTicketSuffix;
+    public void setEmbeddedValueResolver(final StringValueResolver resolver) {
+        this.casTicketSuffix = resolver.resolveStringValue("${host.name}");
+        logger.info(String.format("Resolved ${host.name} to %s", this.casTicketSuffix));
     }
 
-    @Override
-    protected ModelAndView handleRequestInternal(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse) throws Exception {
+    @RequestMapping(method = RequestMethod.GET, value = "/services/viewStatistics.html")
+    protected ModelAndView viewStatistics(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse) throws Exception {
         final ModelAndView modelAndView = new ModelAndView("viewStatisticsView");
         modelAndView.addObject("startTime", this.upTimeStartDate);
         final double difference = System.currentTimeMillis() - this.upTimeStartDate.getTime();

@@ -21,6 +21,7 @@ package org.jasig.cas.web.support;
 
 import javax.servlet.http.Cookie;
 
+import org.jasig.cas.server.login.DefaultLoginRequestImpl;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -47,8 +48,8 @@ public final class CookieRetrievingCookieGeneratorTests extends TestCase {
     }
     
     public void testCookieAddWithRememberMe() {
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addParameter("rememberMe", "true");
+        final DefaultLoginRequestImpl request = new DefaultLoginRequestImpl(null, "ha", false, null);
+        request.setLongTermLoginRequest(true);
         final MockHttpServletResponse response = new MockHttpServletResponse();
         
        this.g.addCookie(request, response, "test");
@@ -59,7 +60,7 @@ public final class CookieRetrievingCookieGeneratorTests extends TestCase {
     }
     
     public void testCookieAddWithoutRememberMe() {
-        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final DefaultLoginRequestImpl request = new DefaultLoginRequestImpl(null, "ha", false, null);
         final MockHttpServletResponse response = new MockHttpServletResponse();
         
         this.g.addCookie(request, response, "test");

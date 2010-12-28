@@ -36,6 +36,8 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+
 /**
  * Tests for the {@link AbstractJpaSessionStorageImpl}.
  *
@@ -53,8 +55,8 @@ public final class SimpleCleanupJpaSessionStorageImplTests extends AbstractSessi
 
     protected ApplicationContext applicationContext;
 
-    @Autowired(required=true)
-    private SimpleCleanupJpaSessionStorageImpl sessionStorage;
+    @Resource(name="simpleBased")
+    private SessionStorage sessionStorage;
 
     @Override
     protected SessionStorage getSessionStorage() {

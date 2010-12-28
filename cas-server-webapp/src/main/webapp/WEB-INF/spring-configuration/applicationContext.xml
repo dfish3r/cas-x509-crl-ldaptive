@@ -40,6 +40,8 @@
 
     <context:component-scan base-package="org.jasig.cas.server"/>
 
+    <context:component-scan base-package="org.jasig.cas.services" />
+
     <!--
       Declare the TimingAspect that we want to weave into the other beans
       defined in this config file.
