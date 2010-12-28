@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -31,8 +32,10 @@ import javax.validation.constraints.NotNull;
 import org.jasig.cas.server.session.RegisteredService;
 import org.jasig.cas.server.session.ServicesManager;
 import org.springframework.beans.support.PropertyComparator;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import org.springframework.web.servlet.view.RedirectView;
 
 /**
@@ -43,7 +46,9 @@ import org.springframework.web.servlet.view.RedirectView;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public final class ManageRegisteredServicesMultiActionController extends MultiActionController {
+// @Controller
+@Singleton
+public final class ManageRegisteredServicesMultiActionController {
 
     /** View name for the Manage Services View. */
     private static final String VIEW_NAME = "manageServiceView";
@@ -57,7 +62,6 @@ public final class ManageRegisteredServicesMultiActionController extends MultiAc
 
     @NotNull
     private final String defaultServiceUrl;
-    
 
     /**
      * Constructor that takes the required {@link ServicesManager}.
@@ -66,9 +70,7 @@ public final class ManageRegisteredServicesMultiActionController extends MultiAc
      * RegisteredServices.
      * @param defaultServiceUrl the service management tool's url.
      */
-    public ManageRegisteredServicesMultiActionController(
-        final ServicesManager servicesManager, final String defaultServiceUrl) {
-        super();
+    public ManageRegisteredServicesMultiActionController(final ServicesManager servicesManager, final String defaultServiceUrl) {
         this.servicesManager = servicesManager;
         this.defaultServiceUrl = defaultServiceUrl;
     }
@@ -80,19 +82,16 @@ public final class ManageRegisteredServicesMultiActionController extends MultiAc
      * @param response the HttpServletResponse
      * @return the Model and View to go to after the service is deleted.
      */
-    public ModelAndView deleteRegisteredService(
-        final HttpServletRequest request, final HttpServletResponse response) {
+    @RequestMapping(method=RequestMethod.GET, value = "/services/delete.html")
+    public ModelAndView deleteRegisteredService(final HttpServletRequest request, final HttpServletResponse response) {
         final String id = request.getParameter("id");
         final long idAsLong = Long.parseLong(id);
 
-        final ModelAndView modelAndView = new ModelAndView(new RedirectView(
-            "/services/manage.html", true), "status", "deleted");
-
+        final ModelAndView modelAndView = new ModelAndView(new RedirectView("/services/manage.html", true), "status", "deleted");
 
         final RegisteredService r = this.servicesManager.delete(idAsLong);
 
-        modelAndView.addObject("serviceName", r != null
-            ? r.getName() : "");
+        modelAndView.addObject("serviceName", r != null ? r.getName() : "");
 
         return modelAndView;
     }
@@ -104,14 +103,12 @@ public final class ManageRegisteredServicesMultiActionController extends MultiAc
      * @param response the HttpServletResponse
      * @return the Model and View to go to after the services are loaded.
      */
-    public ModelAndView manage(final HttpServletRequest request,
-        final HttpServletResponse response) {
+    @RequestMapping(method = RequestMethod.GET, value = "/services/manage.html")
+    public ModelAndView manage(final HttpServletRequest request, final HttpServletResponse response) {
         final Map<String, Object> model = new HashMap<String, Object>();
 
-        final List<RegisteredService> services = new ArrayList<RegisteredService>(
-            this.servicesManager.getAllServices());
-        PropertyComparator.sort(services, this.propertyComparator
-            .getSortDefinition());
+        final List<RegisteredService> services = new ArrayList<RegisteredService>(this.servicesManager.getAllServices());
+        PropertyComparator.sort(services, this.propertyComparator.getSortDefinition());
 
         model.put("services", services);
         model.put("pageTitle", VIEW_NAME);
