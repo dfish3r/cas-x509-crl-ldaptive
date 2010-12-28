@@ -19,11 +19,14 @@
 
 package org.jasig.cas.web.support;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jasig.cas.server.login.LoginRequest;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.util.CookieGenerator;
 
 /**
@@ -36,16 +39,15 @@ import org.springframework.web.util.CookieGenerator;
  * @since 3.1
  *
  */
-public class CookieRetrievingCookieGenerator extends CookieGenerator {
+public class CookieRetrievingCookieGenerator extends CookieGenerator implements ServletContextAware {
     
     /** The maximum age the cookie should be remembered for.
      * The default is three months (7889231 in seconds, according to Google) */
     private int rememberMeMaxAge = 7889231;
     
-    public void addCookie(final HttpServletRequest request, final HttpServletResponse response, final String cookieValue) {
+    public void addCookie(final LoginRequest request, final HttpServletResponse response, final String cookieValue) {
 
-        // TODO we need to actually just read this from the LoginRequest
-        if (!StringUtils.hasText(request.getParameter("rememberMe"))) {
+        if (!request.isLongTermLoginRequest()) {
             super.addCookie(response, cookieValue);
         } else {
             final Cookie cookie = createCookie(cookieValue);
@@ -58,13 +60,16 @@ public class CookieRetrievingCookieGenerator extends CookieGenerator {
     }
 
     public String retrieveCookieValue(final HttpServletRequest request) {
-        final Cookie cookie = org.springframework.web.util.WebUtils.getCookie(
-            request, getCookieName());
+        final Cookie cookie = org.springframework.web.util.WebUtils.getCookie(request, getCookieName());
 
         return cookie == null ? null : cookie.getValue();
     }
     
     public void setRememberMeMaxAge(final int maxAge) {
         this.rememberMeMaxAge = maxAge;
+    }
+
+    public void setServletContext(final ServletContext servletContext) {
+        setCookiePath(servletContext.getContextPath());
     }
 }

@@ -20,6 +20,7 @@
 package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.CasProtocolVersion;
+import org.springframework.stereotype.Component;
 
 /**
  * Extension to the TokenServiceAccessRequest that defines which version of the CAS protocol to validate against.

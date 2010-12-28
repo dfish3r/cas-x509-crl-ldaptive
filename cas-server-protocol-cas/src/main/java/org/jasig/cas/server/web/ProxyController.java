@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
@@ -44,9 +45,10 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-@Controller
+@Controller("proxyController")
 public final class ProxyController {
 
+    @NotNull
     private final CentralAuthenticationService centralAuthenticationService;
 
     @Inject

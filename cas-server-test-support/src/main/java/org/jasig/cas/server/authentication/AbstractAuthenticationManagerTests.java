@@ -158,8 +158,7 @@ public abstract class AbstractAuthenticationManagerTests {
     protected final AuthenticationFactory getAuthenticationFactory() {
         return new AuthenticationFactory() {
             public Authentication getAuthentication(final Map<String, List<Object>> authenticationMetaData, final AuthenticationRequest authenticationRequest, final String authenticationType) {
-                final Authentication a = mock(Authentication.class);
-                return a;
+                return mock(Authentication.class);
             }
         };
     }

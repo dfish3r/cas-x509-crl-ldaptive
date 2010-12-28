@@ -22,6 +22,8 @@ package org.jasig.cas.server.session;
 import org.jasig.cas.server.login.ServiceAccessRequest;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 /**
  * Creates a new JpaCasProtocolAccess object.
@@ -30,6 +32,9 @@ import javax.annotation.PostConstruct;
  * @version $Revision$ $Date$
  * @since 3.5
  */
+@Named("casProtocolAccessFactory")
+@Protocol(Protocol.ProtocolType.CAS)
+@Singleton
 public final class JpaCasProtocolAccessImplFactory extends AbstractCasProtocolAccessImplFactory {
 
     public Access getAccess(final Session session, final ServiceAccessRequest serviceAccessRequest) {

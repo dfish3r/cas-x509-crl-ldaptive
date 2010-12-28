@@ -19,25 +19,27 @@
 
 package org.jasig.cas.server.util;
 
-import org.jasig.cas.util.ThreadLocalDateFormatDateParser;
+import org.jasig.cas.web.support.CookieRetrievingCookieGenerator;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
- * Creates a {@link org.jasig.cas.server.util.DateParser} that's compliant with the SAML2 specification.
+ * Abstracts the common components of the session cookie.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
-@Named("samlCompliantThreadLocalDateFormatParser")
+@Named("ticketGrantingTicketCookieGenerator")
 @Singleton
-public final class SamlCompliantThreadLocalDateFormatDateParser extends ThreadLocalDateFormatDateParser {
+public final class SessionCookieGenerator extends CookieRetrievingCookieGenerator {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-
-    public SamlCompliantThreadLocalDateFormatDateParser() {
-        super(DATE_FORMAT);
+    public SessionCookieGenerator() {
+        setCookieName("CASTGC");
+        setCookieSecure(true);
+        setCookieMaxAge(-1);
     }
+
+
 }

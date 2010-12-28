@@ -21,6 +21,9 @@ package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.login.ServiceAccessRequest;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 /**
  * Simple {@link org.jasig.cas.server.session.AccessFactory} for instaniating instances of the
  * {@link org.jasig.cas.server.session.InMemoryCasProtocolAccessImpl}
@@ -30,6 +33,9 @@ import org.jasig.cas.server.login.ServiceAccessRequest;
  * @since 3.5
  *
  */
+@Named("casProtocolAccessFactory")
+@Protocol(Protocol.ProtocolType.CAS)
+@Singleton
 public final class InMemoryCasProtocolAccessImplAccessFactory extends AbstractCasProtocolAccessImplFactory {
 
     public Access getAccess(final Session session, final ServiceAccessRequest serviceAccessRequest) {

@@ -19,6 +19,9 @@
 
 package org.jasig.cas.server.authentication;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 /**
  * Constructs a new {@link org.jasig.cas.server.authentication.JpaAttributePrincipalImpl} using the supplied name.
  * <p>
@@ -30,6 +33,8 @@ package org.jasig.cas.server.authentication;
  * @version $Revision$ $Date$
  * @since 3.5
  */
+@Named("attributePrincipalFactory")
+@Singleton
 public final class JpaAttributePrincipalFactory extends AbstractStaticAttributePrincipalImplFactory {
 
     public AttributePrincipal getAttributePrincipal(final String name) {

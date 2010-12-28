@@ -19,9 +19,11 @@
 
 package org.jasig.cas.server.session;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.Query;
 import javax.validation.constraints.Min;
 import java.util.List;
@@ -33,17 +35,19 @@ import java.util.List;
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
+@Named("sessionStorage")
 public final class ExpirationBasedCleanupJpaSessionStorageImpl extends AbstractJpaSessionStorageImpl {
 
     @Min(1)
     private int batchSize = 100;
 
-    @Autowired
+    @Inject
     public ExpirationBasedCleanupJpaSessionStorageImpl(final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
         super(accessFactories, servicesManager);
     }
 
     @Transactional
+    @Scheduled(fixedDelay = 5000000)
     public void prune() {
         final Query query  = getEntityManager().createQuery("select s from session s order by s.id");
         query.setMaxResults(this.batchSize);

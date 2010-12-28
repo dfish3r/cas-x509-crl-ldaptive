@@ -28,6 +28,7 @@ import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.jasig.cas.server.login.LoginRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import javax.validation.constraints.NotNull;
 import java.sql.Types;
@@ -62,6 +63,7 @@ public final class InspektrThrottledByIpAddressAndUsernamePreAuthenticationPlugi
     @NotNull
     private String applicationCode = DEFAULT_APPLICATION_CODE;
 
+    @Inject
     public InspektrThrottledByIpAddressAndUsernamePreAuthenticationPlugin(final AuditTrailManager auditTrailManager, final DataSource dataSource) {
         this.auditTrailManager = auditTrailManager;
         this.jdbcTemplate = new JdbcTemplate(dataSource);

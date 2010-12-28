@@ -19,10 +19,13 @@
 
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.util.SessionCookieGenerator;
 import org.jasig.cas.server.util.WebUtils;
-import org.springframework.web.util.CookieGenerator;
 import org.springframework.webflow.context.ExternalContext;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -32,12 +35,15 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.5
  */
+@Named("sessionCookieCreater")
+@Singleton
 public final class SessionCookieCreater {
 
     @NotNull
-    private final CookieGenerator cookieGenerator;
+    private final SessionCookieGenerator cookieGenerator;
 
-    public SessionCookieCreater(final CookieGenerator cookieGenerator) {
+    @Inject
+    public SessionCookieCreater(final SessionCookieGenerator cookieGenerator) {
         this.cookieGenerator = cookieGenerator;
     }
 

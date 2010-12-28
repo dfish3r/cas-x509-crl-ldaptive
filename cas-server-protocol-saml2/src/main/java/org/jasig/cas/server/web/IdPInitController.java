@@ -19,11 +19,7 @@
 
 package org.jasig.cas.server.web;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.text.StrSubstitutor;
 import org.jasig.cas.server.login.Saml2ArtifactRequestAccessRequestImpl;
-import org.jasig.cas.server.util.SamlCompliantThreadLocalDateFormatDateParser;
-import org.jasig.cas.server.util.SamlUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 

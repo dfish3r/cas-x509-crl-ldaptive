@@ -22,6 +22,7 @@ package org.jasig.cas.adaptors.jdbc;
 import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import javax.validation.constraints.NotNull;
 
@@ -38,6 +39,7 @@ public abstract class AbstractJdbcUsernamePasswordAuthenticationHandler extends 
     private SimpleJdbcTemplate jdbcTemplate;
     
     @NotNull
+    @Inject
     private DataSource dataSource;
 
     /**

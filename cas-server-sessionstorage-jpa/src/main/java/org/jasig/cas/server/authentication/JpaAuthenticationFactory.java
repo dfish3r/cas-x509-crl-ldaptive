@@ -19,6 +19,8 @@
 
 package org.jasig.cas.server.authentication;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,8 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.5
  */
+@Named("authenticationFactory")
+@Singleton
 public final class JpaAuthenticationFactory implements AuthenticationFactory {
 
     public Authentication getAuthentication(final Map<String, List<Object>> authenticationMetaData, final AuthenticationRequest authenticationRequest, final String authenticationType) {

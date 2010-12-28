@@ -19,8 +19,12 @@
 
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.session.Protocol;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.util.Map;
 
 /**
@@ -32,6 +36,9 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.5
  */
+@Named("casServiceAccessRequestFactory")
+@Singleton
+@Protocol(Protocol.ProtocolType.CAS)
 public final class CasServiceAccessRequestImplFactory extends  AbstractServiceAccessRequestFactory {
 
     public ServiceAccessRequest getServiceAccessRequest(final String sessionId, final String remoteIpAddress, final Map parameters) {

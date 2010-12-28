@@ -79,11 +79,12 @@ public final class SpringLdapUtils {
      * @return <code>true</code>, if the DirContext contains the objectclass, otherwise <code>false</code>
      */
     public static boolean containsObjectClass(final DirContextAdapter ctx, final String objectclass) {
-        final String[] objectclasses = ctx.getStringAttributes(OBJECTCLASS_ATTRIBUTE);
-        if (objectclasses == null || objectclasses.length == 0)
+        final String[] objectClasses = ctx.getStringAttributes(OBJECTCLASS_ATTRIBUTE);
+        if (objectClasses == null || objectClasses.length == 0) {
             return false;
-        for (int i = 0; i < objectclasses.length; i++) {
-            final String ocls = objectclasses[i];
+        }
+
+        for (final String ocls : objectClasses) {
             if (ocls.equalsIgnoreCase(objectclass))
                 return true;
         }

@@ -44,7 +44,7 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractCasProtocolAccessImpl.class);
 
-    protected enum ValidationStatus {NOT_VALIDATED, VALIDATION_SUCCEEDED, VALIDATION_FAILED_RENEW, VALIDATION_FAILED_ID_MATCH, VALIDATION_FAILED_PROXY_ATTEMPT, ALREADY_VALIDATED, EXPIRED_TICKET};
+    protected enum ValidationStatus {NOT_VALIDATED, VALIDATION_SUCCEEDED, VALIDATION_FAILED_RENEW, VALIDATION_FAILED_ID_MATCH, VALIDATION_FAILED_PROXY_ATTEMPT, ALREADY_VALIDATED, EXPIRED_TICKET}
 
     protected static final Map<ValidationStatus,String> VALIDATION_STATUS_TO_ERROR_CODE_MAPPING = new HashMap<ValidationStatus,String>();
 

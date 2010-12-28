@@ -122,10 +122,9 @@ public final class RemoteIpLookupCredentialsToPrincipalResolver extends Abstract
                 String networkAddress = "\\31\\23";
                 // Turn ip (192.168.0.1) into a byte array, covert each into a byte String
                 String[] octets = formattedAddress.replace('.','_').split("_");
-                
-                for (int i = 0; i < octets.length; i++) {
-                    String octet = octets[i];
-                    networkAddress += "\\" + getHexadecimal(octet);                
+
+                for (final String octet : octets) {
+                    networkAddress += "\\" + getHexadecimal(octet);
                 }
                return networkAddress;            
             }

@@ -25,6 +25,7 @@ import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.util.Assert;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -53,9 +54,10 @@ public abstract class AbstractLdapUsernamePasswordAuthenticationHandler extends 
 
     /**
      * Method to set the datasource and generate a JdbcTemplate.
-     * 
+     *
      * @param contextSource the datasource to use.
      */
+    @Inject
     public final void setContextSource(final ContextSource contextSource) {
         this.contextSource = contextSource;
         this.ldapTemplate = new LdapTemplate(contextSource);

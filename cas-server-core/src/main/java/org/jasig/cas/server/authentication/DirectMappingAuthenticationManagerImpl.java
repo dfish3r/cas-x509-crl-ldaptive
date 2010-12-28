@@ -19,11 +19,10 @@
 
 package org.jasig.cas.server.authentication;
 
-import org.springframework.util.Assert;
-
 import java.security.GeneralSecurityException;
 import java.util.*;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -41,6 +40,7 @@ public final class DirectMappingAuthenticationManagerImpl extends AbstractAuthen
     @Size(min=1)
     private final Map<Class< ? extends Credential>, DirectAuthenticationHandlerMappingHolder> credentialsMapping;
 
+    @Inject
     public DirectMappingAuthenticationManagerImpl(final Map<Class< ? extends Credential>, DirectAuthenticationHandlerMappingHolder> credentialsMapping, final AuthenticationFactory authenticationFactory) {
         super(authenticationFactory);
         this.credentialsMapping = credentialsMapping;

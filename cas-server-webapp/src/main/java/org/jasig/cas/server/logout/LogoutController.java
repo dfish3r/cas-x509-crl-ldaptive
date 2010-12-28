@@ -20,19 +20,16 @@
 package org.jasig.cas.server.logout;
 
 import org.jasig.cas.server.CentralAuthenticationService;
-import org.jasig.cas.server.util.WebUtils;
+import org.jasig.cas.server.util.SessionCookieGenerator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.util.CookieGenerator;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Handles logging out of the Central Authentication Service.
@@ -48,34 +45,25 @@ import java.util.List;
 @Controller
 public final class LogoutController {
 
-    private final static String SESSION_COOKIE_ID = "TGT";
-
     @NotNull
-    @Size(min = 1)
-    private List<CookieGenerator> cookieGenerators = new ArrayList<CookieGenerator>();
+    private final SessionCookieGenerator sessionCookieGenerator;
 
     @NotNull
     private CentralAuthenticationService centralAuthenticationService;
 
     private boolean followServiceRedirects = false;
 
-    @NotNull
-    private String sessionName = SESSION_COOKIE_ID;
-
-    public LogoutController(final CentralAuthenticationService centralAuthenticationService) {
+    @Inject
+    public LogoutController(final CentralAuthenticationService centralAuthenticationService, final SessionCookieGenerator sessionCookieGenerator) {
         this.centralAuthenticationService = centralAuthenticationService;
+        this.sessionCookieGenerator = sessionCookieGenerator;
     }
 
 @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public ModelMap logout(final HttpServletRequest request, final HttpServletResponse response) {
-        final String sessionId = WebUtils.getCookieValue(this.sessionName, request);
+        final String sessionId = this.sessionCookieGenerator.retrieveCookieValue(request);
         final LogoutRequest logoutRequest = new DefaultLogoutRequestImpl(sessionId);
         final LogoutResponse logoutResponse = this.centralAuthenticationService.logout(logoutRequest);
-
-        // remove all of the cookies
-        for (final CookieGenerator cookieGenerator : this.cookieGenerators) {
-            cookieGenerator.removeCookie(response);
-        }
 
         final ModelMap modelMap = new ModelMap();
         modelMap.addAttribute("logoutResponse", logoutResponse);
@@ -84,15 +72,7 @@ public final class LogoutController {
         return modelMap;
     }
 
-    public void setCookieGenerators(final List<CookieGenerator> cookieGenerators) {
-        this.cookieGenerators = cookieGenerators;
-    }
-
     public void setFollowServiceRedirects(final boolean followServiceRedirects) {
         this.followServiceRedirects = followServiceRedirects;
-    }
-
-    public void setSessionName(final String sessionName) {
-        this.sessionName = sessionName;
     }
 }

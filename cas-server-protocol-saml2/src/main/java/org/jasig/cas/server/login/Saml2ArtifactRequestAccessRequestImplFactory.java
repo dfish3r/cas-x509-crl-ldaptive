@@ -21,6 +21,7 @@ package org.jasig.cas.server.login;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.jasig.cas.server.session.Protocol;
 import org.jasig.cas.server.util.PublicPrivateKeyStore;
 import org.jasig.cas.server.util.SamlUtils;
 import org.w3c.dom.Document;
@@ -28,18 +29,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -57,6 +57,9 @@ import java.util.zip.InflaterInputStream;
  * @version $Revision$ $Date$
  * @since 3.5
  */
+@Named("saml2artifactRequestAccessRequestFactory")
+@Protocol(Protocol.ProtocolType.SAML2)
+@Singleton
 public final class Saml2ArtifactRequestAccessRequestImplFactory extends AbstractServiceAccessRequestFactory {
 
     private static final String CONSTANT_PARAMETER_SERVICE = "SAMLRequest";

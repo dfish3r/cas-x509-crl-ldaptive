@@ -41,7 +41,7 @@ public final class MockAttributePrincipalFactoryImpl implements AttributePrincip
             }
 
             public Map<String, List<Object>> getAttributes() {
-                return Collections.<String, List<Object>>emptyMap();
+                return Collections.emptyMap();
             }
 
             public String getName() {

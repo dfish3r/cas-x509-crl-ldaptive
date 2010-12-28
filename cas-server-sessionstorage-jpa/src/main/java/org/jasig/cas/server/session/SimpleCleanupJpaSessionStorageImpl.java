@@ -19,8 +19,11 @@
 
 package org.jasig.cas.server.session;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.validation.constraints.Min;
 import java.util.List;
 
@@ -34,6 +37,7 @@ import java.util.List;
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
+@Named("sessionStorage")
 public final class SimpleCleanupJpaSessionStorageImpl extends AbstractJpaSessionStorageImpl {
 
     @Min(1)
@@ -42,11 +46,13 @@ public final class SimpleCleanupJpaSessionStorageImpl extends AbstractJpaSession
     @Min(1)
     private int purgeMaxCount = Integer.MAX_VALUE;
 
-    @Autowired
+    @Inject
     public SimpleCleanupJpaSessionStorageImpl(final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
         super(accessFactories, servicesManager);
     }
 
+    @Scheduled(fixedDelay = 5000000)
+    @Transactional
     public void prune() {
         getEntityManager().createQuery("delete From session s where (s.state.creationTime + :timeOut) >= :currentTime or s.state.count > :maxCount").setParameter("timeOut", this.purgeTimeOut).setParameter("currentTime", System.currentTimeMillis()).setParameter("maxCount", this.purgeMaxCount).executeUpdate();
     }

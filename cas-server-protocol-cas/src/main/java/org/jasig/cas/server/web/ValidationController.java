@@ -39,6 +39,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
@@ -51,11 +52,12 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
-@Controller
+@Controller("validationController")
 public final class ValidationController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
+    @NotNull
     private final CentralAuthenticationService centralAuthenticationService;
 
     @Inject

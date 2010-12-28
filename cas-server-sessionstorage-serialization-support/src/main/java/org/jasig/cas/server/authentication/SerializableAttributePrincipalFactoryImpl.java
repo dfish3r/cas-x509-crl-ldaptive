@@ -19,6 +19,8 @@
 
 package org.jasig.cas.server.authentication;
 
+import org.springframework.stereotype.Component;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -29,8 +31,8 @@ import javax.inject.Singleton;
  * @version $Revision$ $Date$
  * @since 4.0
  */
+@Named("attributePrincipalFactory")
 @Singleton
-@Named(value = "attributePrincipalFactory")
 public final class SerializableAttributePrincipalFactoryImpl extends AbstractStaticAttributePrincipalImplFactory {
 
     public AttributePrincipal getAttributePrincipal(String name) {

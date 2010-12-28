@@ -27,8 +27,15 @@ import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.RegisteredService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.validation.constraints.NotNull;
 
 /**
  * Default implementation of the {@link org.jasig.cas.server.session.ServicesManager} interface. If there are
@@ -39,11 +46,14 @@ import org.springframework.util.Assert;
  * @version $Revision$ $Date$
  * @since 3.1
  */
+@Named("servicesManager")
+@Singleton
 public final class DefaultServicesManagerImpl implements ReloadableServicesManager {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     /** Instance of ServiceRegistryDao. */
+    @NotNull
     private ServiceRegistryDao serviceRegistryDao;
 
     /** Map to store all services. */
@@ -51,9 +61,9 @@ public final class DefaultServicesManagerImpl implements ReloadableServicesManag
 
     /** Default service to return if none have been registered. */
     private RegisteredService disabledRegisteredService;
-    
-    public DefaultServicesManagerImpl(
-        final ServiceRegistryDao serviceRegistryDao) {
+
+    @Inject
+    public DefaultServicesManagerImpl(final ServiceRegistryDao serviceRegistryDao) {
         this(serviceRegistryDao, new ArrayList<String>());
     }
     
@@ -64,11 +74,7 @@ public final class DefaultServicesManagerImpl implements ReloadableServicesManag
      * @param serviceRegistryDao the Service Registry Dao.
      * @param defaultAttributes the list of default attributes to use.
      */
-    public DefaultServicesManagerImpl(
-        final ServiceRegistryDao serviceRegistryDao, final List<String> defaultAttributes) {
-        Assert
-            .notNull(serviceRegistryDao, "serviceRegistryDao cannot be null.");
-
+    public DefaultServicesManagerImpl(final ServiceRegistryDao serviceRegistryDao, final List<String> defaultAttributes) {
         this.serviceRegistryDao = serviceRegistryDao;
         this.disabledRegisteredService = constructDefaultRegisteredService(defaultAttributes);
         
@@ -136,7 +142,8 @@ public final class DefaultServicesManagerImpl implements ReloadableServicesManag
         final RegisteredService r = this.serviceRegistryDao.save(registeredService);
         this.services.put(r.getId(), r);
     }
-    
+
+    @Scheduled(fixedDelay = 120000)
     public void reload() {
         log.info("Reloading registered services.");
         load();

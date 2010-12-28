@@ -31,8 +31,7 @@ import org.springframework.orm.jpa.support.JpaDaoSupport;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public final class JpaServiceRegistryDaoImpl extends JpaDaoSupport implements
-    ServiceRegistryDao {
+public final class JpaServiceRegistryDaoImpl extends JpaDaoSupport implements ServiceRegistryDao {
 
     public boolean delete(final RegisteredService registeredService) {
         getJpaTemplate().remove(

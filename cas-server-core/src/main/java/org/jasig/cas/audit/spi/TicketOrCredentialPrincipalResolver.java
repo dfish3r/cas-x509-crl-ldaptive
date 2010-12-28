@@ -25,7 +25,9 @@ import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.session.Session;
 import org.jasig.cas.server.session.SessionStorage;
 import org.jasig.cas.util.AopUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -41,6 +43,7 @@ public final class TicketOrCredentialPrincipalResolver implements PrincipalResol
     @NotNull
     private final SessionStorage sessionStorage;
 
+    @Inject
     public TicketOrCredentialPrincipalResolver(final SessionStorage sessionStorage) {
         this.sessionStorage = sessionStorage;
     }

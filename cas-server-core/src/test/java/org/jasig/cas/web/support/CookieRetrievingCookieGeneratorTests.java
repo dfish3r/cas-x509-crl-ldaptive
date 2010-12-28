@@ -74,7 +74,7 @@ public final class CookieRetrievingCookieGeneratorTests extends TestCase {
         final Cookie cookie = new Cookie("test", "test");
         cookie.setDomain("cas.org");
         cookie.setMaxAge(5);
-        request.setCookies(new Cookie[] {cookie});
+        request.setCookies(cookie);
         
         assertEquals("test", this.g.retrieveCookieValue(request));
 

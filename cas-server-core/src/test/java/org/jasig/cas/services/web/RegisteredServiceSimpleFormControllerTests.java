@@ -49,15 +49,13 @@ public class RegisteredServiceSimpleFormControllerTests extends TestCase {
 
     private ServicesManager manager;
 
-    private StubPersonAttributeDao repository;
-
     @Override
     protected void setUp() throws Exception {
         final Map<String, List<Object>> attributes = new HashMap<String, List<Object>>();
-        attributes.put("test", Arrays.asList(new Object[] {"test"}));
+        attributes.put("test", Arrays.asList((Object) "test"));
 
-        this.repository = new StubPersonAttributeDao();
-        this.repository.setBackingMap(attributes);
+        final StubPersonAttributeDao repository= new StubPersonAttributeDao();
+        repository.setBackingMap(attributes);
 
         this.manager = new DefaultServicesManagerImpl(
             new InMemoryServiceRegistryDaoImpl());
@@ -66,7 +64,7 @@ public class RegisteredServiceSimpleFormControllerTests extends TestCase {
         validator.setServicesManager(this.manager);
 
         this.controller = new RegisteredServiceSimpleFormController(
-            this.manager, this.repository);
+            this.manager, repository);
         this.controller.setCommandClass(RegisteredServiceImpl.class);
         this.controller.setCommandName("registeredService");
         this.controller.setValidator(validator);

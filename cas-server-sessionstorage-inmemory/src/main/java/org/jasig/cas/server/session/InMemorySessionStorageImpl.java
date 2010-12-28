@@ -19,28 +19,32 @@
 
 package org.jasig.cas.server.session;
 
-import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.server.authentication.AuthenticationResponse;
-import org.jasig.cas.server.login.LoginRequest;
 import org.jasig.cas.server.util.Cleanable;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  */
-public class InMemorySessionStorageImpl extends AbstractSessionStorage implements Cleanable {
+@Named("sessionStorage")
+@Singleton
+public final class InMemorySessionStorageImpl extends AbstractSessionStorage implements Cleanable {
 
     private Map<String, Session> sessions = new ConcurrentHashMap<String,Session>();
 
     private Map<String,String> accessIdToSessionIdMapping = new ConcurrentHashMap<String,String>();
 
-    @Autowired(required=true)
+    @Inject
     public InMemorySessionStorageImpl(final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
         super(accessFactories, servicesManager);
     }
@@ -135,6 +139,7 @@ public class InMemorySessionStorageImpl extends AbstractSessionStorage implement
         return statistics;
     }
 
+    @Scheduled(fixedDelay = 5000000)
     public void prune() {
         final Collection<Session> existingSessions = this.sessions.values();
         final List<Access> accessesToKill = new ArrayList<Access>();

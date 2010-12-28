@@ -26,15 +26,16 @@ import org.jasig.cas.server.logout.DefaultLogoutResponseImpl;
 import org.jasig.cas.server.logout.LogoutRequest;
 import org.jasig.cas.server.logout.LogoutResponse;
 import org.jasig.cas.server.session.*;
-import org.jasig.cas.server.session.ServicesManager;
-import org.jasig.cas.server.session.RegisteredService;
-import org.jasig.cas.server.session.UnauthorizedProxyingException;
 import org.perf4j.aop.Profiled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
@@ -68,6 +69,8 @@ import java.util.*;
  * @version $Revision: 1.16 $ $Date: 2007/04/24 18:11:36 $
  * @since 3.0
  */
+@Named("centralAuthenticationService")
+@Singleton
 public final class DefaultCentralAuthenticationServiceImpl implements CentralAuthenticationService {
 
     /** Log instance for logging events, info, warnings, errors, etc. */
@@ -84,11 +87,14 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
     private final SessionStorage sessionStorage;
 
     @NotNull
+    @Autowired(required = false)
     private List<PreAuthenticationPlugin> preAuthenticationPlugins = new ArrayList<PreAuthenticationPlugin>();
 
     @NotNull
+    @Autowired(required = false)
     private List<AuthenticationResponsePlugin> authenticationResponsePlugins = new ArrayList<AuthenticationResponsePlugin>();
 
+    @Inject
     public DefaultCentralAuthenticationServiceImpl(final AuthenticationManager authenticationManager, final SessionStorage sessionStorage) {
         this.authenticationManager = authenticationManager;
         this.sessionStorage = sessionStorage;

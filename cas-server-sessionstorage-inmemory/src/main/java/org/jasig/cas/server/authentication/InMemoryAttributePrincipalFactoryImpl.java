@@ -21,7 +21,11 @@ package org.jasig.cas.server.authentication;
 
 import org.jasig.services.persondir.IPersonAttributeDao;
 import org.jasig.services.persondir.support.StubPersonAttributeDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -29,11 +33,14 @@ import javax.validation.constraints.NotNull;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  */
+@Named("attributePrincipalFactory")
+@Singleton
 public final class InMemoryAttributePrincipalFactoryImpl implements AttributePrincipalFactory {
 
     @NotNull
+    @Autowired(required=false)
     private IPersonAttributeDao iPersonAttributeDao = new StubPersonAttributeDao();
 
     public AttributePrincipal getAttributePrincipal(final String name) {

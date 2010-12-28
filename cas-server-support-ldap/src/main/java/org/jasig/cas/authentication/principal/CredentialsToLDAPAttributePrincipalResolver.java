@@ -23,6 +23,7 @@ import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.util.LdapUtils;
 import org.springframework.ldap.core.AttributesMapper;
 
+import javax.inject.Inject;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -45,6 +46,7 @@ public final class CredentialsToLDAPAttributePrincipalResolver extends AbstractL
     @NotNull
     private CredentialToPrincipalResolver credentialsToPrincipalResolver;
 
+    @Inject
     public CredentialsToLDAPAttributePrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
         super(attributePrincipalFactory, UserNamePasswordCredential.class);
     }

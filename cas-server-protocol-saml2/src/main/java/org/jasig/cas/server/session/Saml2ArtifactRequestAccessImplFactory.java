@@ -21,9 +21,10 @@ package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.login.Saml2ArtifactRequestAccessRequestImpl;
 import org.jasig.cas.server.login.ServiceAccessRequest;
-import org.jasig.cas.server.util.DateParser;
 import org.jasig.cas.server.util.SamlCompliantThreadLocalDateFormatDateParser;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -33,13 +34,20 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.5
  */
+@Named("saml2ArtifactRequestAccessFactory")
+@Protocol(Protocol.ProtocolType.SAML2)
+@Singleton
 public final class Saml2ArtifactRequestAccessImplFactory implements AccessFactory {
 
     @NotNull
     private final String issuer;
 
     @NotNull
-    private final DateParser dateParser;
+    private final SamlCompliantThreadLocalDateFormatDateParser dateParser;
+
+    public Saml2ArtifactRequestAccessImplFactory(final String issuer) {
+        this(issuer, new SamlCompliantThreadLocalDateFormatDateParser());
+    }
 
     /**
      * Public constructor that takes the required issuer name (which most SPs will configure on their end to check

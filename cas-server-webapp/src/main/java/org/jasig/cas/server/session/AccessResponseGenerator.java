@@ -22,6 +22,8 @@ package org.jasig.cas.server.session;
 import org.jasig.cas.server.login.ServiceAccessResponse;
 import org.springframework.webflow.context.ExternalContext;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.io.Writer;
 
 /**
@@ -32,6 +34,8 @@ import java.io.Writer;
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
+@Named("accessResponseGenerator")
+@Singleton
 public final class AccessResponseGenerator {
 
     public AccessResponseResult generateAccessResponseResult(final ExternalContext externalContext, final ServiceAccessResponse serviceAccessResponse) {

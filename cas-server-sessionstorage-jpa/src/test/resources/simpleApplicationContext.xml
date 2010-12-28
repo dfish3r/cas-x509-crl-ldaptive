@@ -55,9 +55,6 @@
                 <constructor-arg index="0">
                     <bean class="org.jasig.cas.services.InMemoryServiceRegistryDaoImpl" />
                 </constructor-arg>
-                <constructor-arg index="1">
-                    <list />
-                </constructor-arg>
             </bean>
         </constructor-arg>
     </bean>
@@ -70,9 +67,6 @@
             <bean class="org.jasig.cas.services.DefaultServicesManagerImpl">
                 <constructor-arg index="0">
                     <bean class="org.jasig.cas.services.InMemoryServiceRegistryDaoImpl" />
-                </constructor-arg>
-                <constructor-arg index="1">
-                    <list />
                 </constructor-arg>
             </bean>
         </constructor-arg>

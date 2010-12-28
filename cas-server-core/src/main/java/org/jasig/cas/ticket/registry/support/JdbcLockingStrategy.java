@@ -158,7 +158,7 @@ public class JdbcLockingStrategy
         HSQL,
 
         /** Microsoft SQL Server platform */
-        SqlServer;
+        SqlServer
     }
 
 
@@ -293,7 +293,7 @@ public class JdbcLockingStrategy
            this.jdbcTemplate.execute("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE");
         }
         try {
-	        final SqlRowSet rowSet = (SqlRowSet) this.jdbcTemplate.query(
+	        final SqlRowSet rowSet = this.jdbcTemplate.query(
 	            this.selectSql,
 	            new Object[] {this.applicationId},
 	            new SqlRowSetResultSetExtractor());
@@ -302,13 +302,13 @@ public class JdbcLockingStrategy
 	            // No row exists for this applicationId so create it.
 	            // Row is created with uniqueId of this instance
 	            // which indicates the lock is initially held by this instance.
-	            this.jdbcTemplate.update(this.createSql, new Object[] {this.applicationId, this.uniqueId, expDate});
+	            this.jdbcTemplate.update(this.createSql, this.applicationId, this.uniqueId, expDate);
 	            return true;
 	        }
 	        lockAcquired = canAcquire(rowSet);
 	        if (lockAcquired) {
 	            // Update unique ID of row to indicate this instance holds lock
-	            this.jdbcTemplate.update(this.updateAcquireSql, new Object[] {this.uniqueId, expDate, this.applicationId});
+	            this.jdbcTemplate.update(this.updateAcquireSql, this.uniqueId, expDate, this.applicationId);
 	        }
         } finally {
             // Always attempt to revert current connection to default isolation
@@ -327,7 +327,7 @@ public class JdbcLockingStrategy
     @Transactional
     public void release() {
         // Update unique ID of row to indicate this instance holds lock
-        this.jdbcTemplate.update(this.updateReleaseSql, new Object[] {this.applicationId, this.uniqueId});
+        this.jdbcTemplate.update(this.updateReleaseSql, this.applicationId, this.uniqueId);
     }
 
 

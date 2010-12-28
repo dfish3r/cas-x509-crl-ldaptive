@@ -17,27 +17,26 @@
  * under the License.
  */
 
-package org.jasig.cas.server.util;
+package org.jasig.cas.server.session;
 
-import org.jasig.cas.util.ThreadLocalDateFormatDateParser;
-
-import javax.inject.Named;
-import javax.inject.Singleton;
+import javax.inject.Qualifier;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Creates a {@link org.jasig.cas.server.util.DateParser} that's compliant with the SAML2 specification.
+ * A qualifier to represent the various protoocl
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
-@Named("samlCompliantThreadLocalDateFormatParser")
-@Singleton
-public final class SamlCompliantThreadLocalDateFormatDateParser extends ThreadLocalDateFormatDateParser {
+@Qualifier
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Protocol {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    enum ProtocolType{CAS, SAML1, SAML2}
 
-    public SamlCompliantThreadLocalDateFormatDateParser() {
-        super(DATE_FORMAT);
-    }
+    ProtocolType value();
 }

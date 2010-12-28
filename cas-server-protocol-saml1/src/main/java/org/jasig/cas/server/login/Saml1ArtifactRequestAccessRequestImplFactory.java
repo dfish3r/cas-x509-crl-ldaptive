@@ -20,7 +20,11 @@
 package org.jasig.cas.server.login;
 
 import org.apache.commons.lang.StringUtils;
+import org.jasig.cas.server.session.Protocol;
+import org.springframework.stereotype.Component;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.util.Map;
 
 /**
@@ -30,6 +34,9 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.5
  */
+@Named("saml1ArtifactRequestAccessFactory")
+@Protocol(Protocol.ProtocolType.SAML1)
+@Singleton
 public final class Saml1ArtifactRequestAccessRequestImplFactory extends AbstractServiceAccessRequestFactory {
 
     private static final String CONST_SERVICE_PARAM = "TARGET";

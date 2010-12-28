@@ -23,19 +23,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ *
+ * Abstract representation of of {@link ServiceAccessRequestFactory} that provides a method to help retrieve items from
+ * request parameters.
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 1.0.0
- * User: scottbattaglia
- * Date: Aug 10, 2010
- * Time: 10:13:44 PM
- * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractServiceAccessRequestFactory implements ServiceAccessRequestFactory {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final String getValue(Object o) {
+    /**
+     * Retrieve the first value from an array, or the toString version of an object if its not an array.
+     *
+     * @param o the object to get the value of.
+     * @return the first String if its a String[] or o.toString().
+     */
+    protected final String getValue(final Object o) {
         if (o == null) {
             return null;
         }

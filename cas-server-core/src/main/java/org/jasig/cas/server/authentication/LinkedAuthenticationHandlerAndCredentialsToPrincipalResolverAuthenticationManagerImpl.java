@@ -19,6 +19,7 @@
 
 package org.jasig.cas.server.authentication;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.security.GeneralSecurityException;
@@ -40,6 +41,7 @@ public final class LinkedAuthenticationHandlerAndCredentialsToPrincipalResolverA
     @Size(min = 1)
     private final Map<AuthenticationHandler, CredentialToPrincipalResolver> linkedHandlers;
 
+    @Inject
     public LinkedAuthenticationHandlerAndCredentialsToPrincipalResolverAuthenticationManagerImpl(final Map<AuthenticationHandler,CredentialToPrincipalResolver> linkedHandlers, final AuthenticationFactory authenticationFactory) {
         super(authenticationFactory);
         this.linkedHandlers = linkedHandlers; 

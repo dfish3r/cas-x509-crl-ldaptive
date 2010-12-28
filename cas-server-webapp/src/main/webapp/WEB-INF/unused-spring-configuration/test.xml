@@ -45,16 +45,7 @@
 		p:successView="casSamlServiceSuccessView"
 		p:failureView="casSamlServiceFailureView" />
 
-	<bean id="legacyValidateController" class="org.jasig.cas.web.ServiceValidateController"
-		p:proxyHandler-ref="proxy10Handler"
-		p:successView="cas1ServiceSuccessView"
-		p:failureView="cas1ServiceFailureView"
-		p:validationSpecificationClass="org.jasig.cas.validation.Cas10ProtocolValidationSpecification"
-		p:centralAuthenticationService-ref="centralAuthenticationService"
-		p:argumentExtractor-ref="casArgumentExtractor" />
 
-	<bean id="proxyController" class="org.jasig.cas.web.ProxyController"
-		p:centralAuthenticationService-ref="centralAuthenticationService" />
 
     <bean id="viewStatisticsController" class="org.jasig.cas.web.StatisticsController"
         p:casTicketSuffix="${host.name}">
@@ -108,26 +99,6 @@
 			name="mappings">
 			<props>
 				<prop
-					key="/logout">
-					logoutController
-				</prop>
-				<prop
-					key="/serviceValidate">
-					serviceValidateController
-				</prop>
-				<prop
-					key="/validate">
-					legacyValidateController
-				</prop>
-				<prop
-					key="/proxy">
-					proxyController
-				</prop>
-				<prop
-					key="/proxyValidate">
-					proxyValidateController
-				</prop>
-				<prop
 					key="/samlValidate">
 					samlValidateController
 				</prop>
@@ -163,15 +134,6 @@
 		</property>
 		<property
 			name="alwaysUseFullPath" value="true" />
-		<!--
-		uncomment this to enable sending PageRequest events.
-		<property
-			name="interceptors">
-			<list>
-				<ref bean="pageRequestHandlerInterceptorAdapter" />
-			</list>
-		</property>
-		 -->
 	</bean>
 
 	<!-- Theme Resolver -->
@@ -199,9 +161,6 @@
 	<bean id="errorHandlerResolver" class="org.jasig.cas.web.NoSuchFlowExecutionExceptionResolver" />
 
     <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
-
-	<bean id="casPropertyPlaceholderConfigurer2" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-		p:location="/WEB-INF/cas.properties" />
 
     <bean id="proxy10Handler" class="org.jasig.cas.ticket.proxy.support.Cas10ProxyHandler"/>
 

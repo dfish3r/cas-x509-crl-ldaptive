@@ -56,7 +56,7 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
     /** Constant representing artifact. */
     private static final String CONST_PARAM_TICKET = "SAMLart";
 
-    protected enum ValidationStatus {NOT_VALIDATED, SUCCEEDED, USED, ALREADY_VALIDATED, VALIDATION_FAILED_ID_MATCH};
+    protected enum ValidationStatus {NOT_VALIDATED, SUCCEEDED, USED, ALREADY_VALIDATED, VALIDATION_FAILED_ID_MATCH}
 
     protected abstract ValidationStatus getValidationStatus();
 

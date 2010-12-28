@@ -27,6 +27,7 @@ import org.jasig.cas.server.login.*;
 import org.jasig.cas.server.logout.DefaultLogoutRequestImpl;
 import org.jasig.cas.server.logout.LogoutRequest;
 import org.jasig.cas.server.session.NotFoundSessionException;
+import org.jasig.cas.server.session.Protocol;
 import org.jasig.cas.server.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +38,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.inject.Inject;
+import javax.inject.Qualifier;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -51,17 +54,19 @@ import java.util.List;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-@Controller
+@Controller("casProtocolRestfulController")
 public class CasProtocolRestfulController {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @NotNull
     private final CentralAuthenticationService centralAuthenticationService;
 
+    @NotNull
     private final ServiceAccessRequestFactory serviceAccessRequestFactory;
 
     @Inject
-    public CasProtocolRestfulController(final CentralAuthenticationService centralAuthenticationService, final ServiceAccessRequestFactory serviceAccessRequestFactory) {
+    public CasProtocolRestfulController(final CentralAuthenticationService centralAuthenticationService, @Protocol(Protocol.ProtocolType.CAS) final ServiceAccessRequestFactory serviceAccessRequestFactory) {
         this.centralAuthenticationService = centralAuthenticationService;
         this.serviceAccessRequestFactory = serviceAccessRequestFactory;
     }

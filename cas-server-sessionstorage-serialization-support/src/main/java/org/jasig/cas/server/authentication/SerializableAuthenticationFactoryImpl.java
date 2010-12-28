@@ -25,14 +25,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Infinispan version of the {@link AuthenticationFactory} that supports the JBoss Infinispan.
+ * Serializable version of the {@link AuthenticationFactory} that supports the JBoss Infinispan, Memcached, etc.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
+@Named("authenticationFactory")
 @Singleton
-@Named(value = "authenticationFactory")
 public final class SerializableAuthenticationFactoryImpl implements AuthenticationFactory {
 
     public Authentication getAuthentication(final Map<String, List<Object>> authenticationMetaData, final AuthenticationRequest authenticationRequest, final String authenticationType) {
