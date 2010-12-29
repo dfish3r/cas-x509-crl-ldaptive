@@ -19,8 +19,10 @@
 
 package org.jasig.cas.server.authentication;
 
+import org.jasig.services.persondir.IPersonAttributeDao;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -35,7 +37,12 @@ import javax.inject.Singleton;
 @Singleton
 public final class SerializableAttributePrincipalFactoryImpl extends AbstractStaticAttributePrincipalImplFactory {
 
-    public AttributePrincipal getAttributePrincipal(String name) {
+    @Inject
+    public SerializableAttributePrincipalFactoryImpl(final IPersonAttributeDao iPersonAttributeDao) {
+        super(iPersonAttributeDao);
+    }
+
+    public AttributePrincipal getAttributePrincipal(final String name) {
         return new SerializableAttributePrincipalImpl(name);
     }
 }

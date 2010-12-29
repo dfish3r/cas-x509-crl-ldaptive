@@ -23,6 +23,7 @@ import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.jasig.cas.server.authentication.AuthenticationFactory;
 import org.jasig.cas.server.authentication.JpaAttributePrincipalFactory;
 import org.jasig.cas.server.authentication.JpaAuthenticationFactory;
+import org.jasig.services.persondir.support.StubPersonAttributeDao;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public final class ExpirationBasedCleanupJpaSessionStorageImplTests extends Abst
 
     @Override
     protected AttributePrincipalFactory getAttributePrincipalFactory() {
-        return new JpaAttributePrincipalFactory();
+        return new JpaAttributePrincipalFactory(new StubPersonAttributeDao());
     }
 
     public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {

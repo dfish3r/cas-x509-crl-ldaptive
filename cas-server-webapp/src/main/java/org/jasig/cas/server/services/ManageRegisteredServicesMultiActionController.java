@@ -17,13 +17,14 @@
  * under the License.
  */
 
-package org.jasig.cas.services.web;
+package org.jasig.cas.server.services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,7 @@ import javax.validation.constraints.NotNull;
 import org.jasig.cas.server.session.RegisteredService;
 import org.jasig.cas.server.session.ServicesManager;
 import org.springframework.beans.support.PropertyComparator;
+import org.springframework.security.cas.ServiceProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,8 +48,7 @@ import org.springframework.web.servlet.view.RedirectView;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-// @Controller
-@Singleton
+@Controller
 public final class ManageRegisteredServicesMultiActionController {
 
     /** View name for the Manage Services View. */
@@ -68,11 +69,12 @@ public final class ManageRegisteredServicesMultiActionController {
      * 
      * @param servicesManager the Services Manager that manages the
      * RegisteredServices.
-     * @param defaultServiceUrl the service management tool's url.
+     * @param serviceProperties the service management tool's url.
      */
-    public ManageRegisteredServicesMultiActionController(final ServicesManager servicesManager, final String defaultServiceUrl) {
+    @Inject
+    public ManageRegisteredServicesMultiActionController(final ServicesManager servicesManager, final ServiceProperties serviceProperties) {
         this.servicesManager = servicesManager;
-        this.defaultServiceUrl = defaultServiceUrl;
+        this.defaultServiceUrl = serviceProperties.getService();
     }
 
     /**

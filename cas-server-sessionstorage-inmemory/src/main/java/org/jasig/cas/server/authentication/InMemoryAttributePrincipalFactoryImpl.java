@@ -24,6 +24,7 @@ import org.jasig.services.persondir.support.StubPersonAttributeDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
@@ -40,14 +41,14 @@ import javax.validation.constraints.NotNull;
 public final class InMemoryAttributePrincipalFactoryImpl implements AttributePrincipalFactory {
 
     @NotNull
-    @Autowired(required=false)
-    private IPersonAttributeDao iPersonAttributeDao = new StubPersonAttributeDao();
+    private final IPersonAttributeDao iPersonAttributeDao;
+
+    @Inject
+    public InMemoryAttributePrincipalFactoryImpl(final IPersonAttributeDao iPersonAttributeDao) {
+        this.iPersonAttributeDao = iPersonAttributeDao;
+    }
 
     public AttributePrincipal getAttributePrincipal(final String name) {
         return new InMemoryAttributePrincipalImpl(name, this.iPersonAttributeDao);
-    }
-    
-    public void setIPersonAttributeDao(final IPersonAttributeDao iPersonAttributeDao) {
-        this.iPersonAttributeDao = iPersonAttributeDao;
     }
 }

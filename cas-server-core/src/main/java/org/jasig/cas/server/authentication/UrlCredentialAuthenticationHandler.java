@@ -24,6 +24,7 @@ import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.UrlCredential;
 import org.jasig.cas.util.HttpClient;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.security.GeneralSecurityException;
 
@@ -52,6 +53,7 @@ public final class UrlCredentialAuthenticationHandler extends AbstractNamedAuthe
     @NotNull
     private final HttpClient httpClient;
 
+    @Inject
     public UrlCredentialAuthenticationHandler(final HttpClient httpClient) {
         this.httpClient = httpClient;
     }

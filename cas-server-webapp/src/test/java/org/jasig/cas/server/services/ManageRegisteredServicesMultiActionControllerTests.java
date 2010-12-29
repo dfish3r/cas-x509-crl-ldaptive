@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.services.web;
+package org.jasig.cas.server.services;
 
 import java.util.Collection;
 
@@ -27,6 +27,7 @@ import org.jasig.cas.services.InMemoryServiceRegistryDaoImpl;
 import org.jasig.cas.services.RegisteredServiceImpl;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.cas.ServiceProperties;
 import org.springframework.web.servlet.ModelAndView;
 
 import junit.framework.TestCase;
@@ -47,7 +48,10 @@ public class ManageRegisteredServicesMultiActionControllerTests extends
 
     protected void setUp() throws Exception {
         this.servicesManager = new DefaultServicesManagerImpl(new InMemoryServiceRegistryDaoImpl());
-        this.controller = new ManageRegisteredServicesMultiActionController(this.servicesManager, "foo");
+        final ServiceProperties serviceProperties = new ServiceProperties();
+        serviceProperties.setService("foo");
+
+        this.controller = new ManageRegisteredServicesMultiActionController(this.servicesManager, serviceProperties);
     }
     
     public void testDeleteService() {

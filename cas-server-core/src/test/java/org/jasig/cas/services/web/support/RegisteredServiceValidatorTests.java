@@ -22,7 +22,6 @@ package org.jasig.cas.services.web.support;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.RegisteredService;
 import org.jasig.cas.server.session.ServicesManager;
@@ -40,11 +39,10 @@ import junit.framework.TestCase;
  */
 public class RegisteredServiceValidatorTests extends TestCase {
 
-    private RegisteredServiceValidator validator;
-    
-    protected void setUp() throws Exception {
-        this.validator = new RegisteredServiceValidator();
-        this.validator.setMaxDescriptionLength(1);
+    protected RegisteredServiceValidator getValidator(final boolean valid) {
+        final RegisteredServiceValidator v = new RegisteredServiceValidator((new TestServicesManager(valid)));
+        v.setMaxDescriptionLength(1);
+        return v;
     }
     
     public void testIdExists() {
@@ -64,32 +62,30 @@ public class RegisteredServiceValidatorTests extends TestCase {
     }
     
     public void testSupports() {
-        assertTrue(this.validator.supports(RegisteredServiceImpl.class));
-        assertFalse(this.validator.supports(Object.class));
+        assertTrue(getValidator(false).supports(RegisteredServiceImpl.class));
+        assertFalse(getValidator(false).supports(Object.class));
     }
 
     
     public void testMaxLength() {
-        this.validator.setServicesManager(new TestServicesManager(false));
         final RegisteredServiceImpl impl = new RegisteredServiceImpl();
         impl.setServiceId("test");
         impl.setDescription("fasdfdsafsafsafdsa");
         
         final BindException exception = new BindException(impl, "registeredService");
         
-        this.validator.validate(impl, exception);
+        getValidator(false).validate(impl, exception);
         
         assertEquals(1, exception.getErrorCount()); 
     }
     
     protected void checkId(final boolean exists, final int expectedErrors, final String name) {
-        this.validator.setServicesManager(new TestServicesManager(exists));
         final RegisteredServiceImpl impl = new RegisteredServiceImpl();
         impl.setServiceId(name);
         
         final BindException exception = new BindException(impl, "registeredService");
         
-        this.validator.validate(impl, exception);
+        getValidator(exists).validate(impl, exception);
         
         assertEquals(expectedErrors, exception.getErrorCount());
         

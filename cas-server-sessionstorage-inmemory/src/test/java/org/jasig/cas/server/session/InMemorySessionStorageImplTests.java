@@ -23,6 +23,7 @@ import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.jasig.cas.server.authentication.AuthenticationFactory;
 import org.jasig.cas.server.authentication.InMemoryAttributePrincipalFactoryImpl;
 import org.jasig.cas.server.authentication.InMemoryAuthenticationImplFactory;
+import org.jasig.services.persondir.support.StubPersonAttributeDao;
 
 import java.util.Collections;
 
@@ -47,6 +48,6 @@ public final class InMemorySessionStorageImplTests extends AbstractSessionStorag
 
     @Override
     protected AttributePrincipalFactory getAttributePrincipalFactory() {
-        return new InMemoryAttributePrincipalFactoryImpl();
+        return new InMemoryAttributePrincipalFactoryImpl(new StubPersonAttributeDao());
     }
 }

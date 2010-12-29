@@ -35,10 +35,9 @@
 	+-->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:sec="http://www.springframework.org/schema/security" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:sec="http://www.springframework.org/schema/security"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
     <!--
 		| This bean declares our AuthenticationManager.  The CentralAuthenticationService service bean
 		| declared in applicationContext.xml picks up this AuthenticationManager by reference to its id, 
@@ -62,9 +61,7 @@
 					| This is the authentication handler that authenticates services by means of callback via SSL, thereby validating
 					| a server side SSL certificate.
 					+-->
-                <bean class="org.jasig.cas.server.authentication.UrlCredentialAuthenticationHandler">
-                    <constructor-arg index="0" ref="httpClient" />
-                </bean>
+                <bean class="org.jasig.cas.server.authentication.UrlCredentialAuthenticationHandler" />
                 <!--
 					| This is the authentication handler declaration that every CAS deployer will need to change before deploying CAS
 					| into production.  The default SimpleTestUsernamePasswordAuthenticationHandler authenticates UsernamePasswordCredentials
@@ -72,8 +69,7 @@
 					| local authentication strategy.  You might accomplish this by coding a new such handler and declaring
 					| edu.someschool.its.cas.MySpecialHandler here, or you might use one of the handlers provided in the adaptors modules.
 					+-->
-                <bean
-                        class="org.jasig.cas.server.authentication.SimpleTestUsernamePasswordAuthenticationHandler"/>
+                <bean class="org.jasig.cas.server.authentication.SimpleTestUsernamePasswordAuthenticationHandler"/>
             </list>
         </constructor-arg>
         <!--
@@ -101,9 +97,7 @@
 					| need to change this bean declaration (or add additional declarations) to declare a CredentialsToPrincipalResolver that supports the
 					| Credentials you are using.
 					+-->
-                <bean class="org.jasig.cas.server.authentication.UsernamePasswordCredentialsToPrincipalResolver">
-                    <constructor-arg index="0" ref="attributePrincipalFactory" />
-                </bean>
+                <bean class="org.jasig.cas.server.authentication.UsernamePasswordCredentialsToPrincipalResolver" />
 
                 <!--
 					| UrlCredentialToPrincipalResolver supports HttpBasedCredentials.  It supports the CAS 2.0 approach of
@@ -113,9 +107,7 @@
 					| If you are representing services by something more or other than an HTTPS URL whereat they are able to
 					| receive a proxy callback, you will need to change this bean declaration (or add additional declarations).
 					+-->
-                <bean class="org.jasig.cas.server.authentication.UrlCredentialToPrincipalResolver">
-                    <constructor-arg index="0" ref="attributePrincipalFactory" />
-                </bean>
+                <bean class="org.jasig.cas.server.authentication.UrlCredentialToPrincipalResolver" />
             </list>
         </constructor-arg>
         <constructor-arg index="2" ref="authenticationFactory" />
@@ -173,4 +165,6 @@
                 </list>
             </property>
         </bean>
+
+    <bean id="attributeRepository" class="org.jasig.services.persondir.support.StubPersonAttributeDao" />
 </beans>

@@ -43,11 +43,15 @@ public final class RegisteredServiceValidator implements Validator {
 
     /** ServiceRegistry to look up services. */
     @NotNull
-    private ServicesManager servicesManager;
+    private final ServicesManager servicesManager;
 
     /** The maximum length of the description we will accept. */
     @Min(0)
     private int maxDescriptionLength = DEFAULT_MAX_DESCRIPTION_LENGTH;
+
+    public RegisteredServiceValidator(final ServicesManager servicesManager) {
+        this.servicesManager = servicesManager;
+    }
 
     /**
      * Supports the RegisteredServiceImpl.
@@ -78,10 +82,6 @@ public final class RegisteredServiceValidator implements Validator {
             errors.rejectValue("description",
                 "registeredService.description.length", null);
         }
-    }
-
-    public void setServicesManager(final ServicesManager serviceRegistry) {
-        this.servicesManager = serviceRegistry;
     }
 
     public void setMaxDescriptionLength(final int maxLength) {

@@ -20,6 +20,7 @@
 package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.authentication.*;
+import org.jasig.services.persondir.support.StubPersonAttributeDao;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,7 +40,7 @@ public final class InMemorySessionImplTests extends AbstractSessionTests {
 
     private InMemoryAuthenticationImplFactory authenticationFactory = new InMemoryAuthenticationImplFactory();
 
-    private InMemoryAttributePrincipalFactoryImpl attributePrincipalFactory = new InMemoryAttributePrincipalFactoryImpl();
+    private InMemoryAttributePrincipalFactoryImpl attributePrincipalFactory = new InMemoryAttributePrincipalFactoryImpl(new StubPersonAttributeDao());
 
     @Override
     protected Session getNewSession(final Authentication authentication, final AttributePrincipal attributePrincipal, final ServicesManager servicesManager) {

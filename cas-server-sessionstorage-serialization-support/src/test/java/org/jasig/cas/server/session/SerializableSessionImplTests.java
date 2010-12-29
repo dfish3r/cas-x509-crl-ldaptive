@@ -20,6 +20,7 @@
 package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.authentication.*;
+import org.jasig.services.persondir.support.StubPersonAttributeDao;
 
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -41,7 +42,7 @@ public final class SerializableSessionImplTests extends AbstractSessionTests {
 
     private final SerializableAuthenticationFactoryImpl authenticationFactory = new SerializableAuthenticationFactoryImpl();
 
-    private final SerializableAttributePrincipalFactoryImpl attributePrincipalFactory = new SerializableAttributePrincipalFactoryImpl();
+    private final SerializableAttributePrincipalFactoryImpl attributePrincipalFactory = new SerializableAttributePrincipalFactoryImpl(new StubPersonAttributeDao());
 
     @Override
     protected Session getNewSession(final Authentication authentication, final AttributePrincipal attributePrincipal, final ServicesManager servicesManager) {

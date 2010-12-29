@@ -31,11 +31,12 @@ import org.jasig.services.persondir.IPersonAttributeDao;
  */
 public final class SerializableAttributePrincipalImplTests extends AbstractAttributePrincipalTests {
 
-    private SerializableAttributePrincipalFactoryImpl impl = new SerializableAttributePrincipalFactoryImpl();
+
 
     @Override
-    protected AttributePrincipal getAttributePrincipal(String name, IPersonAttributeDao dao) {
+    protected AttributePrincipal getAttributePrincipal(final String name, final IPersonAttributeDao dao) {
+        final SerializableAttributePrincipalFactoryImpl impl = new SerializableAttributePrincipalFactoryImpl(dao);
         SerializableAttributePrincipalImpl.setPersonAttributeDao(dao);
-        return this.impl.getAttributePrincipal(name);
+        return impl.getAttributePrincipal(name);
     }
 }

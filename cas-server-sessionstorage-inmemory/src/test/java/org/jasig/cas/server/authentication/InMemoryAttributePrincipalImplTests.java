@@ -31,11 +31,9 @@ import org.jasig.services.persondir.IPersonAttributeDao;
  */
 public final class InMemoryAttributePrincipalImplTests extends AbstractAttributePrincipalTests {
 
-    private final InMemoryAttributePrincipalFactoryImpl attributePrincipalFactory = new InMemoryAttributePrincipalFactoryImpl();
-
     @Override
     protected AttributePrincipal getAttributePrincipal(final String name, final IPersonAttributeDao dao) {
-        this.attributePrincipalFactory.setIPersonAttributeDao(dao);
-        return this.attributePrincipalFactory.getAttributePrincipal(name);
+        final InMemoryAttributePrincipalFactoryImpl attributePrincipalFactory = new InMemoryAttributePrincipalFactoryImpl(dao);
+        return attributePrincipalFactory.getAttributePrincipal(name);
     }
 }

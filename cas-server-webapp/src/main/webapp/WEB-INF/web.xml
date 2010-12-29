@@ -24,7 +24,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
-	<display-name>Central Authentication System (CAS) 3.5</display-name>
+	<display-name>Central Authentication System (CAS) 4.0</display-name>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
@@ -32,14 +32,6 @@
 			/WEB-INF/deployerConfigContext.xml
 		</param-value>
 	</context-param>
-
-	<!-- 
-		place this into the contextConfigLocation to enable remote services
-		/WEB-INF/remoteServices.xml,
-		classpath:org/codehaus/xfire/spring/xfire.xml
-		
-		place this into the contextConfigLocation to enable the event publishing
-	-->
 
 	<!--
 		- Location of the Log4J config file, for initialization and refresh checks.

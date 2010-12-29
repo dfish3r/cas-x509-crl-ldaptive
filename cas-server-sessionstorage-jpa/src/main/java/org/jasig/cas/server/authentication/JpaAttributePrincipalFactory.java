@@ -19,6 +19,9 @@
 
 package org.jasig.cas.server.authentication;
 
+import org.jasig.services.persondir.IPersonAttributeDao;
+
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -36,6 +39,11 @@ import javax.inject.Singleton;
 @Named("attributePrincipalFactory")
 @Singleton
 public final class JpaAttributePrincipalFactory extends AbstractStaticAttributePrincipalImplFactory {
+
+    @Inject
+    public JpaAttributePrincipalFactory(final IPersonAttributeDao iPersonAttributeDao) {
+        super(iPersonAttributeDao);
+    }
 
     public AttributePrincipal getAttributePrincipal(final String name) {
         return new JpaAttributePrincipalImpl(name);

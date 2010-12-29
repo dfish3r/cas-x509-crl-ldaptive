@@ -19,6 +19,8 @@
 
 package org.jasig.cas.server.authentication;
 
+import javax.inject.Inject;
+
 /**
  * UrlCredentialToPrincipalResolver extracts the callbackUrl from
  * the HttpBasedServiceCredentials and constructs a SimpleService with the
@@ -30,6 +32,7 @@ package org.jasig.cas.server.authentication;
  */
 public final class UrlCredentialToPrincipalResolver extends AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver {
 
+    @Inject
     public UrlCredentialToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
         super(attributePrincipalFactory, UrlCredential.class);
     }

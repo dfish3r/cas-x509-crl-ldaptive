@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.services.web;
+package org.jasig.cas.server.services;
 
 
 import org.jasig.cas.server.session.RegisteredService;
@@ -68,7 +68,7 @@ public final class RegisteredServiceSimpleFormController extends SimpleFormContr
         setCommandName("registeredService");
         setSuccessView("addServiceView");
         setFormView("addServiceView");
-        setValidator(new RegisteredServiceValidator());
+        setValidator(new RegisteredServiceValidator(servicesManager));
     }
 
     /**

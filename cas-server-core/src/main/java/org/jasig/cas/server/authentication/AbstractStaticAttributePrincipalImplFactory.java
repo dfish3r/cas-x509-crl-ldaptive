@@ -20,8 +20,8 @@
 package org.jasig.cas.server.authentication;
 
 import org.jasig.services.persondir.IPersonAttributeDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Creates a way to add the static {@link org.jasig.services.persondir.IPersonAttributeDao}.
@@ -32,9 +32,11 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractStaticAttributePrincipalImplFactory implements AttributePrincipalFactory {
 
-    @Autowired(required = false)
-    public final void setIPersonAttributeDao(final IPersonAttributeDao iPersonAttributeDao) {
-        Assert.notNull(iPersonAttributeDao);
+    @NotNull
+    private final IPersonAttributeDao iPersonAttributeDao;
+
+    protected AbstractStaticAttributePrincipalImplFactory(final IPersonAttributeDao iPersonAttributeDao) {
+        this.iPersonAttributeDao = iPersonAttributeDao;
         AbstractStaticAttributePrincipalImpl.setPersonAttributeDao(iPersonAttributeDao);
     }
 }

@@ -19,6 +19,8 @@
 
 package org.jasig.cas.server.authentication;
 
+import javax.inject.Inject;
+
 /**
  * Implementation of CredentialsToPrincipalResolver for Credentials based on
  * UsernamePasswordCredentials when a SimplePrincipal (username only) is
@@ -35,6 +37,7 @@ package org.jasig.cas.server.authentication;
  */
 public final class UsernamePasswordCredentialsToPrincipalResolver extends AbstractAttributePrincipalFactoryCredentialsToPrincipalResolver {
 
+    @Inject
     public UsernamePasswordCredentialsToPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
         super(attributePrincipalFactory, UserNamePasswordCredential.class);
     }

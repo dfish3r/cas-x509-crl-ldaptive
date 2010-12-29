@@ -54,18 +54,27 @@
     <bean id="viewFactoryCreator" class="org.springframework.webflow.mvc.builder.MvcViewFactoryCreator">
         <property name="viewResolvers">
             <list>
-                <bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver"
-                    p:order="0">
-                    <property name="basenames">
-                        <list>
-                            <value>default_views</value>
-                            <value>protocol_views</value>
-                        </list>
-                    </property>
-                </bean>
+                <ref local="viewResolver" />
+                <ref local="urlBasedViewResolver" />
             </list>
         </property>
     </bean>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver"
+        p:order="0">
+        <property name="basenames">
+            <list>
+                <value>default_views</value>
+                <value>protocol_views</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="urlBasedViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"
+        p:viewClass="org.springframework.web.servlet.view.InternalResourceView"
+        p:prefix="/WEB-INF/view/jsp/"
+        p:suffix=".jsp"
+        p:order="1" />
 
     <!-- Locale Resolver -->
     <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
@@ -84,10 +93,7 @@
         </property>
     </bean>
 
-	<bean id="manageRegisteredServicesMultiActionController" class="org.jasig.cas.services.web.ManageRegisteredServicesMultiActionController">
-		<constructor-arg index="0" ref="servicesManager" />
-        <constructor-arg index="1" value="${cas.securityContext.serviceProperties.service}" />
-	</bean>
-
     <mvc:view-controller path="/services/loggedOut.html" view-name="serviceLogoutView" />
+
+    <mvc:view-controller path="/authorizationFailure.html" view-name="authorizationFailure" />
 </beans>

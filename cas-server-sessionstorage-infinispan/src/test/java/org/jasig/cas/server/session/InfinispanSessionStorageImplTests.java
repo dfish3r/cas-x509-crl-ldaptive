@@ -26,6 +26,7 @@ import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.jasig.cas.server.authentication.AuthenticationFactory;
 import org.jasig.cas.server.authentication.SerializableAttributePrincipalFactoryImpl;
 import org.jasig.cas.server.authentication.SerializableAuthenticationFactoryImpl;
+import org.jasig.services.persondir.support.StubPersonAttributeDao;
 
 import java.util.Collections;
 import java.util.List;
@@ -57,6 +58,6 @@ public final class InfinispanSessionStorageImplTests extends AbstractSessionStor
 
     @Override
     protected AttributePrincipalFactory getAttributePrincipalFactory() {
-        return new SerializableAttributePrincipalFactoryImpl();
+        return new SerializableAttributePrincipalFactoryImpl(new StubPersonAttributeDao());
     }
 }

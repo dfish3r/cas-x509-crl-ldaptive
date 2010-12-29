@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.services.web;
+package org.jasig.cas.server.services;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +29,6 @@ import org.jasig.cas.server.session.ServicesManager;
 import org.jasig.cas.services.DefaultServicesManagerImpl;
 import org.jasig.cas.services.InMemoryServiceRegistryDaoImpl;
 import org.jasig.cas.services.RegisteredServiceImpl;
-import org.jasig.cas.services.web.support.RegisteredServiceValidator;
 import org.jasig.services.persondir.support.StubPersonAttributeDao;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -57,17 +56,11 @@ public class RegisteredServiceSimpleFormControllerTests extends TestCase {
         final StubPersonAttributeDao repository= new StubPersonAttributeDao();
         repository.setBackingMap(attributes);
 
-        this.manager = new DefaultServicesManagerImpl(
-            new InMemoryServiceRegistryDaoImpl());
-        
-        final RegisteredServiceValidator validator = new RegisteredServiceValidator();
-        validator.setServicesManager(this.manager);
+        this.manager = new DefaultServicesManagerImpl(new InMemoryServiceRegistryDaoImpl());
 
-        this.controller = new RegisteredServiceSimpleFormController(
-            this.manager, repository);
+        this.controller = new RegisteredServiceSimpleFormController(this.manager, repository);
         this.controller.setCommandClass(RegisteredServiceImpl.class);
         this.controller.setCommandName("registeredService");
-        this.controller.setValidator(validator);
     }
 
     public void testAddRegisteredServiceNoValues() throws Exception {

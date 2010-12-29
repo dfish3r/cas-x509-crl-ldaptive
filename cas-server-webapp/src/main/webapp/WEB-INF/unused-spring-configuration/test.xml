@@ -22,51 +22,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
-
-	<bean id="samlValidateController" class="org.jasig.cas.web.ServiceValidateController"
-		p:validationSpecificationClass="org.jasig.cas.validation.Cas20WithoutProxyingValidationSpecification"
-		p:centralAuthenticationService-ref="centralAuthenticationService"
-		p:proxyHandler-ref="proxy20Handler"
-		p:argumentExtractor-ref="samlArgumentExtractor"
-		p:successView="casSamlServiceSuccessView"
-		p:failureView="casSamlServiceFailureView" />
-
-
-	<bean id="registeredServiceValidator" class="org.jasig.cas.services.web.support.RegisteredServiceValidator"
-		p:servicesManager-ref="servicesManager" />
-
-
-
-    <bean id="passThroughController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" /> 
-
-	<bean
-		id="openIdProviderController"
-		class="org.jasig.cas.web.OpenIdProviderController"
-		p:loginUrl="${cas.securityContext.casProcessingFilterEntryPoint.loginUrl}" />
-
-	<bean
-		id="handlerMappingC"
-		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-		<property
-			name="mappings">
-			<props>
-				<prop
-					key="/samlValidate">
-					samlValidateController
-				</prop>
-
-				<prop
-					key="/openid/*">openIdProviderController</prop>
-                <prop
-                        key="/authorizationFailure.html">passThroughController</prop>
-			</props>
-		</property>
-		<property
-			name="alwaysUseFullPath" value="true" />
-	</bean>
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<!-- Theme Resolver -->
 	<bean id="themeResolver" class="org.jasig.cas.services.web.ServiceThemeResolver"
@@ -83,13 +39,5 @@
         </property>
     </bean>
 
-
-	<bean id="urlBasedViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"
-		p:viewClass="org.springframework.web.servlet.view.InternalResourceView"
-        p:prefix="/WEB-INF/view/jsp/"
-        p:suffix=".jsp"
-        p:order="1"/>
-
-    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
 
 </beans>
