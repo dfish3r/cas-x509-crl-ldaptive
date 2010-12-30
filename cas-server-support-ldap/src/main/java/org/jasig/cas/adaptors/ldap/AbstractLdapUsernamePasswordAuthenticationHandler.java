@@ -20,6 +20,7 @@
 package org.jasig.cas.adaptors.ldap;
 
 import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
+import org.jasig.cas.server.authentication.GeneralSecurityExceptionTranslator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.ContextSource;
@@ -39,11 +40,11 @@ public abstract class AbstractLdapUsernamePasswordAuthenticationHandler extends 
 
     /** LdapTemplate to execute ldap queries. */
     @NotNull
-    private LdapTemplate ldapTemplate;
+    private final LdapTemplate ldapTemplate;
     
     /** Instance of ContextSource */
     @NotNull
-    private ContextSource contextSource;
+    private final ContextSource contextSource;
 
     /** The filter path to the uid of the user. */
     @NotNull
@@ -52,14 +53,12 @@ public abstract class AbstractLdapUsernamePasswordAuthenticationHandler extends 
     /** Whether the LdapTemplate should ignore partial results. */
     private boolean ignorePartialResultException = false;
 
-    /**
-     * Method to set the datasource and generate a JdbcTemplate.
-     *
-     * @param contextSource the datasource to use.
-     */
-    @Inject
-    public final void setContextSource(final ContextSource contextSource) {
+    @NotNull
+    private final GeneralSecurityExceptionTranslator generalSecurityExceptionTranslator;
+
+    protected AbstractLdapUsernamePasswordAuthenticationHandler(final ContextSource contextSource, final GeneralSecurityExceptionTranslator generalSecurityExceptionTranslator) {
         this.contextSource = contextSource;
+        this.generalSecurityExceptionTranslator = generalSecurityExceptionTranslator;
         this.ldapTemplate = new LdapTemplate(contextSource);
     }
     
@@ -78,6 +77,10 @@ public abstract class AbstractLdapUsernamePasswordAuthenticationHandler extends 
 
     protected final ContextSource getContextSource() {
         return this.contextSource;
+    }
+
+    protected final GeneralSecurityExceptionTranslator getGeneralSecurityExceptionTranslator() {
+        return this.generalSecurityExceptionTranslator;
     }
 
     protected final String getFilter() {

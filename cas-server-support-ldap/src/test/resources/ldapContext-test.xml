@@ -64,9 +64,11 @@
     class="org.jasig.cas.adaptors.ldap.BindLdapAuthenticationHandler"
     p:filter="uid=%u"
     p:searchBase="ou=people,dc=rutgers,dc=edu"
-    p:contextSource-ref="contextSource"
-    p:ignorePartialResultException="true"
-  />
+    p:ignorePartialResultException="true">
+      <constructor-arg index="0" ref="contextSource" />
+      <constructor-arg index="1" ref="generalSecurityExceptionTranslator" />
+  </bean>
+
   
   <bean id="bindTestConfig"
     class="org.jasig.cas.adaptors.ldap.BindTestConfig"
@@ -78,9 +80,12 @@
 
   <bean id="fastBindAuthHandler"
     class="org.jasig.cas.adaptors.ldap.FastBindLdapAuthenticationHandler"
-    p:filter="%u"
-    p:contextSource-ref="contextSource"
-  />
+    p:filter="%u">
+      <constructor-arg index="0" ref="contextSource" />
+      <constructor-arg index="1" ref="generalSecurityExceptionTranslator" />
+
+  </bean>
+
     
   <bean id="fastBindTestConfig"
     class="org.jasig.cas.adaptors.ldap.BindTestConfig"
@@ -92,9 +97,10 @@
   
   <bean id="saslMd5FastBindAuthHandler"
     class="org.jasig.cas.adaptors.ldap.FastBindLdapAuthenticationHandler"
-    p:filter="uid=%u,ou=people,dc=rutgers,dc=edu"
-    p:contextSource-ref="saslMd5ContextSource"
-  />
+    p:filter="uid=%u,ou=people,dc=rutgers,dc=edu">
+    <constructor-arg index="0" ref="saslMd5ContextSource" />
+    <constructor-arg index="1" ref="generalSecurityExceptionTranslator" />
+  </bean>
     
   <bean id="saslMd5FastBindTestConfig"
     class="org.jasig.cas.adaptors.ldap.BindTestConfig"
@@ -127,4 +133,6 @@
     p:notExistsCredential="SRB"
     p:tooManyCredential="S*"
   />
+
+ <bean id="generalSecurityExceptionTranslator" class="org.jasig.cas.server.authentication.MicrosoftActiveDirectoryGeneralSecurityExceptionTranslator" />
 </beans>

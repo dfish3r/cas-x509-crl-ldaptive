@@ -19,11 +19,13 @@
 
 package org.jasig.cas.adaptors.ldap;
 
+import org.jasig.cas.server.authentication.GeneralSecurityExceptionTranslator;
+import org.jasig.cas.server.authentication.GeneralSecurityExceptionTranslatorAuthenticationErrorCallback;
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.jasig.cas.util.LdapUtils;
-import org.springframework.ldap.NamingException;
+import org.springframework.ldap.core.ContextSource;
 
-import javax.naming.directory.DirContext;
+import javax.inject.Inject;
 import java.security.GeneralSecurityException;
 
 /**
@@ -37,20 +39,22 @@ import java.security.GeneralSecurityException;
  */
 public class FastBindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordAuthenticationHandler {
 
+    @Inject
+    public FastBindLdapAuthenticationHandler(final ContextSource contextSource, final GeneralSecurityExceptionTranslator generalSecurityExceptionTranslator) {
+        super(contextSource, generalSecurityExceptionTranslator);
+    }
+
     protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
-        DirContext dirContext = null;
-        try {
-            final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
-            final String bindDn = LdapUtils.getFilterWithValues(getFilter(), transformedUsername);
-            this.log.debug("Performing LDAP bind with credential: " + bindDn);
-            dirContext = this.getContextSource().getContext(bindDn, credentials.getPassword());
-            return true;
-        } catch (final NamingException e) {
-            return false;
-        } finally {
-            if (dirContext != null) {
-                LdapUtils.closeContext(dirContext);
-            }
+
+        final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
+        final String bindDn = LdapUtils.getFilterWithValues(getFilter(), transformedUsername);
+        final GeneralSecurityExceptionTranslatorAuthenticationErrorCallback callback = new GeneralSecurityExceptionTranslatorAuthenticationErrorCallback(getGeneralSecurityExceptionTranslator());
+        final boolean authenticated = getLdapTemplate().authenticate("",  bindDn, credentials.getPassword(), callback);
+
+        if (callback.hasGeneralSecurityException()) {
+            throw callback.getGeneralSecurityException();
         }
+
+        return authenticated;
     }
 }

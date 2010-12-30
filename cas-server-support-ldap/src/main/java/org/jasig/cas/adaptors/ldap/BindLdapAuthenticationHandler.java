@@ -19,11 +19,15 @@
 
 package org.jasig.cas.adaptors.ldap;
 
+import org.jasig.cas.server.authentication.GeneralSecurityExceptionTranslator;
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.jasig.cas.util.LdapUtils;
+import org.springframework.ldap.AuthenticationException;
+import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.NameClassPairCallbackHandler;
 import org.springframework.ldap.core.SearchExecutor;
 
+import javax.inject.Inject;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -67,6 +71,11 @@ public class BindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordA
     /** Boolean of whether multiple accounts are allowed. */
     private boolean allowMultipleAccounts;
 
+    @Inject
+    public BindLdapAuthenticationHandler(final ContextSource contextSource, final GeneralSecurityExceptionTranslator generalSecurityExceptionTranslator) {
+        super(contextSource, generalSecurityExceptionTranslator);
+    }
+
     protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
 
         final List<String> cns = new ArrayList<String>();
@@ -98,11 +107,13 @@ public class BindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordA
             log.warn("Search for " + filter + " returned multiple results, which is not allowed.");
             return false;
         }
-        
+
+        org.springframework.ldap.NamingException namingException = null;
         for (final String dn : cns) {
             DirContext test = null;
             String finalDn = composeCompleteDnToCheck(dn, credentials);
             try {
+                namingException = null;
                 this.log.debug("Performing LDAP bind with credential: " + dn);
                 test = this.getContextSource().getContext(
                     finalDn,
@@ -111,11 +122,16 @@ public class BindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordA
                 if (test != null) {
                     return true;
                 }
-            } catch (final Exception e) {
+            } catch (final org.springframework.ldap.NamingException e) {
+                namingException = e;
                 // if we catch an exception, just try the next cn
             } finally {
                 LdapUtils.closeContext(test);
             }
+        }
+
+        if (namingException != null && namingException instanceof AuthenticationException) {
+            throw getGeneralSecurityExceptionTranslator().translateExceptionIfPossible((AuthenticationException) namingException);
         }
 
         return false;
