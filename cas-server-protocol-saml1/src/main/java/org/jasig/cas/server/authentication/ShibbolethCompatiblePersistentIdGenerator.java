@@ -24,8 +24,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 import org.apache.commons.codec.binary.Base64;
-import org.jasig.cas.server.authentication.AttributePrincipal;
-import org.jasig.cas.server.authentication.PersistentIdGenerator;
 
 import javax.validation.constraints.NotNull;
 
