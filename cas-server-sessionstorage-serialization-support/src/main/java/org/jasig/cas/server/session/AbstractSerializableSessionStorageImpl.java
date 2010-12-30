@@ -32,7 +32,7 @@ import java.util.Set;
 public abstract class AbstractSerializableSessionStorageImpl extends AbstractSessionStorage {
 
     protected AbstractSerializableSessionStorageImpl(final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
-        super(accessFactories, servicesManager);
+        super(accessFactories, servicesManager, new MultiUseOrTimeToLiveExpirationPolicy(21600));
         AbstractStaticSession.setAccessFactories(getAccessFactories());
         AbstractStaticSession.setServicesManager(servicesManager);
     }

@@ -46,7 +46,7 @@ public final class InMemorySessionStorageImpl extends AbstractSessionStorage imp
 
     @Inject
     public InMemorySessionStorageImpl(final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
-        super(accessFactories, servicesManager);
+        super(accessFactories, servicesManager, new MultiUseOrTimeToLiveExpirationPolicy(21600));
     }
 
     public Session createSession(final AuthenticationResponse authenticationResponse) {

@@ -45,7 +45,7 @@ public abstract class AbstractJpaSessionStorageImpl extends AbstractSessionStora
     private EntityManager entityManager;
 
     public AbstractJpaSessionStorageImpl(final List<AccessFactory> accessFactories, final ServicesManager servicesManager) {
-        super(accessFactories, servicesManager);
+        super(accessFactories, servicesManager, new MultiUseOrTimeToLiveExpirationPolicy(21600));
         JpaSessionImpl.setAccessFactories(getAccessFactories());
         JpaSessionImpl.setServicesManager(servicesManager);
     }

@@ -20,6 +20,7 @@
 package org.jasig.cas.server.authentication;
 
 import org.jasig.cas.server.session.AbstractAuthenticationImpl;
+import org.jasig.cas.server.session.JpaSessionImpl;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -37,7 +38,7 @@ import java.util.Map;
  *
  */
 @Entity(name = "authentication")
-@Embeddable()
+@Table(name="authentications")
 public class JpaAuthenticationImpl extends AbstractAuthenticationImpl {
 
     @Id
@@ -58,6 +59,10 @@ public class JpaAuthenticationImpl extends AbstractAuthenticationImpl {
 
     @Column(name = "auth_method", nullable = true, insertable = true, updatable = true)
     private String authenticationMethod;
+
+    @ManyToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name="session_id", nullable = false)
+    private JpaSessionImpl session;
 
     public JpaAuthenticationImpl() {
         // this should only be called by JPA
@@ -83,5 +88,9 @@ public class JpaAuthenticationImpl extends AbstractAuthenticationImpl {
 
     public final String getAuthenticationMethod() {
         return this.authenticationMethod;
+    }
+
+    public final void setSession(final JpaSessionImpl session) {
+        this.session = session;
     }
 }

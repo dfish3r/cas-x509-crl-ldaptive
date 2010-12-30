@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Query;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,12 +57,13 @@ public final class ExpirationBasedCleanupJpaSessionStorageImpl extends AbstractJ
         for (int page = 0; moreResults; page++) {
             query.setFirstResult(page * this.batchSize);
             final List<Session> listSessions = (List<Session>) query.getResultList();
+            final List<String> ids = new ArrayList<String>();
 
             for (final Session session : listSessions) {
-                if (!session.isValid()) {
-                    getEntityManager().remove(session);
-                }
+                ids.add(session.getId());
             }
+
+            getEntityManager().createQuery("delete from session s where s.sessionId in (:idList)").setParameter("idList", ids).executeUpdate();
 
             if (listSessions.size() < this.batchSize) {
                 moreResults = false;

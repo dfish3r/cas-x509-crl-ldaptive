@@ -152,8 +152,45 @@ public abstract class AbstractSessionStorageTests extends TestCase {
     public final void testCleanable() {
         final SessionStorage sessionStorage = getSessionStorage();
 
+        if (sessionStorage instanceof AbstractSessionStorage) {
+            ((AbstractSessionStorage) sessionStorage).setExpirationPolicy(new ExpirationPolicy() {
+                public boolean isExpired(State state) {
+                    return true;
+                }
+            });
+        }
+
+        sessionStorage.createSession(new AuthenticationResponse() {
+            public boolean succeeded() {
+                return true;
+            }
+
+            public Set<Authentication> getAuthentications() {
+                final HashSet<Authentication> hs = new HashSet<Authentication>();
+                hs.add(getAuthenticationFactory().getAuthentication(Collections.<String, List<Object>>emptyMap(), TestUtils.getAuthenticationRequest(TestUtils.getCredentialsWithSameUsernameAndPassword()), "foo"));
+                hs.add(getAuthenticationFactory().getAuthentication(Collections.<String, List<Object>>emptyMap(), TestUtils.getAuthenticationRequest(TestUtils.getCredentialsWithSameUsernameAndPassword()), "bar"));
+                return hs;
+            }
+
+            public AttributePrincipal getPrincipal() {
+                return getAttributePrincipalFactory().getAttributePrincipal("test");
+            }
+
+            public Map<Credential, List<GeneralSecurityException>> getGeneralSecurityExceptions() {
+                return Collections.emptyMap();
+            }
+
+            public List<Message> getAuthenticationMessages() {
+                return Collections.emptyList();
+            }
+
+            public Map<String, Object> getAttributes() {
+                return Collections.emptyMap();
+            }
+        });
+
         if (sessionStorage instanceof Cleanable) {
-            // TODO do stuff
+            ((Cleanable) sessionStorage).prune();
         }
     }
 }

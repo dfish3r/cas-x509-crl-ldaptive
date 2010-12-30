@@ -37,8 +37,8 @@ import java.util.*;
  *
  */
 @Entity(name="session")
-@Table(name="session")
-@org.hibernate.annotations.Table(appliesTo = "session",indexes = {
+@Table(name="sessions")
+@org.hibernate.annotations.Table(appliesTo = "sessions",indexes = {
         @Index(name="index_session_id", columnNames = "session_id"),
         @Index(name="index_principal_name", columnNames = "princ_name"),
         @Index(name="index_state_creation_time", columnNames = "session_state_creation"),
@@ -59,17 +59,17 @@ public class JpaSessionImpl extends AbstractStaticSession {
     @Column(name="session_invalid",updatable = true, insertable = true)
     private boolean invalid = false;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentSession", fetch = FetchType.EAGER, targetEntity = JpaSessionImpl.class)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "parentSession", fetch = FetchType.EAGER, targetEntity = JpaSessionImpl.class)
     private Set<Session> childSessions = new HashSet<Session>();
 
-    @ManyToOne(optional=true)
+    @ManyToOne(optional=true,cascade = CascadeType.ALL)
     @JoinColumn(name="parent_session_id")
     private JpaSessionImpl parentSession;
 
     @Embedded
     private JpaAttributePrincipalImpl attributePrincipal;
 
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,targetEntity = JpaAuthenticationImpl.class)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,targetEntity = JpaAuthenticationImpl.class, fetch = FetchType.EAGER, mappedBy = "session")
     @Sort(type=SortType.NATURAL)
     private SortedSet<Authentication> authentications = new TreeSet<Authentication>();
 
@@ -92,10 +92,11 @@ public class JpaSessionImpl extends AbstractStaticSession {
         for (final Authentication authentication : this.authentications) {
             if (authentication.isLongTermAuthentication()) {
                 this.state.setLongTermAuthentication(true);
-                break;
             }
+            ((JpaAuthenticationImpl) authentication).setSession(this);
         }
     }
+
 
     @Override
     protected final State getState() {
@@ -175,6 +176,7 @@ public class JpaSessionImpl extends AbstractStaticSession {
     public final void addAuthentication(final Authentication authentication) {
         if (authentication.isLongTermAuthentication()) {
             this.state.setLongTermAuthentication(true);
+            ((JpaAuthenticationImpl) authentication).setSession(this);
         }
 
         this.authentications.add(authentication);
