@@ -17,13 +17,15 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication.principal;
+package org.jasig.cas.server.authentication;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 import org.apache.commons.codec.binary.Base64;
 import org.jasig.cas.server.authentication.AttributePrincipal;
+import org.jasig.cas.server.authentication.PersistentIdGenerator;
 
 import javax.validation.constraints.NotNull;
 
@@ -39,7 +41,15 @@ public final class ShibbolethCompatiblePersistentIdGenerator implements Persiste
     private static final byte CONST_SEPARATOR = (byte) '!';
     
     @NotNull
-    private byte[] salt;
+    private final byte[] salt;
+
+    public ShibbolethCompatiblePersistentIdGenerator() {
+        this(UUID.randomUUID().toString());
+    }
+
+    public ShibbolethCompatiblePersistentIdGenerator(final String salt) {
+        this.salt = salt.getBytes();
+    }
 
     public String generate(final AttributePrincipal principal, final String service) {
         try {
@@ -54,9 +64,5 @@ public final class ShibbolethCompatiblePersistentIdGenerator implements Persiste
         } catch (final NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void setSalt(final String salt) {
-        this.salt = salt.getBytes();
     }
 }

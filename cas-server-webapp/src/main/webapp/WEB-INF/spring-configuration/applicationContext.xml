@@ -58,7 +58,7 @@
           p:connectionTimeout="5000"/>
 
     <bean id="persistentIdGenerator"
-          class="org.jasig.cas.authentication.principal.ShibbolethCompatiblePersistentIdGenerator"
+          class="org.jasig.cas.server.authentication.ShibbolethCompatiblePersistentIdGenerator"
           p:salt="casrocks"/>
 
     <!-- ADVISORS -->

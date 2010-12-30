@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.authentication.principal;
+package org.jasig.cas.server.authentication;
 
 import org.jasig.cas.server.authentication.AttributePrincipal;
 
