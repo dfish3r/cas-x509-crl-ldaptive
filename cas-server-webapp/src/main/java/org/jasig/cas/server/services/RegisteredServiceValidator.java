@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.services.web.support;
+package org.jasig.cas.server.services;
 
 import org.jasig.cas.server.session.RegisteredService;
 import org.jasig.cas.server.session.ServicesManager;

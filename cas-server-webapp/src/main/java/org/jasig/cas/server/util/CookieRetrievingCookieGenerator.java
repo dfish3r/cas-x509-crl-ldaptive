@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.web.support;
+package org.jasig.cas.server.util;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;

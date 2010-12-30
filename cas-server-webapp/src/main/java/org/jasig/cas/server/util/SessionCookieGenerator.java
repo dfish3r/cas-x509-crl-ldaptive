@@ -19,8 +19,6 @@
 
 package org.jasig.cas.server.util;
 
-import org.jasig.cas.web.support.CookieRetrievingCookieGenerator;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
 

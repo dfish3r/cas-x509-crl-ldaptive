@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.web;
+package org.jasig.cas.server.services;
 
 import org.jasig.cas.server.session.SessionStorage;
 import org.jasig.cas.server.session.SessionStorageStatistics;

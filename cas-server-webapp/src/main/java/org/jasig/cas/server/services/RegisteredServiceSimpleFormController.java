@@ -23,7 +23,6 @@ package org.jasig.cas.server.services;
 import org.jasig.cas.server.session.RegisteredService;
 import org.jasig.cas.server.session.ServicesManager;
 import org.jasig.cas.services.RegisteredServiceImpl;
-import org.jasig.cas.services.web.support.RegisteredServiceValidator;
 import org.jasig.services.persondir.IPersonAttributeDao;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;

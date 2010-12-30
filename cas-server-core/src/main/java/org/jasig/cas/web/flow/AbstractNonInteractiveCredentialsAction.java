@@ -56,8 +56,6 @@ public abstract class AbstractNonInteractiveCredentialsAction extends
             return error();
         }
         
-        final String ticketGrantingTicketId = WebUtils.getTicketGrantingTicketId(context);
-        final Service service = WebUtils.getService(context);
         /*
         if (isRenewPresent(context)
             && ticketGrantingTicketId != null

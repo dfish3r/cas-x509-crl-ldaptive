@@ -19,8 +19,6 @@
 
 package org.jasig.cas.web.support;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -56,56 +54,5 @@ public final class WebUtils {
                 + context.getExternalContext().getClass().getName());
         return (HttpServletResponse) context.getExternalContext()
             .getNativeResponse();
-    }
-
-    public static WebApplicationService getService(
-        final List<ArgumentExtractor> argumentExtractors,
-        final HttpServletRequest request) {
-        for (final ArgumentExtractor argumentExtractor : argumentExtractors) {
-            final WebApplicationService service = argumentExtractor
-                .extractService(request);
-
-            if (service != null) {
-                return service;
-            }
-        }
-
-        return null;
-    }
-    
-    public static WebApplicationService getService(
-        final List<ArgumentExtractor> argumentExtractors,
-        final RequestContext context) {
-        final HttpServletRequest request = WebUtils.getHttpServletRequest(context);
-        return getService(argumentExtractors, request);
-    }
-
-    public static WebApplicationService getService(
-        final RequestContext context) {
-        return (WebApplicationService) context.getFlowScope().get("service");
-    }
-
-    public static void putTicketGrantingTicketInRequestScope(
-        final RequestContext context, final String ticketValue) {
-        context.getRequestScope().put("ticketGrantingTicketId", ticketValue);
-    }
-
-    public static String getTicketGrantingTicketId(
-        final RequestContext context) {
-        final String tgtFromRequest = (String) context.getRequestScope().get("ticketGrantingTicketId");
-        final String tgtFromFlow = (String) context.getFlowScope().get("ticketGrantingTicketId");
-        
-        return tgtFromRequest != null ? tgtFromRequest : tgtFromFlow;
-
-    }
-
-    public static void putServiceTicketInRequestScope(
-        final RequestContext context, final String ticketValue) {
-        context.getRequestScope().put("serviceTicketId", ticketValue);
-    }
-
-    public static String getServiceTicketFromRequestScope(
-        final RequestContext context) {
-        return context.getRequestScope().getString("serviceTicketId");
     }
 }
