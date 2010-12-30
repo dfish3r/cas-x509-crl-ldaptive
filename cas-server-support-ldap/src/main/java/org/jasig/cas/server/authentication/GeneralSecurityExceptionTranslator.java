@@ -35,6 +35,8 @@ public interface GeneralSecurityExceptionTranslator {
 
     /**
      * Maps the Spring LDAP Authentication Exception to a GeneralSecurityException.
+     * <p>
+     * It should be safe to return null, but highly discouraged. Most instances should return UncategorizedSecurityException.
      *
      * @param e the exception to map.  CANNOT be NULL.
      * @return the mapped GeneralSecurityException, or an UncategorizedSecurityException if there is no proper mapping.
@@ -43,6 +45,8 @@ public interface GeneralSecurityExceptionTranslator {
 
     /**
      * Maps the NamingException to a GeneralSecurityException.
+     * <p>
+     * It should be safe to return null, but highly discouraged.  Most instances should return UncategorizedSecurityException.
      *
      * @param e the exception to map.  CANNOT be NULL.
      * @return the mapped GeneralSecurityException, or an UncategorizedSecurityException if there is no proper mapping.
