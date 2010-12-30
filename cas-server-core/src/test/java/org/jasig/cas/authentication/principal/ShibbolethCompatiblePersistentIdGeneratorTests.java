@@ -23,7 +23,6 @@ import org.jasig.cas.TestUtils;
 
 import junit.framework.TestCase;
 import org.jasig.cas.server.authentication.AttributePrincipal;
-import org.jasig.cas.server.authentication.Service;
 
 /**
  * @author Scott Battaglia
@@ -37,9 +36,7 @@ public class ShibbolethCompatiblePersistentIdGeneratorTests extends TestCase {
         generator.setSalt("scottssalt");
 
         final AttributePrincipal p = TestUtils.getPrincipal();
-        final Service s = TestUtils.getService();
-        
-        final String value = generator.generate(p, s.getId());
+        final String value = generator.generate(p, "myserviceid");
         
         assertNotNull(value); 
     }

@@ -17,15 +17,14 @@
  * under the License.
  */
 
-package org.jasig.cas.web.support;
+package org.jasig.cas.server.util;
 
 import javax.servlet.http.Cookie;
 
+import junit.framework.TestCase;
 import org.jasig.cas.server.login.DefaultLoginRequestImpl;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-
-import junit.framework.TestCase;
 
 /**
  * 

@@ -31,7 +31,7 @@ import javax.validation.constraints.NotNull;
 import org.jasig.cas.authentication.principal.AbstractLdapPersonDirectoryCredentialsToPrincipalResolver;
 import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.util.LdapUtils;
+import org.jasig.cas.server.util.LdapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ldap.core.AttributesMapper;

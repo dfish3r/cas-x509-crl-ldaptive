@@ -19,18 +19,11 @@
 
 package org.jasig.cas.web.view;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-
-import org.jasig.cas.authentication.principal.Response;
-import org.jasig.cas.authentication.principal.WebApplicationService;
-import org.jasig.cas.server.authentication.AttributePrincipal;
-import org.jasig.cas.server.authentication.Service;
 
 /**
  * Represents a failed attempt at validating a ticket, responding via a SAML
@@ -52,32 +45,6 @@ public class Saml10FailureResponseView {
     protected void renderMergedOutputModel(final Map model,
         final HttpServletRequest request, final HttpServletResponse response)
         throws Exception {
-        final WebApplicationService service = new WebApplicationService() {
-            public Response getResponse(String ticketId) {
-                return null;
-            }
-
-            public String getArtifactId() {
-                return "foo";
-            }
-
-            public String getId() {
-                return "foo";
-            }
-
-            public void setPrincipal(AttributePrincipal principal) {
-
-            }
-
-            public boolean logOutOfService(String sessionIdentifier) {
-                return true;
-            }
-
-            public boolean matches(Service service) {
-                return true;
-            }
-        };
-
         final String errorMessage = (String) model.get("description");
            /*
         final SAMLResponse samlResponse = new SAMLResponse(service.getArtifactId(), service.getId(), new ArrayList<Object>(), new SAMLException(errorMessage));

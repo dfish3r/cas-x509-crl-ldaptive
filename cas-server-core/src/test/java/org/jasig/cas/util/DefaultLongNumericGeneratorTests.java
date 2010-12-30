@@ -19,7 +19,7 @@
 
 package org.jasig.cas.util;
 
-import org.jasig.cas.util.DefaultLongNumericGenerator;
+import org.jasig.cas.server.util.DefaultLongNumericGenerator;
 
 import junit.framework.TestCase;
 

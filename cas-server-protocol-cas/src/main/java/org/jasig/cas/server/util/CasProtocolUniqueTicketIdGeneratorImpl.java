@@ -19,9 +19,6 @@
 
 package org.jasig.cas.server.util;
 
-import org.jasig.cas.util.DefaultLongNumericGenerator;
-import org.jasig.cas.util.DefaultRandomStringGenerator;
-
 /**
  * Default implementation of {@link org.jasig.cas.server.util.UniqueTicketIdGenerator}. Implementation
  * utilizes a DefaultLongNumericGeneraor and a DefaultRandomStringGenerator to
@@ -50,7 +47,7 @@ public final class CasProtocolUniqueTicketIdGeneratorImpl implements UniqueTicke
 
     /**
      * Creates an instance of CasProtocolUniqueTicketIdGeneratorImpl with default values
-     * including a {@link org.jasig.cas.util.DefaultLongNumericGenerator} with a starting value of
+     * including a {@link DefaultLongNumericGenerator} with a starting value of
      * 1.
      */
     public CasProtocolUniqueTicketIdGeneratorImpl() {
@@ -70,7 +67,7 @@ public final class CasProtocolUniqueTicketIdGeneratorImpl implements UniqueTicke
 
     /**
      * Creates an instance of CasProtocolUniqueTicketIdGeneratorImpl with default values
-     * including a {@link org.jasig.cas.util.DefaultLongNumericGenerator} with a starting value of
+     * including a {@link DefaultLongNumericGenerator} with a starting value of
      * 1.
      * 
      * @param suffix the value to append at the end of the unique id to ensure

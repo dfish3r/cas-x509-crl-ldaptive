@@ -19,7 +19,6 @@
 
 package org.jasig.cas.server.util;
 
-import org.jasig.cas.util.DefaultRandomStringGenerator;
 import org.opensaml.saml1.binding.artifact.SAML1ArtifactType0001;
 
 import java.security.MessageDigest;

@@ -20,7 +20,7 @@
 package org.jasig.cas.authentication.principal;
 
 import org.jasig.cas.server.authentication.*;
-import org.jasig.cas.util.LdapUtils;
+import org.jasig.cas.server.util.LdapUtils;
 import org.springframework.ldap.core.AttributesMapper;
 
 import javax.inject.Inject;

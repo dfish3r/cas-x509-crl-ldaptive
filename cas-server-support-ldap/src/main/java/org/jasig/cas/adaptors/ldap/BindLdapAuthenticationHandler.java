@@ -21,7 +21,7 @@ package org.jasig.cas.adaptors.ldap;
 
 import org.jasig.cas.server.authentication.GeneralSecurityExceptionTranslator;
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;
-import org.jasig.cas.util.LdapUtils;
+import org.jasig.cas.server.util.LdapUtils;
 import org.springframework.ldap.AuthenticationException;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.NameClassPairCallbackHandler;

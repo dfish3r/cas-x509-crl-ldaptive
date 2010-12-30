@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.support.spnego.util.SpnegoConstants;
-import org.jasig.cas.web.support.WebUtils;
 
+import org.jasig.cas.web.flow.AbstractNonInteractiveCredentialsAction;
 import org.springframework.util.StringUtils;
 import org.springframework.webflow.action.AbstractAction;
 import org.springframework.webflow.execution.Event;
@@ -59,9 +59,9 @@ public final class SpnegoNegociateCredentialsAction extends AbstractAction {
     private String messageBeginPrefix = constructMessagePrefix();
 
     protected Event doExecute(RequestContext context) {
-        final HttpServletRequest request = WebUtils
+        final HttpServletRequest request = AbstractNonInteractiveCredentialsAction
             .getHttpServletRequest(context);
-        final HttpServletResponse response = WebUtils
+        final HttpServletResponse response = AbstractNonInteractiveCredentialsAction
             .getHttpServletResponse(context);
         final String authorizationHeader = request
             .getHeader(SpnegoConstants.HEADER_AUTHORIZATION);

@@ -17,9 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.util;
-
-import org.jasig.cas.server.util.LongNumericGenerator;
+package org.jasig.cas.server.util;
 
 import java.util.concurrent.atomic.AtomicLong;
 

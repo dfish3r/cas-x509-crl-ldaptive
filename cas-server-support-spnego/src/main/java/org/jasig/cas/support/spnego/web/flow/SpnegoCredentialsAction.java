@@ -24,7 +24,6 @@ import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.support.spnego.authentication.principal.SpnegoCredentials;
 import org.jasig.cas.support.spnego.util.SpnegoConstants;
 import org.jasig.cas.web.flow.AbstractNonInteractiveCredentialsAction;
-import org.jasig.cas.web.support.WebUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.webflow.execution.RequestContext;
 
@@ -44,16 +43,13 @@ import javax.servlet.http.HttpServletResponse;
  * @see <a href='http://ietfreport.isoc.org/idref/rfc4559/#page-2'>RFC 4559</a>
  * @since 3.1
  */
-public final class SpnegoCredentialsAction extends
-    AbstractNonInteractiveCredentialsAction {
+public final class SpnegoCredentialsAction extends AbstractNonInteractiveCredentialsAction {
 
     private boolean ntlm = false;
 
     private String messageBeginPrefix = constructMessagePrefix();
 
-    protected Credential constructCredentialsFromRequest(final RequestContext context) {
-        final HttpServletRequest request = WebUtils.getHttpServletRequest(context);
-
+    protected Credential constructCredentialsFromRequest(final HttpServletRequest request, final HttpServletResponse response) {
         final String authorizationHeader = request.getHeader(SpnegoConstants.HEADER_AUTHORIZATION);
 
         if (StringUtils.hasText(authorizationHeader)
@@ -93,8 +89,7 @@ public final class SpnegoCredentialsAction extends
             return;
         }
 
-        final HttpServletResponse response = WebUtils
-            .getHttpServletResponse(context);
+        final HttpServletResponse response = getHttpServletResponse(context);
         final SpnegoCredentials spnegoCredentials = (SpnegoCredentials) credentials;
         final byte[] nextToken = spnegoCredentials.getNextToken();
         if (nextToken != null) {

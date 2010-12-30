@@ -24,7 +24,9 @@ import java.security.cert.X509Certificate;
 import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentials;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.web.flow.AbstractNonInteractiveCredentialsAction;
-import org.springframework.webflow.execution.RequestContext;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Concrete implementation of AbstractNonInteractiveCredentialsAction that
@@ -39,9 +41,8 @@ public final class X509CertificateCredentialsNonInteractiveAction extends Abstra
 
     private static final String CERTIFICATE_REQUEST_ATTRIBUTE = "javax.servlet.request.X509Certificate";
 
-    protected Credential constructCredentialsFromRequest(
-        final RequestContext context) {
-        final X509Certificate[] certificates = (X509Certificate[]) context.getExternalContext().getRequestMap().get(CERTIFICATE_REQUEST_ATTRIBUTE);
+    protected Credential constructCredentialsFromRequest(final HttpServletRequest request, final HttpServletResponse response) {
+        final X509Certificate[] certificates = (X509Certificate[]) request.getAttribute(CERTIFICATE_REQUEST_ATTRIBUTE);
 
         if (certificates == null || certificates.length == 0) {
             if (logger.isDebugEnabled()) {

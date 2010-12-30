@@ -20,14 +20,13 @@
 package org.jasig.cas.adaptors.trusted.web.flow;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.adaptors.trusted.authentication.principal.PrincipalBearingCredentials;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.SimplePrincipal;
 import org.jasig.cas.web.flow.AbstractNonInteractiveCredentialsAction;
-import org.jasig.cas.web.support.WebUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.webflow.execution.RequestContext;
 
 /**
  * Implementation of the NonInteractiveCredentialsAction that looks for a remote
@@ -43,8 +42,7 @@ import org.springframework.webflow.execution.RequestContext;
 public final class PrincipalFromRequestRemoteUserNonInteractiveCredentialsAction
     extends AbstractNonInteractiveCredentialsAction {
 
-    protected Credential constructCredentialsFromRequest(final RequestContext context) {
-        final HttpServletRequest request = WebUtils.getHttpServletRequest(context);
+    protected Credential constructCredentialsFromRequest(final HttpServletRequest request, final HttpServletResponse response) {
         final String remoteUser = request.getRemoteUser();
 
         if (StringUtils.hasText(remoteUser)) {

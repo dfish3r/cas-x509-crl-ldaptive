@@ -20,6 +20,7 @@
 package org.jasig.cas.util;
 
 import junit.framework.TestCase;
+import org.jasig.cas.server.util.DefaultRandomStringGenerator;
 import org.jasig.cas.server.util.RandomStringGenerator;
 
 /**

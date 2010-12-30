@@ -166,39 +166,6 @@ public final class TestUtils {
         };
     }
 
-    public static Service getService() {
-        return getService(CONST_USERNAME);
-    }
-
-    public static Service getService(final String name) {
-        return new Service() {
-            public String getId() {
-                return name;
-            }
-
-            public void setPrincipal(AttributePrincipal principal) {
-
-            }
-
-            public boolean logOutOfService(String sessionIdentifier) {
-                return false;
-            }
-
-            public boolean matches(Service service) {
-                return name.equals(service.getId());
-            }
-
-            public boolean equals(final Object o) {
-                if (o == null || !(o instanceof Service)) {
-                    return false;
-                }
-
-                final Service s = (Service) o;
-                return s.getId().equals(this.getId()); 
-            }
-        };
-    }
-
     public static Authentication getAuthentication() {
 
         return new AbstractAuthenticationImpl() {

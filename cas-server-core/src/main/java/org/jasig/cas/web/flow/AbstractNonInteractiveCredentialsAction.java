@@ -20,14 +20,16 @@
 package org.jasig.cas.web.flow;
 
 import org.jasig.cas.server.CentralAuthenticationService;
-import org.jasig.cas.server.authentication.Service;
 import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.web.support.WebUtils;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.webflow.action.AbstractAction;
+import org.springframework.webflow.context.servlet.ServletExternalContext;
 import org.springframework.webflow.execution.Event;
 import org.springframework.webflow.execution.RequestContext;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -49,8 +51,28 @@ public abstract class AbstractNonInteractiveCredentialsAction extends
         return StringUtils.hasText(context.getRequestParameters().get("renew"));
     }
 
+   public static HttpServletRequest getHttpServletRequest(
+        final RequestContext context) {
+        Assert.isInstanceOf(ServletExternalContext.class, context
+                .getExternalContext(),
+                "Cannot obtain HttpServletRequest from event of type: "
+                        + context.getExternalContext().getClass().getName());
+
+        return (HttpServletRequest) context.getExternalContext().getNativeRequest();
+    }
+
+    public static HttpServletResponse getHttpServletResponse(
+        final RequestContext context) {
+        Assert.isInstanceOf(ServletExternalContext.class, context
+            .getExternalContext(),
+            "Cannot obtain HttpServletResponse from event of type: "
+                + context.getExternalContext().getClass().getName());
+        return (HttpServletResponse) context.getExternalContext()
+            .getNativeResponse();
+    }
+
     protected final Event doExecute(final RequestContext context) {
-        final Credential credentials = constructCredentialsFromRequest(context);
+        final Credential credentials = constructCredentialsFromRequest(getHttpServletRequest(context), getHttpServletResponse(context));
 
         if (credentials == null) {
             return error();
@@ -132,9 +154,10 @@ public abstract class AbstractNonInteractiveCredentialsAction extends
      * Abstract method to implement to construct the credentials from the
      * request object.
      * 
-     * @param context the context for this request.
+     * @param request the request.
+     * @param response the response.
      * @return the constructed credentials or null if none could be constructed
      * from the request.
      */
-    protected abstract Credential constructCredentialsFromRequest(final RequestContext context);
+    protected abstract Credential constructCredentialsFromRequest(final HttpServletRequest request, HttpServletResponse response);
 }
