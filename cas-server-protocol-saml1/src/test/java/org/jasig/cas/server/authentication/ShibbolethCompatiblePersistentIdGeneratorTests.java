@@ -32,9 +32,7 @@ import org.jasig.cas.server.authentication.AttributePrincipal;
 public class ShibbolethCompatiblePersistentIdGeneratorTests extends TestCase {
 
     public void testGenerator() {
-        final ShibbolethCompatiblePersistentIdGenerator generator = new ShibbolethCompatiblePersistentIdGenerator();
-        generator.setSalt("scottssalt");
-
+        final ShibbolethCompatiblePersistentIdGenerator generator = new ShibbolethCompatiblePersistentIdGenerator("scottssalt");
         final AttributePrincipal p = TestUtils.getPrincipal();
         final String value = generator.generate(p, "myserviceid");
         

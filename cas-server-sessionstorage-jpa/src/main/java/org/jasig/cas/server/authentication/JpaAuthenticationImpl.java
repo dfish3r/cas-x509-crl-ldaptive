@@ -60,7 +60,7 @@ public class JpaAuthenticationImpl extends AbstractAuthenticationImpl {
     @Column(name = "auth_method", nullable = true, insertable = true, updatable = true)
     private String authenticationMethod;
 
-    @ManyToOne(optional = true, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name="session_id", nullable = false)
     private JpaSessionImpl session;
 

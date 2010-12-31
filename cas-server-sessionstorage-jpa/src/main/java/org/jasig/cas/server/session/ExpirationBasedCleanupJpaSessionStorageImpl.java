@@ -50,7 +50,7 @@ public final class ExpirationBasedCleanupJpaSessionStorageImpl extends AbstractJ
     @Transactional
     @Scheduled(fixedDelay = 5000000)
     public void prune() {
-        final Query query  = getEntityManager().createQuery("select s from session s order by s.id");
+        final Query query  = getEntityManager().createQuery("select s from session s where s.parentSession is null order by s.id");
         query.setMaxResults(this.batchSize);
 
         boolean moreResults = true;

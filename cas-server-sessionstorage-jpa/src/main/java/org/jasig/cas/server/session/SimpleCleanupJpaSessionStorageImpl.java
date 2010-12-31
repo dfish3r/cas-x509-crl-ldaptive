@@ -54,7 +54,7 @@ public final class SimpleCleanupJpaSessionStorageImpl extends AbstractJpaSession
     @Scheduled(fixedDelay = 5000000)
     @Transactional
     public void prune() {
-        getEntityManager().createQuery("delete From session s where (s.state.creationTime + :timeOut) >= :currentTime or s.state.count > :maxCount").setParameter("timeOut", this.purgeTimeOut).setParameter("currentTime", System.currentTimeMillis()).setParameter("maxCount", this.purgeMaxCount).executeUpdate();
+        getEntityManager().createQuery("delete From session s where ((s.state.creationTime + :timeOut) >= :currentTime or s.state.count > :maxCount) and s.parentSession is null").setParameter("timeOut", this.purgeTimeOut).setParameter("currentTime", System.currentTimeMillis()).setParameter("maxCount", this.purgeMaxCount).executeUpdate();
     }
 
     public void setPurgeTimeOut(final long purgeTimeOut) {

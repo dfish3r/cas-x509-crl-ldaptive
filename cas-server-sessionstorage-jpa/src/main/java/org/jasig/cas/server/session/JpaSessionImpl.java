@@ -60,6 +60,7 @@ public class JpaSessionImpl extends AbstractStaticSession {
     private boolean invalid = false;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "parentSession", fetch = FetchType.EAGER, targetEntity = JpaSessionImpl.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Session> childSessions = new HashSet<Session>();
 
     @ManyToOne(optional=true,cascade = CascadeType.ALL)
@@ -70,10 +71,11 @@ public class JpaSessionImpl extends AbstractStaticSession {
     private JpaAttributePrincipalImpl attributePrincipal;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,targetEntity = JpaAuthenticationImpl.class, fetch = FetchType.EAGER, mappedBy = "session")
-    @Sort(type=SortType.NATURAL)
-    private SortedSet<Authentication> authentications = new TreeSet<Authentication>();
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Authentication> authentications = new HashSet<Authentication>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentSession", fetch = FetchType.EAGER,targetEntity = JpaCasProtocolAccessImpl.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Access> casProtocolAccesses = new HashSet<Access>();
 
     public JpaSessionImpl() {
@@ -166,7 +168,7 @@ public class JpaSessionImpl extends AbstractStaticSession {
     }
 
     public final SortedSet<Authentication> getAuthentications() {
-        return this.authentications;
+        return new TreeSet<Authentication>(this.authentications);
     }
 
     public final AttributePrincipal getPrincipal() {
