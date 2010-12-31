@@ -40,6 +40,20 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-test-support</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.thimbleware.jmemcached</groupId>
+            <artifactId>jmemcached-core</artifactId>
+            <version>0.9</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>spy</groupId>
             <artifactId>memcached</artifactId>
             <version>2.5</version>

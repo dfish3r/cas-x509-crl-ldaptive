@@ -63,4 +63,28 @@ public final class SimpleStateImpl implements State, Serializable {
     public boolean longTermAuthenticationExists() {
         return this.longTermSession;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimpleStateImpl that = (SimpleStateImpl) o;
+
+        if (creationTime != that.creationTime) return false;
+        if (lastUsedTime != that.lastUsedTime) return false;
+        if (longTermSession != that.longTermSession) return false;
+        if (usageCount != that.usageCount) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = usageCount;
+        result = 31 * result + (int) (creationTime ^ (creationTime >>> 32));
+        result = 31 * result + (int) (lastUsedTime ^ (lastUsedTime >>> 32));
+        result = 31 * result + (longTermSession ? 1 : 0);
+        return result;
+    }
 }

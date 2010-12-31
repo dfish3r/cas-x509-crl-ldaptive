@@ -22,6 +22,7 @@ package org.jasig.cas.server.session;
 import net.spy.memcached.DefaultConnectionFactory;
 import net.spy.memcached.MemcachedClient;
 import org.jasig.cas.server.authentication.AuthenticationResponse;
+import org.jasig.cas.server.util.TimeUnit;
 import org.springframework.util.Assert;
 
 import javax.annotation.PreDestroy;
@@ -29,10 +30,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Memcached or repcached backed implementation of the {@link org.jasig.cas.server.session.SessionStorage} interface.
@@ -46,6 +45,8 @@ public class MemcachedSessionStorageImpl extends AbstractSerializableSessionStor
     private static final String ACCESS_PREFIX = "ACCESSID::";
 
     private static final String ROOT_SESSION_PREFIX = "ROOTSESSIONID::";
+
+    private static final String PRINCIPAL_SESSION_PREFIX = "PRINCIPALIDS::";
 
     @NotNull
     private final MemcachedClient memcachedClient;
@@ -76,12 +77,9 @@ public class MemcachedSessionStorageImpl extends AbstractSerializableSessionStor
                 this.sessionTimeOut = sessionTimeOut * 60;
                 break;
 
-            case HOURS:
+            default: // hours
                 this.sessionTimeOut = sessionTimeOut * 60 * 60;
                 break;
-
-            default:
-                throw new IllegalArgumentException("We currently only support SECONDS, MINUTES, HOURS, or MILLISECONDS as the TimeUnit");
         }
     }
 
@@ -101,6 +99,17 @@ public class MemcachedSessionStorageImpl extends AbstractSerializableSessionStor
         final Session session = new SerializableSessionImpl(authenticationResponse);
 
         this.memcachedClient.add(ROOT_SESSION_PREFIX + session.getId(), this.sessionTimeOut, session.getId());
+        final List<String> ids = (List<String>) this.memcachedClient.get(PRINCIPAL_SESSION_PREFIX + session.getPrincipal().getName());
+
+        if (ids != null) {
+            ids.add(session.getId());
+            handleSynchronousRequest(this.memcachedClient.set(PRINCIPAL_SESSION_PREFIX + session.getPrincipal().getName(), this.sessionTimeOut, ids));
+        } else {
+            final List<String> lids = new ArrayList<String>();
+            lids.add(session.getId());
+            handleSynchronousRequest(this.memcachedClient.set(PRINCIPAL_SESSION_PREFIX + session.getPrincipal().getName(), this.sessionTimeOut, lids));
+        }
+
         handleSynchronousRequest(this.memcachedClient.set(session.getId(), this.sessionTimeOut, session));
 
         return session;
@@ -111,8 +120,39 @@ public class MemcachedSessionStorageImpl extends AbstractSerializableSessionStor
     }
 
     @Override
-    protected Set<Session> findSessionsByPrincipalInternal(String principalName) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    protected Set<Session> findSessionsByPrincipalInternal(final String principalName) {
+        final List<String> ids = (List<String>) this.memcachedClient.get(PRINCIPAL_SESSION_PREFIX + principalName);
+
+        if (ids == null) {
+            return Collections.emptySet();
+        }
+
+        final Collection<String> multiKeys = new ArrayList<String>();
+        for (final String id : ids) {
+            multiKeys.add(ROOT_SESSION_PREFIX + id);
+        }
+
+        final Map<String, Object> mapSessions = this.memcachedClient.getBulk(multiKeys);
+
+        if (mapSessions.values().isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        final Collection<String> actualSessionIds = new ArrayList<String>();
+
+        for (final Object o : mapSessions.values()) {
+            actualSessionIds.add(o.toString());
+        }
+
+        final Map<String, Object> actualSessions = this.memcachedClient.getBulk(actualSessionIds);
+
+        final Set<Session> sessions = new HashSet<Session>();
+
+        for (final Object o : actualSessions.values()) {
+            sessions.add((Session) o);
+        }
+
+        return sessions;
     }
 
     @Override
@@ -189,6 +229,10 @@ public class MemcachedSessionStorageImpl extends AbstractSerializableSessionStor
         // retrieve the root session id
         final String rootSessionId = (String) this.memcachedClient.get(ROOT_SESSION_PREFIX + sessionId);
 
+        if (rootSessionId == null) {
+            return null;
+        }
+
         this.memcachedClient.delete(ROOT_SESSION_PREFIX + sessionId);
 
         //retrieve the root session
@@ -240,11 +284,11 @@ public class MemcachedSessionStorageImpl extends AbstractSerializableSessionStor
 
     @PreDestroy
     public void destroy() {
-        this.memcachedClient.shutdown(2, TimeUnit.SECONDS);
+        this.memcachedClient.shutdown();
     }
 
     /**
-     * Determines whether we should "guarantee" that memcache finished before we return.  The default is to not wait
+     * Determines whether we should "guarantee" that memcached finished before we return.  The default is to not wait
      * for a response from Memcached.  However, in absurdly fast environments this might mean that when you go to look
      * up the session, it might not exist yet.
      *

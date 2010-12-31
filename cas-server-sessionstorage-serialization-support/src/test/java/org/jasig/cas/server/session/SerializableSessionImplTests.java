@@ -23,10 +23,7 @@ import org.jasig.cas.server.authentication.*;
 import org.jasig.services.persondir.support.StubPersonAttributeDao;
 
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -62,6 +59,6 @@ public final class SerializableSessionImplTests extends AbstractSessionTests {
 
     @Override
     protected AttributePrincipal getNewAttributePrincipal() {
-        return this.attributePrincipalFactory.getAttributePrincipal("foo");
+        return this.attributePrincipalFactory.getAttributePrincipal(UUID.randomUUID().toString());
     }
 }

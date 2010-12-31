@@ -161,4 +161,40 @@ public final class SerializableSessionImpl extends AbstractStaticSession impleme
             ((SerializableSessionImpl) childSession).setParentSession(this);
         }
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SerializableSessionImpl that = (SerializableSessionImpl) o;
+
+        if (invalidate != that.invalidate) return false;
+        if (accesses != null ? !accesses.equals(that.accesses) : that.accesses != null) return false;
+        if (attributePrincipal != null ? !attributePrincipal.equals(that.attributePrincipal) : that.attributePrincipal != null)
+            return false;
+        if (authentications != null ? !authentications.equals(that.authentications) : that.authentications != null)
+            return false;
+        if (childSessions != null ? !childSessions.equals(that.childSessions) : that.childSessions != null)
+            return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (parentSession != null ? !parentSession.equals(that.parentSession) : that.parentSession != null)
+            return false;
+        if (state != null ? !state.equals(that.state) : that.state != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = parentSession != null ? parentSession.hashCode() : 0;
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (invalidate ? 1 : 0);
+        result = 31 * result + (accesses != null ? accesses.hashCode() : 0);
+        result = 31 * result + (attributePrincipal != null ? attributePrincipal.hashCode() : 0);
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        result = 31 * result + (childSessions != null ? childSessions.hashCode() : 0);
+        result = 31 * result + (authentications != null ? authentications.hashCode() : 0);
+        return result;
+    }
 }

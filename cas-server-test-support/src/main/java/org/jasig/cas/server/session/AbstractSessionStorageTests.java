@@ -81,13 +81,13 @@ public abstract class AbstractSessionStorageTests extends TestCase {
 
     @Test
     public final void testCreateSession() {
-        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test"));
+        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test1"));
         assertNotNull(session);
     }
 
     @Test
     public final void testDestroySessionThatExists() {
-        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test"));
+        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test2"));
         assertNotNull(session);
 
         assertNotNull(this.sessionStorage.findSessionBySessionId(session.getId()));
@@ -103,7 +103,7 @@ public abstract class AbstractSessionStorageTests extends TestCase {
 
     @Test
     public final void testRetrieveRootSessionThatExists() {
-        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test"));
+        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test3"));
         assertNotNull(session);
 
         final Session session2 = this.sessionStorage.findSessionBySessionId(session.getId());
@@ -114,7 +114,7 @@ public abstract class AbstractSessionStorageTests extends TestCase {
 
     @Test
     public final void testRetrieveRootSessionThatDoesNotExist() {
-        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test"));
+        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test4"));
         assertNotNull(session);
 
         final Session session2 = this.sessionStorage.findSessionBySessionId("FOOBAR");
@@ -123,8 +123,8 @@ public abstract class AbstractSessionStorageTests extends TestCase {
 
     @Test
     public final void testRetrieveSessionsForUserThatDoesNotExist() {
-        this.sessionStorage.createSession(getAuthenticationResponse("test"));
-        this.sessionStorage.createSession(getAuthenticationResponse("test"));
+        this.sessionStorage.createSession(getAuthenticationResponse("test5"));
+        this.sessionStorage.createSession(getAuthenticationResponse("test5"));
 
         final Set<Session> sessions = this.sessionStorage.findSessionsByPrincipal("FOOBAR");
 
@@ -160,7 +160,7 @@ public abstract class AbstractSessionStorageTests extends TestCase {
             });
         }
 
-        sessionStorage.createSession(new AuthenticationResponse() {
+        final Session s = sessionStorage.createSession(new AuthenticationResponse() {
             public boolean succeeded() {
                 return true;
             }
