@@ -71,6 +71,11 @@ public final class ExpirationBasedCleanupJpaSessionStorageImpl extends AbstractJ
         }
     }
 
+    @Override
+    protected void calculateStatisticsInformation(final DefaultSessionStorageStatisticsImpl sessionStorageStatistics) {
+        // TODO we need to calculate this
+    }
+
     public void setBatchSize(final int batchSize) {
         this.batchSize = batchSize;
     }

@@ -57,6 +57,15 @@ public final class SimpleCleanupJpaSessionStorageImpl extends AbstractJpaSession
         getEntityManager().createQuery("delete From session s where ((s.state.creationTime + :timeOut) >= :currentTime or s.state.count > :maxCount) and s.parentSession is null").setParameter("timeOut", this.purgeTimeOut).setParameter("currentTime", System.currentTimeMillis()).setParameter("maxCount", this.purgeMaxCount).executeUpdate();
     }
 
+    @Override
+    protected void calculateStatisticsInformation(final DefaultSessionStorageStatisticsImpl sessionStorageStatistics) {
+        final Long totalCount = (Long) getEntityManager().createQuery("select count(s) from session s where s.parentSession is null").getSingleResult();
+        final Long expiredCount = (Long) getEntityManager().createQuery("select count(s) From session s where ((s.state.creationTime + :timeOut) >= :currentTime or s.state.count > :maxCount) and s.parentSession is null").setParameter("timeOut", this.purgeTimeOut).setParameter("currentTime", System.currentTimeMillis()).setParameter("maxCount", this.purgeMaxCount).getSingleResult();
+
+        sessionStorageStatistics.setCountOfInactiveSessions(expiredCount.intValue());
+        sessionStorageStatistics.setCountOfActiveSessions(totalCount.intValue() - expiredCount.intValue());
+    }
+
     public void setPurgeTimeOut(final long purgeTimeOut) {
         this.purgeTimeOut = purgeTimeOut;
     }

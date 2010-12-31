@@ -266,6 +266,7 @@ public class MemcachedSessionStorageImpl extends AbstractSerializableSessionStor
         return session;
     }
 
+    // TODO double check that this is correct.
     public Session updateSession(final Session session) {
         for (final Access access : session.getAccesses()) {
             this.memcachedClient.set(ACCESS_PREFIX + access.getId(), this.sessionTimeOut, session.getId());

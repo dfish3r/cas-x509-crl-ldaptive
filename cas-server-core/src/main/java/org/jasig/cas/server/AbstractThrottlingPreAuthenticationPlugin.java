@@ -78,8 +78,7 @@ public abstract class AbstractThrottlingPreAuthenticationPlugin implements PreAu
 
         if (count >= this.failureThreshold) {
             updateCount(loginRequest);
-            log.warn("*** Possible Hacking Attempt from [" + loginRequest.getRemoteIpAddress() + "].  More than " + this.failureThreshold + " failed login attempts within " + this.failureRangeInSeconds + " seconds.");
-            // TODO add message text here
+            log.warn("*** Possible Hacking Attempt from [{}].  More than {} failed login attempts within {} seconds.", new Object[] {loginRequest.getRemoteIpAddress(), this.failureThreshold, this.failureRangeInSeconds});
             final Map<Credential, List<GeneralSecurityException>> exceptions = new HashMap<Credential, List<GeneralSecurityException>>();
             exceptions.put(loginRequest.getCredentials().get(0), Arrays.asList((GeneralSecurityException) new AccountLockedException()));
             return new DefaultLoginResponseImpl(new DefaultAuthenticationResponseImpl(exceptions));

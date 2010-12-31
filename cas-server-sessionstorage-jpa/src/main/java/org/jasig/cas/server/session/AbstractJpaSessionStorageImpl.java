@@ -97,12 +97,28 @@ public abstract class AbstractJpaSessionStorageImpl extends AbstractSessionStora
         return new HashSet<Session>(listSessions);
     }
 
-    // TODO can we generate valid statistics
     public final SessionStorageStatistics getSessionStorageStatistics() {
-        return new DefaultSessionStorageStatisticsImpl(false);
+        final Long countOfUnused = (Long) getEntityManager().createQuery("select count(a) from casProtocolAccess a where a.validationStatus = 'NOT_VALIDATED'").getSingleResult();
+        final Long countOfUsed = (Long) getEntityManager().createQuery("select count(a) from casProtocolAccess a where a.validationStatus <> 'NOT_VALIDATED'").getSingleResult();
+
+
+        final DefaultSessionStorageStatisticsImpl statistics = new DefaultSessionStorageStatisticsImpl(true);
+        statistics.setCountOfUnusedAccesses(countOfUnused.intValue());
+        statistics.setCountOfUsedAccesses(countOfUsed.intValue());
+
+        calculateStatisticsInformation(statistics);
+
+        return statistics;
     }
 
     public final void purge() {
         this.entityManager.createQuery("delete from session s").executeUpdate();
     }
+
+    /**
+     * Allows subclasses to calculate the statistic information for sessions.  The access ones are already calculated via the method above.
+     *
+     * @param sessionStorageStatistics the storage statistics to update.
+     */
+    protected abstract void calculateStatisticsInformation(DefaultSessionStorageStatisticsImpl sessionStorageStatistics);
 }

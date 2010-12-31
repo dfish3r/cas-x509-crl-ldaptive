@@ -42,7 +42,7 @@
             <body onload="window.setTimeout('doRedirect()', ${redirectTime});">
             <script type="text/javascript">
                 function doRedirect() {
-                    window.location.href = "${accessResponseResult.url}";
+                    window.location.href = "<c:out value="${accessResponseResult.url}" escapeXml="true" />";
                 }
             </script>
         </c:when>

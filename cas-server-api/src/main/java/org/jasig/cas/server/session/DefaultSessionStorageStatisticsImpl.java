@@ -86,4 +86,20 @@ public final class DefaultSessionStorageStatisticsImpl implements SessionStorage
     public void incrementCountOfUsedAccesses() {
         this.countOfUsedAccesses++;
     }
+
+    public void setCountOfActiveSessions(final int countOfActiveSessions) {
+        this.countOfActiveSessions = countOfActiveSessions;
+    }
+
+    public void setCountOfInactiveSessions(final int countOfInactiveSessions) {
+        this.countOfInactiveSessions = countOfInactiveSessions;
+    }
+
+    public void setCountOfUnusedAccesses(final int countOfUnusedAccesses) {
+        this.countOfUnusedAccesses = countOfUnusedAccesses;
+    }
+
+    public void setCountOfUsedAccesses(final int countOfUsedAccesses) {
+        this.countOfUsedAccesses = countOfUsedAccesses;
+    }
 }

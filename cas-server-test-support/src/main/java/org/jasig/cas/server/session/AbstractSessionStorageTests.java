@@ -149,6 +149,11 @@ public abstract class AbstractSessionStorageTests extends TestCase {
     }
 
     @Test
+    public final void testRetrieveStats() {
+        getSessionStorage().getSessionStorageStatistics();
+    }
+
+    @Test
     public final void testCleanable() {
         final SessionStorage sessionStorage = getSessionStorage();
 
