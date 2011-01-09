@@ -252,7 +252,6 @@ public abstract class AbstractSessionTests {
         assertNotNull(session.getProxiedAuthentications());
         assertFalse(session.getProxiedAuthentications().isEmpty());
         assertTrue(session.getProxiedAuthentications().contains(session.getAuthentications()));
-        // TODO why was this swapped with the one above? assertFalse(session.getProxiedAuthentications().contains(this.session.getAuthentications()));
 
         assertNotNull(session.getProxiedPrincipals());
         assertFalse(session.getProxiedPrincipals().isEmpty());

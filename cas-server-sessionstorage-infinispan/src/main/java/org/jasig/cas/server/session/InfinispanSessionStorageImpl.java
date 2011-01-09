@@ -35,7 +35,6 @@ import java.util.*;
  * @since 3.5
  */
 
-// TODO attach to eviction thread to
 public final class InfinispanSessionStorageImpl extends AbstractSerializableSessionStorageImpl {
 
     private final Cache<String,SerializableSessionImpl> cache;
@@ -163,7 +162,16 @@ public final class InfinispanSessionStorageImpl extends AbstractSerializableSess
    }
 
     public Session updateSession(final Session session) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // update access ids
+        for (final Access access : session.getAccesses()) {
+            this.cacheMappings.put(access.getId(), session.getId());
+        }
+
+        // persist the parent session
+        final Session rootSession = session.getRootSession();
+        this.cache.put(rootSession.getId(), (SerializableSessionImpl) rootSession);
+
+        return session;
     }
 
     public void purge() {

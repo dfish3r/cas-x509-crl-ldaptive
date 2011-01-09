@@ -30,11 +30,11 @@ import org.springframework.core.io.Resource;
 import javax.validation.constraints.NotNull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: scottbattaglia
- * Date: 11/28/10
- * Time: 10:10 PM
- * To change this template use File | Settings | File Templates.
+ * Abstract class to support Infinispan Cache.
+ *
+ * @author Scott Battaglia
+ * @version $Revision$ $Date$
+ * @since 4.0.0
  */
 public abstract class AbstractEmbeddedCacheManagerFactoryBean implements FactoryBean<Cache>, InitializingBean, DisposableBean {
 

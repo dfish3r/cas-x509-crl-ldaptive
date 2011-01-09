@@ -72,7 +72,16 @@ public final class EhcacheSessionStorageImpl extends AbstractSerializableSession
     }
 
     public Session updateSession(final Session session) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // update access ids
+        for (final Access access : session.getAccesses()) {
+            this.cacheMappings.put(new Element(access.getId(), session.getId()));
+        }
+
+        // persist the parent session
+        final Session rootSession = session.getRootSession();
+        this.cache.put(new Element(rootSession.getId(), rootSession));
+
+        return session;
     }
 
     public void purge() {
@@ -81,7 +90,6 @@ public final class EhcacheSessionStorageImpl extends AbstractSerializableSession
         this.principalMappings.removeAll();
     }
 
-    // TODO do we want a cache to store information about the statistics?
     public SessionStorageStatistics getSessionStorageStatistics() {
         return DefaultSessionStorageStatisticsImpl.INVALID_STATISTICS;
     }

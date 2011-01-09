@@ -266,12 +266,14 @@ public class MemcachedSessionStorageImpl extends AbstractSerializableSessionStor
         return session;
     }
 
-    // TODO double check that this is correct.
+    // note that we save child sessions separately.
     public Session updateSession(final Session session) {
+        // update access ids
         for (final Access access : session.getAccesses()) {
             this.memcachedClient.set(ACCESS_PREFIX + access.getId(), this.sessionTimeOut, session.getId());
         }
 
+        // persist the parent session
         final Session rootSession = session.getRootSession();
         handleSynchronousRequest(this.memcachedClient.set(rootSession.getId(), this.sessionTimeOut, rootSession));
 
