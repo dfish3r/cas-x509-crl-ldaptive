@@ -86,5 +86,4 @@ public final class X509CertificateCredentialsToIdentifierPrincipalResolver exten
     public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
-
 }
