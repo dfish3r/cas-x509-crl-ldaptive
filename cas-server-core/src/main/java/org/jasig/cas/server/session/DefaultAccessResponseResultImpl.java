@@ -70,7 +70,9 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
             final StringBuilder stringBuilder = new StringBuilder();
             boolean firstParam = true;
 
-            stringBuilder.append(this.url);
+            final String[] splitFragment = this.url.split("#");
+
+            stringBuilder.append(splitFragment[0]);
 
             for (final Map.Entry<String, List<String>> entry : getParameters().entrySet()) {
                 final String keyValues = parseEntriesForItem(entry.getKey(), entry.getValue());
@@ -83,6 +85,11 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
                 }
 
                 stringBuilder.append(keyValues);
+            }
+
+            if (splitFragment.length > 1) {
+                stringBuilder.append("#");
+                stringBuilder.append(splitFragment[1]);
             }
 
             return stringBuilder.toString();
