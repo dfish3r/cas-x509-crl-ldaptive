@@ -36,17 +36,17 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Unit test for {@link X509CertificateCredentialsToSubjectPrinciplalResolver}.
+ * Unit test for {@link X509CertificateCredentialsToSubjectPrincipalResolver}.
  *
  * @author Marvin S. Addison
  * @version $Revision$ $Date$
  *
  */
 @RunWith(Parameterized.class)
-public class X509CertificateCredentialsToSubjectPrinciplalResolverTests {
+public final class X509CertificateCredentialsToSubjectPrincipalResolverTests {
     
     private X509Certificate certificate;
-    private X509CertificateCredentialsToSubjectPrinciplalResolver resolver;
+    private X509CertificateCredentialsToSubjectPrincipalResolver resolver;
     private String expected;
 
     /**
@@ -56,12 +56,12 @@ public class X509CertificateCredentialsToSubjectPrinciplalResolverTests {
      * @param descriptor
      * @param expectedResult
      */
-    public X509CertificateCredentialsToSubjectPrinciplalResolverTests(
-        final String certPath,
-        final String descriptor,
-        final String expectedResult) {
+    public X509CertificateCredentialsToSubjectPrincipalResolverTests(
+            final String certPath,
+            final String descriptor,
+            final String expectedResult) {
        
-        this.resolver = new X509CertificateCredentialsToSubjectPrinciplalResolver(new AttributePrincipalFactory() {
+        this.resolver = new X509CertificateCredentialsToSubjectPrincipalResolver(new AttributePrincipalFactory() {
             public AttributePrincipal getAttributePrincipal(String name) {
                 return TestUtils.getPrincipal(name);
             }

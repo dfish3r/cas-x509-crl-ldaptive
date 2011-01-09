@@ -48,8 +48,7 @@ import edu.vt.middleware.crypt.x509.types.AttributeType;
  * @since 3.4.5
  *
  */
-public class X509CertificateCredentialsToSubjectPrinciplalResolver
-    extends AbstractX509CertificateCredentialsToPrincipalResolver {
+public final class X509CertificateCredentialsToSubjectPrincipalResolver extends AbstractX509CertificateCredentialsToPrincipalResolver {
    
     /** Pattern used to extract attribute names from descriptor */
     private static final Pattern ATTR_PATTERN = Pattern.compile("\\$(\\w+)");
@@ -64,7 +63,7 @@ public class X509CertificateCredentialsToSubjectPrinciplalResolver
      * 
      * @param attributePrincipalFactory Principal factory.
      */
-    public X509CertificateCredentialsToSubjectPrinciplalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
+    public X509CertificateCredentialsToSubjectPrincipalResolver(final AttributePrincipalFactory attributePrincipalFactory) {
         super(attributePrincipalFactory);
     }
 
@@ -77,7 +76,7 @@ public class X509CertificateCredentialsToSubjectPrinciplalResolver
      * EXAMPLE:
      * <p>
      * <pre>
-     * <bean class="org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentialsToSubjectPrinciplalResolver"
+     * <bean class="org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentialsToSubjectPrincipalResolver"
      *   p:descriptor="$UID@$DC.$DC" />
      * </pre>
      * <p>
@@ -140,13 +139,13 @@ public class X509CertificateCredentialsToSubjectPrinciplalResolver
         return sb.toString();
     }
     
-    private static final class AttributeContext
-    {
+    private static final class AttributeContext {
         private int currentIndex;
-        private String name;
-        private String[] values;
+        private final String name;
+        private final String[] values;
         
         public AttributeContext(final String name, final String[] values) {
+            this.name = name;
             this.values = values;
         }
         
