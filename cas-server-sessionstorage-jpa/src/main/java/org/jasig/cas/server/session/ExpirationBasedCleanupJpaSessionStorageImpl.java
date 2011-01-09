@@ -50,30 +50,70 @@ public final class ExpirationBasedCleanupJpaSessionStorageImpl extends AbstractJ
     @Transactional
     @Scheduled(fixedDelay = 5000000)
     public void prune() {
-        final Query query  = getEntityManager().createQuery("select s from session s where s.parentSession is null order by s.id");
-        query.setMaxResults(this.batchSize);
+        final List<String> ids = new ArrayList<String>();
+        final PaginationResult<Session> sessions = findSessions(1);
 
-        boolean moreResults = true;
-        for (int page = 0; moreResults; page++) {
-            query.setFirstResult(page * this.batchSize);
-            final List<Session> listSessions = (List<Session>) query.getResultList();
-            final List<String> ids = new ArrayList<String>();
+        populateExpiredIds(sessions.getItems(), ids);
 
-            for (final Session session : listSessions) {
-                ids.add(session.getId());
-            }
+        if (sessions.getCurrentPage() == sessions.getNumberOfPages()) {
+            return;
+        }
 
-            getEntityManager().createQuery("delete from session s where s.sessionId in (:idList)").setParameter("idList", ids).executeUpdate();
+        for (int i = 2; i <= sessions.getNumberOfPages(); i++) {
+            final PaginationResult<Session> pageSessions = findSessions(i);
+            populateExpiredIds(pageSessions.getItems(), ids);
+        }
 
-            if (listSessions.size() < this.batchSize) {
-                moreResults = false;
+        getEntityManager().createQuery("delete from session s where s.sessionId in (:idList)").setParameter("idList", ids).executeUpdate();
+    }
+
+    private void populateExpiredIds(final List<Session> sessions, final List<String> ids) {
+        for (final Session session : sessions) {
+            ids.add(session.getId());
+        }
+    }
+
+    private void populateStatistics(final List<Session> sessions, final DefaultSessionStorageStatisticsImpl statistics) {
+        for (final Session session : sessions) {
+            if (!session.isValid()) {
+                statistics.incrementCountOfInactiveSessions();
+            } else {
+                statistics.incrementCountOfActiveSessions();
             }
         }
     }
 
+    private PaginationResult<Session> findSessions(final int page) {
+        final Long maxNumber = (Long) getEntityManager().createQuery("select count(s) from session s where s.parentSession is null").getSingleResult();
+
+        if (page * this.batchSize > maxNumber) {
+            return PaginationResult.emptyPaginationResult();
+        }
+
+        final Query query  = getEntityManager().createQuery("select s from session s where s.parentSession is null order by s.id");
+        query.setMaxResults(this.batchSize);
+
+        query.setFirstResult(page * this.batchSize);
+        final List<Session> listSessions = (List<Session>) query.getResultList();
+        final int totalNumberOfPages = (int) Math.ceil(maxNumber / this.batchSize);
+
+        return new PaginationResult<Session>(listSessions, maxNumber.intValue(), totalNumberOfPages, page);
+    }
+
     @Override
     protected void calculateStatisticsInformation(final DefaultSessionStorageStatisticsImpl sessionStorageStatistics) {
-        // TODO we need to calculate this
+        final PaginationResult<Session> sessions = findSessions(1);
+
+        populateStatistics(sessions.getItems(), sessionStorageStatistics);
+
+        if (sessions.getCurrentPage() == sessions.getNumberOfPages()) {
+            return;
+        }
+
+        for (int i = 2; i <= sessions.getNumberOfPages(); i++) {
+            final PaginationResult<Session> pageSessions = findSessions(i);
+            populateStatistics(pageSessions.getItems(), sessionStorageStatistics);
+        }
     }
 
     public void setBatchSize(final int batchSize) {
