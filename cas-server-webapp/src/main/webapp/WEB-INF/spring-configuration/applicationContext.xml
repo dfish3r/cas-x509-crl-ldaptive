@@ -57,10 +57,6 @@
           p:readTimeout="5000"
           p:connectionTimeout="5000"/>
 
-    <bean id="persistentIdGenerator"
-          class="org.jasig.cas.server.authentication.ShibbolethCompatiblePersistentIdGenerator"
-          p:salt="casrocks"/>
-
     <!-- ADVISORS -->
     <bean id="advisorAutoProxyCreator"
           class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>

@@ -22,11 +22,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page session="true" %>
 <%@ page pageEncoding="UTF-8" %>
+<%@ page import="org.jasig.cas.server.CasVersion" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <spring:theme code="mobile.custom.css.file" var="mobileCss" text="" />
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 	<head>
@@ -57,3 +59,27 @@
                     <h2 id="app-name-description" class="fl-table-cell"><span>Providing single secure sign-on for your on-line applications</span></h2>
                 </div>
                 <div id="content" class="fl-container-flex fl-col-mixed">
+                    <tiles:insertAttribute name="content" />
+
+                </div>
+                <div id="footer">
+                    <div>
+                        <p>
+                            Copyright &copy; 2005 - 2010 Jasig, Inc. All rights reserved.
+                        </p>
+                        <p>
+                            Powered by <a href="http://www.jasig.org/cas">Jasig Central Authentication Service <%=CasVersion.getVersion()%></a>
+                        </p>
+                    </div>
+                    <a title="go to Jasig home page" href="http://www.jasig.org"><span>Jasig Logo</span></a>
+                </div>
+            </div>
+         </div>
+         <script>
+             $(document).ready(function(){
+             window.console && window.console.log($, fluid);
+             var cas_behavior = flc_cas.casUI($('body'), {});
+             });
+        </script>
+    </body>
+</html>

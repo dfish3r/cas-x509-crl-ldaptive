@@ -650,5 +650,6 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
         <jboss.infinispan.version>4.1.0.FINAL</jboss.infinispan.version>
         <javax.inject.version>1</javax.inject.version>
         <commons.io.version>2.0</commons.io.version>
+        <apache.tiles.version>2.2.2</apache.tiles.version>
 	</properties>
 </project>

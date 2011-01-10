@@ -1,0 +1,9 @@
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+
+
+    <definition name="org.jasig.cas.login.view" template="/WEB-INF/view/jsp/default/ui/base.jsp">
+        <put-attribute name="title.code" value="org.jasig.cas.login.view.title.code" />
+        <put-attribute name="content" value="/WEB-INF/view/jsp/default/ui/login-body.jsp" />
+    </definition>
+ </tiles-definitions>

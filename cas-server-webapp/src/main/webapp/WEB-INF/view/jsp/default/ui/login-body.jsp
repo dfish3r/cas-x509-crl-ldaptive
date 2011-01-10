@@ -19,14 +19,11 @@
 
 --%>
 
-<%@ page import="java.util.Map" %>
-<%@ page import="java.util.HashMap" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
-<jsp:directive.include file="includes/top.jsp" />
 <form:form id="fm1" cssClass="fl-col-fixed-300 fl-force-left" method="post" commandName="${commandName}" htmlEscape="true">
     <form:errors path="*" cssClass="errors" id="status" element="div" />
     <div class="box fl-panel" id="login">
@@ -76,7 +73,7 @@
         <%
             final String queryString = request.getQueryString() == null ? "" : request.getQueryString().replaceAll("&locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]|^locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]", "");
             final java.util.Map<String,String> languages = new java.util.HashMap<String,String>();
-            
+
            languages.put("en", "English");
            languages.put("es", "Spanish");
            languages.put("fr", "French");
@@ -103,7 +100,7 @@
         <c:set var="loginUrl" value="login?${xquery}${not empty xquery ? '&' : ''}locale=" />
 
         <div class="fl-widget-titlebar widget-titlebar">
-            <a title="" href="javascript:;" role="menuitem" tabindex="0"><h3>Languages:</h3> <span id="current_language"><c:out value="${languages[currentLanguage]}" default="English" /> </span></a>
+            <a title="" href="javascript:" role="menuitem" tabindex="0"><h3>Languages:</h3> <span id="current_language"><c:out value="${languages[currentLanguage]}" default="English" /> </span></a>
         </div>
         <div class="fl-widget-content widget-content">
             <ul class="fl-listmenu widget-listmenu" role="presentation">
@@ -134,4 +131,3 @@
         });
     </script>
 </div>
-<jsp:directive.include file="includes/bottom.jsp" />

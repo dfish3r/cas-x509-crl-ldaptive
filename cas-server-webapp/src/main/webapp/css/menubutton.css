@@ -19,27 +19,27 @@
 
 /**
  * :focus
- * OVERRIDE: overrides the :focus implemenation inherited 
+ * OVERRIDE: overrides the :focus implemenation inherited
  * from fl-theme-mist.
  ---------------------------------------------------*/
  .menubutton :focus, .menubutton .selectable{outline: 1px dotted #000;}
 
 /**
  * .menubutton
- * OVERRIDE: overrides the fl-widget implemenation inherited 
+ * OVERRIDE: overrides the fl-widget implemenation inherited
  * from fl-theme-mist.
  ---------------------------------------------------*/
  .menubutton {font-size:12px; background: transparent; border: none; padding: 0em; -webkit-border-radius: 0px; -moz-border-radius: 0px; border-radius: 0px; position: relative;}
  .menubutton .widget-titlebar {border: 1px solid #808080; padding: .44em; background: #D8D8D8 url("../images/menubutton-bkd.png") top left repeat-x;
     background-image: -moz-linear-gradient(100% 0% 270deg,#FFFFFF,#D8D8D8); background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,from(#FFFFFF),to(#D8D8D8));
-    box-shadow: 1px 1px 3px #dddddd; -moz-box-shadow: 1px 1px 3px #dddddd; -webkit-box-shadow: 1px 1px 3px #dddddd; -webkit-border-radius: 3px; 
+    box-shadow: 1px 1px 3px #dddddd; -moz-box-shadow: 1px 1px 3px #dddddd; -webkit-box-shadow: 1px 1px 3px #dddddd; -webkit-border-radius: 3px;
     -moz-border-radius: 3px; border-radius: 3px; cursor: pointer;}
  .menubutton .widget-titlebar a,  .menubutton .widget-titlebar a:hover{
     color:#000; text-decoration:none; background: transparent url("../images/menubutton-arrow.gif") right 50% no-repeat; padding-right:1.25em; white-space:nowrap; display:inline-block;}
 
 /**
  * .widget-listmenu
- * OVERRIDE: overrides the .fl-listmenu implemenation inherited 
+ * OVERRIDE: overrides the .fl-listmenu implemenation inherited
  * from fl-theme-mist.
  ---------------------------------------------------*/
  .menubutton .fl-widget-titlebar a {color:#005070;}
