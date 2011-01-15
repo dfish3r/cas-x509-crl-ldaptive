@@ -65,17 +65,17 @@ public final class ValidationController {
         this.centralAuthenticationService = centralAuthenticationService;
     }
 
-    @RequestMapping(method=RequestMethod.GET, value="/validate")
+    @RequestMapping(method=RequestMethod.GET, value="/**/validate")
     public final ModelAndView validateCas10Request(@RequestParam(value="renew",required=false, defaultValue = "false") final boolean renew, @RequestParam(value="service",required=true) final String service, @RequestParam(value="ticket",required=true) final String ticket, final HttpServletRequest request, final Writer writer) throws IOException {
         return validateRequest(renew, service, ticket, CasProtocolVersion.CAS1, request, writer);
     }
 
-    @RequestMapping(method=RequestMethod.GET, value="/serviceValidate")
+    @RequestMapping(method=RequestMethod.GET, value="/**/serviceValidate")
     public final ModelAndView validateCas20Request(@RequestParam(value="renew",required=false,defaultValue = "false") final boolean renew, @RequestParam(value="service",required=true) final String service, @RequestParam(value="ticket",required=true) final String ticket, @RequestParam(value="pgtUrl",required=false) final String pgtUrl, final HttpServletRequest request, final Writer writer) {
         return validateRequest(renew, service, ticket, CasProtocolVersion.CAS2, request, writer);
     }
 
-    @RequestMapping(method= RequestMethod.GET, value="/proxyValidate")
+    @RequestMapping(method= RequestMethod.GET, value="/**/proxyValidate")
     public final ModelAndView validateCasProxyTicketRequest(@RequestParam(value="renew",required=false,defaultValue = "false") final boolean renew, @RequestParam(value="service",required=true) final String service, @RequestParam(value="ticket",required=true) final String ticket, @RequestParam(value="pgtUrl",required=false) final String pgtUrl, final HttpServletRequest request, final Writer writer) {
         return validateRequest(renew, service, ticket, CasProtocolVersion.CAS2_WITH_PROXYING, request, writer);
     }

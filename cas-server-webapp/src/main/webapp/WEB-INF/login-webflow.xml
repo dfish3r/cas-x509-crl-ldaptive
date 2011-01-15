@@ -43,7 +43,7 @@
         <if test="loginRequest.forceAuthentication" then="viewLoginForm" else="generateAccess" />
     </decision-state>
 
-	<view-state id="viewLoginForm" view="casLoginView" model="credentials">
+	<view-state id="viewLoginForm" view="org.jasig.cas.login.view" model="credentials">
         <var name="credentials" class="org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential" />
         <binder>
             <binding property="userName" required="true" />
@@ -77,7 +77,7 @@
         <transition to="returnToApplication" />
     </action-state>
 
-    <end-state id="returnToApplication" view="casReturnToApplication">
+    <end-state id="returnToApplication" view="org.jasig.cas.login.redirect">
         <on-entry>
             <evaluate expression="accessResponseGenerator.generateAccessResponseResult(externalContext, serviceAccessResponse)" result-type="org.jasig.cas.server.session.AccessResponseResult" result="requestScope.accessResponseResult" />
         </on-entry>
@@ -92,11 +92,11 @@
 		the "viewGenericLogin" is the end state for when a user attempts to login without coming directly from a service.
 		They have only initialized their single-sign on session.
 	-->
-	<end-state id="viewGenericLoginSuccess" view="casLoginGenericSuccessView" />
+	<end-state id="viewGenericLoginSuccess" view="org.jasig.cas.login.success" />
 
-	<end-state id="viewServiceErrorView" view="viewServiceErrorView" />
+	<end-state id="viewServiceErrorView" view="org.jasig.cas.login.service.error" />
     
-    <end-state id="viewServiceSsoErrorView" view="viewServiceSsoErrorView" />
+    <end-state id="viewServiceSsoErrorView" view="org.jasig.cas.login.service.error.sso" />
 
 	<global-transitions>
 		<transition to="viewServiceErrorView" on-exception="org.springframework.webflow.execution.repository.NoSuchFlowExecutionException" />

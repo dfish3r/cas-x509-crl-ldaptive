@@ -19,11 +19,16 @@
 
 --%>
 
-<jsp:directive.include file="includes/top.jsp" />
-		<div id="msg" class="success">
-			<h2><spring:message code="screen.success.header" /></h2>
-			<p><spring:message code="screen.success.success" /></p>
-			<p><spring:message code="screen.success.security" /></p>
-		</div>
-<jsp:directive.include file="includes/bottom.jsp" />
-
+<%@ page pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="org.springframework.security.web.WebAttributes" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<div class="errors" id="status">
+	<h2>Authorization Failure</h2>
+	<p>You are not authorized to use this application for the following reason: 
+	<%final Exception e = (Exception) request.getSession().getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+    request.setAttribute("e", e);%>
+<c:out value="${e.message}" escapeXml="true" />.
+	</p>
+	<p>
+</div>

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -52,7 +51,7 @@ import org.springframework.web.servlet.view.RedirectView;
 public final class ManageRegisteredServicesMultiActionController {
 
     /** View name for the Manage Services View. */
-    private static final String VIEW_NAME = "manageServiceView";
+    private static final String VIEW_NAME = "org.jasig.cas.services.manage";
 
     /** Instance of ServicesManager. */
     @NotNull

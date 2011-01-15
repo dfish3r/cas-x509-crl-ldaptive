@@ -28,6 +28,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -67,7 +68,7 @@
 				.hint {margin-left:9.5em; margin-bottom:1em; line-height:1.5;}
 				.actions {margin:1.5em 0;}
 				#allowedAttributes {height:150px;}
-				
+
 				}
 }
 </style>
@@ -107,3 +108,5 @@
 <!-- CONTENT -->
 <div id="content">
   <h1><spring:message code="${pageTitle}" text="Logged Out" /></h1>
+
+    <tiles:insertAttribute name="content" />

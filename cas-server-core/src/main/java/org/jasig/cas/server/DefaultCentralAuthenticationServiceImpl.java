@@ -20,6 +20,7 @@
 package org.jasig.cas.server;
 
 import com.github.inspektr.audit.annotation.Audit;
+import org.apache.commons.lang.StringUtils;
 import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.login.*;
 import org.jasig.cas.server.logout.DefaultLogoutResponseImpl;
@@ -135,7 +136,13 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
     @Audit(action="DESTROY_SESSION",actionResolverName="DESTROY_SESSION_RESOLVER",resourceResolverName="DESTROY_SESSION_RESOURCE_RESOLVER")
     @Profiled(tag = "DESTROY_SESSION",logFailuresSeparately = false)
     public LogoutResponse logout(final LogoutRequest logoutRequest) {
-        final Session session = this.sessionStorage.destroySession(logoutRequest.getSessionId());
+        final String sessionId = logoutRequest.getSessionId();
+
+        if (sessionId == null || sessionId.isEmpty()) {
+            return new DefaultLogoutResponseImpl();
+        }
+
+        final Session session = this.sessionStorage.destroySession(sessionId);
 
         if (session != null) {
             session.invalidate();

@@ -18,7 +18,8 @@
     under the License.
 
 --%>
-
-<jsp:directive.include file="includes/top.jsp" />
-<div class="info"><p><spring:message code="screen.confirmation.message" arguments="${fn:escapeXml(param.service)}${fn:indexOf(param.service, '?') eq -1 ? '?' : '&'}ticket=${serviceTicketId}" /></p></div>
-<jsp:directive.include file="includes/bottom.jsp" />
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<div id="status" class="errors">
+    <h2><spring:message code="screen.service.error.header" /></h2>
+    <p><spring:message code="screen.service.error.message" /></p>
+</div>

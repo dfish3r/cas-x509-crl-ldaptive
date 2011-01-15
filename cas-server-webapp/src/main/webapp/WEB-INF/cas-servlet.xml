@@ -25,71 +25,81 @@
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
-       http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd">
-    
+       http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
     <mvc:annotation-driven />
 
+    <context:component-scan base-package="org.jasig.cas.server.web" />
+
+    <context:component-scan base-package="org.jasig.cas.server.logout" />
+
     <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter"
-        p:flowExecutor-ref="flowExecutor"
-        p:flowUrlHandler-ref="flowUrlHandler" />
+          p:flowExecutor-ref="flowExecutor"
+          p:flowUrlHandler-ref="flowUrlHandler"/>
 
-    <bean class="org.springframework.web.servlet.theme.FixedThemeResolver" id="themeResolver" p:defaultThemeName="cas-theme-default"/>
+    <bean class="org.springframework.web.servlet.theme.FixedThemeResolver" id="themeResolver"
+          p:defaultThemeName="cas-theme-default"/>
 
-    <bean id="flowUrlHandler" class="org.jasig.cas.server.util.CasDefaultFlowUrlHandler" />
+    <bean id="flowUrlHandler" class="org.jasig.cas.server.util.CasDefaultFlowUrlHandler"/>
 
     <webflow:flow-executor id="flowExecutor" flow-registry="flowRegistry">
         <webflow:flow-execution-attributes>
-            <webflow:always-redirect-on-pause value="false" />
+            <webflow:always-redirect-on-pause value="false"/>
         </webflow:flow-execution-attributes>
     </webflow:flow-executor>
 
-    <webflow:flow-registry id="flowRegistry" flow-builder-services="builder" >
-        <webflow:flow-location path="/WEB-INF/login-webflow.xml" id="login" />
+    <webflow:flow-registry id="flowRegistry" flow-builder-services="builder">
+        <webflow:flow-location path="/WEB-INF/login-webflow.xml" id="login"/>
     </webflow:flow-registry>
 
-    <webflow:flow-builder-services id="builder" view-factory-creator="viewFactoryCreator" />
+    <webflow:flow-builder-services id="builder" view-factory-creator="viewFactoryCreator"/>
 
     <bean id="viewFactoryCreator" class="org.springframework.webflow.mvc.builder.MvcViewFactoryCreator">
         <property name="viewResolvers">
             <list>
-                <ref local="viewResolver" />
-                <ref local="urlBasedViewResolver" />
+                <ref local="tilesViewResolver" />
+                <ref local="viewResolver"/>
+                <ref local="urlBasedViewResolver"/>
             </list>
         </property>
     </bean>
 
+    <bean id="tilesViewResolver" class="org.springframework.web.servlet.view.tiles2.TilesViewResolver"
+            p:viewClass="org.springframework.web.servlet.view.tiles2.TilesView" p:order="0" />
+
     <bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver"
-        p:order="0">
+          p:order="1">
         <property name="basenames">
             <list>
-                <value>default_views</value>
                 <value>protocol_views</value>
             </list>
         </property>
     </bean>
 
     <bean id="urlBasedViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"
-        p:viewClass="org.springframework.web.servlet.view.InternalResourceView"
-        p:prefix="/WEB-INF/view/jsp/"
-        p:suffix=".jsp"
-        p:order="1" />
+          p:viewClass="org.springframework.web.servlet.view.InternalResourceView"
+          p:prefix="/WEB-INF/view/jsp/"
+          p:suffix=".jsp"
+          p:order="2"/>
 
     <!-- Locale Resolver -->
-    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/>
 
-    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
 
-    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping" p:flowRegistry-ref="flowRegistry" p:order="2">
+    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping" p:flowRegistry-ref="flowRegistry"
+          p:order="2">
         <property name="interceptors">
-            <ref local="localeChangeInterceptor" />
+            <ref local="localeChangeInterceptor"/>
         </property>
     </bean>
 
     <bean id="credentialsValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="messageInterpolator">
-            <bean class="org.jasig.cas.server.util.SpringAwareMessageMessageInterpolator" />
+            <bean class="org.jasig.cas.server.util.SpringAwareMessageMessageInterpolator"/>
         </property>
     </bean>
 
@@ -97,12 +107,20 @@
         <property name="definitions">
             <list>
                 <value>WEB-INF/tiles-defs/login.xml</value>
+                <value>WEB-INF/tiles-defs/errors.xml</value>
+                <value>WEB-INF/tiles-defs/services.xml</value>
             </list>
 
         </property>
     </bean>
 
-    <mvc:view-controller path="/services/loggedOut.html" view-name="serviceLogoutView" />
+    <mvc:view-controller path="/403" view-name="org.jasig.cas.login.blocked" />
 
-    <mvc:view-controller path="/authorizationFailure.html" view-name="authorizationFailure" />
+    <mvc:view-controller path="/404" view-name="org.jasig.cas.errors.404" />
+
+    <mvc:view-controller path="/500" view-name="org.jasig.cas.errors.500" />
+
+    <mvc:view-controller path="/services/loggedOut.html" view-name="serviceLogoutView"/>
+
+    <mvc:view-controller path="/authorizationFailure.html" view-name="org.jasig.cas.errors.authorization"/>
 </beans>

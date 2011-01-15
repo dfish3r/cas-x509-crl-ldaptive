@@ -149,7 +149,7 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>cas</servlet-name>
 		<url-pattern>/login</url-pattern>
@@ -169,7 +169,7 @@
 		<servlet-name>cas</servlet-name>
 		<url-pattern>/serviceValidate</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet-mapping>
 		<servlet-name>cas</servlet-name>
 		<url-pattern>/samlValidate</url-pattern>
@@ -189,7 +189,7 @@
 		<servlet-name>cas</servlet-name>
 		<url-pattern>/CentralAuthenticationService</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet-mapping>
 		<servlet-name>cas</servlet-name>
 		<url-pattern>/services/add.html</url-pattern>
@@ -205,17 +205,17 @@
 		<servlet-name>cas</servlet-name>
 		<url-pattern>/services/logout.html</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet-mapping>
 		<servlet-name>cas</servlet-name>
 		<url-pattern>/services/loggedOut.html</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet-mapping>
 		<servlet-name>cas</servlet-name>
 		<url-pattern>/services/manage.html</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet-mapping>
 		<servlet-name>cas</servlet-name>
 		<url-pattern>/services/edit.html</url-pattern>
@@ -236,6 +236,21 @@
         <url-pattern>/authorizationFailure.html</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>cas</servlet-name>
+        <url-pattern>/403</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>cas</servlet-name>
+        <url-pattern>/404</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>cas</servlet-name>
+        <url-pattern>/500</url-pattern>
+    </servlet-mapping>
+
 	<session-config>
 		<!-- Default to 5 minute session timeouts -->
 		<session-timeout>1</session-timeout>
@@ -243,17 +258,17 @@
 
 	<error-page>
         <error-code>500</error-code>
-		<location>/WEB-INF/view/jsp/errors.jsp</location>
+		<location>/500</location>
 	</error-page>
 
 	<error-page>
 		<error-code>404</error-code>
-		<location>/</location>
+		<location>/404</location>
 	</error-page>
 
     <error-page>
         <error-code>403</error-code>
-        <location>/WEB-INF/view/jsp/default/ui/casBlockedView.jsp</location>
+        <location>/403</location>
     </error-page>
 	
 	<welcome-file-list>

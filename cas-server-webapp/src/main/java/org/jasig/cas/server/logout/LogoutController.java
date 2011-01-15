@@ -25,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -59,17 +60,16 @@ public final class LogoutController {
         this.sessionCookieGenerator = sessionCookieGenerator;
     }
 
-@RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public ModelMap logout(final HttpServletRequest request, final HttpServletResponse response) {
+    @RequestMapping(value = "/**/logout", method = RequestMethod.GET)
+    public ModelAndView logout(final HttpServletRequest request, final HttpServletResponse response) {
         final String sessionId = this.sessionCookieGenerator.retrieveCookieValue(request);
         final LogoutRequest logoutRequest = new DefaultLogoutRequestImpl(sessionId);
         final LogoutResponse logoutResponse = this.centralAuthenticationService.logout(logoutRequest);
 
-        final ModelMap modelMap = new ModelMap();
-        modelMap.addAttribute("logoutResponse", logoutResponse);
-        modelMap.addAttribute("followServiceRedirects", this.followServiceRedirects);
-
-        return modelMap;
+        final ModelAndView modelAndView = new ModelAndView("org.jasig.cas.logout.view");
+        modelAndView.addObject("logoutResponse", logoutResponse);
+        modelAndView.addObject("followServiceRedirects", this.followServiceRedirects);
+        return modelAndView;
     }
 
     public void setFollowServiceRedirects(final boolean followServiceRedirects) {

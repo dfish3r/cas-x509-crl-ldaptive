@@ -72,7 +72,7 @@ public final class StatisticsController implements EmbeddedValueResolverAware {
 
     @RequestMapping(method = RequestMethod.GET, value = "/services/viewStatistics.html")
     protected ModelAndView viewStatistics(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse) throws Exception {
-        final ModelAndView modelAndView = new ModelAndView("viewStatisticsView");
+        final ModelAndView modelAndView = new ModelAndView("org.jasig.cas.services.view.statistics");
         modelAndView.addObject("startTime", this.upTimeStartDate);
         final double difference = System.currentTimeMillis() - this.upTimeStartDate.getTime();
 

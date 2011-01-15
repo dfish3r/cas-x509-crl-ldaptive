@@ -65,8 +65,8 @@ public final class RegisteredServiceSimpleFormController extends SimpleFormContr
         this.servicesManager = servicesManager;
         this.personAttributeDao = attributeRepository;
         setCommandName("registeredService");
-        setSuccessView("addServiceView");
-        setFormView("addServiceView");
+        setSuccessView("org.jasig.cas.services.add");
+        setFormView("org.jasig.cas.services.add");
         setValidator(new RegisteredServiceValidator(servicesManager));
     }
 

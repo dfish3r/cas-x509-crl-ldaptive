@@ -1,0 +1,17 @@
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition name="org.jasig.cas.errors.404" template="/WEB-INF/view/jsp/default/ui/base.jsp">
+        <put-attribute name="title.code" value="org.jasig.cas.errors.404.title.code" />
+        <put-attribute name="content" value="/WEB-INF/view/jsp/default/ui/404.jsp" />
+    </definition>
+
+    <definition name="org.jasig.cas.errors.500" template="/WEB-INF/view/jsp/default/ui/base.jsp">
+        <put-attribute name="title.code" value="org.jasig.cas.errors.500.title.code" />
+        <put-attribute name="content" value="/WEB-INF/view/jsp/default/ui/errors.jsp" />
+    </definition>
+
+    <definition name="org.jasig.cas.errors.authorization" template="/WEB-INF/view/jsp/default/ui/base.jsp">
+        <put-attribute name="title.code" value="org.jasig.cas.errors.authorization.title.code" />
+        <put-attribute name="content" value="/WEB-INF/view/jsp/default/ui/authorization-failure.jsp" />
+    </definition>
+</tiles-definitions>
