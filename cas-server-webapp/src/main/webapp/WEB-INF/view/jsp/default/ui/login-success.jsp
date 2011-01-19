@@ -18,6 +18,7 @@
     under the License.
 
 --%>
+
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <div id="msg" class="success">
     <h2><spring:message code="screen.success.header" /></h2>

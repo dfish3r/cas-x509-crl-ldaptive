@@ -82,43 +82,27 @@ public final class ValidationController {
 
     protected final ModelAndView validateRequest(final boolean renew, final String service, final String ticket, final CasProtocolVersion casVersion, final HttpServletRequest request, final Writer writer) {
 
-        if (!StringUtils.hasText(ticket) || !StringUtils.hasText(service)) {
-            logger.debug("Invalid request");
-            writeErrorResponse("INVALID_REQUEST", "service and ticket are required parameters.", casVersion, writer);
-            return null;
+        final CasTokenServiceAccessRequestImpl casTokenServiceAccessRequest = new CasTokenServiceAccessRequestImpl(casVersion, ticket, service, request.getRemoteAddr(), renew);
+        final Access access = this.centralAuthenticationService.validate(casTokenServiceAccessRequest);
+
+        logger.debug(String.format("Successfully validated: %s", ticket));
+        final Session proxySession;
+        final Credential proxyCredential = createProxyCredential(request);
+        if (proxyCredential != null) {
+            final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, request.getRemoteAddr(), false, access);
+            loginRequest.getCredentials().add(proxyCredential);
+            final LoginResponse loginResponse = this.centralAuthenticationService.login(loginRequest);
+            proxySession = loginResponse.getSession();
+        } else {
+            proxySession = null;
         }
-
-        try {
-            final CasTokenServiceAccessRequestImpl casTokenServiceAccessRequest = new CasTokenServiceAccessRequestImpl(casVersion, ticket, service, request.getRemoteAddr(), renew);
-            final Access access = this.centralAuthenticationService.validate(casTokenServiceAccessRequest);
-
-            if (access != null) {
-	            logger.debug(String.format("Successfully validated: %s", ticket));
-                final Session proxySession;
-                final Credential proxyCredential = createProxyCredential(request);
-                if (proxyCredential != null) {
-                    final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, request.getRemoteAddr(), false, access);
-                    loginRequest.getCredentials().add(proxyCredential);
-                    final LoginResponse loginResponse = this.centralAuthenticationService.login(loginRequest);
-                    proxySession = loginResponse.getSession();
-                } else {
-                    proxySession = null;
-                }
 // TODO revisit this
-                final AccessResponseRequest accessResponseRequest = new DefaultAccessResponseRequestImpl(writer, proxySession != null ? proxySession.getId() : null, proxyCredential);
-                final AccessResponseResult accessResponseResult = access.generateResponse(accessResponseRequest);
+        final AccessResponseRequest accessResponseRequest = new DefaultAccessResponseRequestImpl(writer, proxySession != null ? proxySession.getId() : null, proxyCredential);
+        final AccessResponseResult accessResponseResult = access.generateResponse(accessResponseRequest);
 
-                if (!AccessResponseResult.Operation.VIEW.equals(accessResponseResult.getOperationToPerform())) {
-                    final ModelAndView modelAndView = new ModelAndView();
-                    return modelAndView;
-                }
-            } else {
-	            logger.debug("Invalid ticket {}", ticket);
-                writeErrorResponse("INVALID_TICKET", "Ticket '" + ticket + "' not recognized.", casVersion, writer);
-            }
-        } catch (final Exception e) {
-            logger.error("Ticket validation error", e);
-            writeErrorResponse("INTERNAL_ERROR", e.getMessage(), casVersion, writer);
+        if (!AccessResponseResult.Operation.VIEW.equals(accessResponseResult.getOperationToPerform())) {
+            final ModelAndView modelAndView = new ModelAndView();
+            return modelAndView;
         }
 
         return null;

@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public interface AccessResponseResult {
 
-    enum Operation {REDIRECT, POST, VIEW, NONE}
+    enum Operation {REDIRECT, POST, VIEW, ERROR_VIEW, NONE}
 
     /**
      * The operation that the higher level should perform based on this result.

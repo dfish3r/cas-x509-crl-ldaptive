@@ -19,6 +19,8 @@
 
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.session.Access;
+
 /**
  * Request access to a specific service identified by the provided identifier.
  *
@@ -49,4 +51,19 @@ public interface ServiceAccessRequest extends LoginRequest {
      * @return true if they should not be prompted, false otherwise.
      */
     boolean isPassiveAuthentication();
+
+    /**
+     * Validates the request to ensure that its actually valid.
+     * @return true if the request is valid, false otherwise.
+     */
+    boolean validate();
+
+    /**
+     * Generates an invalid access to generate appropriate responses.
+     *
+     * @return the invalid access.
+     */
+    Access generateInvalidRequestAccess();
+
+    Access generateInvalidSessionAccess();
 }

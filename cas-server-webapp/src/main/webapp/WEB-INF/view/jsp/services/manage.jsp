@@ -16,11 +16,10 @@
     KIND, either express or implied. See the License for the
     specific language governing permissions and limitations
     under the License.
-
 --%>
-
-<%@include file="includes/top.jsp"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
     <c:if test="${fn:length(services) eq 0}">
         <div id="status" class="errors"><p><spring:message code="management.services.service.warn" arguments="${defaultServiceUrl}" /></p></div>
     </c:if>
@@ -73,4 +72,3 @@
 		</table>
 	</div>
 <div class="add"><a href="add.html"><span style="text-transform: lowercase;"><spring:message code="addServiceView" /></span></a></div>	  
-<%@include file="includes/bottom.jsp" %>

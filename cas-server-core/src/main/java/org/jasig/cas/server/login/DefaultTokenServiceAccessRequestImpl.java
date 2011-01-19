@@ -29,7 +29,7 @@ import org.springframework.util.Assert;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public class DefaultTokenServiceAccessRequestImpl extends DefaultLoginRequestImpl implements TokenServiceAccessRequest {
+public abstract class DefaultTokenServiceAccessRequestImpl extends DefaultLoginRequestImpl implements TokenServiceAccessRequest {
 
     private final String token;
 
@@ -37,7 +37,6 @@ public class DefaultTokenServiceAccessRequestImpl extends DefaultLoginRequestImp
 
     public DefaultTokenServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final String token, final String serviceId) {
         super(sessionId, remoteIpAddress, forceAuthentication ,null);
-        Assert.notNull(token, "token cannot be null");
         this.serviceId = serviceId;
         this.token = token;
     }

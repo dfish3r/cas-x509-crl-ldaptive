@@ -53,6 +53,8 @@
             <set name="viewScope.commandName" value="'credentials'" />
             <evaluate expression="loginRequest.credentials.clear()" />
             <set name="viewScope.loginResponse" value="requestScope.loginResponse" />
+            <set name="viewScope.languages" value="mapOfLanguages" />
+            <set name="viewScope.localeQueryString" value="urlBuilder.generateQueryString(externalContext, 'locale')" />
         </on-entry>
 
         <transition on="submit" to="determineIfSessionCreated" bind="true" validate="true">

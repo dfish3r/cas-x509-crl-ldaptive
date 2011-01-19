@@ -229,4 +229,17 @@ public final class Saml2ArtifactRequestAccessRequestImpl implements ServiceAcces
     public void setPassiveAuthentication(final boolean passiveAuthentication) {
         this.passiveAuthentication = passiveAuthentication;
     }
+
+    // TODO fix these
+    public boolean validate() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Access generateInvalidRequestAccess() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Access generateInvalidSessionAccess() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

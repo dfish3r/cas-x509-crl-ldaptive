@@ -70,32 +70,7 @@
         For security reasons, please Log Out and Exit your web browser when you are done accessing services that require authentication!
     </p>
     <div id="list-languages" class="fl-widget menubutton" role="menu">
-        <%
-            final String queryString = request.getQueryString() == null ? "" : request.getQueryString().replaceAll("&locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]|^locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]", "");
-            final java.util.Map<String,String> languages = new java.util.HashMap<String,String>();
-
-           languages.put("en", "English");
-           languages.put("es", "Spanish");
-           languages.put("fr", "French");
-           languages.put("ru", "Russian");
-           languages.put("nl", "Nederlands");
-           languages.put("sv", "Svenskt");
-           languages.put("it", "Italiano");
-           languages.put("ur", "Urdu");
-           languages.put("zh_CN", "Chinese (Simplified)");
-           languages.put("de", "Deutsch");
-           languages.put("ja", "Japanese");
-           languages.put("hr", "Croatian");
-           languages.put("cs", "Czech");
-           languages.put("sl", "Slovenian");
-           languages.put("pl", "Polish");
-           languages.put("ca", "Catalan");
-           languages.put("mk", "Macedonian");
-
-            request.setAttribute("languages", languages);
-        %>
-        <c:set var="query" value="<%=queryString%>" />
-        <c:set var="xquery" value="${fn:escapeXml(query)}" />
+        <c:set var="xquery" value="${fn:escapeXml(localeQueryString)}" />
         <c:set var="currentLanguage" value="${param['locale']}"  />
         <c:set var="loginUrl" value="login?${xquery}${not empty xquery ? '&' : ''}locale=" />
 
@@ -108,10 +83,10 @@
                     <li role="presentation">
                         <c:choose>
                             <c:when test="${language.key eq currentLanguage}">
-                                <a href="${loginUrl}${language.key}" title="English" tabindex="0" role="menuitem" class="menuitem-selected"><span>${language.value}</span></a>
+                                <a href="${loginUrl}${language.key}" title="${language.key}" tabindex="0" role="menuitem" class="menuitem-selected"><span>${language.value}</span></a>
                             </c:when>
                             <c:otherwise>
-                                <a href="${loginUrl}${language.key}" title="English" tabindex="0" role="menuitem" class="menuitem-"><span>${language.value}</span></a>
+                                <a href="${loginUrl}${language.key}" title="${language.key}" tabindex="0" role="menuitem"><span>${language.value}</span></a>
                             </c:otherwise>
                         </c:choose>
                     </li>

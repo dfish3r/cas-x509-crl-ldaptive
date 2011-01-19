@@ -18,6 +18,7 @@
     under the License.
 
 --%>
+
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <div id="status" class="errors">
     <h2><spring:message code="screen.service.error.header" /></h2>

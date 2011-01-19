@@ -19,6 +19,8 @@
 
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.session.Access;
+
 /**
  * Constructs a request used to validate a SAML1 request.
  *
@@ -30,5 +32,19 @@ public final class Saml1TokenServiceAccessRequestImpl extends DefaultTokenServic
 
     public Saml1TokenServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final String token, final String serviceId) {
         super(sessionId, remoteIpAddress, forceAuthentication, token, serviceId);
+    }
+
+
+    // TODO fix
+    public boolean validate() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Access generateInvalidRequestAccess() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Access generateInvalidSessionAccess() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

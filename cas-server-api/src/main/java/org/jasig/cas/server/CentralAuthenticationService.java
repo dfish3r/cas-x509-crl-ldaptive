@@ -68,7 +68,7 @@ public interface CentralAuthenticationService {
      * Special function to administratively log out a user.  This should not be exposed by the web tier to
      * normal users.  It is an administrative function only. I.e. an administration tool or JMX.
      *
-     * @param userId the user name to destory all sessions for.  CANNOT be NULL.
+     * @param userId the user name to destroy all sessions for.  CANNOT be NULL.
      * @return the response to the logout attempt. 
      */
     LogoutResponse logout(String userId);
@@ -87,7 +87,7 @@ public interface CentralAuthenticationService {
      * Validate requests that cannot be self-validating (i.e. CAS tickets)
      *
      * @param tokenServiceAccessRequest the request to validate
-     * @return the response from the validation request.
+     * @return the response from the validation request.  CANNOT be NULL.
      */
 
     Access validate(TokenServiceAccessRequest tokenServiceAccessRequest);

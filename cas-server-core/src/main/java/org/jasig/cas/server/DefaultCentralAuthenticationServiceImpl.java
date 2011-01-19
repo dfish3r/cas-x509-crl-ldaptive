@@ -177,10 +177,14 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
     public Access validate(final TokenServiceAccessRequest tokenServiceAccessRequest) {
         Assert.notNull(tokenServiceAccessRequest, "tokenServiceAccessRequest cannot be null");
 
+        if (!tokenServiceAccessRequest.validate()) {
+            return tokenServiceAccessRequest.generateInvalidRequestAccess();
+        }
+
         final Session session = this.sessionStorage.findSessionByAccessId(tokenServiceAccessRequest.getToken());
 
         if (session == null) {
-            return null;
+            return tokenServiceAccessRequest.generateInvalidSessionAccess();
         }
 
         final Access access = session.getAccess(tokenServiceAccessRequest.getToken());
@@ -189,6 +193,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
             return null;
         }
         access.validate(tokenServiceAccessRequest);
+        this.sessionStorage.updateSession(session);
         return access;
     }
 

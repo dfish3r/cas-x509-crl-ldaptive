@@ -80,7 +80,6 @@ public final class ProxyController {
         final Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("errorCode", errorCode);
         parameters.put("errorMessage", errorMessage);
-//        FreemarkerUtils.writeToFreeMarkerTemplate("CAS2proxyErrorResponseTemplate.ftl", parameters, writer);
     }
 
 }

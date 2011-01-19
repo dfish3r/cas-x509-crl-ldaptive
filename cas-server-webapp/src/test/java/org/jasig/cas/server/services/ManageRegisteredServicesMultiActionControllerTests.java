@@ -98,7 +98,7 @@ public class ManageRegisteredServicesMultiActionControllerTests extends
         final ModelAndView modelAndView = this.controller.manage(new MockHttpServletRequest(), new MockHttpServletResponse());
         
         assertNotNull(modelAndView);
-        assertEquals("manageServiceView", modelAndView.getViewName());
+        assertEquals("org.jasig.cas.services.manage", modelAndView.getViewName());
         
         final Collection c = (Collection) modelAndView.getModel().get("services");
         assertTrue(c.contains(r));

@@ -18,8 +18,7 @@
     under the License.
 
 --%>
-
-<%@include file="includes/top.jsp"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <h2>Runtime Statistics</h2>
 <table width="800">
     <thead>
@@ -98,5 +97,3 @@
 <img src="${appender.chartGenerator.chartUrl}" alt="${appender.name}" />
 
 </c:forEach>
-
-<%@include file="includes/bottom.jsp" %>

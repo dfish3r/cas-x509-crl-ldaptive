@@ -19,6 +19,8 @@
 
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.session.Access;
+
 /**
  * Represents a SAML1 request.
  *
@@ -49,5 +51,18 @@ public final class Saml1ArtifactRequestAccessRequestImpl extends DefaultLoginReq
 
     public String getPassiveAuthenticationRedirectUrl() {
         return this.passiveAuthentication ? this.serviceId : null;
+    }
+
+    // TODO fix these
+    public boolean validate() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Access generateInvalidRequestAccess() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Access generateInvalidSessionAccess() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

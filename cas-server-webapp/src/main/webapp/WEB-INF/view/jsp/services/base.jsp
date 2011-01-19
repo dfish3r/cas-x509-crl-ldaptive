@@ -1,4 +1,3 @@
-<%@ page import="org.jasig.cas.server.CasVersion" %>
 <%--
 
     Licensed to Jasig under one or more contributor license
@@ -23,6 +22,7 @@
 <%@ page language="java"  session="false" %>
 <%@ page pageEncoding="UTF-8" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="org.jasig.cas.server.CasVersion" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -34,8 +34,8 @@
 <head>
   <title><spring:message code="${pageTitle}" text="Logged Out" /></title>
   <meta name="version" content="<%=CasVersion.getVersion()%>" />
-  <link rel="stylesheet" href="../css/services/cas.css" type="text/css" media="screen" />
-  <script type="text/javascript" src="../js/common_rosters.js"></script>
+  <link rel="stylesheet" href="<c:url value="/css/services/cas.css" />" type="text/css" media="screen" />
+  <script type="text/javascript" src="<c:url value="/js/cas.js">"></script>
 
   <style type="text/css">
   #nav-main #${pageTitle} span {

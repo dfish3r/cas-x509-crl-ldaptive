@@ -19,8 +19,11 @@
 
 package org.jasig.cas.server.login;
 
+import org.apache.commons.lang.StringUtils;
 import org.jasig.cas.server.CasProtocolVersion;
-import org.springframework.stereotype.Component;
+import org.jasig.cas.server.session.Access;
+import org.jasig.cas.server.session.InvalidCasRequestProtocolAccessImpl;
+import org.jasig.cas.server.session.InvalidSessionCasProtocolAccessImpl;
 
 /**
  * Extension to the TokenServiceAccessRequest that defines which version of the CAS protocol to validate against.
@@ -40,5 +43,17 @@ public final class CasTokenServiceAccessRequestImpl extends DefaultTokenServiceA
 
     public CasProtocolVersion getCasVersion() {
         return this.casVersion;
+    }
+
+    public boolean validate() {
+        return StringUtils.isNotEmpty(getToken()) && StringUtils.isNotEmpty(getServiceId());
+    }
+
+    public Access generateInvalidRequestAccess() {
+        return new InvalidCasRequestProtocolAccessImpl(this);
+    }
+
+    public Access generateInvalidSessionAccess() {
+        return new InvalidSessionCasProtocolAccessImpl(this);
     }
 }

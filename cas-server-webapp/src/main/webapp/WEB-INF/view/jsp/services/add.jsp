@@ -18,9 +18,6 @@
     under the License.
 
 --%>
-
-<%@include file="includes/top.jsp"%>
-
 <form:form action="${registeredService.id ge 0 ? 'edit.html' : 'add.html'}?id=${fn:escapeXml(param.id)}" cssClass="v" cssStyle="width:75%;" commandName="${commandName}">
 
 		<c:if test="${not empty successMessage}">
@@ -111,4 +108,3 @@
 		<button type="submit" class="primaryAction" id="submit-wf_FormGardenDemonst" value="Save Changes"><spring:message code="management.services.add.button.save" /></button> or <a href="manage.html" style="color:#b00;"><spring:message code="management.services.add.button.cancel" /></a>
 	</div>
 </form:form>
-<%@include file="includes/bottom.jsp" %>

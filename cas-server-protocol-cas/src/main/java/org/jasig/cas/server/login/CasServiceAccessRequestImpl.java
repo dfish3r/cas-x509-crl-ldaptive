@@ -19,6 +19,10 @@
 
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.session.Access;
+import org.jasig.cas.server.session.InvalidCasRequestProtocolAccessImpl;
+import org.jasig.cas.server.session.InvalidSessionCasProtocolAccessImpl;
+
 /**
  * Implementation of the {@link org.jasig.cas.server.login.ServiceAccessRequest} that implements the CAS protocol.
  *
@@ -77,5 +81,18 @@ public final class CasServiceAccessRequestImpl extends DefaultLoginRequestImpl i
         result = 31 * result + (serviceId != null ? serviceId.hashCode() : 0);
         result = 31 * result + (postRequest ? 1 : 0);
         return result;
+    }
+
+    public Access generateInvalidRequestAccess() {
+        return new InvalidCasRequestProtocolAccessImpl(this);
+    }
+
+    public Access generateInvalidSessionAccess() {
+        return new InvalidSessionCasProtocolAccessImpl(this);
+    }
+
+    // TODO we need to actually figure this stuff out
+    public boolean validate() {
+        return true;
     }
 }
