@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jasig.cas.server.authentication.Service;
+import org.jasig.cas.server.login.ServiceAccessRequest;
 import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.RegisteredService;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Default implementation of the {@link org.jasig.cas.server.session.ServicesManager} interface. If there are
- * no services registered with the server, it considers the ServicecsManager
+ * no services registered with the server, it considers the ServicesManager
  * disabled and will not prevent any service from using CAS.
  * 
  * @author Scott Battaglia
@@ -124,7 +125,23 @@ public final class DefaultServicesManagerImpl implements ReloadableServicesManag
             return r;
         }
     }
-    
+
+    public RegisteredService findServiceBy(final ServiceAccessRequest access) {
+        final Collection<RegisteredService> c = convertToTreeSet();
+
+        if (c.isEmpty()) {
+            return this.disabledRegisteredService;
+        }
+
+        for (final RegisteredService r : c) {
+            if (r.matches(access.getServiceId())) {
+                return r;
+            }
+        }
+
+        return null;
+    }
+
     protected TreeSet<RegisteredService> convertToTreeSet() {
         return new TreeSet<RegisteredService>(this.services.values());
     }
@@ -148,7 +165,11 @@ public final class DefaultServicesManagerImpl implements ReloadableServicesManag
         log.info("Reloading registered services.");
         load();
     }
-    
+
+    public boolean matchesExistingService(final ServiceAccessRequest serviceAccessRequest) {
+        return serviceAccessRequest != null && findServiceBy(serviceAccessRequest) != null;
+    }
+
     private void load() {
         final ConcurrentHashMap<Long, RegisteredService> localServices = new ConcurrentHashMap<Long, RegisteredService>();
                 

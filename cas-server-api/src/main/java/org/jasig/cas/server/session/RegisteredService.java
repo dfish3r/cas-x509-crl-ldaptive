@@ -124,6 +124,15 @@ public interface RegisteredService extends Cloneable, Serializable {
      * @return true if they match, false otherwise.
      */
     boolean matches(final Access access);
+
+    /**
+     * Returns whether the service matches the registered service.
+     * <p>Note, as of 3.1.2, matches are case insensitive.
+     *
+     * @param access the service to match.
+     * @return true if they match, false otherwise.
+     */
+    boolean matches(final String access);
     
     Object clone() throws CloneNotSupportedException;
 }

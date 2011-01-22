@@ -80,6 +80,18 @@ public abstract class AbstractSessionTests {
         public boolean matchesExistingService(Access service) {
             return true;
         }
+
+        public RegisteredService findServiceBy(ServiceAccessRequest access) {
+            final RegisteredService r = mock(RegisteredService.class);
+            when(r.isSsoEnabled()).thenReturn(true);
+            when(r.isEnabled()).thenReturn(true);
+            when(r.isAllowedToProxy()).thenReturn(true);
+            return r;
+        }
+
+        public boolean matchesExistingService(ServiceAccessRequest serviceAccessRequest) {
+            return true;
+        }
     };
 
     /**

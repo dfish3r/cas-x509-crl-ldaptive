@@ -33,7 +33,7 @@
         <if test="loginRequest.sessionId eq null and not loginRequest.accessRequest" then="viewLoginForm" />
 
         <!-- if you have non-interactive credentials then you may wish to have them checked even for a passive authentication -->
-        <if test="loginRequest.sessionId eq null and loginRequest.accessRequest and loginRequest.passiveAuthentication" then="passiveReturnToApplication" />
+        <if test="loginRequest.sessionId eq null and loginRequest.accessRequest and loginRequest.passiveAuthentication" then="gatewayServiceCheck" />
         <if test="loginRequest.sessionId eq null and loginRequest.accessRequest and not loginRequest.passiveAuthentication" then="viewLoginForm" />
 
         <!-- at this point there should be no empty session ids -->
@@ -79,6 +79,11 @@
         <transition to="returnToApplication" />
     </action-state>
 
+    <action-state id="gatewayServiceCheck">
+        <evaluate expression="gatewayServicesManagementCheck.isServiceAllowedToGateway(loginRequest)" />
+        <transition to="passiveReturnToApplication" />
+    </action-state>
+
     <end-state id="returnToApplication" view="org.jasig.cas.login.redirect">
         <on-entry>
             <evaluate expression="accessResponseGenerator.generateAccessResponseResult(externalContext, serviceAccessResponse)" result-type="org.jasig.cas.server.session.AccessResponseResult" result="requestScope.accessResponseResult" />
@@ -86,7 +91,6 @@
         <output name="loginRequest" required="true" />
         <output name="accessResponseResult" value="requestScope.accessResponseResult" required="true" />
     </end-state>
-
 
     <end-state id="passiveReturnToApplication" view="externalRedirect:${loginRequest.passiveAuthenticationRedirectUrl}" />
 

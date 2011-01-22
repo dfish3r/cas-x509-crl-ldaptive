@@ -132,8 +132,12 @@ public class RegisteredServiceImpl
         return this.ssoEnabled;
     }
 
+    public boolean matches(final String access) {
+        return access != null && PATH_MATCHER.match(this.serviceId.toLowerCase(), access.toLowerCase());
+    }
+
     public boolean matches(final Access access) {
-        return access != null && PATH_MATCHER.match(this.serviceId.toLowerCase(), access.getResourceIdentifier().toLowerCase());
+        return access != null && matches(access.getResourceIdentifier());
     }
 
     @Override

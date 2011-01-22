@@ -22,6 +22,7 @@ package org.jasig.cas.server.session;
 import java.util.Collection;
 
 import org.jasig.cas.server.authentication.Service;
+import org.jasig.cas.server.login.ServiceAccessRequest;
 
 /**
  * Manages the storage, retrieval, and matching of Services wishing to use CAS
@@ -54,6 +55,14 @@ public interface ServicesManager {
      * @param access the service to match with.
      * @return the RegisteredService that matches the supplied service.
      */
+    RegisteredService findServiceBy(ServiceAccessRequest access);
+
+    /**
+     * Find a RegisteredService by matching with the supplied service.
+     *
+     * @param access the service to match with.
+     * @return the RegisteredService that matches the supplied service.
+     */
     RegisteredService findServiceBy(Access access);
 
     /**
@@ -78,4 +87,12 @@ public interface ServicesManager {
      * @return true if it exists, false otherwise.
      */
     boolean matchesExistingService(Access service);
+
+    /**
+     * Convenience method to let one know if a service exists in the data store.
+     *
+     * @param serviceAccessRequest the service to check.
+     * @return true if it exists, false otherwise.
+     */
+    boolean matchesExistingService(ServiceAccessRequest serviceAccessRequest);
 }

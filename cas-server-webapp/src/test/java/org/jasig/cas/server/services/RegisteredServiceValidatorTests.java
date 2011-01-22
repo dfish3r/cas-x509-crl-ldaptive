@@ -22,6 +22,7 @@ package org.jasig.cas.server.services;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.jasig.cas.server.login.ServiceAccessRequest;
 import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.RegisteredService;
 import org.jasig.cas.server.session.ServicesManager;
@@ -129,6 +130,14 @@ public class RegisteredServiceValidatorTests extends TestCase {
 
         public boolean matchesExistingService(final Access service) {
             return this.returnValue;
+        }
+
+        public RegisteredService findServiceBy(final ServiceAccessRequest access) {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        public boolean matchesExistingService(ServiceAccessRequest serviceAccessRequest) {
+            return true;
         }
 
         public void save(final RegisteredService registeredService) {
