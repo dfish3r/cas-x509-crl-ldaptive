@@ -42,5 +42,4 @@
         <put-attribute name="header.value" value="Authorization Failure" cascade="true" />
         <put-attribute name="body.value" value="You are not authorized to use this application." cascade="true" />
     </definition>
-
 </tiles-definitions>
