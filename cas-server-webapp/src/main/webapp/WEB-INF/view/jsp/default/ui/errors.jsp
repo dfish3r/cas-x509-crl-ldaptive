@@ -1,3 +1,4 @@
+
 <%--
 
     Licensed to Jasig under one or more contributor license
@@ -18,11 +19,12 @@
     under the License.
 
 --%>
-
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<tiles:useAttribute name="header.value" id="casHeader" scope="page" classname="java.lang.String"  />
+<tiles:useAttribute name="body.value" id="body" />
 <div id="welcome">
-    <h2>CAS is Unavailable</h2>
-
-    <p>
-       There was an error trying to complete your request.  Please notify your support desk or try again.
-    </p>
+    <h2><c:out value="${casHeader}" escapeXml="true" /></h2>
+    <p><c:out value="${body}" escapeXml="true" /></p>
 </div>

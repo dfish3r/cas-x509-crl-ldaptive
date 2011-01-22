@@ -30,22 +30,12 @@
         <!-- Congratulations on bringing CAS online!  The default authentication handler authenticates where usernames equal passwords: go ahead, try it out.  -->
         <h2>Enter your NetID and Password</h2>
         <div class="row fl-controls-left">
-            <label for="userName" class="fl-label">
-                <span class="accesskey">U</span>sername:
-            </label>
+            <form:label path="userName" cssClass="fl-label"><span class="accesskey">U</span>sername:</form:label>
             <form:input cssClass="required" cssErrorClass="error" id="userName" size="30" tabindex="1" accesskey="u" path="userName" autocomplete="false" htmlEscape="true" />
         </div>
         <div class="row fl-controls-left">
-            <label for="password" class="fl-label">
-                <span class="accesskey">P</span>assword:
-            </label>
+            <form:label cssClass="fl-label" path="password"><span class="accesskey">P</span>assword:</form:label>
             <form:password cssClass="required" cssErrorClass="error" id="password" size="30" tabindex="2" path="password"  accesskey="p" htmlEscape="true" autocomplete="false" />
-        </div>
-        <div class="row check">
-            <input id="warn" name="warn" value="true" tabindex="3" accesskey="w" type="checkbox">
-            <label for="warn">
-                <span class="accesskey">W</span>arn me before logging me into other sites.
-            </label>
         </div>
         <div class="row btn-row">
             <input type="hidden" name="lt" value="${flowExecutionKey}" />
@@ -83,10 +73,10 @@
                     <li role="presentation">
                         <c:choose>
                             <c:when test="${language.key eq currentLanguage}">
-                                <a href="${loginUrl}${language.key}" title="${language.key}" tabindex="0" role="menuitem" class="menuitem-selected"><span>${language.value}</span></a>
+                                <a href="${loginUrl}${language.key}" title="${language.value}" tabindex="0" role="menuitem" class="menuitem-selected"><span>${language.value}</span></a>
                             </c:when>
                             <c:otherwise>
-                                <a href="${loginUrl}${language.key}" title="${language.key}" tabindex="0" role="menuitem"><span>${language.value}</span></a>
+                                <a href="${loginUrl}${language.key}" title="${language.value}" tabindex="0" role="menuitem"><span>${language.value}</span></a>
                             </c:otherwise>
                         </c:choose>
                     </li>

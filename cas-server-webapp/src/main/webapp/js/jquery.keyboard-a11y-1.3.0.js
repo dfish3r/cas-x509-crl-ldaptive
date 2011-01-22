@@ -1,25 +1,7 @@
 /*
- * Licensed to Jasig under one or more contributor license
- * agreements. See the NOTICE file distributed with this work
- * for additional information regarding copyright ownership.
- * Jasig licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
-/*
 Copyright 2008-2010 University of Cambridge
-Copyright 2008-2009 University of Toronto
+Copyright 2008-2010 University of Toronto
+Copyright 2010 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -31,8 +13,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery*/
 
-var fluid_1_2 = fluid_1_2 || {};
-var fluid = fluid || fluid_1_2;
+var fluid_1_3 = fluid_1_3 || {};
+var fluid = fluid || fluid_1_3;
 
 (function ($, fluid) {
 
@@ -44,7 +26,7 @@ var fluid = fluid || fluid_1_2;
 /** Create a "bridge" from code written in the Fluid standard "that-ist" style,
  *  to the standard JQuery UI plugin architecture specified at http://docs.jquery.com/UI/Guidelines .
  *  Every Fluid component corresponding to the top-level standard signature (JQueryable, options)
- *  will automatically convert idiomatically to the JQuery UI standard via this adapter.
+ *  will automatically convert idiomatically to the JQuery UI standard via this adapter. 
  *  Any return value which is a primitive or array type will become the return value
  *  of the "bridged" function - however, where this function returns a general hash
  *  (object) this is interpreted as forming part of the Fluid "return that" pattern,
@@ -82,50 +64,7 @@ var fluid = fluid || fluid_1_2;
     };
 
     fluid.thatistBridge("fluid", fluid);
-    fluid.thatistBridge("fluid_1_2", fluid_1_2);
-
-    // Private constants.
-    var NAMESPACE_KEY = "fluid-keyboard-a11y";
-
-    /**
-     * Gets stored state from the jQuery instance's data map.
-     */
-    var getData = function(target, key) {
-        var data = $(target).data(NAMESPACE_KEY);
-        return data ? data[key] : undefined;
-    };
-
-    /**
-     * Stores state in the jQuery instance's data map. Unlike jQuery's version,
-     * accepts multiple-element jQueries.
-     */
-    var setData = function(target, key, value) {
-        $(target).each(function() {
-            var data = $.data(this, NAMESPACE_KEY) || {};
-            data[key] = value;
-
-            $.data(this, NAMESPACE_KEY, data);
-        });
-    };
-/** Global focus manager - makes use of jQuery delegate plugin if present,
- * detecting presence of "focusin" event.
- */
-
-    var lastFocusedElement = "disabled";
-
-    if ($.event.special["focusin"]) {
-        lastFocusedElement = null;
-        $(document).bind("focusin", function(event){
-            lastFocusedElement = event.target;
-        });
-    }
-
-    fluid.getLastFocusedElement = function () {
-        if (lastFocusedElement === "disabled") {
-           fluid.fail("Focus manager not enabled - please include jquery.delegate.js or equivalent for support of 'focusin' event");
-        }
-        return lastFocusedElement;
-    }
+    fluid.thatistBridge("fluid_1_3", fluid_1_3);
 
 /*************************************************************************
  * Tabindex normalization - compensate for browser differences in naming
@@ -133,8 +72,8 @@ var fluid = fluid || fluid_1_2;
  */
 
     // -- Private functions --
-
-
+    
+    
     var normalizeTabindexName = function() {
         return $.browser.msie ? "tabIndex" : "tabindex";
     };
@@ -146,7 +85,7 @@ var fluid = fluid || fluid_1_2;
 
        return $(elements[0]).is("a, input, button, select, area, textarea, object");
     };
-
+    
     var getValue = function(elements) {
         if (elements.length <= 0) {
             return undefined;
@@ -166,13 +105,13 @@ var fluid = fluid || fluid_1_2;
             $(item).attr(normalizeTabindexName(), toIndex);
         });
     };
-
+    
     // -- Public API --
-
+    
     /**
      * Gets the value of the tabindex attribute for the first item, or sets the tabindex value of all elements
      * if toIndex is specified.
-     *
+     * 
      * @param {String|Number} toIndex
      */
     fluid.tabindex = function(target, toIndex) {
@@ -219,33 +158,7 @@ var fluid = fluid || fluid_1_2;
         return fluid.tabindex.hasAttr(target) || canHaveDefaultTabindex(target);
     };
 
-    var ENABLEMENT_KEY = "enablement";
-
-    /** Queries or sets the enabled status of a control. An activatable node
-     * may be "disabled" in which case its keyboard bindings will be inoperable
-     * (but still stored) until it is reenabled again.
-     */
-
-    fluid.enabled = function(target, state) {
-        target = $(target);
-        if (state === undefined) {
-            return getData(target, ENABLEMENT_KEY) !== false;
-        }
-        else {
-            $("*", target).each(function() {
-                if (getData(this, ENABLEMENT_KEY) !== undefined) {
-                    setData(this, ENABLEMENT_KEY, state);
-                }
-                else if (/select|textarea|input/i.test(this.nodeName)) {
-                    $(this).attr("disabled", !state);
-                }
-            });
-            setData(target, ENABLEMENT_KEY, state);
-        }
-    };
-
-
-// Keyboard navigation
+    // Keyboard navigation
     // Public, static constants needed by the rest of the library.
     fluid.a11y = $.a11y || {};
 
@@ -290,7 +203,7 @@ var fluid = fluid || fluid_1_2;
         makeElementsTabFocussable(target);
     };
 
-    /***********************************************************************
+    /*********************************************************************** 
      * Selectable functionality - geometrising a set of nodes such that they
      * can be navigated (by setting focus) using a set of directional keys
      */
@@ -299,12 +212,14 @@ var fluid = fluid || fluid_1_2;
     var NO_SELECTION = -32768;
 
     var cleanUpWhenLeavingContainer = function(selectionContext) {
-        if (selectionContext.options.onLeaveContainer) {
-            selectionContext.options.onLeaveContainer(
-              selectionContext.selectables[selectionContext.activeItemIndex]);
-        } else if (selectionContext.options.onUnselect) {
-            selectionContext.options.onUnselect(
-            selectionContext.selectables[selectionContext.activeItemIndex]);
+        if (selectionContext.activeItemIndex !== NO_SELECTION) {
+            if (selectionContext.options.onLeaveContainer) {
+                selectionContext.options.onLeaveContainer(
+                  selectionContext.selectables[selectionContext.activeItemIndex]);
+            } else if (selectionContext.options.onUnselect) {
+                selectionContext.options.onUnselect(
+                selectionContext.selectables[selectionContext.activeItemIndex]);
+            }
         }
 
         if (!selectionContext.options.rememberSelectionState) {
@@ -428,7 +343,7 @@ var fluid = fluid || fluid_1_2;
         var keyMap;
         if (direction === fluid.a11y.orientation.HORIZONTAL) {
             keyMap = LEFT_RIGHT_KEYMAP;
-        }
+        } 
         else if (direction === fluid.a11y.orientation.VERTICAL) {
             // Assume vertical in any other case.
             keyMap = UP_DOWN_KEYMAP;
@@ -454,7 +369,7 @@ var fluid = fluid || fluid_1_2;
     var containerFocusHandler = function(selectionContext) {
         return function(evt) {
             var shouldOrig = selectionContext.options.autoSelectFirstItem;
-            var shouldSelect = typeof(shouldOrig) === "function" ?
+            var shouldSelect = typeof(shouldOrig) === "function" ? 
                  shouldOrig() : shouldOrig;
 
             // Override the autoselection if we're on the way out of the container.
@@ -492,7 +407,7 @@ var fluid = fluid || fluid_1_2;
 
         var selectableElements = options.selectableElements? options.selectableElements :
               container.find(options.selectableSelector);
-
+          
         // Context stores the currently active item(undefined to start) and list of selectables.
         var that = {
             container: container,
@@ -507,10 +422,14 @@ var fluid = fluid || fluid_1_2;
             if (typeof(that.options.selectablesTabindex) === "number") {
                 that.selectables.fluid("tabindex", that.options.selectablesTabindex);
             }
-            that.selectables.unbind("focus." + NAMESPACE_KEY);
-            that.selectables.unbind("blur." + NAMESPACE_KEY);
-            that.selectables.bind("focus."+ NAMESPACE_KEY, selectableFocusHandler(that));
-            that.selectables.bind("blur." + NAMESPACE_KEY, selectableBlurHandler(that));
+            that.selectables.unbind("focus." + CONTEXT_KEY);
+            that.selectables.unbind("blur." + CONTEXT_KEY);
+            that.selectables.bind("focus."+ CONTEXT_KEY, selectableFocusHandler(that));
+            that.selectables.bind("blur." + CONTEXT_KEY, selectableBlurHandler(that));
+            if (keyMap && that.options.noBubbleListeners) {
+                that.selectables.unbind("keydown."+CONTEXT_KEY);
+                that.selectables.bind("keydown."+CONTEXT_KEY, arrowKeyHandler(that, keyMap));
+            }
             if (focusedItem) {
                 selectElement(focusedItem, that);
             }
@@ -526,19 +445,19 @@ var fluid = fluid || fluid_1_2;
             that.selectables = container.find(options.selectableSelector);
             that.selectablesUpdated();
         };
-
+        
         that.selectedElement = function() {
             return that.activeItemIndex < 0? null : that.selectables[that.activeItemIndex];
         };
-
+        
         // Add various handlers to the container.
-        if (keyMap) {
+        if (keyMap && !that.options.noBubbleListeners) {
             container.keydown(arrowKeyHandler(that, keyMap));
         }
         container.keydown(tabKeyHandler(that));
         container.focus(containerFocusHandler(that));
         container.blur(containerBlurHandler(that));
-
+        
         that.selectablesUpdated();
 
         return that;
@@ -553,7 +472,7 @@ var fluid = fluid || fluid_1_2;
     fluid.selectable = function(target, options) {
         target = $(target);
         var that = makeElementsSelectable(target, fluid.selectable.defaults, options);
-        setData(target, CONTEXT_KEY, that);
+        fluid.setScopedData(target, CONTEXT_KEY, that);
         return that;
     };
 
@@ -569,7 +488,7 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.selectable.selectNext = function(target) {
         target = $(target);
-        focusNextElement(getData(target, CONTEXT_KEY));
+        focusNextElement(fluid.getScopedData(target, CONTEXT_KEY));
     };
 
     /**
@@ -577,7 +496,7 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.selectable.selectPrevious = function(target) {
         target = $(target);
-        focusPreviousElement(getData(target, CONTEXT_KEY));
+        focusPreviousElement(fluid.getScopedData(target, CONTEXT_KEY));
     };
 
     /**
@@ -585,7 +504,7 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.selectable.currentSelection = function(target) {
         target = $(target);
-        var that = getData(target, CONTEXT_KEY);
+        var that = fluid.getScopedData(target, CONTEXT_KEY);
         return $(that.selectedElement());
     };
 
@@ -602,7 +521,7 @@ var fluid = fluid || fluid_1_2;
     };
 
     /********************************************************************
-     *  Activation functionality - declaratively associating actions with
+     *  Activation functionality - declaratively associating actions with 
      * a set of keyboard bindings.
      */
 
@@ -622,7 +541,7 @@ var fluid = fluid || fluid_1_2;
 
     /** Constructs a raw "keydown"-facing handler, given a binding entry. This
      *  checks whether the key event genuinely triggers the event and forwards it
-     *  to any "activateHandler" registered in the binding.
+     *  to any "activateHandler" registered in the binding. 
      */
     var makeActivationHandler = function(binding) {
         return function(evt) {
@@ -663,7 +582,7 @@ var fluid = fluid || fluid_1_2;
             bindings = bindings.concat(options.additionalBindings);
         }
 
-        setData(elements, ENABLEMENT_KEY, true);
+        fluid.initEnablement(elements);
 
         // Add listeners for each key binding.
         for (var i = 0; i < bindings.length; ++ i) {
@@ -698,5 +617,5 @@ var fluid = fluid || fluid_1_2;
         keys: [$.ui.keyCode.ENTER, $.ui.keyCode.SPACE]
     };
 
-
-  })(jQuery, fluid_1_2);
+  
+  })(jQuery, fluid_1_3);

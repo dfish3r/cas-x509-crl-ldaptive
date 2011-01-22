@@ -23,11 +23,11 @@
 
         #cas #login {margin:0; padding:25px 25px 65px 25px; width:300px; min-height:15em; background:#fff; position:relative; box-shadow: 3px 3px 5px #dddddd; -moz-box-shadow: 3px 3px 5px #dddddd; -webkit-box-shadow: 3px 3px 5px #dddddd; border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px; border: 2px solid #cacaca;}
         #cas #login:before {line-height:0.1; font-size:1px; background:transparent url("../images/key-point_tr.gif") no-repeat top right; margin:-15px -15px 0 -15px; height:15px; display:block; content:url("../images/key-point_tl.gif");}
-        #cas #login:after {display:block; clear:both; padding-top:15px; line-height:0.1; font-size:1px; content:url("../images/key-point_bl.gif"); margin:-15px; height:8px; background:transparent url("../images/key-point_br.gif") scroll no-repeat bottom right;}
+        /*#cas #login:after {display:block; clear:both; padding-top:15px; line-height:0.1; font-size:1px; content:url("../images/key-point_bl.gif"); margin:-15px; height:8px; background:transparent url("../images/key-point_br.gif") scroll no-repeat bottom right;}*/
             #cas #login h2 {display:none; border-bottom:1px solid #ddd; padding:3px 0; font:normal 400 17px Georgia, "Times New Roman", Times, serif; color:#333;}
             #cas #login label {font-size:14px; padding-bottom:5px; font-weight:bold;}
             #cas #login label span.accesskey {text-decoration:underline;}
-            #cas #login #username, #cas #login #password {margin-bottom:7px; letter-spacing:1px; border: 1px solid #444; background-color:#fff; box-shadow: inset 0px 2px 3px #cccccc; -moz-box-shadow: inset 0px 2px 3px #cccccc; -webkit-box-shadow: inset 0px 2px 3px #cccccc; }
+            #cas #login #userName, #cas #login #password {margin-bottom:7px; letter-spacing:1px; border: 1px solid #444; background-color:#fff; box-shadow: inset 0px 2px 3px #cccccc; -moz-box-shadow: inset 0px 2px 3px #cccccc; -webkit-box-shadow: inset 0px 2px 3px #cccccc; }
             #cas #login .check input {position:relative; left:-4px; height:auto;}
             #cas #login .check label {float:none; xwidth:auto; font-size:10px; color:#444; font-weight:normal;}
             #cas #login .btn-row {position:relative; padding:10px 0 10px 0;}
@@ -83,7 +83,7 @@ http://www.positioniseverything.net/easyclearing.html and http://www.ejeliot.com
 
 /* FOOTER --------------------------------- */
 #footer {clear:both; position:relative; margin:0 25px 1em; border-top:1px solid #ccc; padding:0 0 1px 0; background:transparent; color:#999;}
-    #footer img#logo {position:absolute; right:0; top:0; margin-top:10px;}
+    #footer img#logo {position:absolute; right:0; top:0;}
     #footer div {clear:left; margin:1em 5px .5em; overflow:hidden;}
 
 /* MESSAGES --------------------------------- */

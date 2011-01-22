@@ -43,8 +43,8 @@
         <link rel="icon" href="<c:url value="/favicon.ico" />" type="image/x-icon" />
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="<c:url value="/js/jquery.keyboard-a11y.js" />"></script>
-        <script type="text/javascript" src="<c:url value="/js/Fluid.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/js/jquery.keyboard-a11y-1.3.0.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/js/fluid-1.3.0.js" />"></script>
         <script type="text/javascript" src="<c:url value="/js/cas.js" />"></script>
         <script type="text/javascript" src="<c:url value="/js/menubutton.js" />"></script>
 	</head>
@@ -65,17 +65,17 @@
                 <div id="footer">
                     <div>
                         <p>
-                            Copyright &copy; 2005 - 2010 Jasig, Inc. All rights reserved.
+                            Copyright &copy; 2005 - 2011 Jasig, Inc. All rights reserved.
                         </p>
                         <p>
                             Powered by <a href="http://www.jasig.org/cas">Jasig Central Authentication Service <%=CasVersion.getVersion()%></a>
                         </p>
                     </div>
-                    <a title="go to Jasig home page" href="http://www.jasig.org"><span>Jasig Logo</span></a>
+                    <a title="go to Jasig home page" href="http://www.jasig.org" id="jasig-logo"><img alt="Jasig Home Page" src="<c:url value="/images/logo_jasig.png" />" width="86" height="62" id="logo" /></a>
                 </div>
             </div>
          </div>
-         <script>
+         <script type="text/javascript">
              $(document).ready(function(){
              window.console && window.console.log($, fluid);
              var cas_behavior = flc_cas.casUI($('body'), {});
