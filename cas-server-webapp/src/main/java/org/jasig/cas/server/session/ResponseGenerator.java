@@ -36,11 +36,11 @@ import java.io.Writer;
  */
 @Named("accessResponseGenerator")
 @Singleton
-public final class AccessResponseGenerator {
+public final class ResponseGenerator {
 
     public AccessResponseResult generateAccessResponseResult(final ExternalContext externalContext, final ServiceAccessResponse serviceAccessResponse) {
         final Writer writer = externalContext.getResponseWriter();
-        final AccessResponseRequest accessResponseRequest = new DefaultAccessResponseRequestImpl(writer, null, null);
-        return serviceAccessResponse.getAccess().generateResponse(accessResponseRequest);
+        final AccessResponseRequest accessResponseRequest = new DefaultAccessResponseRequestImpl(writer);
+        return serviceAccessResponse.generateResponse(accessResponseRequest);
     }
 }

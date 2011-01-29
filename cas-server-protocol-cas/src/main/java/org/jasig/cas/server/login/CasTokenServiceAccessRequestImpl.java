@@ -21,12 +21,9 @@ package org.jasig.cas.server.login;
 
 import org.apache.commons.lang.StringUtils;
 import org.jasig.cas.server.CasProtocolVersion;
-import org.jasig.cas.server.session.Access;
-import org.jasig.cas.server.session.InvalidCasRequestProtocolAccessImpl;
-import org.jasig.cas.server.session.InvalidSessionCasProtocolAccessImpl;
 
 /**
- * Extension to the TokenServiceAccessRequest that defines which version of the CAS protocol to validate against.
+ * Extension to the TokenServiceAccessRequest that defines which version of the CAS protocol to IsValid against.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
@@ -45,15 +42,7 @@ public final class CasTokenServiceAccessRequestImpl extends DefaultTokenServiceA
         return this.casVersion;
     }
 
-    public boolean validate() {
+    public boolean IsValid() {
         return StringUtils.isNotEmpty(getToken()) && StringUtils.isNotEmpty(getServiceId());
-    }
-
-    public Access generateInvalidRequestAccess() {
-        return new InvalidCasRequestProtocolAccessImpl(this);
-    }
-
-    public Access generateInvalidSessionAccess() {
-        return new InvalidSessionCasProtocolAccessImpl(this);
     }
 }

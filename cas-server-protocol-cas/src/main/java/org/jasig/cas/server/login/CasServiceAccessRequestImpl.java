@@ -83,16 +83,8 @@ public final class CasServiceAccessRequestImpl extends DefaultLoginRequestImpl i
         return result;
     }
 
-    public Access generateInvalidRequestAccess() {
-        return new InvalidCasRequestProtocolAccessImpl(this);
-    }
-
-    public Access generateInvalidSessionAccess() {
-        return new InvalidSessionCasProtocolAccessImpl(this);
-    }
-
     // TODO we need to actually figure this stuff out
-    public boolean validate() {
+    public boolean IsValid() {
         return true;
     }
 }

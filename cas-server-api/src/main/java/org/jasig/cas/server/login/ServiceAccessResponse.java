@@ -20,6 +20,7 @@
 package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.session.Access;
+import org.jasig.cas.server.session.AccessResponseGenerator;
 
 import java.util.List;
 
@@ -30,13 +31,7 @@ import java.util.List;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public interface ServiceAccessResponse extends LoginResponse {
-
-    /**
-     * The access requested.  CAN only be null if authentication has failed.
-     * @return the access requested.
-     */
-    Access getAccess();
+public interface ServiceAccessResponse extends AccessResponseGenerator, LoginResponse {
 
     /**
      * Returns the Access requests that might have been invalidated when a re-authentication was required.

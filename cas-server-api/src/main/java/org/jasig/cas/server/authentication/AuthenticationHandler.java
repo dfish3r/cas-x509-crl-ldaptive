@@ -51,7 +51,7 @@ public interface AuthenticationHandler {
     /**
      * Method to determine if the credentials supplied are valid.
      *
-     * @param credentials The credentials to validate.
+     * @param credentials The credentials to IsValid.
      * @return true if valid, return false otherwise.
      * @throws GeneralSecurityException An AuthenticationException can contain
      * details about why a particular authentication request failed.

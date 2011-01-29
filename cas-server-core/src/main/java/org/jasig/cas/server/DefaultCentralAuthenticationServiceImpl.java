@@ -20,7 +20,6 @@
 package org.jasig.cas.server;
 
 import com.github.inspektr.audit.annotation.Audit;
-import org.apache.commons.lang.StringUtils;
 import org.jasig.cas.server.authentication.*;
 import org.jasig.cas.server.login.*;
 import org.jasig.cas.server.logout.DefaultLogoutResponseImpl;
@@ -38,6 +37,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 /**
@@ -95,10 +95,19 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
     @Autowired(required = false)
     private List<AuthenticationResponsePlugin> authenticationResponsePlugins = new ArrayList<AuthenticationResponsePlugin>();
 
+    @NotNull
+    @Size(min = 1)
+    private final List<ServiceAccessResponseFactory> serviceAccessResponseFactories;
+
+    @NotNull
+    private final ServicesManager servicesManager;
+
     @Inject
-    public DefaultCentralAuthenticationServiceImpl(final AuthenticationManager authenticationManager, final SessionStorage sessionStorage) {
+    public DefaultCentralAuthenticationServiceImpl(final AuthenticationManager authenticationManager, final SessionStorage sessionStorage, final List<ServiceAccessResponseFactory> serviceAccessResponseFactories, final ServicesManager servicesManager) {
         this.authenticationManager = authenticationManager;
         this.sessionStorage = sessionStorage;
+        this.serviceAccessResponseFactories = serviceAccessResponseFactories;
+        this.servicesManager = servicesManager;
     }
 
     @Audit(action="CREATE_SESSION", actionResolverName="CREATE_SESSION_RESOLVER", resourceResolverName="CREATE_SESSION_RESOURCE_RESOLVER")
@@ -174,33 +183,44 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
 
     @Audit(action="VALIDATE_ACCESS",actionResolverName="VALIDATE_ACCESS_RESOLVER",resourceResolverName="VALIDATE_ACCESS_RESOURCE_RESOLVER")
     @Profiled(tag="VALIDATE_ACCESS",logFailuresSeparately = false)
-    public Access validate(final TokenServiceAccessRequest tokenServiceAccessRequest) {
+    public ServiceAccessResponse validate(final TokenServiceAccessRequest tokenServiceAccessRequest) {
         Assert.notNull(tokenServiceAccessRequest, "tokenServiceAccessRequest cannot be null");
 
-        if (!tokenServiceAccessRequest.validate()) {
-            return tokenServiceAccessRequest.generateInvalidRequestAccess();
+        if (!tokenServiceAccessRequest.IsValid()) {
+            return findServiceAccessResponseFactory(tokenServiceAccessRequest).getServiceAccessResponse(tokenServiceAccessRequest);
         }
 
         final Session session = this.sessionStorage.findSessionByAccessId(tokenServiceAccessRequest.getToken());
 
         if (session == null) {
-            return tokenServiceAccessRequest.generateInvalidSessionAccess();
+            return findServiceAccessResponseFactory(tokenServiceAccessRequest).getServiceAccessResponse(tokenServiceAccessRequest);
         }
 
         final Access access = session.getAccess(tokenServiceAccessRequest.getToken());
 
         if (access == null) {
-            return null;
+           return findServiceAccessResponseFactory(tokenServiceAccessRequest).getServiceAccessResponse(session, null, null, Collections.<Access>emptyList());
         }
+
         access.validate(tokenServiceAccessRequest);
         this.sessionStorage.updateSession(session);
-        return access;
+        return findServiceAccessResponseFactory(access).getServiceAccessResponse(session, access, null, Collections.<Access>emptyList());
     }
 
     @Audit(action="ACCESS",actionResolverName="GRANT_ACCESS_RESOLVER",resourceResolverName="GRANT_ACCESS_RESOURCE_RESOLVER")
     @Profiled(tag="GRANT_ACCESS", logFailuresSeparately = false)
     public ServiceAccessResponse grantAccess(final ServiceAccessRequest serviceAccessRequest) throws SessionException, AccessException {
         Assert.notNull(serviceAccessRequest, "serviceAccessRequest cannot be null.");
+
+        final boolean match = this.servicesManager.matchesExistingService(serviceAccessRequest);
+
+        if (!match) {
+            throw new UnauthorizedServiceException(String.format("Service [%s] not authorized to use CAS.", serviceAccessRequest.getServiceId()));
+        }
+
+        if (!serviceAccessRequest.IsValid()) {
+            return findServiceAccessResponseFactory(serviceAccessRequest).getServiceAccessResponse(serviceAccessRequest);
+        }
 
         final Session session = this.sessionStorage.findSessionBySessionId(serviceAccessRequest.getSessionId());
 
@@ -221,7 +241,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
             authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
 
             if (!authenticationResponse.succeeded()) {
-                return new DefaultServiceAccessResponseImpl(null, Collections.<Access>emptyList(), authenticationResponse);
+                return findServiceAccessResponseFactory(serviceAccessRequest).getServiceAccessResponse(serviceAccessRequest, authenticationResponse);
             }
 
             if (!authenticationResponse.getPrincipal().equals(session.getPrincipal())) {
@@ -244,7 +264,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         final Access access = sessionToWorkWith.grant(serviceAccessRequest);
         this.sessionStorage.updateSession(sessionToWorkWith);
 
-        return new DefaultServiceAccessResponseImpl(access, remainingAccesses, sessionToWorkWith, authenticationResponse);
+        return findServiceAccessResponseFactory(access).getServiceAccessResponse(sessionToWorkWith, access, authenticationResponse, remainingAccesses);
     }
 
     /**
@@ -292,5 +312,25 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
 
     public void setAuthenticationResponsePlugins(final List<AuthenticationResponsePlugin> authenticationResponsePlugins) {
         this.authenticationResponsePlugins = authenticationResponsePlugins;
+    }
+
+    private ServiceAccessResponseFactory findServiceAccessResponseFactory(final ServiceAccessRequest serviceAccessRequest) {
+        for (final ServiceAccessResponseFactory factory : this.serviceAccessResponseFactories) {
+            if (factory.supports(serviceAccessRequest)) {
+                return factory;
+            }
+        }
+
+        throw new IllegalStateException(String.format("No ServiceAccessResponseFactory configured for ServiceAccessRequest of type %s", serviceAccessRequest.getClass().getSimpleName()));
+    }
+
+    private ServiceAccessResponseFactory findServiceAccessResponseFactory(final Access access) {
+        for (final ServiceAccessResponseFactory factory : this.serviceAccessResponseFactories) {
+            if (factory.supports(access)) {
+                return factory;
+            }
+        }
+
+        throw new IllegalStateException(String.format("No ServiceAccessResponseFactory configured for Access of type %s", access.getClass().getSimpleName()));
     }
 }

@@ -56,14 +56,5 @@ public interface ServiceAccessRequest extends LoginRequest {
      * Validates the request to ensure that its actually valid.
      * @return true if the request is valid, false otherwise.
      */
-    boolean validate();
-
-    /**
-     * Generates an invalid access to generate appropriate responses.
-     *
-     * @return the invalid access.
-     */
-    Access generateInvalidRequestAccess();
-
-    Access generateInvalidSessionAccess();
+    boolean IsValid();
 }

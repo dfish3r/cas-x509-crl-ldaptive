@@ -67,7 +67,7 @@ public final class ProxyController {
 
         try {
             final ServiceAccessResponse serviceAccessResponse = this.centralAuthenticationService.grantAccess(serviceAccessRequest);
-            serviceAccessResponse.getAccess().generateResponse(new DefaultAccessResponseRequestImpl(writer, null, null));
+            serviceAccessResponse.generateResponse(new DefaultAccessResponseRequestImpl(writer));
             writer.flush();
         } catch (final SessionException e) {
             writeErrorResponse("BAD_PGT", e.getMessage(), writer);

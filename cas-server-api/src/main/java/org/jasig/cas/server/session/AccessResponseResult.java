@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public interface AccessResponseResult {
 
-    enum Operation {REDIRECT, POST, VIEW, ERROR_VIEW, NONE}
+    enum Operation {REDIRECT, POST, ERROR_VIEW, NONE}
 
     /**
      * The operation that the higher level should perform based on this result.
@@ -66,4 +66,19 @@ public interface AccessResponseResult {
      * @return the content type.  Can be null.
      */
     String getContentType();
+
+    /**
+     * The error code used when the {@link #getOperationToPerform()} is {@link Operation#ERROR_VIEW}.
+     *
+     * @return error code.  CANNOT be NULL.
+     */
+    String getCode();
+
+    /**
+     * The error code used when the {@link #getOperationToPerform()} is {@link Operation#ERROR_VIEW}.
+     *
+     * @return message code.  CANNOT be NULL.
+     */
+
+    String getMessageCode();
 }

@@ -112,7 +112,7 @@
 				<invoke description="Try to validate the Proxy Ticket at /serviceValidate" url="/serviceValidate?service=http://foo.com/&amp;ticket=#{proxyTicket}" />
 				<verifyText description="Should get INVALID_TICKET in the response" text=".*cas:authenticationFailure.*INVALID_TICKET.*" regex="true" />
 
-				<!-- CAS 2.0 unsuccessfull validation at /validate -->
+				<!-- CAS 2.0 unsuccessfull validation at /IsValid -->
 				<invoke description="Validate the PGT" url="/proxy?targetService=http://foo.com/&amp;pgt=#{pgt}" />
 				<verifyText description="Should get a Proxy Ticket in the response" text=".*cas:proxySuccess.*cas:proxyTicket.*ST-\d+-\w+-\d+.*" regex="true" />
 				<storeRegEx description="Extract the Proxy Ticket" text=".*(ST-\d+-\w+-\d+).*" group="1" property="proxyTicket" />

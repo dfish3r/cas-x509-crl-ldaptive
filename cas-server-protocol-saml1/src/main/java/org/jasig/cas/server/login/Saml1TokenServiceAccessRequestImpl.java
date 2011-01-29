@@ -22,7 +22,7 @@ package org.jasig.cas.server.login;
 import org.jasig.cas.server.session.Access;
 
 /**
- * Constructs a request used to validate a SAML1 request.
+ * Constructs a request used to IsValid a SAML1 request.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
@@ -36,7 +36,7 @@ public final class Saml1TokenServiceAccessRequestImpl extends DefaultTokenServic
 
 
     // TODO fix
-    public boolean validate() {
+    public boolean IsValid() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -34,25 +34,11 @@ public class DefaultAccessResponseRequestImpl implements AccessResponseRequest {
 
     private final Writer writer;
 
-    private final String proxySessionId;
-
-    private final Credential credential;
-
-    public DefaultAccessResponseRequestImpl(final Writer writer, final String proxySessionId, final Credential credential) {
+    public DefaultAccessResponseRequestImpl(final Writer writer) {
         this.writer = writer;
-        this.proxySessionId = proxySessionId;
-        this.credential = credential;
     }
 
     public final Writer getWriter() {
         return this.writer;
-    }
-
-    public final String getProxySessionId() {
-        return this.proxySessionId;
-    }
-
-    public final Credential getProxiedCredential() {
-        return this.credential;
     }
 }

@@ -45,16 +45,48 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
 
     private final String contentType;
 
+    private final String code;
+
+    private final String messageCode;
+
+    public DefaultAccessResponseResultImpl(final String contentType) {
+        this(Operation.NONE, Collections.<String, List<String>>emptyMap(), null, null, contentType);
+    }
+
+    public DefaultAccessResponseResultImpl(final String viewName, final String code, final String messageCode, final String contentType) {
+        this.viewName = viewName;
+        this.code = code;
+        this.messageCode = messageCode;
+        this.operation = Operation.ERROR_VIEW;
+        this.contentType = contentType;
+        this.parameters = Collections.emptyMap();
+        this.url = null;
+    }
+
     public DefaultAccessResponseResultImpl(final AccessResponseResult.Operation operation, final Map<String, List<String>> params, final String url, final String viewName, final String contentType) {
         this.operation = operation;
         this.url =  url;
         this.parameters = Collections.unmodifiableMap(params);
         this.viewName = viewName;
         this.contentType = contentType;
+        this.code = null;
+        this.messageCode = null;
     }
 
-    public DefaultAccessResponseResultImpl(final String contentType) {
-        this(Operation.NONE, Collections.<String, List<String>>emptyMap(), null, null, contentType);
+    public static AccessResponseResult generateRedirect(final String url) {
+        return generateRedirect(url, Collections.<String, List<String>>emptyMap());
+    }
+
+    public static AccessResponseResult generateRedirect(final String url, final Map<String, List<String>> params) {
+        return new DefaultAccessResponseResultImpl(Operation.REDIRECT, params, url, null, null);
+    }
+
+    public static AccessResponseResult generateErrorView(final String viewName, final String code, final String message) {
+        return generateErrorView(viewName, null, code, message);
+    }
+
+    public static AccessResponseResult generateErrorView(final String viewName, final String contentType, final String code, final String message) {
+        return new DefaultAccessResponseResultImpl(viewName, code, message, contentType);
     }
 
     public Operation getOperationToPerform() {
@@ -108,6 +140,14 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
 
     public String getContentType() {
         return this.contentType;
+    }
+
+    public String getCode() {
+        return this.code;
+    }
+
+    public String getMessageCode() {
+        return this.messageCode;
     }
 
     private String parseEntriesForItem(final String key, final List<String> values) {

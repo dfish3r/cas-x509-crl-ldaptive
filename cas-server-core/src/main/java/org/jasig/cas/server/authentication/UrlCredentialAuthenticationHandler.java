@@ -29,7 +29,7 @@ import javax.validation.constraints.NotNull;
 import java.security.GeneralSecurityException;
 
 /**
- * Class to validate the credentials presented by communicating with the web
+ * Class to IsValid the credentials presented by communicating with the web
  * server and checking the certificate that is returned against the hostname,
  * etc.
  * <p>

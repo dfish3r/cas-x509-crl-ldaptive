@@ -197,8 +197,8 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
                         <exclude>README</exclude>
                         <exclude>LICENSE</exclude>
                         <exclude>**/fluid/fluid.*.css</exclude>
-                        <exclude>**/js/Fluid.js</exclude>
-                        <exclude>**/js/jquery.keyboard-a11y.js</exclude>
+                        <exclude>**/js/fluid-1.3.0.js</exclude>
+                        <exclude>**/js/jquery.keyboard-a11y-1.3.0.js</exclude>
                     </excludes>
                 </configuration>
             </plugin>

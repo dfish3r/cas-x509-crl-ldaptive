@@ -19,8 +19,6 @@
 
 package org.jasig.cas.server.session;
 
-import org.jasig.cas.server.authentication.Credential;
-
 import java.io.Writer;
 
 /**
@@ -38,21 +36,5 @@ public interface AccessResponseRequest {
      * @return the writer.
      */
     Writer getWriter();
-
-    /**
-     * Returns the identifier for a proxy session if one is to be created.
-     *
-     * @return the proxy session id.
-     * // TODO does this make sense?
-     */
-    String getProxySessionId();
-
-    /**
-     * Returns the credentials used to create the proxy session.
-     *
-     * @return the credentials used to create the proxy session, or null.
-     * // TODO does this make sense?
-     */
-    Credential getProxiedCredential();
 }
 

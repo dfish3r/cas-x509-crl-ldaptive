@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
 
 /**
  * The default {@link org.jasig.cas.server.login.TokenServiceAccessRequest} implementation.  Used when the underlying
- * protocol implementation is token/validate.
+ * protocol implementation is token/IsValid.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$

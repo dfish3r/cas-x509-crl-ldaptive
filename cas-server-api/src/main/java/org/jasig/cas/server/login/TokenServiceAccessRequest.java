@@ -19,6 +19,8 @@
 
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.authentication.Credential;
+
 /**
  * Represents a request to access a service when a token of a previous service access request has been provided.
  *

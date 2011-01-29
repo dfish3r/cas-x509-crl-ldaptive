@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * A qualifier to represent the various protoocl
+ * A qualifier to represent the various protocols.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$

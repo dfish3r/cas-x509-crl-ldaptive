@@ -29,9 +29,9 @@ import java.io.Serializable;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  */
-public interface Access extends Serializable {
+public interface Access extends AccessResponseGenerator, Serializable {
 
     /**
      * Returns the unique identifier for this Access.
@@ -97,12 +97,4 @@ public interface Access extends Serializable {
      * @return true if used, false otherwise.
      */
     boolean isUsed();
-
-    /**
-     * Generates the response to send back to the client.
-     *
-     * @param accessResponseRequest the request for a response.
-     * @return the result of the request.  CANNOT be null.
-     */
-    AccessResponseResult generateResponse(AccessResponseRequest accessResponseRequest);
 }

@@ -18,6 +18,7 @@
     under the License.
 
 --%>
+
 <form:form action="${registeredService.id ge 0 ? 'edit.html' : 'add.html'}?id=${fn:escapeXml(param.id)}" cssClass="v" cssStyle="width:75%;" commandName="${commandName}">
 
 		<c:if test="${not empty successMessage}">

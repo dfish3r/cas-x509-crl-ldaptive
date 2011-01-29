@@ -54,7 +54,7 @@ public final class Saml1ArtifactRequestAccessRequestImpl extends DefaultLoginReq
     }
 
     // TODO fix these
-    public boolean validate() {
+    public boolean IsValid() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -18,6 +18,7 @@
     under the License.
 
 --%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <h2>Runtime Statistics</h2>
 <table width="800">

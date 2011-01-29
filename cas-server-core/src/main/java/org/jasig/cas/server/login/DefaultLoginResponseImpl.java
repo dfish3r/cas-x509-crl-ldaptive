@@ -39,7 +39,7 @@ import java.security.GeneralSecurityException;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  */
 public class DefaultLoginResponseImpl implements LoginResponse {
 
@@ -67,6 +67,10 @@ public class DefaultLoginResponseImpl implements LoginResponse {
         }
     }
 
+    public DefaultLoginResponseImpl() {
+        this(null, null);
+    }
+
     public DefaultLoginResponseImpl(final AuthenticationResponse authenticationResponse) {
         this(null, authenticationResponse);
     }
@@ -87,7 +91,7 @@ public class DefaultLoginResponseImpl implements LoginResponse {
         return this.authenticationMessages;
     }
 
-    public Map<String, Object> getAttributes() {
+    public final Map<String, Object> getAttributes() {
         return this.attributes;
     }
 }

@@ -26,19 +26,17 @@ import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.jasig.cas.server.login.*;
 import org.jasig.cas.server.logout.DefaultLogoutRequestImpl;
 import org.jasig.cas.server.logout.LogoutRequest;
-import org.jasig.cas.server.session.NotFoundSessionException;
-import org.jasig.cas.server.session.Protocol;
-import org.jasig.cas.server.session.Session;
+import org.jasig.cas.server.session.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.inject.Inject;
-import javax.inject.Qualifier;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -106,7 +104,13 @@ public class CasProtocolRestfulController {
 
         try {
             final ServiceAccessResponse serviceAccessResponse = this.centralAuthenticationService.grantAccess(serviceAccessRequest);
-            final String serviceTicketId = serviceAccessResponse.getAccess().getId();
+            final AccessResponseResult accessResponseResult = serviceAccessResponse.generateResponse(new DefaultAccessResponseRequestImpl(writer));
+
+            Assert.isTrue(AccessResponseResult.Operation.REDIRECT.equals(accessResponseResult.getOperationToPerform()));
+            final List<String> ticketIds = accessResponseResult.getParameters().get("ticket");
+            Assert.isTrue(ticketIds != null && !ticketIds.isEmpty());
+
+            final String serviceTicketId = ticketIds.get(0);
             response.setHeader("Content-Type", "text/plain");
             writer.append(serviceTicketId);
         } catch (final NotFoundSessionException e) {

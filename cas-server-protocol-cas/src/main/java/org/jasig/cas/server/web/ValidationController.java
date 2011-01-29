@@ -23,15 +23,12 @@ import org.jasig.cas.server.CasProtocolVersion;
 import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.DefaultUrlCredentialImpl;
-import org.jasig.cas.server.login.CasTokenServiceAccessRequestImpl;
-import org.jasig.cas.server.login.DefaultLoginRequestImpl;
-import org.jasig.cas.server.login.LoginRequest;
-import org.jasig.cas.server.login.LoginResponse;
+import org.jasig.cas.server.login.*;
 import org.jasig.cas.server.session.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,18 +39,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Handles the request to validate the various different CAS protocols.
+ * Handles the request to IsValid the various different CAS protocols.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
 @Controller("validationController")
-public final class ValidationController {
+public final class ValidationController extends ApplicationObjectSupport {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -81,27 +76,26 @@ public final class ValidationController {
     }
 
     protected final ModelAndView validateRequest(final boolean renew, final String service, final String ticket, final CasProtocolVersion casVersion, final HttpServletRequest request, final Writer writer) {
-
         final CasTokenServiceAccessRequestImpl casTokenServiceAccessRequest = new CasTokenServiceAccessRequestImpl(casVersion, ticket, service, request.getRemoteAddr(), renew);
-        final Access access = this.centralAuthenticationService.validate(casTokenServiceAccessRequest);
+
+        final Credential proxyCredential = createProxyCredential(request);
+
+        if (proxyCredential != null) {
+            casTokenServiceAccessRequest.getCredentials().add(proxyCredential);
+        }
+
+        final ServiceAccessResponse serviceAccessResponse = this.centralAuthenticationService.validate(casTokenServiceAccessRequest);
 
         logger.debug(String.format("Successfully validated: %s", ticket));
-        final Session proxySession;
-        final Credential proxyCredential = createProxyCredential(request);
-        if (proxyCredential != null) {
-            final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, request.getRemoteAddr(), false, access);
-            loginRequest.getCredentials().add(proxyCredential);
-            final LoginResponse loginResponse = this.centralAuthenticationService.login(loginRequest);
-            proxySession = loginResponse.getSession();
-        } else {
-            proxySession = null;
-        }
-// TODO revisit this
-        final AccessResponseRequest accessResponseRequest = new DefaultAccessResponseRequestImpl(writer, proxySession != null ? proxySession.getId() : null, proxyCredential);
-        final AccessResponseResult accessResponseResult = access.generateResponse(accessResponseRequest);
+        final AccessResponseRequest accessResponseRequest = new DefaultAccessResponseRequestImpl(writer);
+        final AccessResponseResult accessResponseResult = serviceAccessResponse.generateResponse(accessResponseRequest);
 
-        if (!AccessResponseResult.Operation.VIEW.equals(accessResponseResult.getOperationToPerform())) {
+        if (AccessResponseResult.Operation.ERROR_VIEW.equals(accessResponseResult.getOperationToPerform())) {
             final ModelAndView modelAndView = new ModelAndView();
+
+            modelAndView.setViewName(accessResponseResult.getViewName());
+            modelAndView.addObject("code", accessResponseResult.getCode());
+            modelAndView.addObject("description", getMessageSourceAccessor().getMessage(accessResponseResult.getMessageCode(), new Object[] {casTokenServiceAccessRequest.getToken(), casTokenServiceAccessRequest.getServiceId()}, accessResponseResult.getMessageCode()));
             return modelAndView;
         }
 
@@ -113,12 +107,4 @@ public final class ValidationController {
 
         return pgtUrl != null ? new DefaultUrlCredentialImpl(pgtUrl) : null;
     }
-
-    protected final void writeErrorResponse(final String errorCode, final String errorMessage, final CasProtocolVersion casVersion, final Writer writer) {
-        final Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("errorCode", errorCode);
-        parameters.put("message", errorMessage);
-//        FreemarkerUtils.writeToFreeMarkerTemplate(casVersion.asString() + "errorResponseTemplate.ftl", parameters, writer);
-    }
-
 }

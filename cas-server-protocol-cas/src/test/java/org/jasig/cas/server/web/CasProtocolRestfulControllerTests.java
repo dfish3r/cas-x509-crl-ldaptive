@@ -24,12 +24,10 @@ import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.authentication.Credential;
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.jasig.cas.server.login.*;
-import org.jasig.cas.server.session.Access;
-import org.jasig.cas.server.session.AccessException;
-import org.jasig.cas.server.session.Session;
-import org.jasig.cas.server.session.SessionException;
+import org.jasig.cas.server.session.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -116,11 +114,16 @@ public final class CasProtocolRestfulControllerTests {
     public void obtainServiceTicketWithValidSession() throws Exception {
         final ServiceAccessResponse serviceResponse = mock(ServiceAccessResponse.class);
 
-        final Access access = mock(Access.class);
-        when(access.getId()).thenReturn("ST");
-        when(serviceResponse.getAccess()).thenReturn(access);
-        
+
+
+        final AccessResponseResult accessResponseResult = mock(AccessResponseResult.class);
+        when(accessResponseResult.getOperationToPerform()).thenReturn(AccessResponseResult.Operation.REDIRECT);
+        final Map<String, List<String>> parameters = new HashMap<String, List<String>>();
+        parameters.put("ticket", Arrays.asList("ticketId"));
+        when(accessResponseResult.getParameters()).thenReturn(parameters);
+
         when(centralAuthenticationService.grantAccess(accessRequest)).thenReturn(serviceResponse);
+        when(serviceResponse.generateResponse(Matchers.<AccessResponseRequest>any())).thenReturn(accessResponseResult);
 
         final MockHttpServletRequest request = new MockHttpServletRequest("POST", "/v1/tickets/TGT");
         final MockHttpServletResponse response = new MockHttpServletResponse();
@@ -134,7 +137,7 @@ public final class CasProtocolRestfulControllerTests {
 
         assertNotNull(content);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-        assertTrue(content.contains("ST"));
+        assertTrue(content.contains("ticketId"));
     }
 
     @Test

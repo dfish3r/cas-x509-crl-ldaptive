@@ -28,11 +28,11 @@ import org.jasig.cas.server.session.AccessException;
 import org.jasig.cas.server.session.SessionException;
 
 /**
- * CAS viewed as a set of services to generate and validate Tickets.
+ * CAS viewed as a set of services to generate and IsValid Tickets.
  * <p>
  * This is the interface between a Web HTML, Web Services, RMI, or any other
  * request processing layer and the CAS Service viewed as a mechanism to
- * generate, store, validate, and retrieve Tickets containing Authentication
+ * generate, store, IsValid, and retrieve Tickets containing Authentication
  * information. The features of the request processing layer (the HttpXXX
  * Servlet objects) are not visible here or in any modules behind this layer. In
  * theory, a standalone application could call these methods directly as a
@@ -86,11 +86,11 @@ public interface CentralAuthenticationService {
     /**
      * Validate requests that cannot be self-validating (i.e. CAS tickets)
      *
-     * @param tokenServiceAccessRequest the request to validate
+     * @param tokenServiceAccessRequest the request to IsValid
      * @return the response from the validation request.  CANNOT be NULL.
      */
 
-    Access validate(TokenServiceAccessRequest tokenServiceAccessRequest);
+    ServiceAccessResponse validate(TokenServiceAccessRequest tokenServiceAccessRequest);
 
     /**
      * Delegate a TicketGrantingTicket to a Service for proxying authentication

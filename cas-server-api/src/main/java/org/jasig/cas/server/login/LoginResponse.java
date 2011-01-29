@@ -34,7 +34,7 @@ import java.io.Serializable;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  */
 public interface LoginResponse extends Serializable {
 

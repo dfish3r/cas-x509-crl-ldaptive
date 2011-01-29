@@ -143,14 +143,14 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
             case VALIDATION_SUCCEEDED:
                 final String successFileName = casVersionPrefix + "successResponseTemplate.ftl";
                 parameters.put("session", getParentSession());
-
+                /*
                 if (accessResponseRequest.getProxySessionId() != null) {
                     final String pgtIou = getProxyHandler().handleProxyGrantingRequest(accessResponseRequest.getProxySessionId(), accessResponseRequest.getProxiedCredential());
 
                     if (pgtIou != null) {
                         parameters.put("pgtIou", pgtIou);
                     }
-                }
+                } */
 
 //                FreemarkerUtils.writeToFreeMarkerTemplate(successFileName, parameters, accessResponseRequest.getWriter());
                 return DefaultAccessResponseResultImpl.NONE;
