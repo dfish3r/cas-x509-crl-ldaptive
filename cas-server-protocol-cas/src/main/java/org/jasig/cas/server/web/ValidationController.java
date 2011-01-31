@@ -90,16 +90,24 @@ public final class ValidationController extends ApplicationObjectSupport {
         final AccessResponseRequest accessResponseRequest = new DefaultAccessResponseRequestImpl(writer);
         final AccessResponseResult accessResponseResult = serviceAccessResponse.generateResponse(accessResponseRequest);
 
-        if (AccessResponseResult.Operation.ERROR_VIEW.equals(accessResponseResult.getOperationToPerform())) {
-            final ModelAndView modelAndView = new ModelAndView();
+        switch (accessResponseResult.getOperationToPerform()) {
+            case ERROR_VIEW:
+                final ModelAndView errorView = new ModelAndView();
 
-            modelAndView.setViewName(accessResponseResult.getViewName());
-            modelAndView.addObject("code", accessResponseResult.getCode());
-            modelAndView.addObject("description", getMessageSourceAccessor().getMessage(accessResponseResult.getMessageCode(), new Object[] {casTokenServiceAccessRequest.getToken(), casTokenServiceAccessRequest.getServiceId()}, accessResponseResult.getMessageCode()));
-            return modelAndView;
+                errorView.setViewName(accessResponseResult.getViewName());
+                errorView.addObject("code", accessResponseResult.getCode());
+                errorView.addObject("description", getMessageSourceAccessor().getMessage(accessResponseResult.getMessageCode(), new Object[] {casTokenServiceAccessRequest.getToken(), casTokenServiceAccessRequest.getServiceId()}, accessResponseResult.getMessageCode()));
+                return errorView;
+
+            case VIEW:
+                final ModelAndView view = new ModelAndView();
+                view.addAllObjects(accessResponseResult.getModelMap());
+                view.setViewName(accessResponseResult.getViewName());
+                return view;
+
+            default:
+                return null;
         }
-
-        return null;
     }
 
     protected Credential createProxyCredential(final HttpServletRequest request) {

@@ -95,15 +95,15 @@
         apply DEBUG level logging on a an org.springframework.* package level (i.e. org.springframework.dao)
     -->
     <logger name="org.springframework">
-        <level value="DEBUG" />
+        <level value="ERROR" />
     </logger>
 
     <logger name="org.springframework.webflow">
-        <level value="TRACE" />
+        <level value="ERROR" />
     </logger>
 
     <logger name="org.jasig" additivity="true">
-        <level value="INFO" />
+        <level value="DEBUG" />
         <appender-ref ref="cas" />
     </logger>
 

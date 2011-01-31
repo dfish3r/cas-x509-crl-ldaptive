@@ -19,6 +19,7 @@
 
 package org.jasig.cas.server.login;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.util.Assert;
 
 /**
@@ -58,6 +59,10 @@ public abstract class DefaultTokenServiceAccessRequestImpl extends DefaultLoginR
     }
 
     public final String toString() {
-        return "token=" + this.token + ",serviceId=" + serviceId;
+        final ToStringBuilder builder = new ToStringBuilder(this);
+        builder.append("serviceId", getServiceId());
+        builder.append("tokenId", getToken());
+
+        return builder.toString();
     }
 }

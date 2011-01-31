@@ -82,8 +82,14 @@ public final class InMemorySessionStorageImpl extends AbstractSessionStorage imp
         return session;
     }
 
+    // TODO note this will FAIL horribly for proxied sessions.  But we're not there yet.
     public Session updateSession(final Session session) {
         Assert.notNull(session);
+
+        for (final Access access : session.getAccesses()) {
+            this.accessIdToSessionIdMapping.put(access.getId(), session.getId());
+        }
+
         return session;
     }
 

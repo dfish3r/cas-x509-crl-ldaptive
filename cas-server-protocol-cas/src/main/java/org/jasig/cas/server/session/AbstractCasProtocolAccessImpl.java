@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -129,45 +130,48 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
             return generateNotValidatedResponse(accessResponseRequest);
         }
 
-        final String casVersionPrefix = getCasVersion().asString();
-
         if (isExpired()) {
             setValidationStatus(ValidationStatus.EXPIRED_TICKET);
         }
 
         getState().updateState();
 
-        final Map<String, Object> parameters = new HashMap<String, Object>();
+        switch (getCasVersion()) {
+            case CAS1:
+                try {
+                    switch (getValidationStatus()) {
+                        case VALIDATION_SUCCEEDED:
+                            accessResponseRequest.getWriter().append("yes\n");
+                            accessResponseRequest.getWriter().append(getParentSession().getRootPrincipal().getName());
+                            accessResponseRequest.getWriter().append("\n");
+                            break;
 
-        switch (getValidationStatus()) {
-            case VALIDATION_SUCCEEDED:
-                final String successFileName = casVersionPrefix + "successResponseTemplate.ftl";
-                parameters.put("session", getParentSession());
-                /*
-                if (accessResponseRequest.getProxySessionId() != null) {
-                    final String pgtIou = getProxyHandler().handleProxyGrantingRequest(accessResponseRequest.getProxySessionId(), accessResponseRequest.getProxiedCredential());
-
-                    if (pgtIou != null) {
-                        parameters.put("pgtIou", pgtIou);
+                        default:
+                            accessResponseRequest.getWriter().append("no\n");
+                            break;
                     }
-                } */
-
-//                FreemarkerUtils.writeToFreeMarkerTemplate(successFileName, parameters, accessResponseRequest.getWriter());
-                return DefaultAccessResponseResultImpl.NONE;
-
-            default:
-                final String errorFileName = casVersionPrefix + "errorResponseTemplate.ftl";
-                parameters.put("errorCode", VALIDATION_STATUS_TO_ERROR_CODE_MAPPING.get(getValidationStatus()));
-                if (getValidationStatus() == ValidationStatus.VALIDATION_FAILED_ID_MATCH) {
-//                    parameters.put("message", getMessageSourceAccessor().getMessage(getValidationStatus().name(), new Object[] {getResourceIdentifier()}));
-                } else {
-//                    parameters.put("message", getMessageSourceAccessor().getMessage(getValidationStatus().name()));
+                } catch (final IOException e) {
+                    LOG.warn(e.getMessage(), e);
                 }
-                parameters.put("message", "Get MESSAGE From accessor");
-//                FreemarkerUtils.writeToFreeMarkerTemplate(errorFileName, parameters, accessResponseRequest.getWriter());
 
                 return DefaultAccessResponseResultImpl.NONE;
+
+            case CAS2:
+            case CAS2_WITH_PROXYING:
+                switch (getValidationStatus()) {
+                    case VALIDATION_SUCCEEDED:
+                        final Map<String, Object> parameters = new HashMap<String, Object>();
+                        parameters.put("session", getParentSession());
+
+                        return DefaultAccessResponseResultImpl.generateView("casServiceSuccessView", parameters);
+
+                    default:
+                        final String code = VALIDATION_STATUS_TO_ERROR_CODE_MAPPING.get(getValidationStatus());
+                        return DefaultAccessResponseResultImpl.generateErrorView("casServiceFailureView", code, code);
+                }
         }
+
+        throw new IllegalStateException("Unrecognized Protocol.");
     }
 
     protected AccessResponseResult generateNotValidatedResponse(final AccessResponseRequest accessResponseRequest) {
@@ -175,8 +179,11 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
             final Map<String, List<String>> parameters = new HashMap<String,  List<String>>();
             parameters.put("ticket", Arrays.asList(getId()));
 
-            final AccessResponseResult.Operation operation = this.isPostRequest() ? AccessResponseResult.Operation.POST : AccessResponseResult.Operation.REDIRECT;
-            return new DefaultAccessResponseResultImpl(operation, parameters, getResourceIdentifier(), null, null);
+            if (this.isPostRequest()) {
+                return DefaultAccessResponseResultImpl.generatePostRedirect(getResourceIdentifier(), parameters);
+            } else {
+                return DefaultAccessResponseResultImpl.generateRedirect(getResourceIdentifier(), parameters);
+            }
         } else {
             final Map<String, Object> root = new HashMap<String, Object>();
             root.put("ticket", getId());

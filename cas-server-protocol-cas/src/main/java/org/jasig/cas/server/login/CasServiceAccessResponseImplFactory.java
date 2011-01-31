@@ -25,6 +25,8 @@ import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.ServiceAccessResponseFactory;
 import org.jasig.cas.server.session.Session;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.util.List;
 
 /**
@@ -34,6 +36,8 @@ import java.util.List;
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
+@Named("casServiceAccessResponseImplFactory")
+@Singleton
 public final class CasServiceAccessResponseImplFactory implements ServiceAccessResponseFactory {
 
     public ServiceAccessResponse getServiceAccessResponse(final ServiceAccessRequest serviceAccessRequest) {
@@ -48,11 +52,11 @@ public final class CasServiceAccessResponseImplFactory implements ServiceAccessR
         return new CasServiceAccessResponseImpl(session, access, authenticationResponse, loggedOutAccesses);
     }
 
-    public boolean supports(ServiceAccessRequest serviceAccessRequest) {
+    public boolean supports(final ServiceAccessRequest serviceAccessRequest) {
         return serviceAccessRequest instanceof CasServiceAccessRequestImpl;
     }
 
-    public boolean supports(Access access) {
+    public boolean supports(final Access access) {
         return access instanceof AbstractCasProtocolAccessImpl;
     }
 }

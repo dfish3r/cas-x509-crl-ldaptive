@@ -593,6 +593,7 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
         <module>cas-server-protocol-saml1</module>
         <module>cas-server-sessionstorage-serialization-support</module>
         <module>cas-server-sessionstorage-ehcache</module>
+        <module>cas-server-test-support-selenium</module>
     </modules>
 
 	<reporting>
@@ -651,5 +652,6 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
         <javax.inject.version>1</javax.inject.version>
         <commons.io.version>2.0</commons.io.version>
         <apache.tiles.version>2.2.2</apache.tiles.version>
+        <selenium.version>2.0b1</selenium.version>
 	</properties>
 </project>

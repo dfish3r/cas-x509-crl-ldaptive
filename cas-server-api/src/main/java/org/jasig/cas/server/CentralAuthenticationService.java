@@ -86,7 +86,7 @@ public interface CentralAuthenticationService {
     /**
      * Validate requests that cannot be self-validating (i.e. CAS tickets)
      *
-     * @param tokenServiceAccessRequest the request to IsValid
+     * @param tokenServiceAccessRequest the request to validate.
      * @return the response from the validation request.  CANNOT be NULL.
      */
 

@@ -109,7 +109,7 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
                 parameters.put(CONST_PARAM_TICKET, Arrays.asList(getId()));
                 parameters.put(CONST_PARAM_SERVICE, Arrays.asList(getResourceIdentifier()));
 
-                return new DefaultAccessResponseResultImpl(AccessResponseResult.Operation.REDIRECT, parameters, getResourceIdentifier(), null, null);
+                return DefaultAccessResponseResultImpl.generateRedirect(getResourceIdentifier(), parameters);
 
             case USED:
                 return constructErrorResponse(accessResponseRequest.getWriter(), "This artifact id has already been used.");
@@ -170,6 +170,6 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
             logger.error(e.getMessage(), e);
         }
 
-        return new DefaultAccessResponseResultImpl("text/xml; charset=" + getEncoding());
+        return DefaultAccessResponseResultImpl.none("text/xml; charset=" + getEncoding());
     }
 }

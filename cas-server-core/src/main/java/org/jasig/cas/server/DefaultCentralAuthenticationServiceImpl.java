@@ -187,18 +187,21 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         Assert.notNull(tokenServiceAccessRequest, "tokenServiceAccessRequest cannot be null");
 
         if (!tokenServiceAccessRequest.IsValid()) {
+            log.debug("Token Validation request for {} was not valid a request.", tokenServiceAccessRequest);
             return findServiceAccessResponseFactory(tokenServiceAccessRequest).getServiceAccessResponse(tokenServiceAccessRequest);
         }
 
         final Session session = this.sessionStorage.findSessionByAccessId(tokenServiceAccessRequest.getToken());
 
         if (session == null) {
+            log.debug("Token Validation request for {} resulted in session not found.", tokenServiceAccessRequest);
             return findServiceAccessResponseFactory(tokenServiceAccessRequest).getServiceAccessResponse(tokenServiceAccessRequest);
         }
 
         final Access access = session.getAccess(tokenServiceAccessRequest.getToken());
 
         if (access == null) {
+            log.debug("Token Validation request for {} resulted in access not found.", tokenServiceAccessRequest);
            return findServiceAccessResponseFactory(tokenServiceAccessRequest).getServiceAccessResponse(session, null, null, Collections.<Access>emptyList());
         }
 

@@ -25,6 +25,8 @@ import org.jasig.cas.server.session.Access;
 import org.jasig.cas.server.session.ServiceAccessResponseFactory;
 import org.jasig.cas.server.session.Session;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.util.List;
 
 /**
@@ -34,6 +36,8 @@ import java.util.List;
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
+@Named("casTokenServiceAccessResponseImplFactory")
+@Singleton
 public final class CasTokenServiceAccessResponseImplFactory implements ServiceAccessResponseFactory {
 
     public ServiceAccessResponse getServiceAccessResponse(final ServiceAccessRequest serviceAccessRequest) {

@@ -33,7 +33,7 @@ import java.io.UnsupportedEncodingException;
  */
 public final class DefaultAccessResponseResultImpl implements AccessResponseResult {
 
-    public static final AccessResponseResult NONE = new DefaultAccessResponseResultImpl(AccessResponseResult.Operation.NONE, new HashMap<String, List<String>>(), null, null, null);
+    public static final AccessResponseResult NONE = new DefaultAccessResponseResultImpl(Operation.NONE, null, Collections.<String, List<String>>emptyMap());
 
     private final Operation operation;
 
@@ -49,11 +49,35 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
 
     private final String messageCode;
 
-    public DefaultAccessResponseResultImpl(final String contentType) {
-        this(Operation.NONE, Collections.<String, List<String>>emptyMap(), null, null, contentType);
+    private final Map<String, Object> modelMap;
+
+    private DefaultAccessResponseResultImpl(final String contentType) {
+        this.viewName = null;
+        this.operation = Operation.NONE;
+        this.contentType = contentType;
+        this.modelMap = Collections.emptyMap();
+        this.messageCode = null;
+        this.code = null;
+        this.url = null;
+        this.parameters = null;
     }
 
-    public DefaultAccessResponseResultImpl(final String viewName, final String code, final String messageCode, final String contentType) {
+    private DefaultAccessResponseResultImpl(final String viewName, final Map<String, Object> modelMap) {
+        this(viewName, null, modelMap);
+    }
+
+    private DefaultAccessResponseResultImpl(final String viewName, final String contentType, final Map<String, Object> modelMap) {
+        this.viewName = viewName;
+        this.operation = Operation.VIEW;
+        this.contentType = contentType;
+        this.messageCode = null;
+        this.code = null;
+        this.url = null;
+        this.parameters = Collections.emptyMap();
+        this.modelMap = Collections.unmodifiableMap(modelMap);
+    }
+
+    private DefaultAccessResponseResultImpl(final String viewName, final String code, final String messageCode, final String contentType) {
         this.viewName = viewName;
         this.code = code;
         this.messageCode = messageCode;
@@ -61,16 +85,22 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
         this.contentType = contentType;
         this.parameters = Collections.emptyMap();
         this.url = null;
+        this.modelMap = Collections.emptyMap();
     }
 
-    public DefaultAccessResponseResultImpl(final AccessResponseResult.Operation operation, final Map<String, List<String>> params, final String url, final String viewName, final String contentType) {
+    private DefaultAccessResponseResultImpl(final Operation operation, final String url, final Map<String, List<String>> params) {
         this.operation = operation;
         this.url =  url;
         this.parameters = Collections.unmodifiableMap(params);
-        this.viewName = viewName;
-        this.contentType = contentType;
+        this.viewName = null;
+        this.contentType = null;
         this.code = null;
         this.messageCode = null;
+        this.modelMap = Collections.emptyMap();
+    }
+
+    public static AccessResponseResult none(final String contentType) {
+        return new DefaultAccessResponseResultImpl(contentType);
     }
 
     public static AccessResponseResult generateRedirect(final String url) {
@@ -78,7 +108,23 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
     }
 
     public static AccessResponseResult generateRedirect(final String url, final Map<String, List<String>> params) {
-        return new DefaultAccessResponseResultImpl(Operation.REDIRECT, params, url, null, null);
+        return new DefaultAccessResponseResultImpl(Operation.REDIRECT, url, params);
+    }
+
+    public static AccessResponseResult generatePostRedirect(final String url) {
+        return generatePostRedirect(url, Collections.<String, List<String>>emptyMap());
+    }
+
+    public static AccessResponseResult generatePostRedirect(final String url, final Map<String, List<String>> params) {
+        return new DefaultAccessResponseResultImpl(Operation.POST, url, params);
+    }
+
+    public static AccessResponseResult generateView(final String viewName, final Map<String, Object> modelMap) {
+        return generateView(viewName, null, modelMap);
+    }
+
+    public static AccessResponseResult generateView(final String viewName, final String contentType, final Map<String, Object> modelMap) {
+        return new DefaultAccessResponseResultImpl(viewName, contentType, modelMap);
     }
 
     public static AccessResponseResult generateErrorView(final String viewName, final String code, final String message) {
@@ -148,6 +194,10 @@ public final class DefaultAccessResponseResultImpl implements AccessResponseResu
 
     public String getMessageCode() {
         return this.messageCode;
+    }
+
+    public Map<String, Object> getModelMap() {
+        return this.modelMap;
     }
 
     private String parseEntriesForItem(final String key, final List<String> values) {

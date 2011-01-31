@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public interface AccessResponseResult {
 
-    enum Operation {REDIRECT, POST, ERROR_VIEW, NONE}
+    enum Operation {REDIRECT, POST, ERROR_VIEW, VIEW, NONE}
 
     /**
      * The operation that the higher level should perform based on this result.
@@ -59,6 +59,13 @@ public interface AccessResponseResult {
      * @return the view.  CANNOT be NULL if the Operation is VIEW.
      */
     String getViewName();
+
+    /**
+     * Returns the Model Map.  MUST only be used when the operation type is VIEW.
+     *
+     * @return the model map.  CANNOT be NULL if operation type is VIEW.
+     */
+    Map<String, Object> getModelMap();
 
     /**
      * Sets the content-type to be sent to the client.
