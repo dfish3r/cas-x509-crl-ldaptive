@@ -19,10 +19,6 @@
 
 package org.jasig.cas.server.login;
 
-import org.jasig.cas.server.session.Access;
-import org.jasig.cas.server.session.InvalidCasRequestProtocolAccessImpl;
-import org.jasig.cas.server.session.InvalidSessionCasProtocolAccessImpl;
-
 /**
  * Implementation of the {@link org.jasig.cas.server.login.ServiceAccessRequest} that implements the CAS protocol.
  *
@@ -30,34 +26,45 @@ import org.jasig.cas.server.session.InvalidSessionCasProtocolAccessImpl;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public final class CasServiceAccessRequestImpl extends DefaultLoginRequestImpl implements ServiceAccessRequest {
+public class CasServiceAccessRequestImpl extends DefaultLoginRequestImpl implements ServiceAccessRequest {
 
     private final String serviceId;
 
     private final boolean postRequest;
 
-    private boolean passiveAuthentication;
+    private final boolean passiveAuthentication;
+
+    private final boolean proxied;
+
+    public CasServiceAccessRequestImpl(final String sessionId, final String serviceId, final String remoteIpAddress) {
+        this(sessionId, remoteIpAddress, false, false, serviceId, false, true);
+    }
 
     public CasServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final boolean passiveAuthentication, final String serviceId, final boolean postRequest) {
+        this(sessionId, remoteIpAddress, forceAuthentication, passiveAuthentication, serviceId, postRequest, false);
+    }
+
+    public CasServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final boolean passiveAuthentication, final String serviceId, final boolean postRequest, final boolean proxied) {
         super(sessionId, remoteIpAddress, forceAuthentication, null);
         this.serviceId = serviceId;
         this.postRequest = postRequest;
         this.passiveAuthentication = passiveAuthentication;
+        this.proxied = proxied;
     }
 
-    public String getServiceId() {
+    public final String getServiceId() {
         return this.serviceId;
     }
 
-    public String getPassiveAuthenticationRedirectUrl() {
+    public final String getPassiveAuthenticationRedirectUrl() {
         return this.passiveAuthentication ? this.serviceId : null;
     }
 
-    public boolean isPostRequest() {
+    public final boolean isPostRequest() {
         return this.postRequest;
     }
 
-    public boolean isPassiveAuthentication() {
+    public final boolean isPassiveAuthentication() {
         return this.passiveAuthentication;
     }
 
@@ -86,5 +93,9 @@ public final class CasServiceAccessRequestImpl extends DefaultLoginRequestImpl i
     // TODO we need to actually figure this stuff out
     public boolean IsValid() {
         return true;
+    }
+
+    public boolean isProxiedRequest() {
+        return this.proxied;
     }
 }

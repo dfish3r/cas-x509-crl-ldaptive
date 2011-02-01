@@ -57,4 +57,11 @@ public interface ServiceAccessRequest extends LoginRequest {
      * @return true if the request is valid, false otherwise.
      */
     boolean IsValid();
+
+    /**
+     * Returns whether this is a proxy request or not.  Proxied requests might generate different error responses.
+     *
+     * @return if its a proxied request or not.
+     */
+    boolean isProxiedRequest();
 }

@@ -78,8 +78,8 @@ public interface CentralAuthenticationService {
      *
      * @param serviceAccessRequest the actual request.  CAN only be NULL if the new authentication attempt has failed.
      * @return the response to the request for access.  This is only returned for a successful access.
-     * @throws SessionException when there is a problem with the actual session.
-     * @throws AccessException when there is a problem granting an access request.
+     * @throws SessionException when there is a problem with the actual session.  Requests marked as proxy will not throw this exception.
+     * @throws AccessException when there is a problem granting an access request. Requests marked as proxy will not throw this exception.
      */
     ServiceAccessResponse grantAccess(ServiceAccessRequest serviceAccessRequest) throws SessionException, AccessException;
 

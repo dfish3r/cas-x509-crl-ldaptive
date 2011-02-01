@@ -26,7 +26,7 @@ package org.jasig.cas.server.session;
  * @version $Revision$ $Date$
  * @since 3.5
  */
-public abstract class SessionException extends Exception {
+public abstract class SessionException extends RuntimeException {
 
     protected SessionException(final String message) {
         super(message);

@@ -228,11 +228,19 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         final Session session = this.sessionStorage.findSessionBySessionId(serviceAccessRequest.getSessionId());
 
         if (session == null) {
-            throw new NotFoundSessionException(String.format("Session [%s] could not be found.", serviceAccessRequest.getSessionId()));
+            if (serviceAccessRequest.isProxiedRequest()) {
+                return findServiceAccessResponseFactory(serviceAccessRequest).getServiceAccessResponse(serviceAccessRequest);
+            } else {
+                throw new NotFoundSessionException(String.format("Session [%s] could not be found.", serviceAccessRequest.getSessionId()));
+            }
         }
 
         if (!session.isValid()) {
-            throw new InvalidatedSessionException(String.format("Session [%s] is no longer valid.", session.getId()));
+            if (serviceAccessRequest.isProxiedRequest()) {
+                return findServiceAccessResponseFactory(serviceAccessRequest).getServiceAccessResponse(serviceAccessRequest);
+            } else {
+                throw new InvalidatedSessionException(String.format("Session [%s] is no longer valid.", session.getId()));
+            }
         }
 
         final Session sessionToWorkWith;

@@ -23,11 +23,8 @@ import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.login.CasServiceAccessRequestImpl;
 import org.jasig.cas.server.login.ServiceAccessRequest;
 import org.jasig.cas.server.login.ServiceAccessResponse;
-import org.jasig.cas.server.session.AccessException;
 import org.jasig.cas.server.session.DefaultAccessResponseRequestImpl;
-import org.jasig.cas.server.session.SessionException;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,8 +34,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Scott Battaglia
@@ -58,28 +53,10 @@ public final class ProxyController {
 
     @RequestMapping(method= RequestMethod.GET, value="/proxy")
     public void generateProxyRequest(@RequestParam(value="pgt") final String pgt, @RequestParam(value="targetService") final String service, final HttpServletRequest request, final Writer writer) throws IOException {
-        final ServiceAccessRequest serviceAccessRequest = new CasServiceAccessRequestImpl(pgt, request.getRemoteAddr(), false, false, service, false);
+        final ServiceAccessRequest serviceAccessRequest = new CasServiceAccessRequestImpl(pgt, request.getRemoteAddr(), service);
 
-        if (!StringUtils.hasText(pgt) || !StringUtils.hasText(service)) {
-            writeErrorResponse("INVALID_REQUEST", "'pgt' and 'targetService' parameters are both required", writer);
-            return;
-        }
-
-        try {
-            final ServiceAccessResponse serviceAccessResponse = this.centralAuthenticationService.grantAccess(serviceAccessRequest);
-            serviceAccessResponse.generateResponse(new DefaultAccessResponseRequestImpl(writer));
-            writer.flush();
-        } catch (final SessionException e) {
-            writeErrorResponse("BAD_PGT", e.getMessage(), writer);
-        } catch (final AccessException e) {
-            writeErrorResponse("INTERNAL_ERROR", e.getMessage(), writer);
-        }
+        final ServiceAccessResponse serviceAccessResponse = this.centralAuthenticationService.grantAccess(serviceAccessRequest);
+        serviceAccessResponse.generateResponse(new DefaultAccessResponseRequestImpl(writer));
+        writer.flush();
     }
-
-    protected void writeErrorResponse(final String errorCode, final String errorMessage, final Writer writer) {
-        final Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("errorCode", errorCode);
-        parameters.put("errorMessage", errorMessage);
-    }
-
 }
