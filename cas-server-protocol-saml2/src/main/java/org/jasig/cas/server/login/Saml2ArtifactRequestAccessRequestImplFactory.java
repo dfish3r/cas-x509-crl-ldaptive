@@ -156,7 +156,7 @@ public final class Saml2ArtifactRequestAccessRequestImplFactory extends Abstract
                 return null;
             }
 
-            // IsValid the context if we can
+            // isValid the context if we can
             final NodeList nl = document.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
 
             if (nl.getLength() > 0) {

@@ -20,6 +20,7 @@
 package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.CasProtocolVersion;
+import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.login.CasTokenServiceAccessRequestImpl;
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
 import org.jasig.cas.server.util.ServiceIdentifierMatcher;
@@ -55,6 +56,15 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
         VALIDATION_STATUS_TO_ERROR_CODE_MAPPING.put(ValidationStatus.VALIDATION_FAILED_PROXY_ATTEMPT, "INVALID_TICKET");
         VALIDATION_STATUS_TO_ERROR_CODE_MAPPING.put(ValidationStatus.ALREADY_VALIDATED, "INVALID_TICKET");
         VALIDATION_STATUS_TO_ERROR_CODE_MAPPING.put(ValidationStatus.EXPIRED_TICKET, "INVALID_TICKET");
+    }
+
+    public Session createDelegatedSession(final AuthenticationResponse authenticationResponse) throws InvalidatedSessionException {
+        if (getDelegatedSessionIdentifier() != null) {
+            throw new IllegalStateException("You can only do this once!");
+        }
+        final Session session = this.getParentSession().createAndRegisterNewChildSession(authenticationResponse);
+        setDelegatedSessionIdentifier(session.getId());
+        return session;
     }
 
     public final synchronized void validate(final TokenServiceAccessRequest tokenServiceAccessRequest) {
@@ -161,6 +171,11 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
                 switch (getValidationStatus()) {
                     case VALIDATION_SUCCEEDED:
                         final Map<String, Object> parameters = new HashMap<String, Object>();
+
+                        if (getDelegatedSessionIdentifier() != null) {
+                           final String pgtIou = getProxyHandler().handleProxyGrantingRequest(getDelegatedSessionIdentifier(), getParentSession().findChildSessionById(getDelegatedSessionIdentifier()).getPrincipal());
+                            parameters.put("pgtIou", pgtIou);
+                        }
                         parameters.put("session", getParentSession());
 
                         return DefaultAccessResponseResultImpl.generateView("casServiceSuccessView", parameters);
@@ -187,8 +202,7 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
         } else {
             final Map<String, Object> root = new HashMap<String, Object>();
             root.put("ticket", getId());
-//            FreemarkerUtils.writeToFreeMarkerTemplate("CAS2successResponseProxyTemplate.ftl", root, accessResponseRequest.getWriter());
-            return DefaultAccessResponseResultImpl.NONE;
+            return DefaultAccessResponseResultImpl.generateView("casProxySuccessView", root);
         }
     }
 
@@ -273,4 +287,11 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
     protected abstract UniqueTicketIdGenerator getIdGenerator();
 
     protected abstract void setLocalSessionDestroyed(boolean localSessionDestroyed);
+
+    protected abstract void setDelegatedSessionIdentifier(String delegatedSessionIdentifier);
+
+    protected abstract String getDelegatedSessionIdentifier();
+
+
+
 }

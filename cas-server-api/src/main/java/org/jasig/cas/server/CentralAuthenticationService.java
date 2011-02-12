@@ -28,11 +28,11 @@ import org.jasig.cas.server.session.AccessException;
 import org.jasig.cas.server.session.SessionException;
 
 /**
- * CAS viewed as a set of services to generate and IsValid Tickets.
+ * CAS viewed as a set of services to generate and isValid Tickets.
  * <p>
  * This is the interface between a Web HTML, Web Services, RMI, or any other
  * request processing layer and the CAS Service viewed as a mechanism to
- * generate, store, IsValid, and retrieve Tickets containing Authentication
+ * generate, store, isValid, and retrieve Tickets containing Authentication
  * information. The features of the request processing layer (the HttpXXX
  * Servlet objects) are not visible here or in any modules behind this layer. In
  * theory, a standalone application could call these methods directly as a
@@ -91,17 +91,4 @@ public interface CentralAuthenticationService {
      */
 
     ServiceAccessResponse validate(TokenServiceAccessRequest tokenServiceAccessRequest);
-
-    /**
-     * Delegate a TicketGrantingTicket to a Service for proxying authentication
-     * to other Services.
-     * 
-     * @param serviceTicketId The service ticket that will delegate to a
-     * TicketGrantingTicket
-     * @param credentials The credentials of the service that wishes to have a
-     * TicketGrantingTicket delegated to it.
-     * @return TicketGrantingTicket that can grant ServiceTickets that proxy
-     * authentication.
-     */
-    String delegateTicketGrantingTicket(final String serviceTicketId, final Credential credentials);
 }

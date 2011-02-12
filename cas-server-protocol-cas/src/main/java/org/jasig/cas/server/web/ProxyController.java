@@ -23,11 +23,14 @@ import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.login.CasServiceAccessRequestImpl;
 import org.jasig.cas.server.login.ServiceAccessRequest;
 import org.jasig.cas.server.login.ServiceAccessResponse;
+import org.jasig.cas.server.session.AccessResponseResult;
 import org.jasig.cas.server.session.DefaultAccessResponseRequestImpl;
+import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +44,7 @@ import java.io.Writer;
  * @since 3.5
  */
 @Controller("proxyController")
-public final class ProxyController {
+public final class ProxyController extends ApplicationObjectSupport {
 
     @NotNull
     private final CentralAuthenticationService centralAuthenticationService;
@@ -52,11 +55,27 @@ public final class ProxyController {
     }
 
     @RequestMapping(method= RequestMethod.GET, value="/proxy")
-    public void generateProxyRequest(@RequestParam(value="pgt") final String pgt, @RequestParam(value="targetService") final String service, final HttpServletRequest request, final Writer writer) throws IOException {
-        final ServiceAccessRequest serviceAccessRequest = new CasServiceAccessRequestImpl(pgt, request.getRemoteAddr(), service);
+    public ModelAndView generateProxyRequest(@RequestParam(value="pgt") final String pgt, @RequestParam(value="targetService") final String service, final HttpServletRequest request, final Writer writer) throws IOException {
+        final ServiceAccessRequest serviceAccessRequest = new CasServiceAccessRequestImpl(pgt, service, request.getRemoteAddr());
 
         final ServiceAccessResponse serviceAccessResponse = this.centralAuthenticationService.grantAccess(serviceAccessRequest);
-        serviceAccessResponse.generateResponse(new DefaultAccessResponseRequestImpl(writer));
-        writer.flush();
+        final AccessResponseResult result = serviceAccessResponse.generateResponse(new DefaultAccessResponseRequestImpl(writer));
+
+        switch (result.getOperationToPerform()) {
+            case ERROR_VIEW:
+                final ModelAndView errorView = new ModelAndView();
+
+                errorView.setViewName(result.getViewName());
+                errorView.addObject("code", result.getCode());
+                errorView.addObject("description", getMessageSourceAccessor().getMessage(result.getMessageCode(), new Object[] {serviceAccessRequest.getServiceId()}, result.getMessageCode()));
+                return errorView;
+
+            case VIEW:
+                return new ModelAndView(result.getViewName(), result.getModelMap());
+
+            default:
+                return null;
+        }
+
     }
 }

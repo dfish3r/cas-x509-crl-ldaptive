@@ -70,6 +70,9 @@ public class JpaCasProtocolAccessImpl extends AbstractStaticCasProtocolAccessImp
     @Column(name="local_session_destroyed",insertable = true, updatable = true)
     private boolean localSessionDestroyed;
 
+    @Column(name="delegated_session_identifier", insertable = true, updatable = true, length = 255)
+    private String delegatedSessionIdentifier;
+
     public JpaCasProtocolAccessImpl() {
         // this is for JPA
     }
@@ -134,5 +137,15 @@ public class JpaCasProtocolAccessImpl extends AbstractStaticCasProtocolAccessImp
     @Override
     protected final void setLocalSessionDestroyed(final boolean localSessionDestroyed) {
         this.localSessionDestroyed = localSessionDestroyed;
+    }
+
+    @Override
+    protected void setDelegatedSessionIdentifier(final String delegatedSessionIdentifier) {
+        this.delegatedSessionIdentifier = delegatedSessionIdentifier;
+    }
+
+    @Override
+    protected String getDelegatedSessionIdentifier() {
+        return this.delegatedSessionIdentifier;
     }
 }

@@ -59,7 +59,7 @@ public final class CasTokenServiceAccessResponseImpl extends DefaultLoginRespons
 
         final String code;
         final String messageCode;
-        if (casTokenServiceAccessRequest != null && !casTokenServiceAccessRequest.IsValid()) {
+        if (casTokenServiceAccessRequest != null && !casTokenServiceAccessRequest.isValid()) {
             code = "INVALID_REQUEST";
             messageCode = "INVALID_REQUEST";
         } else {

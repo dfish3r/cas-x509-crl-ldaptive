@@ -19,7 +19,7 @@
 
 package org.jasig.cas.server.session;
 
-import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.authentication.AttributePrincipal;
 
 /**
  * Handles the request to return the proxy granting ticket to the system.
@@ -34,8 +34,8 @@ public interface ProxyHandler {
      * Handles the actual transfer of the proxy information from the CAS server to the original system.
      *
      * @param proxySessionId the proxy session id
-     * @param proxyCredential the original credentials of the proxying system.
+     * @param attributePrincipal the principal to send the proxy request to.
      * @return a unique identifier
      */
-    String handleProxyGrantingRequest(String proxySessionId, Credential proxyCredential);
+    String handleProxyGrantingRequest(String proxySessionId, AttributePrincipal attributePrincipal);
 }

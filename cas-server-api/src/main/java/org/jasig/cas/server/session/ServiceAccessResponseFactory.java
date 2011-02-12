@@ -34,7 +34,7 @@ public interface ServiceAccessResponseFactory {
 
     /**
      * Generate a {@link ServiceAccessResponse} for a particular {@link ServiceAccessRequest}.  Typically these requests
-     * have had {@link org.jasig.cas.server.login.ServiceAccessRequest#IsValid()} return false.
+     * have had {@link org.jasig.cas.server.login.ServiceAccessRequest#isValid()} return false.
      *
      * @param serviceAccessRequest the access request for which we're generating a service response.  CANNOT be NULL.
      *
@@ -44,7 +44,7 @@ public interface ServiceAccessResponseFactory {
 
     /**
      * Generate a {@link ServiceAccessResponse} for a particular {@link ServiceAccessRequest}.  Typically these requests
-     * have had {@link org.jasig.cas.server.login.ServiceAccessRequest#IsValid()} return false.
+     * have had {@link org.jasig.cas.server.login.ServiceAccessRequest#isValid()} return false.
      *
      * @param serviceAccessRequest the access request for which we're generating a service response.  CANNOT be NULL.
      * @param authenticationResponse the authentication response if we attempted to re-authenticate.  CANNOT be NULL.

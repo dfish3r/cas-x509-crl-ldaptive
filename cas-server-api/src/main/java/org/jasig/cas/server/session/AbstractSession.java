@@ -236,17 +236,16 @@ public abstract class AbstractSession implements Session {
         return null;
     }
 
-    public synchronized final Session createDelegatedSession(final Access access, final AuthenticationResponse authenticationResponse) {
+    public Session createAndRegisterNewChildSession(final AuthenticationResponse authenticationResponse) throws InvalidatedSessionException {
+        /**
+         if (registeredService == null || !registeredService.isEnabled()
+             || !registeredService.isAllowedToProxy()) {
+             log.warn("ServiceManagement: Service Attempted to Proxy, but is not allowed.  Service: [" + access.getResourceIdentifier() + "]");
+             throw new UnauthorizedProxyingException();
+         }
+
+         */
         updateState();
-
-        final RegisteredService registeredService = getServicesManager().findServiceBy(access);
-
-        if (registeredService == null || !registeredService.isEnabled()
-            || !registeredService.isAllowedToProxy()) {
-            log.warn("ServiceManagement: Service Attempted to Proxy, but is not allowed.  Service: [" + access.getResourceIdentifier() + "]");
-            throw new UnauthorizedProxyingException();
-        }
-        
         return createDelegatedSessionInternal(authenticationResponse);
     }
 

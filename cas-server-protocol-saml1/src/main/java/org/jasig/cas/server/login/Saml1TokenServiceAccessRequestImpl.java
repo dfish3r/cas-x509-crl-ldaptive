@@ -22,7 +22,7 @@ package org.jasig.cas.server.login;
 import org.jasig.cas.server.session.Access;
 
 /**
- * Constructs a request used to IsValid a SAML1 request.
+ * Constructs a request used to isValid a SAML1 request.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
@@ -34,17 +34,8 @@ public final class Saml1TokenServiceAccessRequestImpl extends DefaultTokenServic
         super(sessionId, remoteIpAddress, forceAuthentication, token, serviceId);
     }
 
-
     // TODO fix
-    public boolean IsValid() {
+    public boolean isValid() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Access generateInvalidRequestAccess() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Access generateInvalidSessionAccess() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

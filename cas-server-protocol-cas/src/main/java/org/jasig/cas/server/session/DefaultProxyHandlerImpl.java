@@ -19,8 +19,7 @@
 
 package org.jasig.cas.server.session;
 
-import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.server.authentication.UrlCredential;
+import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.util.CasProtocolUniqueTicketIdGeneratorImpl;
 import org.jasig.cas.server.util.UniqueTicketIdGenerator;
 import org.jasig.cas.util.HttpClient;
@@ -43,24 +42,22 @@ public final class DefaultProxyHandlerImpl implements ProxyHandler {
     @NotNull
     private HttpClient httpClient = new HttpClient();
 
-    public String handleProxyGrantingRequest(final String proxySessionId, final Credential credential) {
+    public String handleProxyGrantingRequest(final String proxySessionId, final AttributePrincipal attributePrincipal) {
 
-        if (!(credential instanceof UrlCredential)) {
+        final String name = attributePrincipal.getName();
+        if (!name.startsWith("http://") && !name.startsWith("https")) {
             return null;
         }
-
-        final UrlCredential urlCredential = (UrlCredential) credential;
-        final String url = urlCredential.getUrl().toExternalForm();
 
         final String proxyGrantingTicketIou = this.uniqueTicketIdGenerator.getNewTicketId("PGTIOU");
 
         final StringBuilder stringBuffer = new StringBuilder(
-            url.length() + proxyGrantingTicketIou.length()
+            name.length() + proxyGrantingTicketIou.length()
                 + proxySessionId.length() + 15);
 
-        stringBuffer.append(url);
+        stringBuffer.append(name);
 
-        if (url.indexOf("?") != -1) {
+        if (name.indexOf("?") != -1) {
             stringBuffer.append("&");
         } else {
             stringBuffer.append("?");

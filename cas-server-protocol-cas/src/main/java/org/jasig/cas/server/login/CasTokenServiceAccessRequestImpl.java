@@ -23,7 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jasig.cas.server.CasProtocolVersion;
 
 /**
- * Extension to the TokenServiceAccessRequest that defines which version of the CAS protocol to IsValid against.
+ * Extension to the TokenServiceAccessRequest that defines which version of the CAS protocol to isValid against.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
@@ -42,7 +42,7 @@ public final class CasTokenServiceAccessRequestImpl extends DefaultTokenServiceA
         return this.casVersion;
     }
 
-    public boolean IsValid() {
+    public boolean isValid() {
         return StringUtils.isNotEmpty(getToken()) && StringUtils.isNotEmpty(getServiceId());
     }
 }

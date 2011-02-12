@@ -19,6 +19,7 @@
 
 package org.jasig.cas.server.session;
 
+import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
 
 import java.io.Serializable;
@@ -39,13 +40,6 @@ public interface Access extends AccessResponseGenerator, Serializable {
      * @return the unique identifier for this access.  CANNOT be null.
      */
     String getId();
-
-    /**
-     * Returns the session associated with the Access.
-     *
-     * @return the session.  CANNOT BE NULL.
-     */
-    Session getSession();
 
     /**
      * The identifier for this resource, i.e. the URL.
@@ -97,4 +91,16 @@ public interface Access extends AccessResponseGenerator, Serializable {
      * @return true if used, false otherwise.
      */
     boolean isUsed();
+
+    /**
+     * Associates a child session with the parent session.  A child session is generally one that depends on some aspect of
+     * another session (generally the original session was used to authenticate to create the child one).
+     * <p>
+     * We return the session so you can save it.
+     *
+     * @param authenticationResponse the response from authenticating.
+     * @return the newly created session.
+     * @throws InvalidatedSessionException when a session is invalidated but you try to use it.
+     */
+    Session createDelegatedSession(AuthenticationResponse authenticationResponse) throws InvalidatedSessionException;
 }

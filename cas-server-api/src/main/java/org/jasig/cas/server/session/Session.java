@@ -165,17 +165,6 @@ public interface Session extends Serializable {
     boolean isRoot();
 
     /**
-     * Associates a child session with this session.  A child session is generally one that depends on some aspect of
-     * another session (generally the original session was used to authenticate to create the child one).
-     *
-     * @param access the access that's requesting the delegated session.
-     * @param authenticationResponse the response from authenticating.
-     * @throws InvalidatedSessionException when a session is invalidated but you try to use it.
-     * @return the newly created child session.
-     */
-    Session createDelegatedSession(Access access, AuthenticationResponse authenticationResponse) throws InvalidatedSessionException;
-
-    /**
      * Locates a child session *if* you know its original identifier.
      *
      * @param identifier the identifier, cannot be null.
@@ -190,4 +179,17 @@ public interface Session extends Serializable {
      * @return true if it has not been used.  False otherwise.
      */
     boolean hasNotBeenUsed();
+
+    /**
+     * Creates a new session that is linked to this parent session, so it provides a chain.
+     * <p>
+     * Note, this API method is exposed because it must be available for protocols.  You should only call the method on the
+     * Access object to create delegated sessions. That is the only thing that can determine if you *should* create a session.
+     *
+     * @param authenticationResponse the authentication response.  CANNOT be NULL.  Holds the user.
+     *
+     * @return the newly created session.
+     * @throws InvalidatedSessionException if the session is no longer valid.
+     */
+    Session createAndRegisterNewChildSession(AuthenticationResponse authenticationResponse) throws InvalidatedSessionException;
 }

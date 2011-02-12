@@ -24,7 +24,7 @@ package org.jasig.cas.server.login;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  */
 public class CasServiceAccessRequestImpl extends DefaultLoginRequestImpl implements ServiceAccessRequest {
 
@@ -91,7 +91,7 @@ public class CasServiceAccessRequestImpl extends DefaultLoginRequestImpl impleme
     }
 
     // TODO we need to actually figure this stuff out
-    public boolean IsValid() {
+    public boolean isValid() {
         return true;
     }
 

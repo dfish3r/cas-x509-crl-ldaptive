@@ -61,6 +61,8 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
 
     private final UniqueTicketIdGenerator uniqueTicketIdGenerator;
 
+    private String delegatedSessionIdentifier;
+
     public InMemoryCasProtocolAccessImpl(final Session session, final ServiceAccessRequest request, final ServiceIdentifierMatcher serviceIdentifierMatcher, final ProxyHandler proxyHandler, final ExpirationPolicy expirationPolicy, final UniqueTicketIdGenerator uniqueTicketIdGenerator) {
         this.parentSession = session;
         this.renewed = request.isForceAuthentication() || session.getAccesses().size() == 1;
@@ -142,5 +144,15 @@ public final class InMemoryCasProtocolAccessImpl extends AbstractCasProtocolAcce
     @Override
     protected void setLocalSessionDestroyed(final boolean localSessionDestroyed) {
         this.localSessionDestroyed = localSessionDestroyed;
+    }
+
+    @Override
+    protected void setDelegatedSessionIdentifier(final String delegatedSessionIdentifier) {
+        this.delegatedSessionIdentifier = delegatedSessionIdentifier;
+    }
+
+    @Override
+    protected String getDelegatedSessionIdentifier() {
+        return this.delegatedSessionIdentifier;
     }
 }

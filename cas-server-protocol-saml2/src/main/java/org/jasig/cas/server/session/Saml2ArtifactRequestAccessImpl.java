@@ -20,6 +20,7 @@
 package org.jasig.cas.server.session;
 
 import org.apache.commons.lang.text.StrSubstitutor;
+import org.jasig.cas.server.authentication.AuthenticationResponse;
 import org.jasig.cas.server.login.Saml2ArtifactRequestAccessRequestImpl;
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
 import org.jasig.cas.server.util.DateParser;
@@ -280,5 +281,9 @@ public final class Saml2ArtifactRequestAccessImpl implements Access {
 
         final StrSubstitutor subs = new StrSubstitutor(parameters);
         return subs.replace(TEMPLATE_SAML_RESPONSE);
+    }
+
+    public Session createDelegatedSession(final AuthenticationResponse authenticationResponse) throws InvalidatedSessionException {
+        throw new UnsupportedOperationException();
     }
 }

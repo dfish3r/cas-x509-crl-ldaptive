@@ -41,7 +41,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Handles the request to IsValid the various different CAS protocols.
+ * Handles the request to isValid the various different CAS protocols.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
@@ -100,10 +100,7 @@ public final class ValidationController extends ApplicationObjectSupport {
                 return errorView;
 
             case VIEW:
-                final ModelAndView view = new ModelAndView();
-                view.addAllObjects(accessResponseResult.getModelMap());
-                view.setViewName(accessResponseResult.getViewName());
-                return view;
+                return new ModelAndView(accessResponseResult.getViewName(), accessResponseResult.getModelMap());
 
             default:
                 return null;

@@ -30,7 +30,6 @@ import org.perf4j.aop.Profiled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
@@ -186,7 +185,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
     public ServiceAccessResponse validate(final TokenServiceAccessRequest tokenServiceAccessRequest) {
         Assert.notNull(tokenServiceAccessRequest, "tokenServiceAccessRequest cannot be null");
 
-        if (!tokenServiceAccessRequest.IsValid()) {
+        if (!tokenServiceAccessRequest.isValid()) {
             log.debug("Token Validation request for {} was not valid a request.", tokenServiceAccessRequest);
             return findServiceAccessResponseFactory(tokenServiceAccessRequest).getServiceAccessResponse(tokenServiceAccessRequest);
         }
@@ -205,6 +204,16 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
            return findServiceAccessResponseFactory(tokenServiceAccessRequest).getServiceAccessResponse(session, null, null, Collections.<Access>emptyList());
         }
 
+        if (!tokenServiceAccessRequest.getCredentials().isEmpty()) {
+            final AuthenticationRequest request = new DefaultAuthenticationRequestImpl(tokenServiceAccessRequest.getCredentials(), false);
+            final AuthenticationResponse response = this.authenticationManager.authenticate(request);
+
+            if (response.succeeded()) {
+                final Session delegatedSession = access.createDelegatedSession(response);
+                this.sessionStorage.updateSession(delegatedSession);
+            }
+        }
+
         access.validate(tokenServiceAccessRequest);
         this.sessionStorage.updateSession(session);
         return findServiceAccessResponseFactory(access).getServiceAccessResponse(session, access, null, Collections.<Access>emptyList());
@@ -221,7 +230,7 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
             throw new UnauthorizedServiceException(String.format("Service [%s] not authorized to use CAS.", serviceAccessRequest.getServiceId()));
         }
 
-        if (!serviceAccessRequest.IsValid()) {
+        if (!serviceAccessRequest.isValid()) {
             return findServiceAccessResponseFactory(serviceAccessRequest).getServiceAccessResponse(serviceAccessRequest);
         }
 
@@ -276,45 +285,6 @@ public final class DefaultCentralAuthenticationServiceImpl implements CentralAut
         this.sessionStorage.updateSession(sessionToWorkWith);
 
         return findServiceAccessResponseFactory(access).getServiceAccessResponse(sessionToWorkWith, access, authenticationResponse, remainingAccesses);
-    }
-
-    /**
-     * @throws IllegalArgumentException if the ServiceTicketId or the
-     * Credentials are null.
-     */
-    @Audit(action="PROXY_GRANTING_TICKET",actionResolverName="GRANT_PROXY_GRANTING_TICKET_RESOLVER",resourceResolverName="GRANT_PROXY_GRANTING_TICKET_RESOURCE_RESOLVER")
-    @Profiled(tag="GRANT_PROXY_GRANTING_TICKET",logFailuresSeparately = false)
-    @Transactional(readOnly = false)
-    public String delegateTicketGrantingTicket(final String serviceTicketId, final Credential credential) {
-
-        Assert.notNull(serviceTicketId, "serviceTicketId cannot be null");
-        Assert.notNull(credential, "credentials cannot be null");
-
-        final AuthenticationRequest authenticationRequest = new DefaultAuthenticationRequestImpl(Arrays.asList(credential), false);
-        final AuthenticationResponse authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
-
-        final Session session = this.sessionStorage.findSessionByAccessId(serviceTicketId);
-
-        if (session == null) {
-            throw new IllegalStateException();
-        }
-
-        final Access access = session.getAccess(serviceTicketId);
-
-        // TODO we should be doing more a check than this.  Not sure why I didn't have that on the interface
-        if (access == null) {
-            throw new IllegalStateException();
-        }
-
-        try {
-            final Session delegatedSession = session.createDelegatedSession(access, authenticationResponse);
-            // TODO not sure if this will work
-            this.sessionStorage.updateSession(session);
-            return this.sessionStorage.updateSession(delegatedSession).getId();
-
-        } catch (final InvalidatedSessionException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     public void setPreAuthenticationPlugins(final List<PreAuthenticationPlugin> preAuthenticationPlugins) {

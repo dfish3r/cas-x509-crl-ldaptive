@@ -24,7 +24,7 @@ import org.springframework.util.Assert;
 
 /**
  * The default {@link org.jasig.cas.server.login.TokenServiceAccessRequest} implementation.  Used when the underlying
- * protocol implementation is token/IsValid.
+ * protocol implementation is token/isValid.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
@@ -64,5 +64,12 @@ public abstract class DefaultTokenServiceAccessRequestImpl extends DefaultLoginR
         builder.append("tokenId", getToken());
 
         return builder.toString();
+    }
+
+    /**
+     * We assume its false, and allow you to override it.
+     */
+    public boolean isProxiedRequest() {
+        return false;
     }
 }

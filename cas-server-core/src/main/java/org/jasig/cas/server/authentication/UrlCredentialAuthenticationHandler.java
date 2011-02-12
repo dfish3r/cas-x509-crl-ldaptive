@@ -19,9 +19,6 @@
 
 package org.jasig.cas.server.authentication;
 
-import org.jasig.cas.server.authentication.AbstractNamedAuthenticationHandler;
-import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.server.authentication.UrlCredential;
 import org.jasig.cas.util.HttpClient;
 
 import javax.inject.Inject;
@@ -29,7 +26,7 @@ import javax.validation.constraints.NotNull;
 import java.security.GeneralSecurityException;
 
 /**
- * Class to IsValid the credentials presented by communicating with the web
+ * Class to isValid the credentials presented by communicating with the web
  * server and checking the certificate that is returned against the hostname,
  * etc.
  * <p>

@@ -43,7 +43,8 @@ public abstract class AbstractCasProtocolAccessImplFactory implements AccessFact
     private ProxyHandler proxyHandler = new DefaultProxyHandlerImpl();
 
     @NotNull
-    private ExpirationPolicy expirationPolicy = new MultiUseOrTimeToLiveExpirationPolicy(1, 10000);
+    // normally 10000
+    private ExpirationPolicy expirationPolicy = new MultiUseOrTimeToLiveExpirationPolicy(1, 1000000);
 
     @NotNull
     private UniqueTicketIdGenerator uniqueTicketIdGenerator = new CasProtocolUniqueTicketIdGeneratorImpl();

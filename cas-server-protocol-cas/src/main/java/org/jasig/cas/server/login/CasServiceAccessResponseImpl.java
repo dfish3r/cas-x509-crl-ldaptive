@@ -20,10 +20,6 @@
 package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.authentication.AuthenticationResponse;
-import org.jasig.cas.server.login.CasServiceAccessRequestImpl;
-import org.jasig.cas.server.login.DefaultLoginResponseImpl;
-import org.jasig.cas.server.login.ServiceAccessRequest;
-import org.jasig.cas.server.login.ServiceAccessResponse;
 import org.jasig.cas.server.session.*;
 
 import java.util.ArrayList;
@@ -68,6 +64,14 @@ public final class CasServiceAccessResponseImpl extends DefaultLoginResponseImpl
     public AccessResponseResult generateResponse(final AccessResponseRequest accessResponseRequest) {
         if (access != null) {
             return this.access.generateResponse(accessResponseRequest);
+        }
+
+        if (casServiceAccessRequest.isProxiedRequest()) {
+            if (!casServiceAccessRequest.isValid()) {
+                return DefaultAccessResponseResultImpl.generateErrorView("casProxyFailureView", "INVALID_REQUEST_PROXY", "INVALID_REQUEST_PROXY");
+            }
+
+            return DefaultAccessResponseResultImpl.generateErrorView("casProxyFailureView", "SERVER_ERROR", "SERVER_ERROR");
         }
 
         // the only other option is some form of passive authentication

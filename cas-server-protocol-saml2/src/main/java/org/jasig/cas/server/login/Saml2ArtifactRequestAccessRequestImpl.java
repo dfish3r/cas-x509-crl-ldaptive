@@ -231,15 +231,11 @@ public final class Saml2ArtifactRequestAccessRequestImpl implements ServiceAcces
     }
 
     // TODO fix these
-    public boolean IsValid() {
+    public boolean isValid() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Access generateInvalidRequestAccess() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Access generateInvalidSessionAccess() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean isProxiedRequest() {
+        return false;
     }
 }
