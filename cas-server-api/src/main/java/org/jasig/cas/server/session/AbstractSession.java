@@ -26,10 +26,7 @@ import org.jasig.cas.server.login.ServiceAccessRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Implements the underlying domain object methods that should be common among every specific implementation of the
@@ -141,7 +138,19 @@ public abstract class AbstractSession implements Session {
     }
 
     public final boolean isValid() {
-        return !isInvalid() && !executeExpirationPolicy() && (getParentSession() == null || getParentSession().isValid());
+        if (isInvalid()) {
+            return false;
+        }
+
+        if (executeExpirationPolicy()) {
+            return false;
+        }
+
+        if (getParentSession() == null) {
+            return true;
+        }
+
+        return getParentSession().isValid();
     }
 
     public final AttributePrincipal getRootPrincipal() {

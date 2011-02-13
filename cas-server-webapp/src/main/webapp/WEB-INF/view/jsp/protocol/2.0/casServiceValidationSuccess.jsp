@@ -25,7 +25,7 @@
 <c:if test="${not empty pgtIou}">
 		<cas:proxyGrantingTicket>${pgtIou}</cas:proxyGrantingTicket>
 </c:if>
-<c:if test="{not empty session.proxiedPrincipals}">
+<c:if test="${not empty session.proxiedPrincipals}">
 		<cas:proxies>
 <c:forEach var="proxy" items="${session.proxiedPrincipals}" varStatus="loopStatus">
 			<cas:proxy>${fn:escapeXml(proxy.name)}</cas:proxy>

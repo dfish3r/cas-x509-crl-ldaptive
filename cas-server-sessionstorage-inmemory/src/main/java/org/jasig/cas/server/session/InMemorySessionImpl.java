@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  */
 public final class InMemorySessionImpl extends AbstractSession {
 
