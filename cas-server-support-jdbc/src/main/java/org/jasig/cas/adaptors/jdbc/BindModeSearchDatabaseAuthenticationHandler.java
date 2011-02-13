@@ -26,6 +26,9 @@ import java.sql.SQLException;
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
 /**
  * This class attempts to authenticate the user by opening a connection to the
  * database with the provided username and password. Servers are provided as a
@@ -38,6 +41,11 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
  * @since 3.0
  */
 public final class BindModeSearchDatabaseAuthenticationHandler extends AbstractJdbcUsernamePasswordAuthenticationHandler {
+
+    @Inject
+    public BindModeSearchDatabaseAuthenticationHandler(final DataSource dataSource) {
+        super(dataSource);
+    }
 
     protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         final String username = credentials.getUserName();

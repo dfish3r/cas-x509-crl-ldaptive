@@ -8,7 +8,7 @@
 	<groupId>org.jasig.cas</groupId>
 	<artifactId>cas-server-support-jdbc</artifactId>
 	<packaging>jar</packaging>
-	<name>JA-SIG CAS JDBC Support</name>
+	<name>Jasig CAS JDBC Support</name>
 
 	<dependencies>
 		<dependency>
@@ -22,5 +22,12 @@
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 </project>

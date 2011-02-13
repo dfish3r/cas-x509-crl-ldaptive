@@ -33,6 +33,15 @@ public class DefaultUserNamePasswordCredential implements UserNamePasswordCreden
 
     private String password;
 
+    public DefaultUserNamePasswordCredential() {
+
+    }
+
+    public DefaultUserNamePasswordCredential(final String userName, final String password) {
+        this.userName = userName;
+        this.password = password;
+    }
+
     public final void setUserName(final String userName) {
         this.userName = userName;
     }

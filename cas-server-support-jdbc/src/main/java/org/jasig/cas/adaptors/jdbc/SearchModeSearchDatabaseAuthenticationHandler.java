@@ -22,6 +22,8 @@ package org.jasig.cas.adaptors.jdbc;
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.beans.factory.InitializingBean;
 
+import javax.inject.Inject;
+import javax.sql.DataSource;
 import javax.validation.constraints.NotNull;
 import java.security.GeneralSecurityException;
 
@@ -51,6 +53,11 @@ public final class SearchModeSearchDatabaseAuthenticationHandler extends Abstrac
     private String tableUsers;
 
     private String sql;
+
+    @Inject
+    public SearchModeSearchDatabaseAuthenticationHandler(final DataSource dataSource) {
+        super(dataSource);
+    }
 
     protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());

@@ -93,6 +93,12 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
                         <exclude>**/AbstractSessionStorageTests.java</exclude>
                         <exclude>**/AbstractSessionTests.java</exclude>
                         <exclude>**/AbstractStateTests.java</exclude>
+                        <exclude>**/BaseSeleniumTests.java</exclude>
+                        <exclude>**/AbstractWebDriverSupport.java</exclude>
+                        <exclude>**/Module.java</exclude>
+                        <exclude>**/Page.java</exclude>
+                        <exclude>**/AbstractTitleMatcher.java</exclude>
+                        <exclude>**/TitleEqualsMatcher.java</exclude>
                     </excludes>
                     <statementContexts>
                         <iflog>if.*\(log\.is.*\).*</iflog> <!-- NB: must match entire statement, including any semicolons. -->

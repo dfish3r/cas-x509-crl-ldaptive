@@ -28,10 +28,9 @@ import org.jasig.cas.server.authentication.SerializableAttributePrincipalFactory
 import org.jasig.cas.server.authentication.SerializableAuthenticationFactoryImpl;
 import org.jasig.cas.server.session.AbstractSessionStorageTests;
 import org.jasig.cas.server.session.AccessFactory;
+import org.jasig.cas.server.session.EhcacheSessionStorageImpl;
 import org.jasig.cas.server.session.SessionStorage;
 import org.jasig.services.persondir.support.StubPersonAttributeDao;
-import org.junit.After;
-import org.junit.Before;
 
 import java.util.Collections;
 

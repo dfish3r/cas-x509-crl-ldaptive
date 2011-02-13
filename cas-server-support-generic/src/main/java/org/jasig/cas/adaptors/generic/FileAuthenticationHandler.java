@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.commons.io.IOUtils;
 import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.core.io.Resource;
@@ -88,16 +89,9 @@ public final class FileAuthenticationHandler extends AbstractUsernamePasswordAut
                 line = bufferedReader.readLine();
             }
         } catch (final Exception e) {
-            e.printStackTrace();
             log.error(e.getMessage(), e);
         } finally {
-            try {
-                if (bufferedReader != null) {
-                    bufferedReader.close();
-                }
-            } catch (final IOException e) {
-                log.error(e.getMessage(),e);
-            }
+            IOUtils.closeQuietly(bufferedReader);
         }
 
         return false;

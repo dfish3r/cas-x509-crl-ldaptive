@@ -23,8 +23,6 @@ import java.net.URL;
 
 import org.jasig.cas.TestUtils;
 
-import org.jasig.cas.server.authentication.DefaultUrlCredentialImpl;
-import org.jasig.cas.server.authentication.UrlCredential;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -36,13 +34,20 @@ import static org.junit.Assert.*;
 public final class DefaultUrlCredentialImplTests {
 
     @Test
+    public void urlsMatch() throws Exception {
+        final URL url = new URL("http://www.cnn.com");
+        final DefaultUrlCredentialImpl c = new DefaultUrlCredentialImpl(url);
+        assertEquals(url, c.getUrl());
+    }
+
+    @Test
     public void properUrl() {
         assertEquals(TestUtils.CONST_GOOD_URL, TestUtils.getHttpBasedServiceCredentials().getUrl().toExternalForm());
     }
 
     @Test
     public void equalsWithNull() throws Exception {
-        final UrlCredential c = new DefaultUrlCredentialImpl(new URL("http://www.cnn.com"));
+        final UrlCredential c = new DefaultUrlCredentialImpl("http://www.cnn.com");
         
         assertFalse(c.equals(null));
     }

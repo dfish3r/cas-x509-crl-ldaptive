@@ -54,4 +54,10 @@ public abstract class AbstractAuthenticationTests {
         assertEquals(CONST_AUTHENTICATION_META_DATA, this.authentication.getAuthenticationMetaData());
         assertFalse(this.authentication.isLongTermAuthentication());
     }
+
+    public final void equalsAndHashcodeMethod() {
+    final Authentication other = getAuthentication(CONST_AUTHENTICATION_META_DATA, CONST_AUTHENTICATION_METHOD);
+        assertTrue(this.authentication.equals(other));
+        assertEquals(this.authentication.hashCode(), other.hashCode());
+    }
 }

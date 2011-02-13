@@ -22,6 +22,8 @@ package org.jasig.cas.adaptors.jdbc;
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
+import javax.inject.Inject;
+import javax.sql.DataSource;
 import javax.validation.constraints.NotNull;
 import java.security.GeneralSecurityException;
 
@@ -37,6 +39,11 @@ import java.security.GeneralSecurityException;
  * @since 3.0
  */
 public final class QueryDatabaseAuthenticationHandler extends AbstractJdbcUsernamePasswordAuthenticationHandler {
+
+    @Inject
+    public QueryDatabaseAuthenticationHandler(final DataSource dataSource) {
+        super(dataSource);
+    }
 
     @NotNull
     private String sql;

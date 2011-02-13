@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.jasig.cas.server;
+package org.jasig.cas.server.session;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;

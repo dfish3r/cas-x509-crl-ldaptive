@@ -22,9 +22,6 @@ package org.jasig.cas.server.authentication;
 import org.jasig.cas.TestUtils;
 
 import junit.framework.TestCase;
-import org.jasig.cas.server.authentication.PlainTextPasswordEncoder;
-import org.jasig.cas.server.authentication.SimpleTestUsernamePasswordAuthenticationHandler;
-import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 
 import java.security.GeneralSecurityException;
 
@@ -43,6 +40,12 @@ public final class SimpleTestUsernamePasswordHandlerTests extends TestCase {
         this.authenticationHandler = new SimpleTestUsernamePasswordAuthenticationHandler();
         this.authenticationHandler
             .setPasswordEncoder(new PlainTextPasswordEncoder());
+    }
+
+    public void testNamedHandler() {
+        final String CONST_NAME = "handler";
+        this.authenticationHandler.setName(CONST_NAME);
+        assertEquals(CONST_NAME, this.authenticationHandler.getName());
     }
 
     public void testSupportsProperUserCredentials() {
