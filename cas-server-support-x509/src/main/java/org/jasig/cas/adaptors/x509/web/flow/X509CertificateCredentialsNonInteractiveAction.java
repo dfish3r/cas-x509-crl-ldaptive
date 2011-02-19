@@ -41,18 +41,19 @@ public final class X509CertificateCredentialsNonInteractiveAction extends Abstra
 
     private static final String CERTIFICATE_REQUEST_ATTRIBUTE = "javax.servlet.request.X509Certificate";
 
+    @Override
     protected Credential constructCredentialsFromRequest(final HttpServletRequest request, final HttpServletResponse response) {
         final X509Certificate[] certificates = (X509Certificate[]) request.getAttribute(CERTIFICATE_REQUEST_ATTRIBUTE);
 
         if (certificates == null || certificates.length == 0) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Certificates not found in request.");
+            if (log.isDebugEnabled()) {
+                log.debug("Certificates not found in request.");
             }
             return null;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Certificate found in request.");
+        if (log.isDebugEnabled()) {
+            log.debug("Certificate found in request.");
         }
         return new X509CertificateCredentials(certificates);
     }

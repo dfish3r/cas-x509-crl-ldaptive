@@ -42,7 +42,7 @@ public final class RemoteAddressNonInteractiveCredentialsAction extends Abstract
             return new RemoteAddressCredentials(remoteAddress);
         }
         
-        logger.debug("No remote address found.");
+        log.debug("No remote address found.");
         return null;    
     }
 }

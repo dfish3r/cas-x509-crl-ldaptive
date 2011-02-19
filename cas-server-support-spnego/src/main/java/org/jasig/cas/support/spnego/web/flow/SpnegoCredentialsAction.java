@@ -34,14 +34,16 @@ import javax.servlet.http.HttpServletResponse;
  * Second action of a SPNEGO flow : decode the gssapi-data and build a new
  * {@link org.jasig.cas.support.spnego.authentication.principal.SpnegoCredentials}.<br/>
  * Once AbstractNonInteractiveCredentialsAction has executed the authentication
- * procedure, this action check wether a principal is present in Credentials and
- * add correspondings response headers.
+ * procedure, this action check whether a principal is present in Credentials and
+ * add corresponding response headers.
  * 
  * @author Arnaud Lesueur
  * @author Marc-Antoine Garrigue
  * @version $Revision$ $Date$
  * @see <a href='http://ietfreport.isoc.org/idref/rfc4559/#page-2'>RFC 4559</a>
  * @since 3.1
+ *
+ * XXX: disabled for now.  This will not work without changes.
  */
 public final class SpnegoCredentialsAction extends AbstractNonInteractiveCredentialsAction {
 
@@ -55,15 +57,15 @@ public final class SpnegoCredentialsAction extends AbstractNonInteractiveCredent
         if (StringUtils.hasText(authorizationHeader)
             && authorizationHeader.startsWith(this.messageBeginPrefix)
             && authorizationHeader.length() > this.messageBeginPrefix.length()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("SPNEGO Authorization header found with "
+            if (log.isDebugEnabled()) {
+                log.debug("SPNEGO Authorization header found with "
                     + (authorizationHeader.length() - this.messageBeginPrefix
                         .length()) + " bytes");
             }
             final byte[] token = Base64.decode(authorizationHeader
                 .substring(this.messageBeginPrefix.length()));
-            if (logger.isDebugEnabled()) {
-                logger.debug("Obtained token: " + new String(token));
+            if (log.isDebugEnabled()) {
+                log.debug("Obtained token: " + new String(token));
             }
             return new SpnegoCredentials(token);
         }
@@ -76,10 +78,12 @@ public final class SpnegoCredentialsAction extends AbstractNonInteractiveCredent
             + " ";
     }
 
+//    @Override
     protected void onError(final RequestContext context, final Credential credentials) {
         setResponseHeader(context, credentials);
     }
 
+//    @Override
     protected void onSuccess(final RequestContext context, final Credential credentials) {
         setResponseHeader(context, credentials);
     }
@@ -93,18 +97,18 @@ public final class SpnegoCredentialsAction extends AbstractNonInteractiveCredent
         final SpnegoCredentials spnegoCredentials = (SpnegoCredentials) credentials;
         final byte[] nextToken = spnegoCredentials.getNextToken();
         if (nextToken != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Obtained output token: " + new String(nextToken));
+            if (log.isDebugEnabled()) {
+                log.debug("Obtained output token: " + new String(nextToken));
             }
             response.setHeader(SpnegoConstants.HEADER_AUTHENTICATE, (this.ntlm
                 ? SpnegoConstants.NTLM : SpnegoConstants.NEGOTIATE)
                 + " " + Base64.encode(nextToken));
         } else {
-            logger.debug("Unable to obtain the output token required.");
+            log.debug("Unable to obtain the output token required.");
         }
 
         if (spnegoCredentials.getPrincipal() == null) {
-            logger.debug("Setting HTTP Status to 401");
+            log.debug("Setting HTTP Status to 401");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }

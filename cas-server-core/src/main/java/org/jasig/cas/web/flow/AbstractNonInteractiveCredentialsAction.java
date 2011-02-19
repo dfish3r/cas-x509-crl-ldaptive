@@ -19,18 +19,16 @@
 
 package org.jasig.cas.web.flow;
 
-import org.jasig.cas.server.CentralAuthenticationService;
 import org.jasig.cas.server.authentication.Credential;
+import org.jasig.cas.server.login.LoginRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-import org.springframework.webflow.action.AbstractAction;
 import org.springframework.webflow.context.servlet.ServletExternalContext;
-import org.springframework.webflow.execution.Event;
 import org.springframework.webflow.execution.RequestContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 
 /**
  * Abstract class to handle the retrieval and authentication of non-interactive
@@ -40,114 +38,31 @@ import javax.validation.constraints.NotNull;
  * @version $Revision$ $Date$
  * @since 3.0.4
  */
-public abstract class AbstractNonInteractiveCredentialsAction extends
-    AbstractAction {
-    
-    /** Instance of CentralAuthenticationService. */
-    @NotNull
-    private CentralAuthenticationService centralAuthenticationService;
-    
-    protected final boolean isRenewPresent(final RequestContext context) {
-        return StringUtils.hasText(context.getRequestParameters().get("renew"));
+public abstract class AbstractNonInteractiveCredentialsAction {
+
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+
+    public final boolean addCredential(final RequestContext requestContext, final LoginRequest loginRequest) {
+        final Credential credentials = constructCredentialsFromRequest(getHttpServletRequest(requestContext), getHttpServletResponse(requestContext));
+
+        if (credentials == null) {
+            return false;
+        }
+
+        loginRequest.getCredentials().add(credentials);
+        return true;
     }
 
-   public static HttpServletRequest getHttpServletRequest(
-        final RequestContext context) {
-        Assert.isInstanceOf(ServletExternalContext.class, context
-                .getExternalContext(),
-                "Cannot obtain HttpServletRequest from event of type: "
-                        + context.getExternalContext().getClass().getName());
-
+   public static HttpServletRequest getHttpServletRequest(final RequestContext context) {
+        Assert.isInstanceOf(ServletExternalContext.class, context.getExternalContext(),
+                String.format("Cannot obtain HttpServletRequest from event of type: %s", context.getExternalContext().getClass().getName()));
         return (HttpServletRequest) context.getExternalContext().getNativeRequest();
     }
 
-    public static HttpServletResponse getHttpServletResponse(
-        final RequestContext context) {
-        Assert.isInstanceOf(ServletExternalContext.class, context
-            .getExternalContext(),
-            "Cannot obtain HttpServletResponse from event of type: "
-                + context.getExternalContext().getClass().getName());
-        return (HttpServletResponse) context.getExternalContext()
-            .getNativeResponse();
-    }
-
-    protected final Event doExecute(final RequestContext context) {
-        final Credential credentials = constructCredentialsFromRequest(getHttpServletRequest(context), getHttpServletResponse(context));
-
-        if (credentials == null) {
-            return error();
-        }
-        
-        /*
-        if (isRenewPresent(context)
-            && ticketGrantingTicketId != null
-            && service != null) {
-
-            try {
-                final String serviceTicketId = this.centralAuthenticationService
-                    .grantServiceTicket(ticketGrantingTicketId,
-                        service,
-                        credentials);
-                WebUtils.putServiceTicketInRequestScope(context,
-                    serviceTicketId);
-                return result("warn");
-            } catch (final TicketException e) {
-                if (e.getCause() != null
-                    && AuthenticationException.class.isAssignableFrom(e
-                        .getCause().getClass())) {
-                    onError(context, credentials);
-                    return error();
-                }
-                this.centralAuthenticationService
-                    .destroyTicketGrantingTicket(ticketGrantingTicketId);
-                if (logger.isDebugEnabled()) {
-                    logger
-                        .debug(
-                            "Attempted to generate a ServiceTicket using renew=true with different credentials",
-                            e);
-                }
-            }
-        }
-
-        try {
-            WebUtils.putTicketGrantingTicketInRequestScope(
-                context,
-                this.centralAuthenticationService
-                    .createTicketGrantingTicket(credentials));
-            onSuccess(context, credentials);
-            return success();
-        } catch (final TicketException e) {
-            onError(context, credentials);
-            return error();
-        }  */
-        return error();
-    }
-    
-    public final void setCentralAuthenticationService(
-        final CentralAuthenticationService centralAuthenticationService) {
-        this.centralAuthenticationService = centralAuthenticationService;
-    }
-
-    /**
-     * Hook method to allow for additional processing of the response before
-     * returning an error event.
-     * 
-     * @param context the context for this specific request.
-     * @param credentials the credentials for this request.
-     */
-    protected void onError(final RequestContext context, final Credential credentials) {
-        // default implementation does nothing
-    }
-
-    /**
-     * Hook method to allow for additional processing of the response before
-     * returning a success event.
-     * 
-     * @param context the context for this specific request.
-     * @param credentials the credentials for this request.
-     */
-    protected void onSuccess(final RequestContext context, final Credential credentials) {
-        // default implementation does nothing
+    public static HttpServletResponse getHttpServletResponse(final RequestContext context) {
+        Assert.isInstanceOf(ServletExternalContext.class, context.getExternalContext(),
+            String.format("Cannot obtain HttpServletResponse from event of type: %s", context.getExternalContext().getClass().getName()));
+        return (HttpServletResponse) context.getExternalContext().getNativeResponse();
     }
 
     /**

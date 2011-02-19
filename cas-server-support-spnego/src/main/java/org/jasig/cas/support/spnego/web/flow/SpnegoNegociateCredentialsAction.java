@@ -58,28 +58,20 @@ public final class SpnegoNegociateCredentialsAction extends AbstractAction {
 
     private String messageBeginPrefix = constructMessagePrefix();
 
-    protected Event doExecute(RequestContext context) {
-        final HttpServletRequest request = AbstractNonInteractiveCredentialsAction
-            .getHttpServletRequest(context);
-        final HttpServletResponse response = AbstractNonInteractiveCredentialsAction
-            .getHttpServletResponse(context);
-        final String authorizationHeader = request
-            .getHeader(SpnegoConstants.HEADER_AUTHORIZATION);
-        final String userAgent = request
-            .getHeader(SpnegoConstants.HEADER_USER_AGENT);
+    protected Event doExecute(final RequestContext context) {
+        final HttpServletRequest request = AbstractNonInteractiveCredentialsAction.getHttpServletRequest(context);
+        final HttpServletResponse response = AbstractNonInteractiveCredentialsAction.getHttpServletResponse(context);
+        final String authorizationHeader = request.getHeader(SpnegoConstants.HEADER_AUTHORIZATION);
+        final String userAgent = request.getHeader(SpnegoConstants.HEADER_USER_AGENT);
 
         if (StringUtils.hasText(userAgent) && isSupportedBrowser(userAgent)) {
             if (!StringUtils.hasText(authorizationHeader)
                 || !authorizationHeader.startsWith(this.messageBeginPrefix)
-                || authorizationHeader.length() <= this.messageBeginPrefix
-                    .length()) {
+                || authorizationHeader.length() <= this.messageBeginPrefix.length()) {
                 if (logger.isDebugEnabled()) {
-                    logger
-                        .debug("Authorization header not found. Sending WWW-Authenticate header");
+                    logger.debug("Authorization header not found. Sending WWW-Authenticate header");
                 }
-                response.setHeader(SpnegoConstants.HEADER_AUTHENTICATE,
-                    this.ntlm ? SpnegoConstants.NTLM
-                        : SpnegoConstants.NEGOTIATE);
+                response.setHeader(SpnegoConstants.HEADER_AUTHENTICATE, this.ntlm ? SpnegoConstants.NTLM : SpnegoConstants.NEGOTIATE);
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
         }

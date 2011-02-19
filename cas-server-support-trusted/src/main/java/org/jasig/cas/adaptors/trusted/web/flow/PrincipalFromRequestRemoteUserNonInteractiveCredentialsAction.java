@@ -46,15 +46,14 @@ public final class PrincipalFromRequestRemoteUserNonInteractiveCredentialsAction
         final String remoteUser = request.getRemoteUser();
 
         if (StringUtils.hasText(remoteUser)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Remote  User [" + remoteUser
-                    + "] found in HttpServletRequest");
+            if (log.isDebugEnabled()) {
+                log.debug("Remote  User [" + remoteUser + "] found in HttpServletRequest");
             }
             return new PrincipalBearingCredentials(new SimplePrincipal(remoteUser));
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Remote User not found in HttpServletRequest.");
+        if (log.isDebugEnabled()) {
+            log.debug("Remote User not found in HttpServletRequest.");
         }
 
         return null;
