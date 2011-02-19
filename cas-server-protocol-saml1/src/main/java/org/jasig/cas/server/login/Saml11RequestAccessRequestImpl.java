@@ -19,26 +19,29 @@
 
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.Saml11Profile;
 import org.jasig.cas.server.session.Access;
 
 /**
- * Represents a SAML1 request.
+ * Represents a SAML 1.1 request.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  */
-// TODO we need an abstract ServiceAccessRequestImpl that contains the passive authentication stuff
-public final class Saml1ArtifactRequestAccessRequestImpl extends DefaultLoginRequestImpl implements ServiceAccessRequest {
+public final class Saml11RequestAccessRequestImpl extends DefaultLoginRequestImpl implements ServiceAccessRequest {
 
     private final String serviceId;
 
     private final boolean passiveAuthentication;
 
-    public Saml1ArtifactRequestAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final boolean passiveAuthentication, final String serviceId) {
+    private final Saml11Profile profile;
+
+    public Saml11RequestAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final boolean passiveAuthentication, final String serviceId, final Saml11Profile profile) {
         super(sessionId, remoteIpAddress, forceAuthentication, null);
         this.serviceId = serviceId;
         this.passiveAuthentication = passiveAuthentication;
+        this.profile = profile;
     }
 
     public boolean isPassiveAuthentication() {
@@ -53,9 +56,12 @@ public final class Saml1ArtifactRequestAccessRequestImpl extends DefaultLoginReq
         return this.passiveAuthentication ? this.serviceId : null;
     }
 
-    // TODO fix these
+    public Saml11Profile getProfile() {
+        return this.profile;
+    }
+
     public boolean isValid() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return true;
     }
 
     public boolean isProxiedRequest() {

@@ -19,8 +19,12 @@
 
 package org.jasig.cas.server.session;
 
+import org.jasig.cas.server.util.DefaultServiceIdentifierMatcherImpl;
+import org.jasig.cas.server.util.Saml1UniqueTicketIdGeneratorImpl;
+import org.jasig.cas.server.util.ServiceIdentifierMatcher;
 import org.jasig.cas.server.util.UniqueTicketIdGenerator;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -28,23 +32,36 @@ import javax.validation.constraints.NotNull;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  */
 public abstract class AbstractSaml1ProtocolAccessImplFactory implements AccessFactory {
 
     private static final String DEFAULT_ENCODING = "UTF-8";
 
+    /** The amount of time in milliseconds this is valid for. */
+    private static final long DEFAULT_ISSUE_LENGTH = 30000;
+
+    @Min(0)
+    private long issueLength = DEFAULT_ISSUE_LENGTH;
+
     @NotNull
-    private final UniqueTicketIdGenerator uniqueTicketIdGenerator;
+    private final Saml1UniqueTicketIdGeneratorImpl uniqueTicketIdGenerator;
+
+    @NotNull
+    private ServiceIdentifierMatcher serviceIdentifierMatcher = new DefaultServiceIdentifierMatcherImpl();
 
     @NotNull
     private String encoding = DEFAULT_ENCODING;
 
-    protected AbstractSaml1ProtocolAccessImplFactory(final UniqueTicketIdGenerator uniqueTicketIdGenerator) {
+    @NotNull
+    private final String issuer;
+
+    protected AbstractSaml1ProtocolAccessImplFactory(final Saml1UniqueTicketIdGeneratorImpl uniqueTicketIdGenerator, final String issuer) {
         this.uniqueTicketIdGenerator = uniqueTicketIdGenerator;
+        this.issuer = issuer;
     }
 
-    protected UniqueTicketIdGenerator getUniqueTicketIdGenerator() {
+    protected final UniqueTicketIdGenerator getUniqueTicketIdGenerator() {
         return this.uniqueTicketIdGenerator;
     }
 
@@ -52,9 +69,27 @@ public abstract class AbstractSaml1ProtocolAccessImplFactory implements AccessFa
         this.encoding = encoding;
     }
 
+    protected final long getIssueLength() {
+        return issueLength;
+    }
+
+    public final void setIssueLength(final long issueLength) {
+        this.issueLength = issueLength;
+    }
+
     protected final String getEncoding() {
         return this.encoding;
     }
 
+    protected final ServiceIdentifierMatcher getServiceIdentifierMatcher() {
+        return serviceIdentifierMatcher;
+    }
 
+    public final void setServiceIdentifierMatcher(final ServiceIdentifierMatcher serviceIdentifierMatcher) {
+        this.serviceIdentifierMatcher = serviceIdentifierMatcher;
+    }
+
+    protected final String getIssuer() {
+        return this.issuer;
+    }
 }

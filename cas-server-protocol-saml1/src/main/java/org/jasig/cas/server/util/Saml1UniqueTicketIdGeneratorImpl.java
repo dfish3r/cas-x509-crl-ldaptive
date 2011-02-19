@@ -24,7 +24,7 @@ import org.opensaml.saml1.binding.artifact.SAML1ArtifactType0001;
 import java.security.MessageDigest;
 
 /**
- * SAML1-compliant unique ticket id generator.
+ * SAML11-compliant unique ticket id generator.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$

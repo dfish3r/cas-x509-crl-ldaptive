@@ -36,7 +36,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Protocol {
 
-    enum ProtocolType{CAS, SAML1, SAML2}
+    enum ProtocolType{CAS, SAML11, SAML2}
 
     ProtocolType value();
 }

@@ -20,26 +20,34 @@
 package org.jasig.cas.server.login;
 
 import org.apache.commons.lang.StringUtils;
+import org.jasig.cas.server.Saml11Profile;
 import org.jasig.cas.server.session.Protocol;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
- * Constructs a new SAML1 request.
+ * Constructs a new SAML11 request.  We allow you to specify which protocol you want to use via the {@link #setProfile(Saml11Profile)}
+ * method. We provide a default one {@link #DEFAULT_PROFILE} if you don't choose one.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  */
 @Named("saml1ArtifactRequestAccessFactory")
-@Protocol(Protocol.ProtocolType.SAML1)
+@Protocol(Protocol.ProtocolType.SAML11)
 @Singleton
-public final class Saml1ArtifactRequestAccessRequestImplFactory extends AbstractServiceAccessRequestFactory {
+public final class Saml11RequestAccessRequestImplFactory extends AbstractServiceAccessRequestFactory {
 
     private static final String CONST_SERVICE_PARAM = "TARGET";
+
+    private static final Saml11Profile DEFAULT_PROFILE = Saml11Profile.BrowserArtifact;
+
+    // TODO this should be changed so we read it from some meta data file or from the Services Registry.
+    @NotNull
+    private Saml11Profile profile = DEFAULT_PROFILE;
 
     public ServiceAccessRequest getServiceAccessRequest(final String sessionId, final String remoteIpAddress, final Map parameters) {
         final String service = getValue(parameters.get(CONST_SERVICE_PARAM));
@@ -48,6 +56,10 @@ public final class Saml1ArtifactRequestAccessRequestImplFactory extends Abstract
             return null;
         }
 
-        return new Saml1ArtifactRequestAccessRequestImpl(sessionId, remoteIpAddress, false, false, service);
+        return new Saml11RequestAccessRequestImpl(sessionId, remoteIpAddress, false, false, service, this.profile);
+    }
+
+    public void setProfile(final Saml11Profile profile) {
+        this.profile = profile;
     }
 }

@@ -17,30 +17,16 @@
  * under the License.
  */
 
-package org.jasig.cas.server.login;
+package org.jasig.cas.server;
 
 /**
- * Constructs a request used to validate a SAML 1.1 request.
+ * Represents the various types of SAML 1.1 profiles we can have.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
-public final class Saml1TokenServiceAccessRequestImpl extends DefaultTokenServiceAccessRequestImpl {
+public enum Saml11Profile {
 
-    private String requestId;
-
-    public Saml1TokenServiceAccessRequestImpl(final String remoteIpAddress, final boolean forceAuthentication, final String token, final String serviceId, final String requestId) {
-        super(null, remoteIpAddress, forceAuthentication, token, serviceId);
-        this.requestId = requestId;
-    }
-
-    public String getRequestId() {
-        return this.requestId;
-    }
-
-    // TODO fix
-    public boolean isValid() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+    BrowserPost, BrowserArtifact
 }

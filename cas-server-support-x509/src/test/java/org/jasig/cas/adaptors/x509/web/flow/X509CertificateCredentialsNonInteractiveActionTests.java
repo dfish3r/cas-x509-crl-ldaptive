@@ -21,6 +21,7 @@ package org.jasig.cas.adaptors.x509.web.flow;
 
 import org.jasig.cas.adaptors.x509.authentication.handler.support.X509CredentialsAuthenticationHandler;
 import org.jasig.cas.adaptors.x509.authentication.principal.AbstractX509CertificateTests;
+import org.jasig.cas.server.login.DefaultLoginRequestImpl;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
@@ -51,13 +52,13 @@ public class X509CertificateCredentialsNonInteractiveActionTests extends
 //        centralAuthenticationService.setAuthenticationManager(authenticationManager);
         
 //        this.action.setCentralAuthenticationService(centralAuthenticationService);
-        this.action.afterPropertiesSet();
     }
     
     public void testNoCredentialsResultsInError() throws Exception {
         final MockRequestContext context = new MockRequestContext();
+        final DefaultLoginRequestImpl loginRequest = new DefaultLoginRequestImpl(null, "127.0.0.1", false, null);
         context.setExternalContext(new ServletExternalContext(new MockServletContext(), new MockHttpServletRequest(), new MockHttpServletResponse()));
-        assertEquals("error", this.action.execute(context).getId());
+        assertEquals(false, this.action.addCredential(context, loginRequest));
     }
 
     // TODO DISABLED FOR NOW
