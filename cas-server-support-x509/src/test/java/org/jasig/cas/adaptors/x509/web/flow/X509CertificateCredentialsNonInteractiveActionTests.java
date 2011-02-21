@@ -56,7 +56,7 @@ public class X509CertificateCredentialsNonInteractiveActionTests extends
     
     public void testNoCredentialsResultsInError() throws Exception {
         final MockRequestContext context = new MockRequestContext();
-        final DefaultLoginRequestImpl loginRequest = new DefaultLoginRequestImpl(null, "127.0.0.1", false, null);
+        final DefaultLoginRequestImpl loginRequest = new DefaultLoginRequestImpl(null, "127.0.0.1", false);
         context.setExternalContext(new ServletExternalContext(new MockServletContext(), new MockHttpServletRequest(), new MockHttpServletResponse()));
         assertEquals(false, this.action.addCredential(context, loginRequest));
     }

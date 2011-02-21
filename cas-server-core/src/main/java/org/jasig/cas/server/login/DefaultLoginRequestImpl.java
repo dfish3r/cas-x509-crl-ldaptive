@@ -54,9 +54,7 @@ public class DefaultLoginRequestImpl implements LoginRequest {
 
     private boolean longTermLoginRequest;
 
-    private final Access access;
-
-    public DefaultLoginRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final Access access) {
+    public DefaultLoginRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication) {
         Assert.notNull(remoteIpAddress, "remoteIpAddress cannot be null");
         if (sessionId == null || sessionId.isEmpty()) {
             this.sessionId = null;
@@ -65,7 +63,6 @@ public class DefaultLoginRequestImpl implements LoginRequest {
         }
         this.forceAuthentication = forceAuthentication;
         this.remoteIpAddress = remoteIpAddress;
-        this.access = access;
     }
 
     public final List<Credential> getCredentials() {
@@ -105,10 +102,6 @@ public class DefaultLoginRequestImpl implements LoginRequest {
         return this.longTermLoginRequest;
     }
 
-    public final Access getOriginalAccess() {
-        return this.access;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -118,7 +111,6 @@ public class DefaultLoginRequestImpl implements LoginRequest {
 
         if (forceAuthentication != that.forceAuthentication) return false;
         if (longTermLoginRequest != that.longTermLoginRequest) return false;
-        if (access != null ? !access.equals(that.access) : that.access != null) return false;
         if (credentials != null ? !credentials.equals(that.credentials) : that.credentials != null) return false;
         if (remoteIpAddress != null ? !remoteIpAddress.equals(that.remoteIpAddress) : that.remoteIpAddress != null)
             return false;
@@ -134,7 +126,6 @@ public class DefaultLoginRequestImpl implements LoginRequest {
         result = 31 * result + (remoteIpAddress != null ? remoteIpAddress.hashCode() : 0);
         result = 31 * result + (sessionId != null ? sessionId.hashCode() : 0);
         result = 31 * result + (longTermLoginRequest ? 1 : 0);
-        result = 31 * result + (access != null ? access.hashCode() : 0);
         return result;
     }
 }

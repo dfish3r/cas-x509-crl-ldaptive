@@ -72,7 +72,7 @@ public class CasProtocolRestfulController {
     @RequestMapping(method = RequestMethod.POST, value="/v1/tickets")
     public final void obtainTicketGrantingTicket(final HttpServletRequest request, final HttpServletResponse response, final Writer writer) throws IOException {
         final List<Credential> credentials = obtainCredentialsFrom(request);
-        final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, request.getRemoteAddr(), false, null);
+        final LoginRequest loginRequest = new DefaultLoginRequestImpl(null, request.getRemoteAddr(), false);
 
         loginRequest.getCredentials().addAll(credentials);
         final LoginResponse loginResponse = this.centralAuthenticationService.login(loginRequest);

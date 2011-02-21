@@ -37,7 +37,7 @@ public abstract class DefaultTokenServiceAccessRequestImpl extends DefaultLoginR
     private final String serviceId;
 
     public DefaultTokenServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final String token, final String serviceId) {
-        super(sessionId, remoteIpAddress, forceAuthentication ,null);
+        super(sessionId, remoteIpAddress, forceAuthentication);
         this.serviceId = serviceId;
         this.token = token;
     }

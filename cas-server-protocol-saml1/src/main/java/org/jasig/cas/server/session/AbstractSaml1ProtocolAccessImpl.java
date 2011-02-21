@@ -24,6 +24,7 @@ import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.server.login.Saml1TokenServiceAccessRequestImpl;
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
 import org.jasig.cas.server.util.ServiceIdentifierMatcher;
+import org.jasig.cas.server.util.XmlMarshallingUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.opensaml.Configuration;
@@ -73,8 +74,6 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
     protected abstract ServiceIdentifierMatcher getServiceIdentifierMatcher();
 
     protected abstract void setValidationStatus(ValidationStatus validationStatus);
-
-    protected abstract String getEncoding();
 
     protected abstract String getBadMatchUrl();
 
@@ -137,7 +136,7 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
         if (Saml11Profile.BrowserPost.equals(getProfile())) {
             final Map<String, List<String>> values = new HashMap<String, List<String>>();
             values.put(CONST_PARAM_SERVICE, Arrays.asList(getResourceIdentifier()));
-            values.put(CONST_PARAM_RESPONSE, Arrays.asList(generateStringFromResponse(generateSuccessResponse())));
+            values.put(CONST_PARAM_RESPONSE, Arrays.asList(XmlMarshallingUtils.marshall(generateSuccessResponse())));
 
             return DefaultAccessResponseResultImpl.generatePostRedirect(getResourceIdentifier(), values);
         }
@@ -159,12 +158,9 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
                 return constructErrorResponse(writer, StatusCode.RESOURCE_NOT_RECOGNIZED, String.format("Original url of %s does not match supplied url for validation of %s", getResourceIdentifier(), getBadMatchUrl()));
 
             default: // succeeded
-                final String successResponse = generateStringFromResponse(generateSuccessResponse());
+                final String successResponse = XmlMarshallingUtils.marshall(generateSuccessResponse());
                 try {
-                    writer.write("<?xml version=\"1.0\" encoding=\"" + getEncoding() + "\"?>");
-                    writer.write("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body>");
                     writer.write(successResponse);
-                    writer.write("</SOAP-ENV:Body></SOAP-ENV:Envelope>");
                 } catch (final IOException e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -200,35 +196,13 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
 
             response.setStatus(status);
 
-            writer.write("<?xml version=\"1.0\" encoding=\"" + getEncoding() + "\"?>");
-            writer.write("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body>");
-            writer.write(generateStringFromResponse(response));
-            writer.write("</SOAP-ENV:Body></SOAP-ENV:Envelope>");
+            writer.write(XmlMarshallingUtils.marshall(response));
         } catch (final Exception e) {
             logger.error(e.getMessage(), e);
         }
 
-        return DefaultAccessResponseResultImpl.none("text/xml; charset=" + getEncoding());
-    }
-
-    private String generateStringFromResponse(final Response response) {
-        try {
-            final MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
-            final Marshaller marshaller  = marshallerFactory.getMarshaller(response);
-            final Element e = marshaller.marshall(response);
-
-            final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            final Transformer transformer = transformerFactory.newTransformer();
-            final DOMSource source = new DOMSource(e);
-            final StringWriter sw = new StringWriter();
-            final StreamResult streamResult = new StreamResult(sw);
-            transformer.transform(source, streamResult);
-
-            return sw.toString();
-        } catch (final Exception e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
+        // TODO removed the encoding from here
+        return DefaultAccessResponseResultImpl.none("text/xml; charset=");
     }
 
     private Response generateSuccessResponse() {

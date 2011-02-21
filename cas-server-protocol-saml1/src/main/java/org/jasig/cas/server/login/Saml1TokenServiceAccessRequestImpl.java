@@ -26,21 +26,39 @@ package org.jasig.cas.server.login;
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
-public final class Saml1TokenServiceAccessRequestImpl extends DefaultTokenServiceAccessRequestImpl {
+public final class Saml1TokenServiceAccessRequestImpl extends DefaultLoginRequestImpl implements TokenServiceAccessRequest {
 
     private String requestId;
 
-    public Saml1TokenServiceAccessRequestImpl(final String remoteIpAddress, final boolean forceAuthentication, final String token, final String serviceId, final String requestId) {
-        super(null, remoteIpAddress, forceAuthentication, token, serviceId);
-        this.requestId = requestId;
+    public Saml1TokenServiceAccessRequestImpl(final String samlResponse, final String remoteIpAddress) {
+        super(null, remoteIpAddress, false);
+    }
+
+    public String getToken() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isProxiedRequest() {
+        return false;
+    }
+
+    public boolean isPassiveAuthentication() {
+        return false;
+    }
+
+    public String getPassiveAuthenticationRedirectUrl() {
+        return null;
+    }
+
+    public String getServiceId() {
+        return null;
     }
 
     public String getRequestId() {
         return this.requestId;
     }
 
-    // TODO fix
     public boolean isValid() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return true;
     }
 }

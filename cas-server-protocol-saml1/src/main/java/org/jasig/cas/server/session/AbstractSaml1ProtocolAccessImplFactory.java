@@ -51,9 +51,6 @@ public abstract class AbstractSaml1ProtocolAccessImplFactory implements AccessFa
     private ServiceIdentifierMatcher serviceIdentifierMatcher = new DefaultServiceIdentifierMatcherImpl();
 
     @NotNull
-    private String encoding = DEFAULT_ENCODING;
-
-    @NotNull
     private final String issuer;
 
     protected AbstractSaml1ProtocolAccessImplFactory(final Saml1UniqueTicketIdGeneratorImpl uniqueTicketIdGenerator, final String issuer) {
@@ -65,20 +62,12 @@ public abstract class AbstractSaml1ProtocolAccessImplFactory implements AccessFa
         return this.uniqueTicketIdGenerator;
     }
 
-    public final void setEncoding(final String encoding) {
-        this.encoding = encoding;
-    }
-
     protected final long getIssueLength() {
         return issueLength;
     }
 
     public final void setIssueLength(final long issueLength) {
         this.issueLength = issueLength;
-    }
-
-    protected final String getEncoding() {
-        return this.encoding;
     }
 
     protected final ServiceIdentifierMatcher getServiceIdentifierMatcher() {

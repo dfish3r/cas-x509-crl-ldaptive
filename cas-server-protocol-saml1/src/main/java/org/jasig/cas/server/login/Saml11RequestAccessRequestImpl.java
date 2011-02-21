@@ -38,7 +38,7 @@ public final class Saml11RequestAccessRequestImpl extends DefaultLoginRequestImp
     private final Saml11Profile profile;
 
     public Saml11RequestAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final boolean passiveAuthentication, final String serviceId, final Saml11Profile profile) {
-        super(sessionId, remoteIpAddress, forceAuthentication, null);
+        super(sessionId, remoteIpAddress, forceAuthentication);
         this.serviceId = serviceId;
         this.passiveAuthentication = passiveAuthentication;
         this.profile = profile;

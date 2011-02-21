@@ -20,7 +20,6 @@
 package org.jasig.cas.server.login;
 
 import org.jasig.cas.server.authentication.Credential;
-import org.jasig.cas.server.session.Access;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -95,11 +94,4 @@ public interface LoginRequest extends Serializable {
      * @return true if it is, false otherwise.
      */
     boolean isLongTermLoginRequest();
-
-    /**
-     * If there was an access that triggered this login request.  CAN be null.
-     *
-     * @return the original access or null.
-     */
-    Access getOriginalAccess();
 }

@@ -38,8 +38,6 @@ public final class InMemorySaml11ProtocolAccessImpl extends AbstractSaml1Protoco
 
     private String badMatchUrl;
 
-    private final String encoding;
-
     private final Session session;
 
     private final ServiceIdentifierMatcher serviceIdentifierMatcher;
@@ -54,14 +52,13 @@ public final class InMemorySaml11ProtocolAccessImpl extends AbstractSaml1Protoco
 
     private final String id;
 
-    public InMemorySaml11ProtocolAccessImpl(final Saml11Profile profile, final String id, final String resourceIdentifier, final String encoding, final ServiceIdentifierMatcher serviceIdentifierMatcher, final String issuer, final long issueLength, final Session parentSession) {
+    public InMemorySaml11ProtocolAccessImpl(final Saml11Profile profile, final String id, final String resourceIdentifier, final ServiceIdentifierMatcher serviceIdentifierMatcher, final String issuer, final long issueLength, final Session parentSession) {
         this.id = id;
         this.resourceIdentifier = resourceIdentifier;
         this.issuer = issuer;
         this.issueLength = issueLength;
         this.session = parentSession;
         this.profile = profile;
-        this.encoding = encoding;
         this.serviceIdentifierMatcher = serviceIdentifierMatcher;
     }
 
@@ -88,11 +85,6 @@ public final class InMemorySaml11ProtocolAccessImpl extends AbstractSaml1Protoco
     @Override
     protected void setValidationStatus(final ValidationStatus validationStatus) {
         this.validationStatus = validationStatus;
-    }
-
-    @Override
-    protected String getEncoding() {
-        return this.encoding;
     }
 
     @Override

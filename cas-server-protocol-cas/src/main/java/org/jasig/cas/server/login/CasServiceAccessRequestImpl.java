@@ -45,7 +45,7 @@ public class CasServiceAccessRequestImpl extends DefaultLoginRequestImpl impleme
     }
 
     public CasServiceAccessRequestImpl(final String sessionId, final String remoteIpAddress, final boolean forceAuthentication, final boolean passiveAuthentication, final String serviceId, final boolean postRequest, final boolean proxied) {
-        super(sessionId, remoteIpAddress, forceAuthentication, null);
+        super(sessionId, remoteIpAddress, forceAuthentication);
         this.serviceId = serviceId;
         this.postRequest = postRequest;
         this.passiveAuthentication = passiveAuthentication;

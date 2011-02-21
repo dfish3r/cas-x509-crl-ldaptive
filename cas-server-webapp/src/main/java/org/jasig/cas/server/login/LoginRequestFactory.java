@@ -74,6 +74,6 @@ public final class LoginRequestFactory {
             }
         }
 
-        return new DefaultLoginRequestImpl(sessionIdentifier, remoteIpAddress, false, null);
+        return new DefaultLoginRequestImpl(sessionIdentifier, remoteIpAddress, false);
 	}
 }

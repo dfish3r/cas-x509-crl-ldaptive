@@ -43,8 +43,6 @@ public final class Saml2ArtifactRequestAccessRequestImplTests {
 
     private final static boolean CONST_PASSIVE_AUTHENTICATION = true;
 
-    private final static Access CONST_ACCESS = null;
-
     private final static String CONST_SERVICE_ID = "serviceId";
 
     private final static String CONST_REQUST_ID = "requestId";
@@ -67,7 +65,6 @@ public final class Saml2ArtifactRequestAccessRequestImplTests {
         assertEquals(CONST_REMOTE_IP_ADDRESS, impl.getRemoteIpAddress());
         assertEquals(CONST_FORCE_AUTHENTICATION, impl.isForceAuthentication());
         assertEquals(CONST_PASSIVE_AUTHENTICATION, impl.isPassiveAuthentication());
-        assertEquals(CONST_ACCESS, impl.getOriginalAccess());
         assertEquals(CONST_SERVICE_ID, impl.getServiceId());
         assertEquals(CONST_REQUST_ID, impl.getRequestId());
         assertEquals(CONST_ALTERNATE_USERNAME, impl.getAlternateUserName());
