@@ -96,8 +96,7 @@ public final class Saml11ValidationController {
     private String stripSOAPEnvelope(final String request) {
 
         final String withoutStart = request.substring(request.indexOf(SOAP_ENV_BODY)+SOAP_ENV_BODY.length());
-        final String withoutEnd = withoutStart.substring(0, withoutStart.indexOf(SOAP_ENV_BODY_END.length()));
-        return withoutEnd;
+        return withoutStart.substring(0, withoutStart.indexOf(SOAP_ENV_BODY_END.length()));
     }
 
     public void setEncoding(final String encoding) {

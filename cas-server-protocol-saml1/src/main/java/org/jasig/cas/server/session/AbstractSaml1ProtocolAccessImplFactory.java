@@ -19,9 +19,7 @@
 
 package org.jasig.cas.server.session;
 
-import org.jasig.cas.server.util.DefaultServiceIdentifierMatcherImpl;
 import org.jasig.cas.server.util.Saml1UniqueTicketIdGeneratorImpl;
-import org.jasig.cas.server.util.ServiceIdentifierMatcher;
 import org.jasig.cas.server.util.UniqueTicketIdGenerator;
 
 import javax.validation.constraints.Min;
@@ -48,9 +46,6 @@ public abstract class AbstractSaml1ProtocolAccessImplFactory implements AccessFa
     private final Saml1UniqueTicketIdGeneratorImpl uniqueTicketIdGenerator;
 
     @NotNull
-    private ServiceIdentifierMatcher serviceIdentifierMatcher = new DefaultServiceIdentifierMatcherImpl();
-
-    @NotNull
     private final String issuer;
 
     protected AbstractSaml1ProtocolAccessImplFactory(final Saml1UniqueTicketIdGeneratorImpl uniqueTicketIdGenerator, final String issuer) {
@@ -68,14 +63,6 @@ public abstract class AbstractSaml1ProtocolAccessImplFactory implements AccessFa
 
     public final void setIssueLength(final long issueLength) {
         this.issueLength = issueLength;
-    }
-
-    protected final ServiceIdentifierMatcher getServiceIdentifierMatcher() {
-        return serviceIdentifierMatcher;
-    }
-
-    public final void setServiceIdentifierMatcher(final ServiceIdentifierMatcher serviceIdentifierMatcher) {
-        this.serviceIdentifierMatcher = serviceIdentifierMatcher;
     }
 
     protected final String getIssuer() {

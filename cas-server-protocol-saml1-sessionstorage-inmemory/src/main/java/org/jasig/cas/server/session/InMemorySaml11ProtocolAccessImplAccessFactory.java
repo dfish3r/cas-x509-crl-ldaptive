@@ -43,6 +43,6 @@ public final class InMemorySaml11ProtocolAccessImplAccessFactory extends Abstrac
 
         final Saml11RequestAccessRequestImpl impl = (Saml11RequestAccessRequestImpl) serviceAccessRequest;
 
-        return new InMemorySaml11ProtocolAccessImpl(impl.getProfile(), getUniqueTicketIdGenerator().getNewTicketId(""), serviceAccessRequest.getServiceId(), getServiceIdentifierMatcher(), getIssuer(), getIssueLength(), session);
+        return new InMemorySaml11ProtocolAccessImpl(impl.getProfile(), getUniqueTicketIdGenerator().getNewTicketId(""), serviceAccessRequest.getServiceId(), getIssuer(), getIssueLength(), session);
     }
 }

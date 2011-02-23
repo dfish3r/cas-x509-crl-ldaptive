@@ -21,7 +21,6 @@ package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.Saml11Profile;
 import org.jasig.cas.server.authentication.AuthenticationResponse;
-import org.jasig.cas.server.util.ServiceIdentifierMatcher;
 
 /**
  * In-memory implementation of the SAML protocol that supports in-memory storage.
@@ -36,11 +35,7 @@ public final class InMemorySaml11ProtocolAccessImpl extends AbstractSaml1Protoco
 
     private final Saml11Profile profile;
 
-    private String badMatchUrl;
-
     private final Session session;
-
-    private final ServiceIdentifierMatcher serviceIdentifierMatcher;
 
     private final String resourceIdentifier;
 
@@ -52,14 +47,13 @@ public final class InMemorySaml11ProtocolAccessImpl extends AbstractSaml1Protoco
 
     private final String id;
 
-    public InMemorySaml11ProtocolAccessImpl(final Saml11Profile profile, final String id, final String resourceIdentifier, final ServiceIdentifierMatcher serviceIdentifierMatcher, final String issuer, final long issueLength, final Session parentSession) {
+    public InMemorySaml11ProtocolAccessImpl(final Saml11Profile profile, final String id, final String resourceIdentifier, final String issuer, final long issueLength, final Session parentSession) {
         this.id = id;
         this.resourceIdentifier = resourceIdentifier;
         this.issuer = issuer;
         this.issueLength = issueLength;
         this.session = parentSession;
         this.profile = profile;
-        this.serviceIdentifierMatcher = serviceIdentifierMatcher;
     }
 
     @Override
@@ -78,28 +72,13 @@ public final class InMemorySaml11ProtocolAccessImpl extends AbstractSaml1Protoco
     }
 
     @Override
-    protected ServiceIdentifierMatcher getServiceIdentifierMatcher() {
-        return this.serviceIdentifierMatcher;
-    }
-
-    @Override
     protected void setValidationStatus(final ValidationStatus validationStatus) {
         this.validationStatus = validationStatus;
     }
 
     @Override
-    protected String getBadMatchUrl() {
-        return this.badMatchUrl;
-    }
-
-    @Override
     protected Saml11Profile getProfile() {
         return this.profile;
-    }
-
-    @Override
-    protected void setBadMatchUrl(final String badMatchUrl) {
-        this.badMatchUrl = badMatchUrl;
     }
 
     @Override

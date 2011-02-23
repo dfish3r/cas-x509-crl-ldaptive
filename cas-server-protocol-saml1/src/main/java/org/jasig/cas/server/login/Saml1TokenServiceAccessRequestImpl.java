@@ -19,6 +19,9 @@
 
 package org.jasig.cas.server.login;
 
+import org.jasig.cas.server.util.XmlMarshallingUtils;
+import org.opensaml.saml1.core.Request;
+
 /**
  * Constructs a request used to validate a SAML 1.1 request.
  *
@@ -30,12 +33,22 @@ public final class Saml1TokenServiceAccessRequestImpl extends DefaultLoginReques
 
     private String requestId;
 
+    private final String token;
+
     public Saml1TokenServiceAccessRequestImpl(final String samlResponse, final String remoteIpAddress) {
         super(null, remoteIpAddress, false);
+        final Request request = XmlMarshallingUtils.unmarshall(samlResponse);
+        this.requestId = request.getID();
+
+        if (request.getAssertionArtifacts() != null && !request.getAssertionArtifacts().isEmpty()) {
+            this.token = request.getAssertionArtifacts().get(0).getAssertionArtifact();
+        } else {
+            this.token = null;
+        }
     }
 
     public String getToken() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return this.token;
     }
 
     public boolean isProxiedRequest() {

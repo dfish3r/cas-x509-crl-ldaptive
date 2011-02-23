@@ -47,7 +47,7 @@ public final class CookieRetrievingCookieGeneratorTests extends TestCase {
     }
     
     public void testCookieAddWithRememberMe() {
-        final DefaultLoginRequestImpl request = new DefaultLoginRequestImpl(null, "ha", false, null);
+        final DefaultLoginRequestImpl request = new DefaultLoginRequestImpl(null, "ha", false);
         request.setLongTermLoginRequest(true);
         final MockHttpServletResponse response = new MockHttpServletResponse();
         
@@ -59,7 +59,7 @@ public final class CookieRetrievingCookieGeneratorTests extends TestCase {
     }
     
     public void testCookieAddWithoutRememberMe() {
-        final DefaultLoginRequestImpl request = new DefaultLoginRequestImpl(null, "ha", false, null);
+        final DefaultLoginRequestImpl request = new DefaultLoginRequestImpl(null, "ha", false);
         final MockHttpServletResponse response = new MockHttpServletResponse();
         
         this.g.addCookie(request, response, "test");
