@@ -39,7 +39,7 @@ public class X509CertificateCredentialsNonInteractiveActionTests extends
 //        final DefaultCentralAuthenticationServiceImpl centralAuthenticationService = new DefaultCentralAuthenticationServiceImpl();
 
         final X509CredentialsAuthenticationHandler a = new X509CredentialsAuthenticationHandler();
-        a.setTrustedIssuerDnPattern("JA-SIG");
+        a.setTrustedIssuerDnPattern("CN=\\w+,DC=jasig,DC=org");
 
 //        final DefaultAuthenticationManagerImpl authenticationManager = new DefaultAuthenticationManagerImpl(Arrays.asList(a), Arrays.asList(new CredentialToPrincipalResolver[] {new X509CertificateCredentialsToSerialNumberPrincipalResolver()}));
 

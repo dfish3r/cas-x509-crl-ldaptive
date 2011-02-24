@@ -21,16 +21,19 @@ package org.jasig.cas.adaptors.x509.authentication.handler.support;
 
 import java.security.GeneralSecurityException;
 import java.security.Principal;
-import java.security.cert.CertificateExpiredException;
-import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.jasig.cas.adaptors.x509.authentication.principal.X509CertificateCredentials;
+import org.jasig.cas.adaptors.x509.util.CertUtils;
 import org.jasig.cas.server.authentication.AbstractNamedAuthenticationHandler;
 import org.jasig.cas.server.authentication.Credential;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.security.auth.login.CredentialException;
+import javax.security.auth.login.CredentialNotFoundException;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -52,298 +55,230 @@ import javax.validation.constraints.NotNull;
  */
 public final class X509CredentialsAuthenticationHandler extends AbstractNamedAuthenticationHandler {
 
-   /** Default setting to limit the number of intermediate certificates. */
-   private static final int DEFAULT_MAXPATHLENGTH = 1;
+    /** Default setting to limit the number of intermediate certificates. */
+    private static final int DEFAULT_MAXPATHLENGTH = 1;
 
-   /** Default setting whether to allow unspecified number of intermediate certificates. */
-   private static final boolean DEFAULT_MAXPATHLENGTH_ALLOW_UNSPECIFIED = false;
+    /** Default setting whether to allow unspecified number of intermediate certificates. */
+    private static final boolean DEFAULT_MAXPATHLENGTH_ALLOW_UNSPECIFIED = false;
 
-   /** Default setting to check keyUsage extension. */
-   private static final boolean DEFAULT_CHECK_KEYUSAGE = false;
+    /** Default setting to check keyUsage extension. */
+    private static final boolean DEFAULT_CHECK_KEYUSAGE = false;
 
-   /** Default setting to force require "KeyUsage" extension. */
-   private static final boolean DEFAULT_REQUIRE_KEYUSAGE = false;
+    /** Default setting to force require "KeyUsage" extension. */
+    private static final boolean DEFAULT_REQUIRE_KEYUSAGE = false;
 
-   /** Default subject pattern match. */
-   private static final Pattern DEFAULT_SUBJECT_DN_PATTERN = Pattern.compile(".*");
+    /** Default subject pattern match. */
+    private static final Pattern DEFAULT_SUBJECT_DN_PATTERN = Pattern.compile(".*");
 
-   /** The compiled pattern supplied by the deployer. */
-   @NotNull
-   private Pattern regExTrustedIssuerDnPattern;
+    /** OID for KeyUsage X.509v3 extension field. */
+    private static final String KEY_USAGE_OID = "2.5.29.15";
 
-   /**
-    * Deployer supplied setting for maximum pathLength in a SUPPLIED
-    * certificate.
-    */
-   private int maxPathLength = DEFAULT_MAXPATHLENGTH;
+    /** Instance of Logging. */
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-   /**
-    * Deployer supplied setting to allow unlimited pathLength in a SUPPLIED
-    * certificate.
-    */
-   private boolean maxPathLength_allowUnspecified = DEFAULT_MAXPATHLENGTH_ALLOW_UNSPECIFIED;
+    /** The compiled pattern supplied by the deployer. */
+    @NotNull
+    private Pattern regExTrustedIssuerDnPattern;
+
+    /**
+     * Deployer supplied setting for maximum pathLength in a SUPPLIED
+     * certificate.
+     */
+    private int maxPathLength = DEFAULT_MAXPATHLENGTH;
+
+    /**
+     * Deployer supplied setting to allow unlimited pathLength in a SUPPLIED
+     * certificate.
+     */
+    private boolean maxPathLengthAllowUnspecified = DEFAULT_MAXPATHLENGTH_ALLOW_UNSPECIFIED;
+
+    /** Deployer supplied setting to check the KeyUsage extension. */
+    private boolean checkKeyUsage = DEFAULT_CHECK_KEYUSAGE;
+
+    /**
+     * Deployer supplied setting to force require the correct KeyUsage
+     * extension.
+     */
+    private boolean requireKeyUsage = DEFAULT_REQUIRE_KEYUSAGE;
+
+    /** The compiled pattern for trusted DN's supplied by the deployer. */
+    @NotNull
+    private Pattern regExSubjectDnPattern = DEFAULT_SUBJECT_DN_PATTERN;
+
+    /** Certificate revocation checker component. */
+    @NotNull
+    private RevocationChecker revocationChecker = new NoOpRevocationChecker();
 
 
-   /** Deployer supplied setting to check the KeyUsage extension. */
-   private boolean checkKeyUsage = DEFAULT_CHECK_KEYUSAGE;
+    /** {@inheritDoc} */
+    public boolean authenticate(final Credential credential) throws GeneralSecurityException {
 
-   /**
-    * Deployer supplied setting to force require the correct KeyUsage
-    * extension.
-    */
-   private boolean requireKeyUsage = DEFAULT_REQUIRE_KEYUSAGE;
+        final X509CertificateCredentials x509Credentials = (X509CertificateCredentials) credential;
+        final X509Certificate[] certificates = x509Credentials.getCertificates();
 
-   /** The compiled pattern for trusted DN's supplied by the deployer. */
-   @NotNull
-   private Pattern regExSubjectDnPattern = DEFAULT_SUBJECT_DN_PATTERN;
+        X509Certificate clientCert = null;
+        boolean hasTrustedIssuer = false;
+        for (int i = certificates.length - 1; i >= 0; i--) {
+            final X509Certificate certificate = certificates[i];
+            if (this.log.isDebugEnabled()) {
+                this.log.debug("Evaluating " + CertUtils.toString(certificate));
+            }
 
-   public boolean authenticate(final Credential credentials) throws GeneralSecurityException {
+            validate(certificate);
 
-       final X509CertificateCredentials x509Credentials = (X509CertificateCredentials) credentials;
-       final X509Certificate[] certificates = x509Credentials
-           .getCertificates();
+            if (!hasTrustedIssuer) {
+                hasTrustedIssuer = isCertificateFromTrustedIssuer(certificate);
+            }
 
-       /*
-        * the certificate that was fully authenticated succesfully will be set
-        * as the user credentials for CAS last certificate that can be set is
-        * the end-user certificate
-        */
-       X509Certificate certificateCredentialsCandidate = null;
-       // flag to check whether a trusted issuer is in the certificate chain
-       boolean hasTrustedIssuerInChain = false;
+            // getBasicConstraints returns pathLenContraint which is
+            // >=0 when this is a CA cert and -1 when it's not
+            int pathLength = certificate.getBasicConstraints();
+            if (pathLength < 0) {
+                this.log.debug("Found valid client certificate");
+                clientCert = certificate;
+            } else {
+                this.log.debug("Found valid CA certificate");
+            }
+        }
+        if (clientCert != null) {
+            if (hasTrustedIssuer) {
+                x509Credentials.setCertificate(clientCert);
+                this.log.info("Successfully authenticated " + credential);
+                return true;
+            }
+            throw new CredentialException("Client certificate is not from a trusted issuer.");
+        }
+        throw new CredentialNotFoundException("Valid client certificate not found in request.");
+    }
 
-       /*
-        * reverse transversal of certificates (should be from root to end-user
-        * cert)
-        */
-       for (int i = (certificates.length - 1); i >= 0; i--) {
-           final X509Certificate certificate = certificates[i];
-           try {
-               final Principal issuerPrincipal = certificate.getIssuerDN();
-               // flag that is set when this cert is an end user cert (no CA
-               // cert)
-               boolean isEndUserCertificate = false;
+    public void setTrustedIssuerDnPattern(final String trustedIssuerDnPattern) {
+        this.regExTrustedIssuerDnPattern = Pattern.compile(trustedIssuerDnPattern);
+    }
 
-               if (log.isDebugEnabled()) {
-                   log.debug("--examining cert["
-                       + certificate.getSerialNumber().toString() + "] "
-                       + certificate.getSubjectDN() + "\"" + " from issuer \""
-                       + issuerPrincipal.getName() + "\"");
-               }
+    /**
+     * @param maxPathLength The maxPathLength to set.
+     */
+    public void setMaxPathLength(int maxPathLength) {
+        this.maxPathLength = maxPathLength;
+    }
 
-               // check basic validity of the current certificate
-               certificate.checkValidity();
-               log.debug("certificate is valid");
+    /**
+     * @param allowed Allow CA certs to have unlimited intermediate certs (default=false).
+     */
+    public void setMaxPathLengthAllowUnspecified(final boolean allowed) {
+        this.maxPathLengthAllowUnspecified = allowed;
+    }
 
-               // initial check for trusted issuer in certificate chain
-               // final check is done outside for loop
-               if (isCertificateFromTrustedIssuer(issuerPrincipal)) {
-                   hasTrustedIssuerInChain = true;
-                   log.debug("certificate was issued by trusted issuer");
-               }
+    /**
+     * @param checkKeyUsage The checkKeyUsage to set.
+     */
+    public void setCheckKeyUsage(boolean checkKeyUsage) {
+        this.checkKeyUsage = checkKeyUsage;
+    }
 
-               // getBasicConstraints returns pathLenContraint which is
-               // >=0 when this is a CA cert and -1 when it's not
-               int pathLength = certificate.getBasicConstraints();
-               if (pathLength != -1) {
-                   log.debug("this is a CA certificate");
+    /**
+     * @param requireKeyUsage The requireKeyUsage to set.
+     */
+    public void setRequireKeyUsage(boolean requireKeyUsage) {
+        this.requireKeyUsage = requireKeyUsage;
+    }
 
-                   // check pathLength when CA cert
-                   //if unlimited/unspecified and unlimited/unspecified not allowed: warn+stop
-                   if (pathLength == Integer.MAX_VALUE && !this.maxPathLength_allowUnspecified) {
-                       if (log.isWarnEnabled()) {
-                           log.warn("authentication failed; cert pathLength not specified"
-                                   + " and unlimited/unspecified not allowed by config [see maxPathLength_allow_unlimited]");
-                       }
-                       return false;
-                   //else if more than allowed length but not unlimited/unspecified: warn+stop
-                   } else if (pathLength > this.maxPathLength && pathLength < Integer.MAX_VALUE) {
-                       if (log.isWarnEnabled()) {
-                           log.warn("authentication failed; cert pathLength ["
-                               + pathLength
-                               + "] is more than allowed by config ["
-                               + this.maxPathLength + "]");
-                       }
-                       return false;
-                   }
-               } else {
-                   isEndUserCertificate = true;
-                   log.debug("this is an end-user certificate");
-               }
+    public void setSubjectDnPattern(final String subjectDnPattern) {
+        this.regExSubjectDnPattern = Pattern.compile(subjectDnPattern);
+    }
 
-               /*
-                * set this certificate as the user credentials if there is an
-                * issuer in the cert (always so if valid cert) and this is an
-                * end-user or CA certificate (so not a CA cert) and optional
-                * KeyUsage check
-                */
-               if (issuerPrincipal != null
-                   && isEndUserCertificate
-                   && this.doesCertificateSubjectDnMatchPattern(certificate
-                       .getSubjectDN())
-                   && (!this.checkKeyUsage || (this.checkKeyUsage && this
-                       .doesCertificateKeyUsageMatch(certificate)))) {
+    /**
+     * Sets the component responsible for evaluating certificate revocation status for client
+     * certificates presented to handler. The default checker is a NO-OP implementation
+     * for backward compatibility with previous versions that do not perform revocation
+     * checking.
+     *
+     * @param checker Revocation checker component.
+     */
+    public void setRevocationChecker(final RevocationChecker checker) {
+        this.revocationChecker = checker;
+    }
+    
+    private void validate(final X509Certificate cert) throws GeneralSecurityException {
+        cert.checkValidity();
+        this.revocationChecker.check(cert);
 
-                   if (log.isDebugEnabled()) {
-                       log.debug("cert["
-                           + certificate.getSerialNumber().toString()
-                           + "] ok, setting as credentials candidate");
-                   }
-                   certificateCredentialsCandidate = certificate;
-               }
-           } catch (final CertificateExpiredException e) {
-               log.warn("authentication failed; certficiate expired ["
-                   + certificate.toString() + "]");
-               certificateCredentialsCandidate = null;
-           } catch (final CertificateNotYetValidException e) {
-               log.warn("authentication failed; certficate not yet valid ["
-                   + certificate.toString() + "]");
-               certificateCredentialsCandidate = null;
-           }
-       }
+        int pathLength = cert.getBasicConstraints();
+        if (pathLength < 0) {
+            if (!isCertificateAllowed(cert)) {
+                throw new CredentialException(
+                    "Certificate subject does not match pattern " + this.regExSubjectDnPattern.pattern());
+            }
+            if (this.checkKeyUsage && !isValidKeyUsage(cert)) {
+               throw new CredentialException("Certificate keyUsage constraint forbids SSL client authentication.");
+            }
+        } else {
+            // Check pathLength for CA cert
+            if (pathLength == Integer.MAX_VALUE && this.maxPathLengthAllowUnspecified != true) {
+                throw new CredentialException("Unlimited certificate path length not allowed by configuration.");
+            } else if (pathLength > this.maxPathLength && pathLength < Integer.MAX_VALUE) {
+                throw new CredentialException(String.format(
+                    "Certificate path length %s exceeds maximum value %s.", pathLength, this.maxPathLength));
+            }
+        }
+    }
+    
+    private boolean isValidKeyUsage(final X509Certificate certificate) {
+        this.log.debug("Checking certificate keyUsage extension");
+        
+        /*
+         * KeyUsage ::= BIT STRING { digitalSignature (0), nonRepudiation (1),
+         * keyEncipherment (2), dataEncipherment (3), keyAgreement (4),
+         * keyCertSign (5), cRLSign (6), encipherOnly (7), decipherOnly (8) }
+         */
+        final boolean keyUsage[] = certificate.getKeyUsage();
+        if (keyUsage == null) {
+            this.log.warn("Configuration specifies checkKeyUsage but keyUsage extension not found in certificate.");
+            return !this.requireKeyUsage;
+        }
+        
+        final boolean valid;
+        if (isCritical(certificate, KEY_USAGE_OID) || this.requireKeyUsage) {
+            this.log.debug("KeyUsage extension is marked critical or required by configuration.");
+            valid = keyUsage[0];
+        } else {
+            if (this.log.isDebugEnabled()) {
+                this.log.debug("KeyUsage digitalSignature=%s.");
+                this.log.debug("Returning true since keyUsage validation not required by configuration.");
+            }
+            valid = true;
+        }
+        return valid;
+    }
 
-       // check whether one of the certificates in the chain was
-       // from the trusted issuer; else => fail auth
-       if (certificateCredentialsCandidate != null && hasTrustedIssuerInChain) {
-           if (log.isInfoEnabled()) {
-               log
-                   .info("authentication OK; SSL client authentication data meets criteria for cert["
-                       + certificateCredentialsCandidate.getSerialNumber()
-                           .toString() + "]");
-           }
-           x509Credentials.setCertificate(certificateCredentialsCandidate);
-           return true;
-       }
+    private boolean isCritical(final X509Certificate certificate, final String extensionOid) {
+        final Set<String> criticalOids = certificate.getCriticalExtensionOIDs();
 
-       if (log.isInfoEnabled()) {
-           if (!hasTrustedIssuerInChain) {
-               log.info("client cert did not have trusted issuer pattern \""
-                   + this.regExTrustedIssuerDnPattern.pattern()
-                   + "\" in chain; authentication failed");
-           } else {
-               log
-                   .info("authentication failed; SSL client authentication data doesn't meet criteria");
-           }
-       }
-       return false;
-   }
+        if (criticalOids == null || criticalOids.isEmpty()) {
+            return false;
+        }
 
-   public void setTrustedIssuerDnPattern(final String trustedIssuerDnPattern) {
-       this.regExTrustedIssuerDnPattern = Pattern
-       .compile(trustedIssuerDnPattern);
-   }
+        return criticalOids.contains(extensionOid);
+    }
 
-   /**
-    * @param maxPathLength The maxPathLength to set.
-    */
-   public void setMaxPathLength(int maxPathLength) {
-       this.maxPathLength = maxPathLength;
-   }
+    private boolean isCertificateAllowed(final X509Certificate cert) {
+        return doesNameMatchPattern(cert.getSubjectDN(), this.regExSubjectDnPattern);
+    }
 
-   /**
-    * @param maxPathLength_allowUnspecified Allow CA certs to have unlimited intermediate certs (default=false).
-    */
-   public void setMaxPathLengthAllowUnspecified(boolean maxPathLength_allowUnspecified) {
-       this.maxPathLength_allowUnspecified = maxPathLength_allowUnspecified;
-   }
+    private boolean isCertificateFromTrustedIssuer(final X509Certificate cert) {
+        return doesNameMatchPattern(cert.getIssuerDN(), this.regExTrustedIssuerDnPattern);
+    }
 
-   /**
-    * @param checkKeyUsage The checkKeyUsage to set.
-    */
-   public void setCheckKeyUsage(boolean checkKeyUsage) {
-       this.checkKeyUsage = checkKeyUsage;
-   }
+    private boolean doesNameMatchPattern(final Principal principal,
+        final Pattern pattern) {
+        final String name = principal.getName();
+        final boolean result = pattern.matcher(name).matches();
+        if (this.log.isDebugEnabled()) {
+            this.log.debug(String.format("%s matches %s == %s", pattern.pattern(), name, result));
+        }
 
-   /**
-    * @param requireKeyUsage The requireKeyUsage to set.
-    */
-   public void setRequireKeyUsage(boolean requireKeyUsage) {
-       this.requireKeyUsage = requireKeyUsage;
-   }
-
-   public void setSubjectDnPattern(final String subjectDnPattern) {
-       this.regExSubjectDnPattern = Pattern.compile(subjectDnPattern);
-   }
-
-   private boolean doesCertificateKeyUsageMatch(
-       final X509Certificate certificate) {
-       final String extensionOID = "2.5.29.15";
-       final boolean keyUsage[] = certificate.getKeyUsage();
-       /*
-        * KeyUsage ::= BIT STRING { digitalSignature (0), nonRepudiation (1),
-        * keyEncipherment (2), dataEncipherment (3), keyAgreement (4),
-        * keyCertSign (5), cRLSign (6), encipherOnly (7), decipherOnly (8) }
-        */
-
-       if (keyUsage == null) {
-           log.warn("isKeyUsageRequired?: " + this.requireKeyUsage
-               + "; keyUsage not found.");
-           return !this.requireKeyUsage;
-       }
-
-       log.debug("keyUsage extension found: examing...");
-
-       if (!isExtensionMarkedCritical(certificate, extensionOID)
-           && !this.requireKeyUsage) {
-           log
-               .debug("match ok; keyUsage extension not critical and not required so not checked");
-           return true;
-       }
-
-       if (log.isDebugEnabled()) {
-           log
-               .debug("extension is marked critical in cert OR required by config"
-                   + "[critical="
-                   + isExtensionMarkedCritical(certificate, extensionOID)
-                   + ";required=" + this.requireKeyUsage + "]");
-       }
-
-       // we need digitalSignature for SSL client auth
-       if (keyUsage[0]) {
-           log.debug("match ok; keyUsage extension OK");
-           return true;
-       }
-
-       if (log.isWarnEnabled() && this.requireKeyUsage) {
-           log.warn("match error; required/critical keyUsage extension fails"
-               + "[critical="
-               + isExtensionMarkedCritical(certificate, extensionOID)
-               + ";required=" + this.requireKeyUsage + "]");
-       }
-       return false;
-   }
-
-   private boolean isExtensionMarkedCritical(
-       final X509Certificate certificate, final String oid) {
-       final Set<String> criticalOids = certificate.getCriticalExtensionOIDs();
-
-       if (criticalOids == null || criticalOids.isEmpty()) {
-           return false;
-       }
-
-       return criticalOids.contains(oid);
-   }
-
-   private boolean doesCertificateSubjectDnMatchPattern(
-       final Principal principal) {
-       return doesNameMatchPattern(principal, this.regExSubjectDnPattern);
-   }
-
-   private boolean isCertificateFromTrustedIssuer(final Principal principal) {
-       return doesNameMatchPattern(principal, this.regExTrustedIssuerDnPattern);
-   }
-
-   private boolean doesNameMatchPattern(final Principal principal,
-       final Pattern pattern) {
-       final boolean result = pattern.matcher(principal.getName()).matches();
-
-       if (log.isDebugEnabled()) {
-           log.debug("Pattern Match: " + result + " [" + principal.getName()
-               + "] against [" + pattern.pattern() + "].");
-       }
-
-       return result;
-   }
+        return result;
+    }
 
    public boolean supports(final Credential credentials) {
        return credentials != null && X509CertificateCredentials.class.isAssignableFrom(credentials.getClass());

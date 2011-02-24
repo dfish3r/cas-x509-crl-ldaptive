@@ -21,6 +21,7 @@ package org.jasig.cas.adaptors.x509.authentication.principal;
 
 import java.security.cert.X509Certificate;
 
+import org.jasig.cas.adaptors.x509.util.CertUtils;
 import org.jasig.cas.server.authentication.Credential;
 
 /**
@@ -58,14 +59,16 @@ public final class X509CertificateCredentials implements Credential {
     }
 
     public String toString() {
+        X509Certificate cert = null;
         if (getCertificate() != null) {
-            return getCertificate().getSubjectDN().getName();
+            cert = getCertificate();
+        } else if (getCertificates() != null && getCertificates().length > 1) {
+            cert = getCertificates()[0];
         }
-
-        if (getCertificates() != null && getCertificates().length > 1) {
-            return getCertificates()[0].getSubjectDN().getName();
+        
+        if (cert != null) {
+            return CertUtils.toString(cert);
         }
-
         return super.toString();
     }
 }
