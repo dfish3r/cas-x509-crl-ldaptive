@@ -41,7 +41,7 @@ public final class Saml1TokenServiceAccessRequestImplTests {
                 "     </samlp:Request>";
 
 
-        final Saml1TokenServiceAccessRequestImpl request = new Saml1TokenServiceAccessRequestImpl(xml, "127.0.0.1");
+        final Saml11TokenServiceAccessRequestImpl request = new Saml11TokenServiceAccessRequestImpl(xml, "127.0.0.1");
         assertEquals("artifact", request.getToken());
         assertEquals("_192.168.16.51.1024506224022", request.getRequestId());
     }

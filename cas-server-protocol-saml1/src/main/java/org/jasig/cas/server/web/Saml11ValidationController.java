@@ -20,13 +20,11 @@
 package org.jasig.cas.server.web;
 
 import org.jasig.cas.server.CentralAuthenticationService;
-import org.jasig.cas.server.login.Saml1TokenServiceAccessRequestImpl;
+import org.jasig.cas.server.login.Saml11TokenServiceAccessRequestImpl;
 import org.jasig.cas.server.login.ServiceAccessResponse;
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
 import org.jasig.cas.server.session.AccessResponseRequest;
 import org.jasig.cas.server.session.DefaultAccessResponseRequestImpl;
-import org.opensaml.saml1.binding.decoding.HTTPSOAP11Decoder;
-import org.opensaml.ws.message.MessageContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,7 +75,7 @@ public final class Saml11ValidationController {
 
         // strip off SOAP headers
         final String samlResponse = stripSOAPEnvelope(body);
-        final TokenServiceAccessRequest tokenServiceAccessRequest = new Saml1TokenServiceAccessRequestImpl(samlResponse, request.getRemoteAddr());
+        final TokenServiceAccessRequest tokenServiceAccessRequest = new Saml11TokenServiceAccessRequestImpl(samlResponse, request.getRemoteAddr());
 
         final ServiceAccessResponse serviceAccessResponse = this.centralAuthenticationService.validate(tokenServiceAccessRequest);
 

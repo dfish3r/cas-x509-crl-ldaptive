@@ -35,6 +35,14 @@
 
         <dependency>
             <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-protocol-saml1</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
             <artifactId>cas-server-test-support</artifactId>
             <scope>test</scope>
             <type>jar</type>

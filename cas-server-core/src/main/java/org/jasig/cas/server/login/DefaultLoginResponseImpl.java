@@ -67,9 +67,10 @@ public class DefaultLoginResponseImpl implements LoginResponse {
         }
     }
 
+    /*
     public DefaultLoginResponseImpl() {
         this(null, null);
-    }
+    } */
 
     public DefaultLoginResponseImpl(final AuthenticationResponse authenticationResponse) {
         this(null, authenticationResponse);

@@ -29,13 +29,13 @@ import org.opensaml.saml1.core.Request;
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
-public final class Saml1TokenServiceAccessRequestImpl extends DefaultLoginRequestImpl implements TokenServiceAccessRequest {
+public final class Saml11TokenServiceAccessRequestImpl extends DefaultLoginRequestImpl implements TokenServiceAccessRequest {
 
     private String requestId;
 
     private final String token;
 
-    public Saml1TokenServiceAccessRequestImpl(final String samlResponse, final String remoteIpAddress) {
+    public Saml11TokenServiceAccessRequestImpl(final String samlResponse, final String remoteIpAddress) {
         super(null, remoteIpAddress, false);
         final Request request = XmlMarshallingUtils.unmarshall(samlResponse);
         this.requestId = request.getID();

@@ -58,7 +58,7 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
         VALIDATION_STATUS_TO_ERROR_CODE_MAPPING.put(ValidationStatus.EXPIRED_TICKET, "INVALID_TICKET");
     }
 
-    public Session createDelegatedSession(final AuthenticationResponse authenticationResponse) throws InvalidatedSessionException {
+    public final Session createDelegatedSession(final AuthenticationResponse authenticationResponse) throws InvalidatedSessionException {
         if (getDelegatedSessionIdentifier() != null) {
             throw new IllegalStateException("You can only do this once!");
         }
@@ -189,7 +189,7 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
         throw new IllegalStateException("Unrecognized Protocol.");
     }
 
-    protected AccessResponseResult generateNotValidatedResponse(final AccessResponseRequest accessResponseRequest) {
+    protected final AccessResponseResult generateNotValidatedResponse(final AccessResponseRequest accessResponseRequest) {
         if (getParentSession() != null && getParentSession().getProxiedAuthentications().isEmpty()) {
             final Map<String, List<String>> parameters = new HashMap<String,  List<String>>();
             parameters.put("ticket", Arrays.asList(getId()));
@@ -211,7 +211,7 @@ public abstract class AbstractCasProtocolAccessImpl implements Access {
      *
      * @return the unique identifier for this ticket.
      */
-    protected String createId() {
+    protected final String createId() {
         if (getParentSession().isRoot()) {
             return getIdGenerator().getNewTicketId("ST");
         } else {

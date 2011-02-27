@@ -23,9 +23,7 @@ import org.jasig.cas.server.Saml11Profile;
 import org.jasig.cas.server.authentication.AttributePrincipal;
 import org.jasig.cas.server.authentication.Authentication;
 import org.jasig.cas.server.authentication.AuthenticationResponse;
-import org.jasig.cas.server.login.Saml1TokenServiceAccessRequestImpl;
-import org.jasig.cas.server.util.DefaultServiceIdentifierMatcherImpl;
-import org.jasig.cas.server.util.ServiceIdentifierMatcher;
+import org.jasig.cas.server.login.Saml11TokenServiceAccessRequestImpl;
 import org.junit.Test;
 import org.opensaml.DefaultBootstrap;
 
@@ -70,7 +68,7 @@ public class Saml1ProtocolAccessImplTests {
                 "     </samlp:Request>";
 
 
-        final Saml1TokenServiceAccessRequestImpl request = new Saml1TokenServiceAccessRequestImpl(xml, "127.0.0.1");
+        final Saml11TokenServiceAccessRequestImpl request = new Saml11TokenServiceAccessRequestImpl(xml, "127.0.0.1");
         final SamlTest samlTest = new SamlTest(Saml11Profile.BrowserArtifact);
         samlTest.validate(request);
         final StringWriter writer = new StringWriter();
@@ -89,8 +87,20 @@ public class Saml1ProtocolAccessImplTests {
 
         private ValidationStatus validationStatus = ValidationStatus.NOT_VALIDATED;
 
+        private State state = new SimpleStateImpl();
+
         public SamlTest(final Saml11Profile saml11Profile) {
             this.saml11Profile = saml11Profile;
+        }
+
+        @Override
+        protected ExpirationPolicy getExpirationPolicy() {
+            return new NeverExpiresExpirationPolicy();
+        }
+
+        @Override
+        protected State getState() {
+            return this.state;
         }
 
         @Override
@@ -148,10 +158,6 @@ public class Saml1ProtocolAccessImplTests {
 
         public String getResourceIdentifier() {
             return "http://www.cnn.com";
-        }
-
-        public Session createDelegatedSession(AuthenticationResponse authenticationResponse) throws InvalidatedSessionException {
-            throw new UnsupportedOperationException();
         }
     }
 }

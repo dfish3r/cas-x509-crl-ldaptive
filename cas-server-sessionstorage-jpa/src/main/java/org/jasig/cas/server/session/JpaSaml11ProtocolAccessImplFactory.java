@@ -19,30 +19,24 @@
 
 package org.jasig.cas.server.session;
 
-import org.jasig.cas.server.login.Saml11RequestAccessRequestImpl;
 import org.jasig.cas.server.login.ServiceAccessRequest;
 import org.jasig.cas.server.util.Saml1UniqueTicketIdGeneratorImpl;
 
 /**
- * Returns access objects that understand the SAML 1.1 protocol.
+ * Knows how to create JPA-backed SAML1.1 accesses.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
-public final class InMemorySaml11ProtocolAccessImplAccessFactory extends AbstractSaml1ProtocolAccessImplFactory {
+public final class JpaSaml11ProtocolAccessImplFactory extends AbstractSaml1ProtocolAccessImplFactory {
 
-    public InMemorySaml11ProtocolAccessImplAccessFactory(final Saml1UniqueTicketIdGeneratorImpl uniqueTicketIdGenerator, final String issuer) {
+    public JpaSaml11ProtocolAccessImplFactory(final Saml1UniqueTicketIdGeneratorImpl uniqueTicketIdGenerator, final String issuer) {
         super(uniqueTicketIdGenerator, issuer);
     }
 
     public Access getAccess(final Session session, final ServiceAccessRequest serviceAccessRequest) {
-        if (!(serviceAccessRequest instanceof Saml11RequestAccessRequestImpl)) {
-            return null;
-        }
-
-        final Saml11RequestAccessRequestImpl impl = (Saml11RequestAccessRequestImpl) serviceAccessRequest;
-
-        return new InMemorySaml11ProtocolAccessImpl(impl.getProfile(), getUniqueTicketIdGenerator().getNewTicketId(""), serviceAccessRequest.getServiceId(), getIssuer(), getIssueLength(), session, getExpirationPolicy());
+        AbstractStaticSaml1ProtocolAccessImpl.setExpirationPolicy(getExpirationPolicy());
+        return new JpaSaml11ProtocolAccessImpl(getUniqueTicketIdGenerator().getNewTicketId(""), session, serviceAccessRequest, getIssuer(), getIssueLength());
     }
 }

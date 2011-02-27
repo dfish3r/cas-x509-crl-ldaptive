@@ -147,9 +147,17 @@ public final class SerializableSessionImpl extends AbstractStaticSession impleme
 
     protected void setParentSession(final Session session) {
         this.parentSession = session;
+        initializeChildSessions(session);
+    }
 
+    protected void initializeChildSessions(final Session parentSession) {
         for (final Session childSession : this.childSessions) {
-            ((SerializableSessionImpl) childSession).setParentSession(this);
+            ((SerializableSessionImpl) childSession).setParentSession(parentSession);
+        }
+
+        // reinitialize the access
+        for (final Access access : this.getAccesses()) {
+            ((SerializableSessionAware) access).setSession(this);
         }
     }
 
@@ -157,9 +165,7 @@ public final class SerializableSessionImpl extends AbstractStaticSession impleme
      * Fixes any serialization issues.  Should really only be called on the parent.
      */
     public void reinitializeSessions() {
-        for (final Session childSession : this.childSessions) {
-            ((SerializableSessionImpl) childSession).setParentSession(this);
-        }
+        initializeChildSessions(this);
     }
 
     @Override

@@ -48,6 +48,9 @@ public abstract class AbstractSaml1ProtocolAccessImplFactory implements AccessFa
     @NotNull
     private final String issuer;
 
+    @NotNull
+    private ExpirationPolicy expirationPolicy = new MultiTimeUseOrTimeoutExpirationPolicy(1, 90000);
+
     protected AbstractSaml1ProtocolAccessImplFactory(final Saml1UniqueTicketIdGeneratorImpl uniqueTicketIdGenerator, final String issuer) {
         this.uniqueTicketIdGenerator = uniqueTicketIdGenerator;
         this.issuer = issuer;
@@ -58,7 +61,7 @@ public abstract class AbstractSaml1ProtocolAccessImplFactory implements AccessFa
     }
 
     protected final long getIssueLength() {
-        return issueLength;
+        return this.issueLength;
     }
 
     public final void setIssueLength(final long issueLength) {
@@ -67,5 +70,13 @@ public abstract class AbstractSaml1ProtocolAccessImplFactory implements AccessFa
 
     protected final String getIssuer() {
         return this.issuer;
+    }
+
+    protected final ExpirationPolicy getExpirationPolicy() {
+        return this.expirationPolicy;
+    }
+
+    public final void setExpirationPolicy(ExpirationPolicy expirationPolicy) {
+        this.expirationPolicy = expirationPolicy;
     }
 }

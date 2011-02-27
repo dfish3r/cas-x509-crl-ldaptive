@@ -39,11 +39,13 @@ public final class CasTokenServiceAccessResponseImpl extends DefaultLoginRespons
     private final CasTokenServiceAccessRequestImpl casTokenServiceAccessRequest;
 
     public CasTokenServiceAccessResponseImpl(final TokenServiceAccessRequest tokenServiceAccessRequest) {
+        super(null, null);
         this.casTokenServiceAccessRequest = (CasTokenServiceAccessRequestImpl) tokenServiceAccessRequest;
         this.access = null;
     }
 
     public CasTokenServiceAccessResponseImpl(final Access access) {
+        super(null, null);
         this.access = access;
         this.casTokenServiceAccessRequest = null;
     }

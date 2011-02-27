@@ -21,7 +21,8 @@ package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.Saml11Profile;
 import org.jasig.cas.server.authentication.Authentication;
-import org.jasig.cas.server.login.Saml1TokenServiceAccessRequestImpl;
+import org.jasig.cas.server.authentication.AuthenticationResponse;
+import org.jasig.cas.server.login.Saml11TokenServiceAccessRequestImpl;
 import org.jasig.cas.server.login.TokenServiceAccessRequest;
 import org.jasig.cas.server.util.XmlMarshallingUtils;
 import org.joda.time.DateTime;
@@ -76,6 +77,14 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
 
     protected abstract String getRequestId();
 
+    protected abstract ExpirationPolicy getExpirationPolicy();
+
+    protected abstract State getState();
+
+    protected final boolean isExpired() {
+        return getExpirationPolicy().isExpired(getState());
+    }
+
     public final boolean requiresStorage() {
         return Saml11Profile.BrowserArtifact.equals(getProfile());
     }
@@ -90,9 +99,9 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
         }
 
         final ValidationStatus validationStatus = getValidationStatus();
-        Assert.isInstanceOf(Saml1TokenServiceAccessRequestImpl.class, tokenServiceAccessRequest, "Invalid token validation request");
+        Assert.isInstanceOf(Saml11TokenServiceAccessRequestImpl.class, tokenServiceAccessRequest, "Invalid token validation request");
 
-        final Saml1TokenServiceAccessRequestImpl saml1TokenServiceAccessRequest = (Saml1TokenServiceAccessRequestImpl) tokenServiceAccessRequest;
+        final Saml11TokenServiceAccessRequestImpl saml1TokenServiceAccessRequest = (Saml11TokenServiceAccessRequestImpl) tokenServiceAccessRequest;
         setRequestId(saml1TokenServiceAccessRequest.getRequestId());
 
         if (validationStatus != ValidationStatus.NOT_VALIDATED) {
@@ -104,7 +113,7 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
     }
 
     public final boolean isUsed() {
-        return getValidationStatus() != ValidationStatus.NOT_VALIDATED;
+        return getValidationStatus() != ValidationStatus.NOT_VALIDATED || Saml11Profile.BrowserPost.equals(getProfile());
     }
 
     public final boolean invalidate() {
@@ -112,6 +121,10 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
     }
 
     public final AccessResponseResult generateResponse(final AccessResponseRequest accessResponseRequest) {
+
+        if (isExpired()) {
+            return constructErrorResponse(accessResponseRequest.getWriter(), StatusCode.REQUEST_DENIED, "token is not valid.");
+        }
         if (Saml11Profile.BrowserPost.equals(getProfile())) {
             final Map<String, List<String>> values = new HashMap<String, List<String>>();
             values.put(CONST_PARAM_SERVICE, Arrays.asList(getResourceIdentifier()));
@@ -267,5 +280,9 @@ public abstract class AbstractSaml1ProtocolAccessImpl implements Access {
 
         response.getAssertions().add(assertion);
         return response;
+    }
+
+    public final Session createDelegatedSession(AuthenticationResponse authenticationResponse) throws InvalidatedSessionException {
+        throw new UnsupportedOperationException();
     }
 }

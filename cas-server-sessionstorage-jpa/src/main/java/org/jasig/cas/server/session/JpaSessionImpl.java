@@ -33,7 +33,7 @@ import java.util.*;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  *
  */
 @Entity(name="session")
@@ -77,6 +77,10 @@ public class JpaSessionImpl extends AbstractStaticSession {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentSession", fetch = FetchType.EAGER,targetEntity = JpaCasProtocolAccessImpl.class)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Access> casProtocolAccesses = new HashSet<Access>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentSession", fetch = FetchType.EAGER,targetEntity = JpaSaml11ProtocolAccessImpl.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Access> saml11ProcotolAccesses = new HashSet<Access>();
 
     public JpaSessionImpl() {
         // this is for JPA
@@ -129,6 +133,10 @@ public class JpaSessionImpl extends AbstractStaticSession {
         if (access instanceof JpaCasProtocolAccessImpl) {
             this.casProtocolAccesses.add(access);
         }
+
+        if (access instanceof JpaSaml11ProtocolAccessImpl) {
+            this.saml11ProcotolAccesses.add(access);
+        }
     }
 
     protected final Set<Session> getChildSessions() {
@@ -144,7 +152,8 @@ public class JpaSessionImpl extends AbstractStaticSession {
     }
 
     public final Access getAccess(final String accessId) {
-        for (final Access access : this.casProtocolAccesses) {
+        final Collection<Access> accesses = getAccesses();
+        for (final Access access : accesses) {
            if (access.getId().equals(accessId)) {
                 return access;
             }
@@ -156,6 +165,7 @@ public class JpaSessionImpl extends AbstractStaticSession {
     public final Collection<Access> getAccesses() {
         final Set<Access> accesses = new HashSet<Access>();
         accesses.addAll(this.casProtocolAccesses);
+        accesses.addAll(this.saml11ProcotolAccesses);
 
         return accesses;
     }

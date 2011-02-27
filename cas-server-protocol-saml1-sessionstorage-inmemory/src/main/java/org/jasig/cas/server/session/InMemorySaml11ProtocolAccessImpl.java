@@ -20,7 +20,6 @@
 package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.Saml11Profile;
-import org.jasig.cas.server.authentication.AuthenticationResponse;
 
 /**
  * In-memory implementation of the SAML protocol that supports in-memory storage.
@@ -47,13 +46,28 @@ public final class InMemorySaml11ProtocolAccessImpl extends AbstractSaml1Protoco
 
     private final String id;
 
-    public InMemorySaml11ProtocolAccessImpl(final Saml11Profile profile, final String id, final String resourceIdentifier, final String issuer, final long issueLength, final Session parentSession) {
+    private final ExpirationPolicy expirationPolicy;
+
+    private final State state = new SimpleStateImpl();
+
+    public InMemorySaml11ProtocolAccessImpl(final Saml11Profile profile, final String id, final String resourceIdentifier, final String issuer, final long issueLength, final Session parentSession, final ExpirationPolicy expirationPolicy) {
         this.id = id;
         this.resourceIdentifier = resourceIdentifier;
         this.issuer = issuer;
         this.issueLength = issueLength;
         this.session = parentSession;
         this.profile = profile;
+        this.expirationPolicy = expirationPolicy;
+    }
+
+    @Override
+    protected ExpirationPolicy getExpirationPolicy() {
+        return this.expirationPolicy;
+    }
+
+    @Override
+    protected State getState() {
+        return this.state;
     }
 
     @Override
@@ -94,10 +108,6 @@ public final class InMemorySaml11ProtocolAccessImpl extends AbstractSaml1Protoco
     @Override
     protected long getIssueLength() {
         return this.issueLength;
-    }
-
-    public Session createDelegatedSession(final AuthenticationResponse authenticationResponse) throws InvalidatedSessionException {
-        throw new UnsupportedOperationException();
     }
 
     public String getResourceIdentifier() {
