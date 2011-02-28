@@ -27,7 +27,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
- * Returns access objects that understand the SAML 1.1 protocol.
+ * Creates new instances of the Serializable SAML object.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
@@ -36,9 +36,9 @@ import javax.inject.Singleton;
 @Named("saml11ProtocolAccessFactory")
 @Protocol(Protocol.ProtocolType.SAML11)
 @Singleton
-public final class InMemorySaml11ProtocolAccessImplAccessFactory extends AbstractSaml1ProtocolAccessImplFactory {
+public final class SerializableSaml11ProtocolAccessImplFactory extends AbstractSaml1ProtocolAccessImplFactory {
 
-    public InMemorySaml11ProtocolAccessImplAccessFactory(final Saml1UniqueTicketIdGeneratorImpl uniqueTicketIdGenerator, final String issuer) {
+    public SerializableSaml11ProtocolAccessImplFactory(final Saml1UniqueTicketIdGeneratorImpl uniqueTicketIdGenerator, final String issuer) {
         super(uniqueTicketIdGenerator, issuer);
     }
 
@@ -48,7 +48,6 @@ public final class InMemorySaml11ProtocolAccessImplAccessFactory extends Abstrac
         }
 
         final Saml11RequestAccessRequestImpl impl = (Saml11RequestAccessRequestImpl) serviceAccessRequest;
-
-        return new InMemorySaml11ProtocolAccessImpl(impl.getProfile(), getUniqueTicketIdGenerator().getNewTicketId(""), serviceAccessRequest.getServiceId(), getIssuer(), getIssueLength(), session, getExpirationPolicy());
+        return new SerializableSaml11ProtocolAccessImpl(getUniqueTicketIdGenerator().getNewTicketId(""), session, impl, getIssuer(), getIssueLength());
     }
 }

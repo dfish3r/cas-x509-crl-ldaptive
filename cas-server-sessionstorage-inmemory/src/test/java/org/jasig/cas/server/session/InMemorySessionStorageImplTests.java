@@ -23,6 +23,8 @@ import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.jasig.cas.server.authentication.AuthenticationFactory;
 import org.jasig.cas.server.authentication.InMemoryAttributePrincipalFactoryImpl;
 import org.jasig.cas.server.authentication.InMemoryAuthenticationImplFactory;
+import org.jasig.cas.services.DefaultServicesManagerImpl;
+import org.jasig.cas.services.InMemoryServiceRegistryDaoImpl;
 import org.jasig.services.persondir.support.StubPersonAttributeDao;
 
 import java.util.Collections;
@@ -38,7 +40,7 @@ public final class InMemorySessionStorageImplTests extends AbstractSessionStorag
 
     @Override
     protected SessionStorage getSessionStorage() {
-        return new InMemorySessionStorageImpl(Collections.<AccessFactory>emptyList(), null);
+        return new InMemorySessionStorageImpl(getAccessFactories(), new DefaultServicesManagerImpl(new InMemoryServiceRegistryDaoImpl()));
     }
 
     @Override

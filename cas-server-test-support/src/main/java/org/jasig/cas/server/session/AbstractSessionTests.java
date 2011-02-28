@@ -105,6 +105,10 @@ public abstract class AbstractSessionTests {
 
     protected abstract AttributePrincipal getNewAttributePrincipal();
 
+    protected Class<? extends Access> getAccessClass() {
+        return Access.class;
+    }
+
     protected final ExpirationPolicy getExpirationPolicy() {
         return new ExpirationPolicy() {
             public boolean isExpired(final State state) {
@@ -118,12 +122,14 @@ public abstract class AbstractSessionTests {
 
         accessFactories.add(new AccessFactory() {
             public Access getAccess(final Session session, final ServiceAccessRequest serviceAccessRequest) {
-                final Access access = mock(Access.class);
+                final Access access = mock(getAccessClass());
 
                 final String serviceId = serviceAccessRequest.getServiceId();
                 when(access.getResourceIdentifier()).thenReturn(serviceId);
                 when(access.getId()).thenReturn(UUID.randomUUID().toString());
-                when(access.requiresStorage()).thenReturn(true);
+                if (getAccessClass().equals(Access.class)) {
+                    when(access.requiresStorage()).thenReturn(true);
+                }
                 return access;
             }
         });
@@ -139,25 +145,32 @@ public abstract class AbstractSessionTests {
     }
 
     @Test
-    public final void notNullId() {
+    public final void testNotNullId() {
         assertNotNull(this.session.getId());
     }
 
     @Test
-    public final void uniqueId() {
+    public final void testUniqueId() {
         final Session s = getNewSession(this.authentication, this.attributePrincipal, this.servicesManager);
         assertNotSame(s.getId(), this.session.getId());
     }
 
     @Test
-    public final void areAuthenticationsThere() {
+    public final void testAreAuthenticationsThere() {
         assertNotNull(this.session.getAuthentications());
         assertFalse(this.session.getAuthentications().isEmpty());
         assertTrue(this.session.getAuthentications().contains(this.authentication));
     }
 
     @Test
-    public final void areRootAuthenticationsThere() {
+    public final void testAddAndCheckAuthentications() {
+        final Authentication authentication = getNewAuthentication();
+        this.session.addAuthentication(authentication);
+        assertTrue(this.session.getAuthentications().contains(authentication));
+    }
+
+    @Test
+    public final void testAreRootAuthenticationsThere() {
         assertNotNull(this.session.getRootAuthentications());
         assertFalse(this.session.getRootAuthentications().isEmpty());
         assertTrue(this.session.getRootAuthentications().contains(this.authentication));
@@ -173,6 +186,7 @@ public abstract class AbstractSessionTests {
     public final void isRootPrincipalThere() {
         assertNotNull(this.session.getRootPrincipal());
         assertEquals(this.attributePrincipal, this.session.getRootPrincipal());
+        assertEquals(this.attributePrincipal, this.session.getPrincipal());
     }
 
     @Test
@@ -211,6 +225,7 @@ public abstract class AbstractSessionTests {
 
         assertFalse(this.session.getAccesses().isEmpty());
         assertTrue(this.session.getAccesses().contains(access));
+        assertNull(this.session.getAccess("fooBar"));
         assertEquals(access, this.session.getAccess(access.getId()));
     }
 
@@ -233,8 +248,6 @@ public abstract class AbstractSessionTests {
         assertTrue(this.session.getAuthentications().contains(authentication));
     }
 
-
-    /**
     @Test
     public final void delegatedSession() throws SessionException {
         final AuthenticationResponse authenticationResponse = mock(AuthenticationResponse.class);
@@ -246,9 +259,7 @@ public abstract class AbstractSessionTests {
         when(authenticationResponse.getAuthentications()).thenReturn(authentications);
         when(authenticationResponse.succeeded()).thenReturn(true);
 
-        final Access access = mock(Access.class);
-
-        final Session session = this.session.createDelegatedSession(access, authenticationResponse);
+        final Session session = this.session.createAndRegisterNewChildSession(authenticationResponse);
 
         assertFalse(session.isRoot());
         assertEquals(this.session, session.getRootSession());
@@ -275,16 +286,5 @@ public abstract class AbstractSessionTests {
 
         this.session.invalidate();
         assertFalse(session.isValid());
-
-        final ServiceAccessRequest serviceAccessRequest = mock(ServiceAccessRequest.class);
-        when(serviceAccessRequest.getServiceId()).thenReturn("foobar");
-
-        try {
-            this.session.grant(serviceAccessRequest);
-            fail("InvalidatedSessionException expected.");
-        } catch (final InvalidatedSessionException e) {
-            return;
-        }
     }
-    **/
 }

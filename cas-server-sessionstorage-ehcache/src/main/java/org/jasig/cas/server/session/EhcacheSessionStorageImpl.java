@@ -53,6 +53,7 @@ public final class EhcacheSessionStorageImpl extends AbstractSerializableSession
     }
 
     public Session createSession(final AuthenticationResponse authenticationResponse) {
+        AbstractStaticSession.setExpirationPolicy(getExpirationPolicy());
         final SerializableSessionImpl session = new SerializableSessionImpl(authenticationResponse);
         this.cache.put(new Element(session.getId(), session));
         this.cacheMappings.put(new Element(session.getId(), session.getId()));

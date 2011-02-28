@@ -21,6 +21,9 @@ package org.jasig.cas.server.session;
 
 import org.jasig.cas.server.login.ServiceAccessRequest;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 /**
  * Creates serializable CAS objects.
  *
@@ -28,6 +31,9 @@ import org.jasig.cas.server.login.ServiceAccessRequest;
  * @version $Revision$ $Date$
  * @since 4.0.0
  */
+@Named("casProtocolAccessFactory")
+@Protocol(Protocol.ProtocolType.CAS)
+@Singleton
 public final class SerializableCasProtocolAccessImplFactory extends AbstractCasProtocolAccessImplFactory {
 
     public Access getAccess(final Session session, final ServiceAccessRequest serviceAccessRequest) {

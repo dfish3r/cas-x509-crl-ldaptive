@@ -46,9 +46,13 @@
           p:generateDdl="false"
           p:showSql="false"/>
 
-    <bean class="org.jasig.cas.server.session.SimpleCleanupJpaSessionStorageImpl" id="simpleBased">
+    <bean class="org.jasig.cas.server.session.SimpleCleanupJpaSessionStorageImpl" id="simpleBased"
+            p:purgeMaxCount="10"
+            p:purgeTimeOut="50000">
         <constructor-arg index="0">
-            <list />
+            <list>
+                <bean class="org.jasig.cas.server.session.MockAccessFactory" />
+            </list>
         </constructor-arg>
         <constructor-arg index="1">
             <bean class="org.jasig.cas.services.DefaultServicesManagerImpl">
@@ -59,9 +63,12 @@
         </constructor-arg>
     </bean>
 
-    <bean class="org.jasig.cas.server.session.ExpirationBasedCleanupJpaSessionStorageImpl" id="expirationBasedCleanupJpaSessionStorage">
+    <bean class="org.jasig.cas.server.session.ExpirationBasedCleanupJpaSessionStorageImpl" id="expirationBasedCleanupJpaSessionStorage"
+            p:batchSize="10">
         <constructor-arg index="0">
-            <list />
+            <list>
+                <bean class="org.jasig.cas.server.session.MockAccessFactory" />
+            </list>
         </constructor-arg>
         <constructor-arg index="1">
             <bean class="org.jasig.cas.services.DefaultServicesManagerImpl">

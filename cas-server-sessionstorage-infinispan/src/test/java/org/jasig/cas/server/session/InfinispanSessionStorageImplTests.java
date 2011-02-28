@@ -26,6 +26,8 @@ import org.jasig.cas.server.authentication.AttributePrincipalFactory;
 import org.jasig.cas.server.authentication.AuthenticationFactory;
 import org.jasig.cas.server.authentication.SerializableAttributePrincipalFactoryImpl;
 import org.jasig.cas.server.authentication.SerializableAuthenticationFactoryImpl;
+import org.jasig.cas.services.DefaultServicesManagerImpl;
+import org.jasig.cas.services.InMemoryServiceRegistryDaoImpl;
 import org.jasig.services.persondir.support.StubPersonAttributeDao;
 
 import java.util.Collections;
@@ -42,13 +44,12 @@ public final class InfinispanSessionStorageImplTests extends AbstractSessionStor
 
     final EmbeddedCacheManager ecm = new DefaultCacheManager();
 
-       @Override
+    @Override
     protected SessionStorage getSessionStorage() {
-           final Cache<String,SerializableSessionImpl> cache = ecm.getCache("cache");
-           final Cache<String,String> cacheMappings = ecm.getCache("cacheMappings");
-           final Cache<String,List<String>> principalMappings = ecm.getCache("principalMappings");
-
-        return new InfinispanSessionStorageImpl(cache, cacheMappings, principalMappings, Collections.<AccessFactory>emptyList(), null);
+        final Cache<String,SerializableSessionImpl> cache = ecm.getCache("cache");
+        final Cache<String,String> cacheMappings = ecm.getCache("cacheMappings");
+        final Cache<String,List<String>> principalMappings = ecm.getCache("principalMappings");
+        return new InfinispanSessionStorageImpl(cache, cacheMappings, principalMappings, getAccessFactories(), new DefaultServicesManagerImpl(new InMemoryServiceRegistryDaoImpl()));
     }
 
     @Override

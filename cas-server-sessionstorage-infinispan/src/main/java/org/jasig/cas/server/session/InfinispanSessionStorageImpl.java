@@ -51,6 +51,7 @@ public final class InfinispanSessionStorageImpl extends AbstractSerializableSess
     }
 
     public Session createSession(final AuthenticationResponse authenticationResponse) {
+        AbstractStaticSession.setExpirationPolicy(getExpirationPolicy());
         final SerializableSessionImpl session = new SerializableSessionImpl(authenticationResponse);
         this.cache.put(session.getId(), session);
         this.cacheMappings.put(session.getId(), session.getId());

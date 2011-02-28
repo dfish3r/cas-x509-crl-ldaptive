@@ -118,11 +118,11 @@ public class JpaCasProtocolAccessImpl extends AbstractStaticCasProtocolAccessImp
         this.casVersion = casVersion;
     }
 
-    public final String getId() {
+    public String getId() {
         return this.id;
     }
 
-    public final String getResourceIdentifier() {
+    public String getResourceIdentifier() {
         return this.resourceIdentifier;
     }
 

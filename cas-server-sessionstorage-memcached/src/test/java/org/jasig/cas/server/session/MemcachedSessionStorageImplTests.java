@@ -57,7 +57,7 @@ public final class MemcachedSessionStorageImplTests extends AbstractSessionStora
     @Override
     protected SessionStorage getSessionStorage() {
         try {
-        return new MemcachedSessionStorageImpl(Arrays.asList(ADDRESS), Collections.<AccessFactory>emptyList(), new DefaultServicesManagerImpl(new InMemoryServiceRegistryDaoImpl()), 5000);
+        return new MemcachedSessionStorageImpl(Arrays.asList(ADDRESS), getAccessFactories(), new DefaultServicesManagerImpl(new InMemoryServiceRegistryDaoImpl()), 5000);
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }

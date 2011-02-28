@@ -44,5 +44,11 @@ public final class Saml1TokenServiceAccessRequestImplTests {
         final Saml11TokenServiceAccessRequestImpl request = new Saml11TokenServiceAccessRequestImpl(xml, "127.0.0.1");
         assertEquals("artifact", request.getToken());
         assertEquals("_192.168.16.51.1024506224022", request.getRequestId());
+        assertFalse(request.isPassiveAuthentication());
+        assertFalse(request.isProxiedRequest());
+        assertTrue(request.isValid());
+        assertFalse(request.isLongTermLoginRequest());
+        assertNull(request.getServiceId());
+        assertNull(request.getPassiveAuthenticationRedirectUrl());
     }
 }

@@ -72,6 +72,6 @@ public final class Saml11TokenServiceAccessRequestImpl extends DefaultLoginReque
     }
 
     public boolean isValid() {
-        return true;
+        return this.token != null;
     }
 }

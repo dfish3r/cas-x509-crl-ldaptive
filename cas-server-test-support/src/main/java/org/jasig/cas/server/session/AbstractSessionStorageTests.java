@@ -22,6 +22,8 @@ package org.jasig.cas.server.session;
 import junit.framework.TestCase;
 import org.jasig.cas.TestUtils;
 import org.jasig.cas.server.authentication.*;
+import org.jasig.cas.server.login.ServiceAccessRequest;
+import org.jasig.cas.server.login.TokenServiceAccessRequest;
 import org.jasig.cas.server.util.Cleanable;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,9 +76,55 @@ public abstract class AbstractSessionStorageTests extends TestCase {
         return this.authenticationFactory.getAuthentication(Collections.<String, List<Object>>emptyMap(), authenticationRequest, "myMethod");
     }
 
+    protected Class<? extends Access> getAccessClass() {
+        return Access.class;
+    }
+
+    protected final ExpirationPolicy getExpirationPolicy() {
+        return new ExpirationPolicy() {
+            public boolean isExpired(final State state) {
+                return false;
+            }
+        };
+    }
+
+    protected final List<AccessFactory> getAccessFactories() {
+        final List<AccessFactory> accessFactories = new ArrayList<AccessFactory>();
+
+        accessFactories.add(new AccessFactory() {
+            public Access getAccess(final Session session, final ServiceAccessRequest serviceAccessRequest) {
+                if (getAccessClass().equals(Access.class)) {
+                    final String id = UUID.randomUUID().toString();
+                    return new MockAccess(id, serviceAccessRequest.getServiceId());
+                } else {
+                    final Access access = mock(getAccessClass());
+
+                    final String serviceId = serviceAccessRequest.getServiceId();
+                    when(access.getResourceIdentifier()).thenReturn(serviceId);
+                    when(access.getId()).thenReturn(UUID.randomUUID().toString());
+                    return access;
+                }
+            }
+        });
+
+        return accessFactories;
+    }
+
+
     @Before
     public void setUp() throws Exception {
         this.sessionStorage = getSessionStorage();
+    }
+
+    @Test
+    public final void testGrantSaveAndRetrieveAccess() {
+        final Session session = this.sessionStorage.createSession(getAuthenticationResponse("test1"));
+        final ServiceAccessRequest serviceAccessRequest = mock(ServiceAccessRequest.class);
+        when(serviceAccessRequest.getServiceId()).thenReturn("http://www.cnn.com");
+        final Access access = session.grant(serviceAccessRequest);
+        this.sessionStorage.updateSession(session);
+        assertNull(this.sessionStorage.findSessionByAccessId("foobar"));
+        assertNotNull(this.sessionStorage.findSessionByAccessId(access.getId()));
     }
 
     @Test

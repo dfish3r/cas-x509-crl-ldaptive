@@ -48,4 +48,20 @@ public final class DefaultLoginRequestImplTests {
         assertEquals(CONST_REMOTE_IP_ADDRESS, this.impl.getRemoteIpAddress());
         assertEquals(CONST_FORCE_AUTHENTICATION, this.impl.isForceAuthentication());
     }
+
+    @Test
+    public void settersAndOtherStuff() {
+        final String CONST_SESSION_ID = "sessionId";
+        assertEquals(this.impl.getDate(), this.impl.getDate());
+        this.impl.setSessionId(CONST_SESSION_ID);
+        assertEquals(CONST_SESSION_ID, this.impl.getSessionId());
+        assertFalse(this.impl.isAccessRequest());
+    }
+
+    @Test
+    public void hashCodeAndEquals() {
+        final DefaultLoginRequestImpl impl2 = new DefaultLoginRequestImpl(CONST_SESSION_ID, CONST_REMOTE_IP_ADDRESS, CONST_FORCE_AUTHENTICATION);
+        assertEquals(impl, impl2);
+        assertEquals(impl.hashCode(), impl2.hashCode());
+    }
 }

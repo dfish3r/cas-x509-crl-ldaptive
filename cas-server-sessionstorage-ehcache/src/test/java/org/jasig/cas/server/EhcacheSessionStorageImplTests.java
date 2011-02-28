@@ -30,6 +30,8 @@ import org.jasig.cas.server.session.AbstractSessionStorageTests;
 import org.jasig.cas.server.session.AccessFactory;
 import org.jasig.cas.server.session.EhcacheSessionStorageImpl;
 import org.jasig.cas.server.session.SessionStorage;
+import org.jasig.cas.services.DefaultServicesManagerImpl;
+import org.jasig.cas.services.InMemoryServiceRegistryDaoImpl;
 import org.jasig.services.persondir.support.StubPersonAttributeDao;
 
 import java.util.Collections;
@@ -67,7 +69,7 @@ public final class EhcacheSessionStorageImplTests extends AbstractSessionStorage
         cacheMappings.removeAll();
         principalMapping.removeAll();
 
-        return new EhcacheSessionStorageImpl(cache, cacheMappings, principalMapping, Collections.<AccessFactory>emptyList(), null);
+        return new EhcacheSessionStorageImpl(cache, cacheMappings, principalMapping, getAccessFactories(), new DefaultServicesManagerImpl(new InMemoryServiceRegistryDaoImpl()));
     }
 
    @Override

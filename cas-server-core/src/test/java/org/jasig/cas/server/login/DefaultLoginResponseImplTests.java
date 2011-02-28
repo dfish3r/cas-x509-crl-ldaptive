@@ -79,4 +79,13 @@ public final class DefaultLoginResponseImplTests {
         assertNotNull(login.getAttributes());
         assertTrue(login.getGeneralSecurityExceptions().size() == 1);
     }
+
+    @Test
+    public void noAuthenticationResponse() {
+        final Session session = mock(Session.class);
+        final DefaultLoginResponseImpl loginResponse = new DefaultLoginResponseImpl(session, null);
+        assertTrue(loginResponse.getAuthenticationWarnings().isEmpty());
+        assertTrue(loginResponse.getGeneralSecurityExceptions().isEmpty());
+        assertTrue(loginResponse.getAttributes().isEmpty());
+    }
 }
