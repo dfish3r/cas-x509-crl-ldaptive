@@ -45,7 +45,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <tiles:useAttribute name="header.value" id="casHeader" scope="page" classname="java.lang.String"  />
 <tiles:useAttribute name="body.value" id="body" />
-<div id="welcome">
-    <h2><c:out value="${casHeader}" escapeXml="true" /></h2>
-    <p><c:out value="${body}" escapeXml="true" /></p>
+<div id="welcome" class="errors">
+    <div class="msg-inner">
+        <div class="msg-content">
+            <h2><c:out value="${casHeader}" escapeXml="true" /></h2>
+            <p><c:out value="${body}" escapeXml="true" /></p>
+        </div>
+    </div>
 </div>
