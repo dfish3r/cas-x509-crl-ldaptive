@@ -96,6 +96,7 @@ http://www.positioniseverything.net/easyclearing.html and http://www.ejeliot.com
 .msg-content {padding:3em; background:#fff; border-top-right-radius:10px; -moz-border-radius-topright:10px; -webkit-border-top-right-radius:10px;  border-bottom-right-radius:10px; -moz-border-radius-bottomright:10px; -webkit-border-bottom-right-radius:10px;}
 #content .msg-content h2 {font-size:24px; line-height:24px; font-weight:bold; margin:0 0 5px 0; padding:0;}
 .success .msg-inner {background: url(../images/msg-success.png) 25px center no-repeat;}
+.success.redirect .msg-inner {background: url(../images/msg-redirect.png) 25px center no-repeat;}
 .errors .msg-inner {background: url(../images/msg-errors.png) 25px center no-repeat;}
 
 .info {border:1px dotted 008;    background:#eff url(../images/info.gif) no-repeat 20px 18px; color:#008;}

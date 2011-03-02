@@ -47,10 +47,13 @@
     }
 </script>
 
-
-        <div id="msg" class="success">
-            <h2>You're Logged In!</h2>
-            <p>We are now redirecting you back to your application.</p>
+        <div id="msg" class="success redirect">
+            <div class="msg-inner">
+                <div class="msg-content">
+                    <h2>You're Logged In!</h2>
+                    <p>We are now redirecting you back to your application.</p>
+                </div>
+            </div>
         </div>
 
         <c:if test="${loginResponse != null and not empty loginResponse.authenticationWarnings}">
