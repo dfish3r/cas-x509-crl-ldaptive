@@ -98,7 +98,7 @@ http://www.positioniseverything.net/easyclearing.html and http://www.ejeliot.com
 .success .msg-inner {background: url(../images/msg-success.png) 25px center no-repeat;}
 .success.redirect .msg-inner {background: url(../images/msg-redirect.png) 25px center no-repeat;}
 .errors .msg-inner {background: url(../images/msg-errors.png) 25px center no-repeat;}
-
+.errors .system-info {position:absolute; top:100%; margin-top: 5px; right:0; color:#cacaca;}
 .info {border:1px dotted 008;    background:#eff url(../images/info.gif) no-repeat 20px 18px; color:#008;}
     #content .success h2 {color: #6dbf64 !important;}
     #content .errors h2 {color:#e6797f !important;}

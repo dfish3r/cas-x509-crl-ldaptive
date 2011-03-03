@@ -50,6 +50,7 @@
         <div class="msg-content">
             <h2><c:out value="${casHeader}" escapeXml="true" /></h2>
             <p><c:out value="${body}" escapeXml="true" /></p>
+            <p class="system-info"><!--error text goes here --></p>
         </div>
     </div>
 </div>
