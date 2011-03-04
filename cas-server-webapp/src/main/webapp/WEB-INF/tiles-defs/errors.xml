@@ -29,17 +29,20 @@
         <put-attribute name="title.code" value="org.jasig.cas.errors.404.title.code" cascade="true" />
         <put-attribute name="header.value" value="File Not Found" cascade="true" />
         <put-attribute name="body.value" value="The page you were attempting to access could not be found." cascade="true" />
+        <put-attribute name="error.statusCode" value="404" cascade="true" />
     </definition>
 
   <definition name="org.jasig.cas.errors.500" extends="org.jasig.cas.errors.base">
         <put-attribute name="title.code" value="org.jasig.cas.errors.500.title.code" cascade="true" />
         <put-attribute name="header.value" value="CAS is Unavailable" cascade="true" />
         <put-attribute name="body.value" value="There was an error trying to complete your request.  Please notify your support desk or try again." cascade="true" />
+        <put-attribute name="error.statusCode" value="500" cascade="true" />
     </definition>
 
     <definition name="org.jasig.cas.errors.authorization" extends="org.jasig.cas.errors.base">
         <put-attribute name="title.code" value="org.jasig.cas.errors.authorization.title.code" cascade="true" />
         <put-attribute name="header.value" value="Authorization Failure" cascade="true" />
         <put-attribute name="body.value" value="You are not authorized to use this application." cascade="true" />
+        <put-attribute name="error.statusCode" value="403" cascade="true" />
     </definition>
 </tiles-definitions>
