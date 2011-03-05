@@ -49,13 +49,16 @@ public final class RemoteAddressAuthenticationHandler extends AbstractNamedAuthe
     @NotNull
     private InetAddress inetNetwork = null;
 
-    public boolean authenticate(final Credential credentials) throws GeneralSecurityException {
+    public void authenticate(final Credential credentials) throws GeneralSecurityException {
         final RemoteAddressCredentials c = (RemoteAddressCredentials) credentials;
         try {
             final InetAddress inetAddress = InetAddress.getByName(c.getRemoteAddress().trim());
-            return containsAddress(this.inetNetwork, this.inetNetmask, inetAddress);
+            if (containsAddress(this.inetNetwork, this.inetNetmask, inetAddress)) {
+                return;
+            }
+            throw new GeneralSecurityException();
         } catch (final UnknownHostException e) {
-            return false;
+            throw new GeneralSecurityException(e);
         }
     }
 

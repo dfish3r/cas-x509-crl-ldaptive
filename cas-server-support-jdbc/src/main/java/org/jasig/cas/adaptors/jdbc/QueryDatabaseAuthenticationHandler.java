@@ -23,6 +23,7 @@ import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
 import javax.inject.Inject;
+import javax.security.auth.login.FailedLoginException;
 import javax.sql.DataSource;
 import javax.validation.constraints.NotNull;
 import java.security.GeneralSecurityException;
@@ -48,17 +49,20 @@ public final class QueryDatabaseAuthenticationHandler extends AbstractJdbcUserna
     @NotNull
     private String sql;
 
-    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+    protected final void authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         final String username = getPrincipalNameTransformer().transform(credentials.getUserName());
         final String password = credentials.getPassword();
 
         try {
             final String dbPassword = getJdbcTemplate().queryForObject(
                 this.sql, String.class, username);
-            return getPasswordEncoder().isValidPassword(dbPassword, password, null);
+            if (getPasswordEncoder().isValidPassword(dbPassword, password, null)) {
+                return;
+            }
+            throw new FailedLoginException();
         } catch (final IncorrectResultSizeDataAccessException e) {
             // this means the username was not found.
-            return false;
+            throw new GeneralSecurityException(e);
         }
     }
 

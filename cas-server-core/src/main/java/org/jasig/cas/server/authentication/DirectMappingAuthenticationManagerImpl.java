@@ -61,16 +61,14 @@ public final class DirectMappingAuthenticationManagerImpl extends AbstractAuthen
             final AuthenticationHandler handler = holder.getAuthenticationHandler();
 
             try {
+                handler.authenticate(credential);
+                final AttributePrincipal principal = holder.getCredentialsToPrincipalResolver().resolve(credential);
 
-                if (handler.authenticate(credential)) {
-                    final AttributePrincipal principal = holder.getCredentialsToPrincipalResolver().resolve(credential);
-
-                    if (principal != null) {
-                        final Map<String, List<Object>> attributes = obtainAttributesFor(authenticationRequest, credential);
-                        obtainMessagesFor(credential, handler, messages);
-                        authentications.add(getAuthenticationFactory().getAuthentication(attributes, authenticationRequest, handler.getName()));
-                        principals.add(principal);
-                    }
+                if (principal != null) {
+                    final Map<String, List<Object>> attributes = obtainAttributesFor(authenticationRequest, credential);
+                    obtainMessagesFor(credential, handler, messages);
+                    authentications.add(getAuthenticationFactory().getAuthentication(attributes, authenticationRequest, handler.getName()));
+                    principals.add(principal);
                 }
             } catch (final GeneralSecurityException e) {
                 exceptions.add(e);

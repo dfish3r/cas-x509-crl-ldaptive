@@ -1,8 +1,22 @@
-/*
- * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
- * distributed with this file and available online at
- * http://www.uportal.org/license.html
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 package org.jasig.cas.adaptors.x509.authentication.handler.support;
 
 import java.net.URI;
@@ -13,9 +27,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.adaptors.x509.util.CertUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
 
 import edu.vt.middleware.crypt.x509.ExtensionReader;
@@ -26,6 +40,8 @@ import edu.vt.middleware.crypt.x509.types.GeneralNameList;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -42,12 +58,13 @@ import net.sf.ehcache.Element;
  * @since 3.4.7
  *
  */
-public class CRLDistributionPointRevocationChecker extends AbstractCRLRevocationChecker {
+public final class CRLDistributionPointRevocationChecker extends AbstractCRLRevocationChecker {
     
     /** Logger instance. */
-    private final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
    
     /** CRL cache. */
+    @NotNull
     private Cache crlCache;
     
 
@@ -57,10 +74,7 @@ public class CRLDistributionPointRevocationChecker extends AbstractCRLRevocation
      * @param crlCache Cache for CRL data.
      */
     public CRLDistributionPointRevocationChecker(final Cache crlCache) {
-        if (crlCache == null) {
-            throw new IllegalArgumentException("Cache cannot be null.");
-        }
-       this.crlCache = crlCache; 
+       this.crlCache = crlCache;
     }
 
     /**
@@ -68,8 +82,8 @@ public class CRLDistributionPointRevocationChecker extends AbstractCRLRevocation
      */
     protected X509CRL getCRL(final X509Certificate cert) {
         final URL[] urls = getDistributionPoints(cert);
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug(String.format(
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format(
                 "Distribution points for %s: %s.", CertUtils.toString(cert), Arrays.asList(urls)));
         }
         
@@ -77,8 +91,8 @@ public class CRLDistributionPointRevocationChecker extends AbstractCRLRevocation
         for (URL url : urls) {
             item = this.crlCache.get(url);
             if (item != null) {
-                if (this.logger.isDebugEnabled()) {
-                    this.logger.debug("Found CRL in cache for " + CertUtils.toString(cert));
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Found CRL in cache for " + CertUtils.toString(cert));
                 }
                 return (X509CRL) item.getObjectValue();
             }
@@ -87,13 +101,13 @@ public class CRLDistributionPointRevocationChecker extends AbstractCRLRevocation
         // Try all distribution points and stop at first fetch that succeeds
         X509CRL crl = null;
         for (int i = 0; i < urls.length && crl == null; i++) {
-           this.logger.info("Attempting to fetch CRL at " + urls[i]);
+           logger.info("Attempting to fetch CRL at " + urls[i]);
            try {
                crl = CertUtils.fetchCRL(new UrlResource(urls[i]));
-               this.logger.info("Success. Caching fetched CRL.");
+               logger.info("Success. Caching fetched CRL.");
                this.crlCache.put(new Element(urls[i], crl));
            } catch (Exception e) {
-               this.logger.error("Error fetching CRL at " + urls[i], e);
+               logger.error("Error fetching CRL at " + urls[i], e);
            }
         }
         
@@ -105,7 +119,7 @@ public class CRLDistributionPointRevocationChecker extends AbstractCRLRevocation
         try {
             points = new ExtensionReader(cert).readCRLDistributionPoints();
         } catch (Exception e) {
-            this.logger.error(
+            logger.error(
                 "Error reading CRLDistributionPoints extension field on " + CertUtils.toString(cert), e);
             return new URL[0];
         }
@@ -120,7 +134,7 @@ public class CRLDistributionPointRevocationChecker extends AbstractCRLRevocation
                     addURL(urls, gn.getName());
                 }
             } else {
-                this.logger.warn(location + " not supported.  String or GeneralNameList expected.");
+                logger.warn(location + " not supported.  String or GeneralNameList expected.");
             }
         }
         
@@ -135,7 +149,7 @@ public class CRLDistributionPointRevocationChecker extends AbstractCRLRevocation
             final URI uri = new URI(url.getProtocol(), url.getAuthority(), url.getPath(), url.getQuery(), null);
             list.add(uri.toURL());
         } catch (Exception e) {
-            this.logger.warn(uriString + " is not a valid distribution point URI.");
+            logger.warn(uriString + " is not a valid distribution point URI.");
         }
     }
 }

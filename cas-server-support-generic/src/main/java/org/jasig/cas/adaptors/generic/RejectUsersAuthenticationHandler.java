@@ -48,7 +48,7 @@ public final class RejectUsersAuthenticationHandler extends AbstractUsernamePass
     @NotNull
     private List<String> users;
 
-    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+    protected final void authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
 
         final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
 
@@ -56,7 +56,7 @@ public final class RejectUsersAuthenticationHandler extends AbstractUsernamePass
             throw new AccountLockedException();
         }
 
-        return true;
+        return;
     }
 
     /**

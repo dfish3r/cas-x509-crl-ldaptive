@@ -111,9 +111,11 @@ public abstract class AbstractAuthenticationManagerTests {
                 return credentials instanceof UserNamePasswordCredential;
             }
 
-            public boolean authenticate(final Credential credentials) throws GeneralSecurityException {
+            public void authenticate(final Credential credentials) throws GeneralSecurityException {
                 final UserNamePasswordCredential c = (UserNamePasswordCredential) credentials;
-                return c.getUserName().equals(c.getPassword());
+                if (!c.getUserName().equals(c.getPassword())) {
+                    throw new GeneralSecurityException();
+                }
             }
 
             public String getName() {
@@ -128,8 +130,8 @@ public abstract class AbstractAuthenticationManagerTests {
                 return credentials instanceof UrlCredential;
             }
 
-            public boolean authenticate(final Credential credentials) throws GeneralSecurityException {
-                return true;
+            public void authenticate(final Credential credentials) throws GeneralSecurityException {
+
             }
 
             public String getName() {

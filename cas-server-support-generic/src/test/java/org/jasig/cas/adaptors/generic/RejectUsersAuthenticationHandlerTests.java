@@ -80,49 +80,38 @@ public class RejectUsersAuthenticationHandlerTests extends TestCase {
         c.setPassword("rutgers");
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (GeneralSecurityException e) {
             // fail("AuthenticationException caught but it should not have been
             // thrown.");
         }
     }
 
-    public void testPassesUserNotInMap() {
+    public void testPassesUserNotInMap() throws GeneralSecurityException {
         final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
 
         c.setUserName("fds");
         c.setPassword("rutgers");
 
-        try {
-            assertTrue(this.authenticationHandler.authenticate(c));
-        } catch (GeneralSecurityException e) {
-            fail("Exception thrown but not expected.");
-        }
+        this.authenticationHandler.authenticate(c);
     }
 
-    public void testFailsNullUserName() {
+    public void testFailsNullUserName() throws GeneralSecurityException {
         final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
 
         c.setUserName(null);
         c.setPassword("user");
 
-        try {
-            assertTrue(this.authenticationHandler.authenticate(c));
-        } catch (GeneralSecurityException e) {
-            fail("Exception expected as null should never be in map.");
-        }
+        this.authenticationHandler.authenticate(c);
     }
 
-    public void testFailsNullUserNameAndPassword() {
+    public void testFailsNullUserNameAndPassword() throws GeneralSecurityException {
         final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential();
 
         c.setUserName(null);
         c.setPassword(null);
 
-        try {
-            assertTrue(this.authenticationHandler.authenticate(c));
-        } catch (GeneralSecurityException e) {
-            fail("Exception expected as null should never be in map.");
-        }
+        this.authenticationHandler.authenticate(c);
     }
 }

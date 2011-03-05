@@ -59,7 +59,8 @@ public final class LinkedAuthenticationHandlerAndCredentialsToPrincipalResolverA
 
                 if (handler.supports(credential)) {
                     try {
-                        if (handler.authenticate(credential) && resolver !=null) {
+                        handler.authenticate(credential);
+                        if (resolver !=null) {
                             final AttributePrincipal p = resolver.resolve(credential);
 
                             if (p != null) {

@@ -46,7 +46,7 @@ public class AcceptUsersAuthenticationHandlerTests extends TestCase {
         this.users.put("scott", "rutgers");
         this.users.put("dima", "javarules");
         this.users.put("bill", "thisisAwesoME");
-        this.users.put("brian", "tést");
+        this.users.put("brian", "tï¿½st");
 
         this.authenticationHandler = new AcceptUsersAuthenticationHandler();
 
@@ -54,8 +54,8 @@ public class AcceptUsersAuthenticationHandlerTests extends TestCase {
     }
     
     public void testSupportsSpecialCharacters() throws Exception {
-        final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("brian", "tést");
-        assertTrue(this.authenticationHandler.authenticate(c));
+        final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("brian", "tï¿½st");
+        this.authenticationHandler.authenticate(c);
     }
 
     public void testSupportsProperUserCredentials() throws Exception {
@@ -71,21 +71,18 @@ public class AcceptUsersAuthenticationHandlerTests extends TestCase {
         }
     }
 
-    public void testAuthenticatesUserInMap() {
+    public void testAuthenticatesUserInMap() throws GeneralSecurityException {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("scott", "rutgers");
 
-        try {
-            assertTrue(this.authenticationHandler.authenticate(c));
-        } catch (GeneralSecurityException e) {
-            fail("AuthenticationException caught but it should not have been thrown.");
-        }
+            this.authenticationHandler.authenticate(c);
     }
 
     public void testFailsUserNotInMap() {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("fds", "rutgers");
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
@@ -95,7 +92,8 @@ public class AcceptUsersAuthenticationHandlerTests extends TestCase {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword(null, "user");
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
@@ -105,7 +103,8 @@ public class AcceptUsersAuthenticationHandlerTests extends TestCase {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword(null, null);
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
@@ -115,7 +114,8 @@ public class AcceptUsersAuthenticationHandlerTests extends TestCase {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("Scott", null);
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }

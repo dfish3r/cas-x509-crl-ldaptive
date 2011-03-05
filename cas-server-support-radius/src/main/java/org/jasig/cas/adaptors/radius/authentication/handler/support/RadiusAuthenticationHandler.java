@@ -55,15 +55,18 @@ public final class RadiusAuthenticationHandler extends AbstractUsernamePasswordA
      */
     private boolean failoverOnAuthenticationFailure;
 
-    protected boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+    protected void authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
 
         for (final RadiusServer radiusServer : this.servers) {
             try {
                 final boolean response = radiusServer.authenticate(credentials);
 
-                if (response
-                    || (!response && !this.failoverOnAuthenticationFailure)) {
-                    return response;
+                if (response) {
+                    return;
+                }
+
+                if (!response && !this.failoverOnAuthenticationFailure) {
+                    throw new GeneralSecurityException();
                 }
 
                 log
@@ -78,7 +81,7 @@ public final class RadiusAuthenticationHandler extends AbstractUsernamePasswordA
             }
         }
 
-        return false;
+        throw new GeneralSecurityException();
     }
 
     /**

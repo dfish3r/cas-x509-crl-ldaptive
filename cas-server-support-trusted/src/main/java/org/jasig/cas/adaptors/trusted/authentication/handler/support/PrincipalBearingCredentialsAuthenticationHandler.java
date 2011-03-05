@@ -38,11 +38,10 @@ import java.security.GeneralSecurityException;
  */
 public final class PrincipalBearingCredentialsAuthenticationHandler extends AbstractNamedAuthenticationHandler {
 
-    public final boolean authenticate(final Credential credentials) throws GeneralSecurityException {
+    public final void authenticate(final Credential credentials) throws GeneralSecurityException {
         if (log.isDebugEnabled()) {
             log.debug("Trusting credentials for: " + credentials);
         }
-        return true;
     }
 
     public boolean supports(final Credential credentials) {

@@ -22,6 +22,9 @@ package org.jasig.cas.adaptors.ldap;
 import org.jasig.cas.server.authentication.DefaultUserNamePasswordCredential;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+
+import java.security.GeneralSecurityException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -46,7 +49,7 @@ public class FastBindLdapAuthenticationHandlerTests extends AbstractJUnit4Spring
         c.setUserName(this.fastBindTestConfig.getExistsCredential());
         c.setPassword(this.fastBindTestConfig.getExistsSuccessPassword());
 
-        assertTrue(this.fastBindAuthHandler.authenticate(c));
+        this.fastBindAuthHandler.authenticate(c);
     }
 
 
@@ -55,7 +58,7 @@ public class FastBindLdapAuthenticationHandlerTests extends AbstractJUnit4Spring
         c.setUserName(this.saslMd5FastBindTestConfig.getExistsCredential());
         c.setPassword(this.saslMd5FastBindTestConfig.getExistsSuccessPassword());
 
-        assertTrue(this.saslMd5FastBindAuthHandler.authenticate(c));
+        this.saslMd5FastBindAuthHandler.authenticate(c);
     }
 
 
@@ -64,7 +67,12 @@ public class FastBindLdapAuthenticationHandlerTests extends AbstractJUnit4Spring
         c.setUserName(this.fastBindTestConfig.getExistsCredential());
         c.setPassword(this.fastBindTestConfig.getExistsFailurePassword());
 
-        assertFalse(this.fastBindAuthHandler.authenticate(c));
+        try {
+            this.fastBindAuthHandler.authenticate(c);
+            fail();
+        } catch (final GeneralSecurityException e) {
+            // ok
+        }
     }
 
 
@@ -73,6 +81,12 @@ public class FastBindLdapAuthenticationHandlerTests extends AbstractJUnit4Spring
         c.setUserName(this.fastBindTestConfig.getNotExistsCredential());
         c.setPassword("");
 
-        assertFalse(this.fastBindAuthHandler.authenticate(c));
+        try {
+            this.fastBindAuthHandler.authenticate(c);
+            fail();
+        } catch (final GeneralSecurityException e) {
+            // ok
+        }
+
     }
 }

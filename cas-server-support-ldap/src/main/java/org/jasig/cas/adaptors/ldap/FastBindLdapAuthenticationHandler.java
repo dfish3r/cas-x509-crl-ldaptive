@@ -44,7 +44,7 @@ public class FastBindLdapAuthenticationHandler extends AbstractLdapUsernamePassw
         super(contextSource, generalSecurityExceptionTranslator);
     }
 
-    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+    protected final void authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
 
         final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
         final String bindDn = LdapUtils.getFilterWithValues(getFilter(), transformedUsername);
@@ -55,6 +55,8 @@ public class FastBindLdapAuthenticationHandler extends AbstractLdapUsernamePassw
             throw callback.getGeneralSecurityException();
         }
 
-        return authenticated;
+        if (!authenticated) {
+            throw new GeneralSecurityException();
+        }
     }
 }

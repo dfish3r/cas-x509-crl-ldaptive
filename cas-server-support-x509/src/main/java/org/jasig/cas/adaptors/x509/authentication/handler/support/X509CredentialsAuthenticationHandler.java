@@ -73,9 +73,6 @@ public final class X509CredentialsAuthenticationHandler extends AbstractNamedAut
     /** OID for KeyUsage X.509v3 extension field. */
     private static final String KEY_USAGE_OID = "2.5.29.15";
 
-    /** Instance of Logging. */
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     /** The compiled pattern supplied by the deployer. */
     @NotNull
     private Pattern regExTrustedIssuerDnPattern;
@@ -111,7 +108,7 @@ public final class X509CredentialsAuthenticationHandler extends AbstractNamedAut
 
 
     /** {@inheritDoc} */
-    public boolean authenticate(final Credential credential) throws GeneralSecurityException {
+    public void authenticate(final Credential credential) throws GeneralSecurityException {
 
         final X509CertificateCredentials x509Credentials = (X509CertificateCredentials) credential;
         final X509Certificate[] certificates = x509Credentials.getCertificates();
@@ -120,8 +117,8 @@ public final class X509CredentialsAuthenticationHandler extends AbstractNamedAut
         boolean hasTrustedIssuer = false;
         for (int i = certificates.length - 1; i >= 0; i--) {
             final X509Certificate certificate = certificates[i];
-            if (this.log.isDebugEnabled()) {
-                this.log.debug("Evaluating " + CertUtils.toString(certificate));
+            if (log.isDebugEnabled()) {
+                log.debug("Evaluating " + CertUtils.toString(certificate));
             }
 
             validate(certificate);
@@ -134,17 +131,17 @@ public final class X509CredentialsAuthenticationHandler extends AbstractNamedAut
             // >=0 when this is a CA cert and -1 when it's not
             int pathLength = certificate.getBasicConstraints();
             if (pathLength < 0) {
-                this.log.debug("Found valid client certificate");
+                log.debug("Found valid client certificate");
                 clientCert = certificate;
             } else {
-                this.log.debug("Found valid CA certificate");
+                log.debug("Found valid CA certificate");
             }
         }
         if (clientCert != null) {
             if (hasTrustedIssuer) {
                 x509Credentials.setCertificate(clientCert);
-                this.log.info("Successfully authenticated " + credential);
-                return true;
+                log.info("Successfully authenticated " + credential);
+                return;
             }
             throw new CredentialException("Client certificate is not from a trusted issuer.");
         }
@@ -273,8 +270,8 @@ public final class X509CredentialsAuthenticationHandler extends AbstractNamedAut
         final Pattern pattern) {
         final String name = principal.getName();
         final boolean result = pattern.matcher(name).matches();
-        if (this.log.isDebugEnabled()) {
-            this.log.debug(String.format("%s matches %s == %s", pattern.pattern(), name, result));
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("%s matches %s == %s", pattern.pattern(), name, result));
         }
 
         return result;

@@ -76,7 +76,7 @@ public class BindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordA
         super(contextSource, generalSecurityExceptionTranslator);
     }
 
-    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+    protected final void authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
 
         final List<String> cns = new ArrayList<String>();
         
@@ -101,11 +101,11 @@ public class BindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordA
         
         if (cns.isEmpty()) {
             log.info("Search for " + filter + " returned 0 results.");
-            return false;
+            throw new GeneralSecurityException();
         }
         if (cns.size() > 1 && !this.allowMultipleAccounts) {
             log.warn("Search for " + filter + " returned multiple results, which is not allowed.");
-            return false;
+            throw new GeneralSecurityException();
         }
 
         org.springframework.ldap.NamingException namingException = null;
@@ -120,7 +120,7 @@ public class BindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordA
                     credentials.getPassword());
 
                 if (test != null) {
-                    return true;
+                    return;
                 }
             } catch (final org.springframework.ldap.NamingException e) {
                 namingException = e;
@@ -134,7 +134,7 @@ public class BindLdapAuthenticationHandler extends AbstractLdapUsernamePasswordA
             throw getGeneralSecurityExceptionTranslator().translateExceptionIfPossible((AuthenticationException) namingException);
         }
 
-        return false;
+        throw new GeneralSecurityException();
     }
 
     protected String composeCompleteDnToCheck(final String dn, final UserNamePasswordCredential credentials) {

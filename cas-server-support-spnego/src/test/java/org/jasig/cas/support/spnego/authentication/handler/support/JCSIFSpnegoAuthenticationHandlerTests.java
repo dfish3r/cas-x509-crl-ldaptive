@@ -46,7 +46,7 @@ public class JCSIFSpnegoAuthenticationHandlerTests extends TestCase {
         final SpnegoCredentials credentials = new SpnegoCredentials(new byte[] {0, 1, 2});
         this.authenticationHandler.setPrincipalWithDomainName(true);
         this.authenticationHandler.setAuthentication(new MockJCSIFAuthentication(true));
-        assertTrue(this.authenticationHandler.authenticate(credentials));
+        this.authenticationHandler.authenticate(credentials);
         assertEquals("test", credentials.getPrincipal().getName());
         assertNotNull(credentials.getNextToken());
     }
@@ -55,7 +55,7 @@ public class JCSIFSpnegoAuthenticationHandlerTests extends TestCase {
         final SpnegoCredentials credentials = new SpnegoCredentials(new byte[] {0, 1, 2});
         this.authenticationHandler.setPrincipalWithDomainName(false);
         this.authenticationHandler.setAuthentication(new MockJCSIFAuthentication(true));
-        assertTrue(this.authenticationHandler.authenticate(credentials));
+        this.authenticationHandler.authenticate(credentials);
         assertEquals("test", credentials.getPrincipal().getName());
         assertNotNull(credentials.getNextToken());
     }

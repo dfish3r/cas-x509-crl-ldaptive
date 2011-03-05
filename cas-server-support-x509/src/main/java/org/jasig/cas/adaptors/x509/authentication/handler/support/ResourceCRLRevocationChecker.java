@@ -1,8 +1,22 @@
-/*
- * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
- * distributed with this file and available online at
- * http://www.uportal.org/license.html
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 package org.jasig.cas.adaptors.x509.authentication.handler.support;
 
 import java.security.cert.X509CRL;
@@ -17,10 +31,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
+import javax.validation.constraints.Min;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.adaptors.x509.util.CertUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
@@ -35,8 +50,7 @@ import org.springframework.core.io.Resource;
  * @since 3.4.7
  *
  */
-public class ResourceCRLRevocationChecker extends AbstractCRLRevocationChecker
-    implements InitializingBean {
+public final class ResourceCRLRevocationChecker extends AbstractCRLRevocationChecker implements InitializingBean {
    
     /** Default refresh interval is 1 hour. */
     public static final int DEFAULT_REFRESH_INTERVAL = 3600;
@@ -45,6 +59,7 @@ public class ResourceCRLRevocationChecker extends AbstractCRLRevocationChecker
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
    
     /** CRL refresh interval in seconds. */
+    @Min(0)
     private int refreshInterval = DEFAULT_REFRESH_INTERVAL;
 
     /** Handles fetching CRL data. */
@@ -80,11 +95,7 @@ public class ResourceCRLRevocationChecker extends AbstractCRLRevocationChecker
      * @param seconds Refresh interval in seconds; MUST be positive integer.
      */
     public void setRefreshInterval(final int seconds) {
-        if (seconds > 0) {
-	        this.refreshInterval = seconds;
-        } else {
-            throw new IllegalArgumentException("Refresh interval must be positive integer.");
-        }
+        this.refreshInterval = seconds;
     }
 
     /** Initializes the process that periodically fetches CRL data. */
@@ -116,7 +127,7 @@ public class ResourceCRLRevocationChecker extends AbstractCRLRevocationChecker
      */
     protected void addCrl(final X509CRL crl) {
         final X500Principal issuer = crl.getIssuerX500Principal();
-        this.logger.debug("Adding CRL for issuer " + issuer);
+        logger.debug("Adding CRL for issuer " + issuer);
         this.crlIssuerMap.put(issuer, crl);
     }
 
@@ -139,7 +150,7 @@ public class ResourceCRLRevocationChecker extends AbstractCRLRevocationChecker
      */
     protected class CRLFetcher {
         /** Logger instance. */
-        private final Log logger = LogFactory.getLog(getClass());
+        private final Logger logger = LoggerFactory.getLogger(getClass());
 
         /** Array of resources pointing to CRL data. */
         private List<Resource> resources;

@@ -19,6 +19,7 @@
 
 package org.jasig.cas.adaptors.generic;
 
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public final class AcceptUsersAuthenticationHandler extends AbstractUsernamePass
     @NotNull
     private Map<String, String> users;
 
-    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) {
+    protected final void authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
         final String cachedPassword = this.users.get(transformedUsername);
 
@@ -59,10 +60,12 @@ public final class AcceptUsersAuthenticationHandler extends AbstractUsernamePass
                 log.debug("The user [" + transformedUsername
                     + "] was not found in the map.");
             }
-            return false;
+            throw new GeneralSecurityException();
         }
 
-        return this.getPasswordEncoder().isValidPassword(cachedPassword, credentials.getPassword(), null);
+        if (!this.getPasswordEncoder().isValidPassword(cachedPassword, credentials.getPassword(), null)) {
+            throw new GeneralSecurityException();
+        }
     }
 
     /**

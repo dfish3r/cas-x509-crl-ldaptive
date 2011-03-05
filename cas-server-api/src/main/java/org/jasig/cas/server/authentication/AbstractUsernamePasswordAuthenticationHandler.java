@@ -68,8 +68,8 @@ public abstract class AbstractUsernamePasswordAuthenticationHandler extends Abst
      * and delegates to abstract authenticateUsernamePasswordInternal so
      * subclasses do not need to cast.
      */
-    public final boolean authenticate(final Credential credentials) throws GeneralSecurityException {
-        return authenticateUsernamePasswordInternal((UserNamePasswordCredential) credentials);
+    public final void authenticate(final Credential credentials) throws GeneralSecurityException {
+        authenticateUsernamePasswordInternal((UserNamePasswordCredential) credentials);
     }
 
     /**
@@ -81,7 +81,7 @@ public abstract class AbstractUsernamePasswordAuthenticationHandler extends Abst
      * @return true if the credentials are authentic, false otherwise.
      * @throws java.security.GeneralSecurityException if authenticity cannot be determined.
      */
-    protected abstract boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException;
+    protected abstract void authenticateUsernamePasswordInternal(UserNamePasswordCredential credentials) throws GeneralSecurityException;
 
     /**
      * Method to return the PasswordEncoder to be used to encode passwords.

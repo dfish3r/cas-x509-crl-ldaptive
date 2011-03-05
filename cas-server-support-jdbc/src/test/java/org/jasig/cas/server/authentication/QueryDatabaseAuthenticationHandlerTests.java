@@ -22,6 +22,8 @@ package org.jasig.cas.server.authentication;
 import org.jasig.cas.adaptors.jdbc.QueryDatabaseAuthenticationHandler;
 import org.junit.Test;
 
+import java.security.GeneralSecurityException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -36,15 +38,20 @@ public final class QueryDatabaseAuthenticationHandlerTests extends AbstractJdbcT
         final QueryDatabaseAuthenticationHandler a = new QueryDatabaseAuthenticationHandler(getDataSource());
         a.setSql("select password from users where user_name = ?");
         final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential("foo", "bar");
-        assertTrue(a.authenticate(c));
+        a.authenticate(c);
     }
 
     @Test
     public void validUsernameInvalidPassword() throws Exception {
         final QueryDatabaseAuthenticationHandler a = new QueryDatabaseAuthenticationHandler(getDataSource());
         a.setSql("select password from users where user_name = ?");
-        final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential("foo", "ha");
-        assertFalse(a.authenticate(c));
+        try {
+            final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential("foo", "ha");
+            a.authenticate(c);
+            fail();
+        } catch (final GeneralSecurityException e) {
+            // ok
+        }
     }
 
     @Test
@@ -52,8 +59,11 @@ public final class QueryDatabaseAuthenticationHandlerTests extends AbstractJdbcT
         final QueryDatabaseAuthenticationHandler a = new QueryDatabaseAuthenticationHandler(getDataSource());
         a.setSql("select password from users where user_name = ?");
         final DefaultUserNamePasswordCredential c = new DefaultUserNamePasswordCredential("nope", "ha");
-        assertFalse(a.authenticate(c));
+        try {
+            a.authenticate(c);
+            fail();
+        } catch (final GeneralSecurityException e) {
+
+        }
     }
-
-
 }

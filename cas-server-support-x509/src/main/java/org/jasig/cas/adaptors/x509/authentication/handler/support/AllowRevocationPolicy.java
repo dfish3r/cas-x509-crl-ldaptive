@@ -1,15 +1,28 @@
-/*
- * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
- * distributed with this file and available online at
- * http://www.uportal.org/license.html
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 package org.jasig.cas.adaptors.x509.authentication.handler.support;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.security.GeneralSecurityException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 
 /**
  * Implements an unqualified allow policy.
@@ -19,21 +32,21 @@ import org.apache.commons.logging.LogFactory;
  * @since 3.4.7
  *
  */
-public class AllowRevocationPolicy implements RevocationPolicy<Void> {
+public final class AllowRevocationPolicy implements RevocationPolicy<Void> {
     /** Logger instance */
-    private final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
     /**
      * Policy application does nothing to implement unqualfied allow.
      *
-     * @param nothing SHOULD be null; ignored in all cases.
+     * @param data SHOULD be null; ignored in all cases.
      * 
      * @throws GeneralSecurityException Never thrown.
      *
      * @see org.jasig.cas.adaptors.x509.authentication.handler.support.RevocationPolicy#apply(java.lang.Object)
      */
     public void apply(Void data) throws GeneralSecurityException {
-        this.logger.info("Continuing since AllowRevocationPolicy is in effect.");
+        logger.info("Continuing since AllowRevocationPolicy is in effect.");
     }
 }

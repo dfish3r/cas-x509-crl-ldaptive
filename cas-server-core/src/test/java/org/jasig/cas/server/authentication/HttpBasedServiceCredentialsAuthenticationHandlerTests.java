@@ -51,35 +51,50 @@ public final class HttpBasedServiceCredentialsAuthenticationHandlerTests extends
     }
 
     public void testAcceptsProperCertificateCredentials() throws GeneralSecurityException {
-        assertTrue(this.authenticationHandler.authenticate(TestUtils
-            .getHttpBasedServiceCredentials()));
+        this.authenticationHandler.authenticate(TestUtils.getHttpBasedServiceCredentials());
     }
 
     public void testRejectsInProperCertificateCredentials() throws GeneralSecurityException {
-        assertFalse(this.authenticationHandler.authenticate(TestUtils
-            .getHttpBasedServiceCredentials("https://clearinghouse.ja-sig.org")));
+        try {
+            this.authenticationHandler.authenticate(TestUtils.getHttpBasedServiceCredentials("https://clearinghouse.ja-sig.org"));
+            fail();
+        } catch (final GeneralSecurityException e) {
+            // this is okay
+        }
     }
 
     public void testRejectsNonHttpsCredentials() throws GeneralSecurityException {
-        assertFalse(this.authenticationHandler.authenticate(TestUtils
-            .getHttpBasedServiceCredentials("http://www.jasig.org")));
+        try {
+            this.authenticationHandler.authenticate(TestUtils.getHttpBasedServiceCredentials("http://www.jasig.org"));
+            fail();
+        } catch (final GeneralSecurityException e) {
+          // okay
+        }
     }
     
     public void testAcceptsNonHttpsCredentials() throws GeneralSecurityException {
         this.authenticationHandler.setRequireSecure(false);
-        assertTrue(this.authenticationHandler.authenticate(TestUtils
-            .getHttpBasedServiceCredentials("http://www.ja-sig.org")));
+        this.authenticationHandler.authenticate(TestUtils.getHttpBasedServiceCredentials("http://www.ja-sig.org"));
     }
 
     public void testNoAcceptableStatusCode() throws Exception {
-        assertFalse(this.authenticationHandler.authenticate(TestUtils
-            .getHttpBasedServiceCredentials("https://clue.acs.rutgers.edu")));
+        try {
+            this.authenticationHandler.authenticate(TestUtils.getHttpBasedServiceCredentials("https://clue.acs.rutgers.edu"));
+            fail();
+        } catch (final Exception e) {
+            // this is okay
+        }
     }
     
     public void testNoAcceptableStatusCodeButOneSet() throws Exception {
         final HttpClient httpClient = new HttpClient();
         httpClient.setAcceptableCodes(new int[] {900});
         this.authenticationHandler = new UrlCredentialAuthenticationHandler(httpClient);
-        assertFalse(this.authenticationHandler.authenticate(TestUtils.getHttpBasedServiceCredentials("https://www.ja-sig.org")));
+        try {
+            this.authenticationHandler.authenticate(TestUtils.getHttpBasedServiceCredentials("https://www.ja-sig.org"));
+            fail();
+        } catch (final GeneralSecurityException e) {
+            // this is okay
+        }
     }
 }

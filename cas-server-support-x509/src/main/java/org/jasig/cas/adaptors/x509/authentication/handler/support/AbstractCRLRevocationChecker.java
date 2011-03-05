@@ -1,8 +1,22 @@
-/*
- * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
- * distributed with this file and available online at
- * http://www.uportal.org/license.html
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 package org.jasig.cas.adaptors.x509.authentication.handler.support;
 
 import java.security.GeneralSecurityException;
@@ -12,9 +26,9 @@ import java.security.cert.X509Certificate;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.adaptors.x509.util.CertUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all CRL-based revocation checkers.
@@ -26,7 +40,7 @@ import org.jasig.cas.adaptors.x509.util.CertUtils;
  */
 public abstract class AbstractCRLRevocationChecker implements RevocationChecker {
     /** Logger instance */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     /** Policy to apply when CRL data is unavailable. */
     @NotNull
@@ -42,17 +56,17 @@ public abstract class AbstractCRLRevocationChecker implements RevocationChecker 
         if (cert == null) {
             throw new IllegalArgumentException("Certificate cannot be null.");
         }
-        if (this.logger.isDebugEnabled()) {
-	        this.logger.debug("Evaluating certificate revocation status for " + CertUtils.toString(cert));
+        if (logger.isDebugEnabled()) {
+	        logger.debug("Evaluating certificate revocation status for " + CertUtils.toString(cert));
         }
         final X509CRL crl = getCRL(cert);
         if (crl == null) {
-            this.logger.warn("CRL data is not available for " + CertUtils.toString(cert));
+            logger.warn("CRL data is not available for " + CertUtils.toString(cert));
             this.unavailableCRLPolicy.apply(null);
             return;
         }
         if (CertUtils.isExpired(crl)) {
-            this.logger.warn("CRL data expired on " + crl.getNextUpdate());
+            logger.warn("CRL data expired on " + crl.getNextUpdate());
             this.expiredCRLPolicy.apply(crl);
         }
         final X509CRLEntry entry = crl.getRevokedCertificate(cert);

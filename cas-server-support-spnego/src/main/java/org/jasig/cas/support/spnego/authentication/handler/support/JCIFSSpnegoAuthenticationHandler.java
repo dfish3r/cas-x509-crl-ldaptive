@@ -54,7 +54,7 @@ public final class JCIFSSpnegoAuthenticationHandler extends AbstractNamedAuthent
      */
     private boolean isNTLMallowed = false;
 
-    public boolean authenticate(final Credential credentials) throws GeneralSecurityException {
+    public void authenticate(final Credential credentials) throws GeneralSecurityException {
         final SpnegoCredentials spnegoCredentials = (SpnegoCredentials) credentials;
         Principal principal;
         byte[] nextToken;
@@ -85,7 +85,12 @@ public final class JCIFSSpnegoAuthenticationHandler extends AbstractNamedAuthent
                 }
                 spnegoCredentials.setPrincipal(getSimplePrincipal(principal
                     .getName(), true));
-                return this.isNTLMallowed;
+
+                if (this.isNTLMallowed) {
+                    return;
+                }
+
+                throw new GeneralSecurityException();
             }
             // else => kerberos
             if (log.isDebugEnabled()) {
@@ -93,12 +98,12 @@ public final class JCIFSSpnegoAuthenticationHandler extends AbstractNamedAuthent
             }
             spnegoCredentials.setPrincipal(getSimplePrincipal(principal
                 .getName(), false));
-            return true;
+            return;
 
         }
 
         log.debug("Principal is null, the processing of the SPNEGO Token failed");
-        return false;
+        throw new GeneralSecurityException();
     }
 
     public boolean supports(final Credential credentials) {

@@ -59,14 +59,12 @@ public final class SimpleTestUsernamePasswordHandlerTests extends TestCase {
     }
 
     public void testValidUsernamePassword() throws GeneralSecurityException {
-        assertTrue(this.authenticationHandler.authenticate(TestUtils
-            .getCredentialsWithSameUsernameAndPassword()));
+        this.authenticationHandler.authenticate(TestUtils.getCredentialsWithSameUsernameAndPassword());
     }
 
     public void testInvalidUsernamePassword() {
         try {
-            assertFalse(this.authenticationHandler.authenticate(TestUtils
-                .getCredentialsWithDifferentUsernameAndPassword()));
+            this.authenticationHandler.authenticate(TestUtils.getCredentialsWithDifferentUsernameAndPassword());
         } catch (GeneralSecurityException ae) {
             // this is okay
         }
@@ -74,8 +72,7 @@ public final class SimpleTestUsernamePasswordHandlerTests extends TestCase {
 
     public void testNullUsernamePassword() {
         try {
-            assertFalse(this.authenticationHandler.authenticate(TestUtils
-                .getCredentialsWithSameUsernameAndPassword(null)));
+            this.authenticationHandler.authenticate(TestUtils.getCredentialsWithSameUsernameAndPassword(null));
         } catch (GeneralSecurityException ae) {
             // this is okay
         }

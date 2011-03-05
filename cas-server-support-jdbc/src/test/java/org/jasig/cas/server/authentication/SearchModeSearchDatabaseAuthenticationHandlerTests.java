@@ -22,6 +22,8 @@ package org.jasig.cas.server.authentication;
 import org.jasig.cas.adaptors.jdbc.SearchModeSearchDatabaseAuthenticationHandler;
 import org.junit.Test;
 
+import java.security.GeneralSecurityException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -44,8 +46,18 @@ public class SearchModeSearchDatabaseAuthenticationHandlerTests extends Abstract
         final DefaultUserNamePasswordCredential invalidPassword = new DefaultUserNamePasswordCredential("foo", "ha");
         final DefaultUserNamePasswordCredential invalidUser = new DefaultUserNamePasswordCredential("nope", "ha");
 
-        assertTrue(a.authenticate(validUser));
-        assertFalse(a.authenticate(invalidPassword));
-        assertFalse(a.authenticate(invalidUser));
+        a.authenticate(validUser);
+        try {
+            a.authenticate(invalidPassword);
+            fail();
+        } catch (final GeneralSecurityException e) {
+
+        }
+        try {
+            a.authenticate(invalidUser);
+            fail();
+        } catch (final GeneralSecurityException e) {
+
+        }
     }
 }

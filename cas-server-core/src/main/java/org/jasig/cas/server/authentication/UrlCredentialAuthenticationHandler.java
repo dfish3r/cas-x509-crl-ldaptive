@@ -55,17 +55,21 @@ public final class UrlCredentialAuthenticationHandler extends AbstractNamedAuthe
         this.httpClient = httpClient;
     }
 
-    public final boolean authenticate(final Credential credentials) throws GeneralSecurityException {
+    public final void authenticate(final Credential credentials) throws GeneralSecurityException {
         final UrlCredential serviceCredentials = (UrlCredential) credentials;
         if (this.requireSecure && !serviceCredentials.getUrl().getProtocol().equals(PROTOCOL_HTTPS)) {
             log.debug("Authentication failed because url was not secure.");
-            return false;
+            throw new GeneralSecurityException();
         }
         if (log.isDebugEnabled()) {
             log.debug("Attempting to resolve credentials for " + serviceCredentials);
         }
 
-        return this.httpClient.isValidEndPoint(serviceCredentials.getUrl());
+        if (this.httpClient.isValidEndPoint(serviceCredentials.getUrl())) {
+            return;
+        }
+
+        throw new GeneralSecurityException();
     }
 
     /**

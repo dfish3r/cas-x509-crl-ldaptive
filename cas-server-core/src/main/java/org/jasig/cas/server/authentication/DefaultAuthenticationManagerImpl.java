@@ -96,20 +96,18 @@ public final class DefaultAuthenticationManagerImpl extends AbstractAuthenticati
                 }
 
                 try {
-                    if (handler.authenticate(credential)) {
-                        final AttributePrincipal p = getAttributePrincipal(credential);
+                    handler.authenticate(credential);
+                    final AttributePrincipal p = getAttributePrincipal(credential);
 
-                        if (p == null) {
-                            break;
-                        }
-
-                        final Map<String, List<Object>> attributes = obtainAttributesFor(authenticationRequest, credential);
-                        obtainMessagesFor(credential, handler, messages);
-                        authentications.add(getAuthenticationFactory().getAuthentication(attributes, authenticationRequest, handler.getName()));
-                        principals.add(p);
+                    if (p == null) {
                         break;
-
                     }
+
+                    final Map<String, List<Object>> attributes = obtainAttributesFor(authenticationRequest, credential);
+                    obtainMessagesFor(credential, handler, messages);
+                    authentications.add(getAuthenticationFactory().getAuthentication(attributes, authenticationRequest, handler.getName()));
+                    principals.add(p);
+                    break;
                 } catch (final GeneralSecurityException e) {
                     exceptions.add(e);
                     break;

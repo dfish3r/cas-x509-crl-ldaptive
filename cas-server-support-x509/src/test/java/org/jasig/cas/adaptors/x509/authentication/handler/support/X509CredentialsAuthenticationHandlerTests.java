@@ -262,12 +262,15 @@ public class X509CredentialsAuthenticationHandlerTests {
     }
 
     /**
-     * Tests the {@link X509CredentialsAuthenticationHandler#authenticate(Credentials)} method.
+     * Tests the {@link X509CredentialsAuthenticationHandler#authenticate(Credential)} method.
      */
     @Test
     public void testAuthenticate() {
         try {
-            Assert.assertEquals(this.expectedAuthResult, this.handler.authenticate(this.credential));
+            this.handler.authenticate(this.credential);
+            if (!(Boolean) this.expectedAuthResult) {
+                Assert.fail();
+            }
         } catch (Exception e) {
             if (this.handler.supports(this.credential)) {
                 Assert.assertTrue(this.expectedAuthResult.getClass().equals(e.getClass()));
@@ -276,7 +279,7 @@ public class X509CredentialsAuthenticationHandlerTests {
     }
 
     /**
-     * Tests the {@link X509CredentialsAuthenticationHandler#supports(Credentials)} method.
+     * Tests the {@link X509CredentialsAuthenticationHandler#supports(Credential)} method.
      */
     @Test
     public void testSupports() {

@@ -22,6 +22,7 @@ package org.jasig.cas.adaptors.generic;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.GeneralSecurityException;
 
 import org.apache.commons.io.IOUtils;
 import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticationHandler;
@@ -56,7 +57,7 @@ public final class FileAuthenticationHandler extends AbstractUsernamePasswordAut
     @NotNull
     private Resource fileName;
 
-    protected boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) {
+    protected void authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         BufferedReader bufferedReader = null;
 
         try {
@@ -82,7 +83,7 @@ public final class FileAuthenticationHandler extends AbstractUsernamePasswordAut
                 final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
                 if (transformedUsername.equals(userName)) {
                     if (this.getPasswordEncoder().isValidPassword(password, credentials.getPassword(), null)) {
-                        return true;
+                        return;
                     }
                     break;
                 }
@@ -94,7 +95,7 @@ public final class FileAuthenticationHandler extends AbstractUsernamePasswordAut
             IOUtils.closeQuietly(bufferedReader);
         }
 
-        return false;
+        throw new GeneralSecurityException();
     }
 
     /**

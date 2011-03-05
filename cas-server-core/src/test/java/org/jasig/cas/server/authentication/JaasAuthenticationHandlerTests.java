@@ -26,6 +26,8 @@ import org.jasig.cas.server.authentication.JaasAuthenticationHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.GeneralSecurityException;
+
 public class JaasAuthenticationHandlerTests extends TestCase {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -47,20 +49,29 @@ public class JaasAuthenticationHandlerTests extends TestCase {
     public void testWithAlternativeRealm() throws Exception {
 
         this.handler.setRealm("TEST");
-        assertFalse(this.handler.authenticate(TestUtils.getCredentialsWithDifferentUsernameAndPassword("test", "test1")));
+        try {
+            this.handler.authenticate(TestUtils.getCredentialsWithDifferentUsernameAndPassword("test", "test1"));
+            fail();
+        } catch (final GeneralSecurityException e) {
+            // okay
+        }
     }
 
     public void testWithAlternativeRealmAndValidCredentials() throws Exception {
         this.handler.setRealm("TEST");
-        assertTrue(this.handler.authenticate(TestUtils.getCredentialsWithDifferentUsernameAndPassword("test", "test")));
+        this.handler.authenticate(TestUtils.getCredentialsWithDifferentUsernameAndPassword("test", "test"));
     }
 
     public void testWithValidCredenials() throws Exception {
-        final boolean value = this.handler.authenticate(TestUtils.getCredentialsWithSameUsernameAndPassword());
-        assertTrue(value);
+        this.handler.authenticate(TestUtils.getCredentialsWithSameUsernameAndPassword());
     }
 
     public void testWithInvalidCredentials() throws Exception {
-        assertFalse(this.handler.authenticate(TestUtils.getCredentialsWithDifferentUsernameAndPassword("test", "test1")));
+        try {
+            this.handler.authenticate(TestUtils.getCredentialsWithDifferentUsernameAndPassword("test", "test1"));
+            fail();
+        } catch (final GeneralSecurityException e) {
+            // okay
+        }
     }
 }

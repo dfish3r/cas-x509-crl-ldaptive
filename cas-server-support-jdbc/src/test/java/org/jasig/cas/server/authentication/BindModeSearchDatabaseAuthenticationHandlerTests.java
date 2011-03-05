@@ -34,13 +34,18 @@ public final class BindModeSearchDatabaseAuthenticationHandlerTests extends Abst
     @Test
     public void validUsername() throws Exception {
         final BindModeSearchDatabaseAuthenticationHandler a = new BindModeSearchDatabaseAuthenticationHandler(getDataSource());
-        assertTrue(a.authenticate(new DefaultUserNamePasswordCredential("sa", "")));
+        a.authenticate(new DefaultUserNamePasswordCredential("sa", ""));
     }
 
     @Test
     public void invalidUserName() throws Exception {
         final BindModeSearchDatabaseAuthenticationHandler a = new BindModeSearchDatabaseAuthenticationHandler(getDataSource());
-        assertFalse(a.authenticate(new DefaultUserNamePasswordCredential("foo", "ha")));
+        try {
+            a.authenticate(new DefaultUserNamePasswordCredential("foo", "ha"));
+            fail();
+        } catch (final Exception e) {
+            // nothing
+        }
 
     }
 }

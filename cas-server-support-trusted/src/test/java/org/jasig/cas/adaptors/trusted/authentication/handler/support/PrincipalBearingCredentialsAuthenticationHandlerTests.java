@@ -41,7 +41,7 @@ public final class PrincipalBearingCredentialsAuthenticationHandlerTests
      */
     public void testNonNullPrincipal() throws GeneralSecurityException {
         PrincipalBearingCredentials credentials = new PrincipalBearingCredentials(new SimplePrincipal("scott"));
-        assertTrue(this.handler.authenticate(credentials));
+        this.handler.authenticate(credentials);
     }    
     
     public void testSupports() {

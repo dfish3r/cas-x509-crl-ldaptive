@@ -48,14 +48,9 @@ public class FileAuthenticationHandlerTests extends TestCase {
         this.authenticationHandler.setFileName(new ClassPathResource("org/jasig/cas/adaptors/generic/authentication.txt"));
     }
 
-    public void testSupportsProperUserCredentials() {
-        final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("Scott", "rutgers");
-
-        try {
-            this.authenticationHandler.authenticate(c);
-        } catch (GeneralSecurityException e) {
-            fail("AuthenticationException caught.");
-        }
+    public void testSupportsProperUserCredentials() throws GeneralSecurityException {
+        final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("scott", "rutgers");
+        this.authenticationHandler.authenticate(c);
     }
 
     public void testDoesntSupportBadUserCredentials() {
@@ -69,14 +64,15 @@ public class FileAuthenticationHandlerTests extends TestCase {
 
     public void testAuthenticatesUserInFileWithDefaultSeparator() throws GeneralSecurityException {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("scott", "rutgers");
-        assertTrue(this.authenticationHandler.authenticate(c));
+        this.authenticationHandler.authenticate(c);
     }
 
     public void testFailsUserNotInFileWithDefaultSeparator() {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("fds", "rutgers");
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
@@ -86,7 +82,8 @@ public class FileAuthenticationHandlerTests extends TestCase {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword(null, "user");
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
@@ -96,7 +93,8 @@ public class FileAuthenticationHandlerTests extends TestCase {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword(null, null);
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
@@ -106,7 +104,8 @@ public class FileAuthenticationHandlerTests extends TestCase {
         final UserNamePasswordCredential c = TestUtils.getCredentialsWithDifferentUsernameAndPassword("scott", null);
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
@@ -117,7 +116,7 @@ public class FileAuthenticationHandlerTests extends TestCase {
 
         this.authenticationHandler.setFileName(new ClassPathResource("org/jasig/cas/adaptors/generic/authentication2.txt"));
         this.authenticationHandler.setSeparator(",");
-        assertTrue(this.authenticationHandler.authenticate(c));
+        this.authenticationHandler.authenticate(c);
     }
 
     public void testFailsUserNotInFileWithCommaSeparator() {
@@ -127,7 +126,8 @@ public class FileAuthenticationHandlerTests extends TestCase {
         this.authenticationHandler.setSeparator(",");
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
@@ -140,7 +140,8 @@ public class FileAuthenticationHandlerTests extends TestCase {
         this.authenticationHandler.setSeparator(",");
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (GeneralSecurityException e) {
             // this is okay because it means the test failed.
         }
@@ -151,7 +152,8 @@ public class FileAuthenticationHandlerTests extends TestCase {
         this.authenticationHandler.setFileName(new ClassPathResource("fff"));
 
         try {
-            assertFalse(this.authenticationHandler.authenticate(c));
+            this.authenticationHandler.authenticate(c);
+            fail();
         } catch (Exception e) {
             // this is good
         }

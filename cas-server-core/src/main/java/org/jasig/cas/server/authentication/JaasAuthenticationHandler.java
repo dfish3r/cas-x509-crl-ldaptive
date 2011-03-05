@@ -72,7 +72,7 @@ public final class JaasAuthenticationHandler extends AbstractUsernamePasswordAut
         Assert.notNull(Configuration.getConfiguration(), "Static Configuration cannot be null. Did you remember to specify \"java.security.auth.login.config\"?");
     }
 
-    protected boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+    protected void authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
 
         try {
@@ -87,13 +87,12 @@ public final class JaasAuthenticationHandler extends AbstractUsernamePasswordAut
             if (log.isDebugEnabled()) {
                 log.debug("Authentication failed for: " + transformedUsername);
             }
-            return false;
+            throw fle;
         }
 
         if (log.isDebugEnabled()) {
             log.debug("Authentication succeeded for: " + transformedUsername);
         }
-        return true;
     }
 
     public void setRealm(final String realm) {

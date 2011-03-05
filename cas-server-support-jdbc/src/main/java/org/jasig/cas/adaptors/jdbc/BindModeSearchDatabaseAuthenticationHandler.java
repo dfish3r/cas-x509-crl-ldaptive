@@ -47,16 +47,15 @@ public final class BindModeSearchDatabaseAuthenticationHandler extends AbstractJ
         super(dataSource);
     }
 
-    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+    protected final void authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         final String username = credentials.getUserName();
         final String password = credentials.getPassword();
 
         try {
             final Connection c = this.getDataSource().getConnection(username, password);
             DataSourceUtils.releaseConnection(c, this.getDataSource());
-            return true;
         } catch (final SQLException e) {
-            return false;
+            throw new GeneralSecurityException(e);
         }
     }
 }

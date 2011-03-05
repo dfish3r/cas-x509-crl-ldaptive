@@ -59,14 +59,18 @@ public final class SearchModeSearchDatabaseAuthenticationHandler extends Abstrac
         super(dataSource);
     }
 
-    protected final boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
+    protected final void authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUserName());
 //        final String encyptedPassword = getPasswordEncoder().encode(credentials.getPassword());
 
         // TODO we should be comparing the encrypted one.
         final int count = getJdbcTemplate().queryForInt(this.sql, transformedUsername, credentials.getPassword());
 
-        return count > 0;
+        if (count > 0) {
+            return;
+        }
+
+        throw new GeneralSecurityException();
     }
 
     public void afterPropertiesSet() throws Exception {

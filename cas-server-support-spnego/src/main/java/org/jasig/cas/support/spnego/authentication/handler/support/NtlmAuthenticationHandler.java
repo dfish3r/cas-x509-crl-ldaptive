@@ -57,7 +57,7 @@ public final class NtlmAuthenticationHandler extends AbstractNamedAuthentication
     
     private String includePattern = null;
 
-    public final boolean authenticate(final Credential credentials) throws GeneralSecurityException {
+    public final void authenticate(final Credential credentials) throws GeneralSecurityException {
         final SpnegoCredentials ntlmCredentials = (SpnegoCredentials) credentials;
         final byte[] src = ntlmCredentials.getInitToken();
 
@@ -93,7 +93,7 @@ public final class NtlmAuthenticationHandler extends AbstractNamedAuthentication
                         challenge, null);
                     log.debug("Type 2 returned. Setting next token.");
                     ntlmCredentials.setNextToken(type2.toByteArray());
-                    return false;
+                    throw new GeneralSecurityException();
                 case 3:
                     log.debug("Type 3 received");
                     final Type3Message type3 = new Type3Message(src);
@@ -110,10 +110,10 @@ public final class NtlmAuthenticationHandler extends AbstractNamedAuthentication
                         SmbSession.logon(dc, ntlm);
                         ntlmCredentials.setPrincipal(new SimplePrincipal(type3
                             .getUser()));
-                        return true;
+                        return;
                     } catch (final SmbAuthException sae) {
                         log.debug("Authentication failed", sae);
-                        return false;
+                        throw new GeneralSecurityException();
                     }
             }
         } catch (final Exception e) {
@@ -121,7 +121,7 @@ public final class NtlmAuthenticationHandler extends AbstractNamedAuthentication
             throw new CredentialException(e.getMessage());
         }
 
-        return false;
+        throw new GeneralSecurityException();
     }
 
     public boolean supports(final Credential credentials) {

@@ -23,6 +23,8 @@ import org.jasig.cas.server.authentication.AbstractUsernamePasswordAuthenticatio
 import org.jasig.cas.server.authentication.UserNamePasswordCredential;
 import org.springframework.util.StringUtils;
 
+import java.security.GeneralSecurityException;
+
 /**
  * Simple test implementation of a AuthenticationHandler that returns true if
  * the username and password match. This class should never be enabled in a
@@ -39,17 +41,17 @@ public final class SimpleTestUsernamePasswordAuthenticationHandler extends Abstr
         log.warn(this.getClass().getName() + " is only to be used in a testing environment.  NEVER enable this in a production environment.");
     }
 
-    public boolean authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) {
+    public void authenticateUsernamePasswordInternal(final UserNamePasswordCredential credentials) throws GeneralSecurityException {
         final String username = credentials.getUserName();
         final String password = credentials.getPassword();
 
         if (StringUtils.hasText(username) && StringUtils.hasText(password) && username.equals(password)) {
             log.debug(String.format("User [%s] was successfully authenticated", username));
-            return true;
+            return;
         }
 
         log.debug(String.format("User [%s] failed authentication", username));
 
-        return false;
+        throw new GeneralSecurityException();
     }
 }
