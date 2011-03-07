@@ -92,6 +92,7 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
                         <exclude>**/AbstractAuthenticationTests.java</exclude>
                         <exclude>**/AbstractSessionStorageTests.java</exclude>
                         <exclude>**/AbstractSessionTests.java</exclude>
+                        <exclude>**/AbstractCasProtocolAccessImplTests.java</exclude>
                         <exclude>**/AbstractStateTests.java</exclude>
                         <exclude>**/BaseSeleniumTests.java</exclude>
                         <exclude>**/AbstractWebDriverSupport.java</exclude>
@@ -603,6 +604,8 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
         <module>cas-server-test-support-selenium</module>
         <module>cas-server-protocol-saml1-sessionstorage-inmemory</module>
         <module>cas-server-protocol-saml1-sessionstorage-serializable</module>
+        <module>cas-server-protocol-cas-test</module>
+        <module>cas-server-protocol-saml1-test</module>
     </modules>
 
 	<reporting>

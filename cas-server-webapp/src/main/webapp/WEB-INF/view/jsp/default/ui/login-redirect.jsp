@@ -25,7 +25,7 @@
 <c:set var="redirectTime" value="2" />
 <c:set var="postTime" value="2000" />
 <c:if test="${loginResponse != null and fn:length(loginResponse.authenticationWarnings) >0}">
-    <c:set var="redirectTime" value="7" />
+    <c:set var="redirectTime" value="3000" />
     <c:set var="postTime" value="7000" />
 </c:if>
 

@@ -8,27 +8,31 @@
         <version>4.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <name>Jasig CAS - SAML 1.1 In-Memory Session Support</name>
-    <artifactId>cas-server-protocol-saml1-sessionstorage-inmemory</artifactId>
-
+    <name>Jasig CAS - SAML 1.1 Test Support</name>
+    <artifactId>cas-server-protocol-saml1-test</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.jasig.cas</groupId>
             <artifactId>cas-server-protocol-saml1</artifactId>
-            <version>${project.version}</version>
             <scope>compile</scope>
+            <type>jar</type>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
+            <version>${junit.version}</version>
             <type>jar</type>
         </dependency>
 
         <dependency>
-            <groupId>org.jasig.cas</groupId>
-            <artifactId>cas-server-protocol-saml1-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>compile</scope>
+            <version>${mockito.version}</version>
             <type>jar</type>
         </dependency>
     </dependencies>
-
-
 </project>

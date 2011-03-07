@@ -20,5 +20,13 @@
             <scope>compile</scope>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-protocol-cas-test</artifactId>
+            <type>jar</type>
+            <scope>test</scope>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

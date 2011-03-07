@@ -15,6 +15,14 @@
     <dependencies>
         <dependency>
             <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-protocol-cas-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
             <artifactId>cas-server-api</artifactId>
             <version>${project.version}</version>
         </dependency>
