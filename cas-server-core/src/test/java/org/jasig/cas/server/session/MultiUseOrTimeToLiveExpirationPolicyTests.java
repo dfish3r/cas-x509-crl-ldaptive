@@ -30,14 +30,13 @@ import static org.junit.Assert.*;
 public final class MultiUseOrTimeToLiveExpirationPolicyTests extends AbstractExpirationPolicyTests {
 
     public MultiUseOrTimeToLiveExpirationPolicyTests() {
-        super(new MultiUseOrTimeToLiveExpirationPolicy(2, 5));
+        super(new MultiUseOrTimeToLiveExpirationPolicy(2, 1));
     }
 
     @Test
     public void beforeExpirationTime() {
         final State state = new SimpleStateImpl();
         state.updateState();
-        sleep(3);
         assertFalse(getExpirationPolicy().isExpired(state));
     }
 
@@ -45,7 +44,7 @@ public final class MultiUseOrTimeToLiveExpirationPolicyTests extends AbstractExp
     public void afterExpirationTime() {
         final State state = new SimpleStateImpl();
         state.updateState();
-        sleep(7);
+        sleep(5);
 
         assertTrue(getExpirationPolicy().isExpired(state));
     }

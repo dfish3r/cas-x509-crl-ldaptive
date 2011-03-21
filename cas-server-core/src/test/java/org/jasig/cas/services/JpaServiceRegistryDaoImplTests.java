@@ -28,6 +28,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.transaction.annotation.Transactional;
+
 import static org.junit.Assert.*;
 
 /**
@@ -38,6 +40,7 @@ import static org.junit.Assert.*;
  *
  */
 @ContextConfiguration(locations= {"classpath:jpaTestApplicationContext.xml"})
+@Transactional
 public class JpaServiceRegistryDaoImplTests extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired(required=true)

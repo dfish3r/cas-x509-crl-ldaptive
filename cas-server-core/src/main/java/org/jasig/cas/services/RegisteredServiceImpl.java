@@ -47,9 +47,8 @@ import org.springframework.util.PathMatcher;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-@Entity
-public class RegisteredServiceImpl
-    implements RegisteredService, Comparable<RegisteredService> {
+@Entity(name="RegisteredServiceImpl")
+public class RegisteredServiceImpl implements RegisteredService, Comparable<RegisteredService> {
 
     /** Unique Id for serialization. */
     private static final long serialVersionUID = -5136788302682868276L;

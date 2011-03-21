@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 public final class LongTermSessionDelegatingExpirationPolicyTests extends AbstractExpirationPolicyTests {
 
     public LongTermSessionDelegatingExpirationPolicyTests() {
-        super(new LongTermSessionDelegatingExpirationPolicy(new NeverExpiresExpirationPolicy(), new HardTimeoutExpirationPolicy(5)));
+        super(new LongTermSessionDelegatingExpirationPolicy(new NeverExpiresExpirationPolicy(), new HardTimeoutExpirationPolicy(1)));
     }
 
     @Test
@@ -47,7 +47,7 @@ public final class LongTermSessionDelegatingExpirationPolicyTests extends Abstra
         final SimpleStateImpl s = new SimpleStateImpl();
         s.setLongTermSessionExists(false);
         s.updateState();
-        sleep(8);
+        sleep(5);
         assertTrue(getExpirationPolicy().isExpired(s));
     }
 }
