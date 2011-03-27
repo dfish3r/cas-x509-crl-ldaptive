@@ -71,7 +71,6 @@ public abstract class AbstractAuthenticationManager implements AuthenticationMan
     @Profiled(tag="defaultAuthenticationManager_authenticate")
     @Audit(action="AUTHENTICATION", actionResolverName="AUTHENTICATION_RESOLVER", resourceResolverName="AUTHENTICATION_RESOURCE_RESOLVER")
     public final AuthenticationResponse authenticate(final AuthenticationRequest authenticationRequest) {
-        final List<Credential> credentials = new ArrayList<Credential>();
         final Set<Authentication> authentications = new HashSet<Authentication>();
         final List<AttributePrincipal> principals = new ArrayList<AttributePrincipal>();
         final Map<Credential, List<GeneralSecurityException>> exceptions = new HashMap<Credential, List<GeneralSecurityException>>();
