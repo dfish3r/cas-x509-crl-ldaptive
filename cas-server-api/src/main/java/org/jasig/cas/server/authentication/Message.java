@@ -30,7 +30,7 @@ import java.io.Serializable;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  *
  */
 public interface Message extends Serializable {
@@ -47,6 +47,14 @@ public interface Message extends Serializable {
      * @return the custom message, if it wasn't stored in a properties file.
      */
     String getMessage();
+
+    /**
+     * Returns the source of the message.  This is a custom field that the deployer can either use for the actual name or
+     * some identifying code.
+     *
+     * @return the source.  CANNOT be NULL.
+     */
+    String getSource();
 
     /**
      * The set of arguments to populate the warning with.

@@ -90,6 +90,8 @@ public abstract class AbstractAuthenticationManager implements AuthenticationMan
             return new DefaultAuthenticationResponseImpl(exceptions, messages);
         }
 
+        obtainMessagesFor(principal, messages);
+
         return new DefaultAuthenticationResponseImpl(authentications, principal, exceptions, messages);
     }
 
@@ -104,6 +106,12 @@ public abstract class AbstractAuthenticationManager implements AuthenticationMan
         }
 
         return attributes;
+    }
+
+    protected void obtainMessagesFor(final AttributePrincipal attributePrincipal, final Collection<Message> messages) {
+        for (final MessageResolver messageResolver : this.messageResolvers) {
+            messages.addAll(messageResolver.resolveMessagesFor(attributePrincipal));
+        }
     }
 
     protected final void obtainMessagesFor(final Credential credential, final AuthenticationHandler authenticationHandler, final Collection<Message> messages) {

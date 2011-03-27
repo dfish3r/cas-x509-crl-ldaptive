@@ -22,12 +22,14 @@ package org.jasig.cas.server.authentication;
 import java.util.List;
 
 /**
- * Resolves the messages for a given credential.  These are not per principal because its more likely that a given
- * credential has warnings or messages versus a principal.  Though these should be able to still find them.
+ * Resolves the messages for a given credential or principal.
+ * <p>
+ * This is executed at two points in the life cycle: when a credential is successfully resolved AND after all principals
+ * are resolved.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.5
+ * @since 4.0.0
  *
  */
 public interface MessageResolver {
@@ -36,10 +38,20 @@ public interface MessageResolver {
      * Resolves messages for a given credential.  This should only execute if the authentication was successful.
      * <p>
      * GeneralSecurityExceptions should be used to relay messages when authentication failed.
+     * <p>
+     * This is typically for things like account will expire soon, etc.
      *
      * @param credential the credentials.  Cannot be null.
      * @param authenticationHandler the authentication handler.  Cannot be null.
      * @return the messages.  CANNOT be NULL.  But can be empty.
      */
     List<Message> resolveMessagesFor(Credential credential, AuthenticationHandler authenticationHandler);
+
+    /**
+     * Resolves the messages for a given principal.  These are typically for business rules.
+     *
+     * @param principal the principal to check
+     * @return any messages. CANNOT be NULL.  CAN be EMPTY.
+     */
+    List<Message> resolveMessagesFor(AttributePrincipal principal);
 }
