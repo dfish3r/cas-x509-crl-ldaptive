@@ -128,8 +128,8 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
 						<exclude>**/Abstract*.java</exclude>
 					</excludes>
                     <parallel>classes</parallel>
-                    <useUnlimitedThreads>true</useUnlimitedThreads>
-                    <threadCount>80</threadCount>
+                    <useUnlimitedThreads>false</useUnlimitedThreads>
+                    <threadCount>1</threadCount>
                     <perCoreThreadCount>true</perCoreThreadCount>
 				</configuration>
 			</plugin>
